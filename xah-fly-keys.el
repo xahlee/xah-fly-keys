@@ -649,3 +649,5 @@
 ;; 1    0.00%  xah-replace-straight-quotes
 ;; 1    0.00%  xah-convert-english-chinese-punctuation
 ;; 1    0.00%  calendar-exit
+
+(provide 'xah-fly-keys)
