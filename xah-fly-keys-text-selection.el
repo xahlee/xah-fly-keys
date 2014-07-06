@@ -85,6 +85,16 @@ This command works mostly in lisp syntax."
     (modify-syntax-entry ?\” ")“")
     (modify-syntax-entry ?\‘ "(’")
     (modify-syntax-entry ?\’ ")‘")
+
+    (when
+        (or
+         (string= major-mode "xah-html-mode")
+         (string= major-mode "xml-mode")
+         (string= major-mode "nxml-mode")
+         (string= major-mode "html-mode"))
+      (modify-syntax-entry ?\> "(<")
+      (modify-syntax-entry ?\< ")>"))
+
     (let (pos p1 p2)
       (setq pos (point))
       (search-backward-regexp "\\s(" nil t )
@@ -99,14 +109,7 @@ This command works mostly in lisp syntax."
   (interactive)
   (if (nth 3 (syntax-ppss))
       (xah-select-text-in-quote)
-    (if
-        (or
-         (string= major-mode "xah-html-mode")
-         (string= major-mode "xml-mode")
-         (string= major-mode "nxml-mode")
-         (string= major-mode "html-mode"))
-        (xah-select-text-in-html-bracket)
-      (xah-select-text-in-bracket))))
+    (xah-select-text-in-bracket)))
 
 (defun xah-select-text-in-html-bracket ()
   "Select text between <…> or >…<."

@@ -147,18 +147,6 @@ See `xah-forward-quote'."
   (interactive)
   (search-backward-regexp (eval-when-compile (regexp-opt xah-ascii-quotes)) nil t))
 
-;; (defun forward-section ()
-;;   "Move cursor forward to next occurrence of the SECTION SIGN § char (unicode 167)."
-;;   (interactive)
-;;   (when (not (search-forward-regexp "§" nil t))
-;;     (goto-char (point-max)) ) )
-
-;; (defun backward-section ()
-;;   "Move cursor forward to previous occurrence of the SECTION SIGN § char (unicode 167)."
-;;   (interactive)
-;;   (when (not (search-backward-regexp "§" nil t))
-;;     (goto-char (point-min)) ) )
-
 ;; (defun goto-point-min ()
 ;;   "Goto the beginning of buffer.
 ;; This is different from `beginning-of-buffer'
