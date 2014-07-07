@@ -80,7 +80,6 @@ To solve this problem, when your code only knows the relative path of another fi
 
     (global-set-key (kbd "SPC") 'self-insert-command)
 
-    (global-set-key (kbd "0") 'self-insert-command)
     (global-set-key (kbd "1") 'self-insert-command)
     (global-set-key (kbd "2") 'self-insert-command)
     (global-set-key (kbd "3") 'self-insert-command)
@@ -90,6 +89,8 @@ To solve this problem, when your code only knows the relative path of another fi
     (global-set-key (kbd "7") 'self-insert-command)
     (global-set-key (kbd "8") 'self-insert-command)
     (global-set-key (kbd "9") 'self-insert-command)
+    (global-set-key (kbd "0") 'self-insert-command)
+
     (global-set-key (kbd "a") 'self-insert-command)
     (global-set-key (kbd "b") 'self-insert-command)
     (global-set-key (kbd "c") 'self-insert-command)
@@ -128,7 +129,7 @@ To solve this problem, when your code only knows the relative path of another fi
 
     (global-set-key (kbd "SPC") 'xfk-insert-mode-activate)
 
-    (global-set-key (kbd "1") nil)
+    (global-set-key (kbd "1") 'xfk-insert-mode-activate)
     (global-set-key (kbd "2") 'delete-window)
     (global-set-key (kbd "3") 'delete-other-windows)
     (global-set-key (kbd "4") 'split-window-vertically)
