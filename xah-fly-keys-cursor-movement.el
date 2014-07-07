@@ -35,7 +35,7 @@ In most major modes, this is similar to `forward-paragraph', but this command's 
   "Move cursor backward to previous text block.
 See: `xah-forward-block'"
   (interactive "p")
-  (dotimes (ξn φn) (if (search-backward-regexp "\n[\t\n ]*\n+" nil "NOERROR" φn)
+  (dotimes (ξn φn) (if (search-backward-regexp "\n[\t\n ]*\n+" nil "NOERROR")
                        (progn
                          (skip-chars-backward "\n\t "))
                      (progn (goto-char (point-min))))))
