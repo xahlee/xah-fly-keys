@@ -34,8 +34,11 @@ In most major modes, this is similar to `forward-paragraph', but this command's 
 (defun xah-backward-block (&optional φn)
   "Move cursor backward to previous text block.
 See: `xah-forward-block'"
-  (interactive)
-  (search-backward-regexp "\n[\t\n ]*\n+" nil "NOERROR" φn))
+  (interactive "p")
+  (dotimes (ξn φn) (if (search-backward-regexp "\n[\t\n ]*\n+" nil "NOERROR" φn)
+                       (progn
+                         (skip-chars-backward "\n\t "))
+                     (progn (goto-char (point-min))))))
 
 (defun xah-beginning-of-line-or-block (&optional φn)
   "Move cursor to beginning of line, or beginning of current or previous text block.
@@ -45,7 +48,7 @@ See: `xah-forward-block'"
       (if (or (equal (point) (line-beginning-position))
               (equal last-command this-command )
               (equal last-command 'xah-end-of-line-or-block ))
-          (xah-backward-block)
+          (xah-backward-block φn)
         (beginning-of-line))
     (xah-backward-block φn)))
 
