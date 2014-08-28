@@ -63,7 +63,7 @@ Toggles between: “all lower”, “Init Caps”, “ALL CAPS”."
   (let (p1 p2 (deactivate-mark nil) (case-fold-search nil))
     (if (use-region-p)
         (setq p1 (region-beginning) p2 (region-end))
-      (let ((bds (bounds-of-thing-at-point 'symbol)))
+      (let ((bds (bounds-of-thing-at-point 'word)))
         (setq p1 (car bds) p2 (cdr bds))))
 
     (when (not (eq last-command this-command))
