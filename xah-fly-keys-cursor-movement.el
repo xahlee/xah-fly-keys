@@ -37,11 +37,12 @@ In most major modes, this is similar to `forward-paragraph', but this command's 
 See: `xah-forward-block'"
   (interactive "p")
   (let ((φn (if (null φn) 1 φn))
-         (ξi 1))
+        (ξi 1))
     (while (<= ξi φn)
       (if (search-backward-regexp "\n[\t\n ]*\n+" nil "NOERROR")
           (progn (skip-chars-backward "\n\t "))
-        (progn (goto-char (point-min))))
+        (progn (goto-char (point-min))
+               (setq ξi φn)))
       (setq ξi (1+ ξi)))))
 
 (defun xah-beginning-of-line-or-block (&optional φn)
