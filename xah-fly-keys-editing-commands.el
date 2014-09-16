@@ -1,34 +1,8 @@
 ;; -*- coding: utf-8 -*-
 
-(defun xah-cut-line-or-region-old-2014-07-06 ()
-  "Cut the current line, or text selection."
-  (interactive)
-  (if (use-region-p)
-      (kill-region (region-beginning) (region-end))
-    (kill-region (line-beginning-position) (line-beginning-position 2))))
-
-(defun xah-cut-line-or-region ()
-  "Cut current line, or text selection.
-
-When `universal-argument' is called first, cut whole buffer.
-"
-  (interactive)
-  (let (p1 p2)
-    (if (null current-prefix-arg)
-        (progn (if (use-region-p)
-                   (progn (setq p1 (region-beginning))
-                          (setq p2 (region-end)))
-                 (progn (setq p1 (line-beginning-position))
-                        (setq p2 (line-beginning-position 2)))))
-      (progn (setq p1 1)
-             (setq p2 (point-max))))
-    (kill-region p1 p2)))
-
 (defun xah-copy-line-or-region ()
   "Copy current line, or text selection.
-
-When `universal-argument' is called first, copy whole buffer.
-"
+When `universal-argument' is called first, copy whole buffer (but respect `narrow-to-region')."
   (interactive)
   (let (p1 p2)
     (if (null current-prefix-arg)
@@ -37,9 +11,24 @@ When `universal-argument' is called first, copy whole buffer.
                           (setq p2 (region-end)))
                  (progn (setq p1 (line-beginning-position))
                         (setq p2 (line-end-position)))))
-      (progn (setq p1 1)
+      (progn (setq p1 (point-min))
              (setq p2 (point-max))))
     (kill-ring-save p1 p2)))
+
+(defun xah-cut-line-or-region ()
+  "Cut current line, or text selection.
+When `universal-argument' is called first, cut whole buffer (but respect `narrow-to-region')."
+  (interactive)
+  (let (p1 p2)
+    (if (null current-prefix-arg)
+        (progn (if (use-region-p)
+                   (progn (setq p1 (region-beginning))
+                          (setq p2 (region-end)))
+                 (progn (setq p1 (line-beginning-position))
+                        (setq p2 (line-beginning-position 2)))))
+      (progn (setq p1 (point-min))
+             (setq p2 (point-max))))
+    (kill-region p1 p2)))
 
 (defun xah-copy-all ()
   "Put the whole buffer content into the `kill-ring'.
