@@ -29,40 +29,48 @@
 A text block is separated by blank lines.
 In most major modes, this is similar to `forward-paragraph', but this command's behavior is the same regardless of syntax table."
   (interactive "p")
-  (search-forward-regexp "\n[\t\n ]*\n+" nil "NOERROR" φn))
+  (let ((φn (if (null φn) 1 φn)))
+    (search-forward-regexp "\n[\t\n ]*\n+" nil "NOERROR" φn)))
 
 (defun xah-backward-block (&optional φn)
   "Move cursor backward to previous text block.
 See: `xah-forward-block'"
   (interactive "p")
-  (dotimes (ξn φn) (if (search-backward-regexp "\n[\t\n ]*\n+" nil "NOERROR")
-                       (progn
-                         (skip-chars-backward "\n\t "))
-                     (progn (goto-char (point-min))))))
+  (let ((φn (if (null φn) 1 φn))
+         (ξi 1))
+    (while (<= ξi φn)
+      (if (search-backward-regexp "\n[\t\n ]*\n+" nil "NOERROR")
+          (progn (skip-chars-backward "\n\t "))
+        (progn (goto-char (point-min))))
+      (setq ξi (1+ ξi)))))
 
 (defun xah-beginning-of-line-or-block (&optional φn)
   "Move cursor to beginning of line, or beginning of current or previous text block.
  (a text block is separated by blank lines)"
   (interactive "p")
-  (if (equal φn 1)
-      (if (or (equal (point) (line-beginning-position))
-              (equal last-command this-command )
-              (equal last-command 'xah-end-of-line-or-block ))
-          (xah-backward-block φn)
-        (beginning-of-line))
-    (xah-backward-block φn)))
+  (let ((φn (if (null φn) 1 φn)))
+    (if (equal φn 1)
+        (if (or (equal (point) (line-beginning-position))
+                (equal last-command this-command )
+                ;; (equal last-command 'xah-end-of-line-or-block )
+                )
+            (xah-backward-block φn)
+          (beginning-of-line))
+      (xah-backward-block φn))))
 
 (defun xah-end-of-line-or-block (&optional φn)
   "Move cursor to end of line, or end of current or next text block.
  (a text block is separated by blank lines)"
   (interactive "p")
-  (if (equal φn 1)
-      (if (or (equal (point) (line-end-position))
-              (equal last-command this-command )
-              (equal last-command 'xah-beginning-of-line-or-block ))
-          (xah-forward-block)
-        (end-of-line))
-    (progn (xah-forward-block φn))))
+  (let ((φn (if (null φn) 1 φn)))
+    (if (equal φn 1)
+        (if (or (equal (point) (line-end-position))
+                (equal last-command this-command )
+                ;; (equal last-command 'xah-beginning-of-line-or-block )
+                )
+            (xah-forward-block)
+          (end-of-line))
+      (progn (xah-forward-block φn)))))
 
 (defvar xah-left-brackets nil "List of open bracket chars.")
 (setq xah-left-brackets '("(" "{" "[" "<" "〔" "【" "〖" "〈" "《" "「" "『" "“" "‘" "‹" "«"))
