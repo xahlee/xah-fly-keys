@@ -202,3 +202,14 @@ When called repeatedly, this command cycles the {“_”, “-”, “ ”} char
       (setq deactivate-mark nil))
 
     (put 'xah-cycle-hyphen-underscore-space 'state nextState)))
+
+(defun xah-toggle-previous-letter-case ()
+  "Toggle the letter case of the letter to the left of cursor."
+  (interactive)
+  (let ((case-fold-search nil))
+    (left-char 1)
+    (cond
+     ((looking-at "[[:lower:]]") (upcase-region (point) (1+ (point))))
+     ((looking-at "[[:upper:]]") (downcase-region (point) (1+ (point))))
+     )
+    (right-char)))
