@@ -83,10 +83,10 @@ See: `xah-forward-block'"
 (setq xah-ascii-quotes '("'" "\""))
 
 (defvar xah-punctuations nil "list of punctuation chars for easy jump. Typically exclude things that are too common, such as underscore or slash.")
-(setq xah-punctuations '("=" "$" "#" "+" "*" ";" "." "," "\\" "&" "@" "%" "!" "?" "^" "`" "~"))
+(setq xah-punctuations '("=" ";"))
 
 (defvar xah-punctuation-regex nil "a regex string for the purpose of jumping to punctuations in programing modes.")
-(setq xah-punctuation-regex "[=.*+,#$%&:;<>@^`~!\?\|]+")
+(setq xah-punctuation-regex "[=;]+")
 
 (defun xah-forward-punct (&optional φn)
   "Move cursor to the next occurrence of punctuation.
