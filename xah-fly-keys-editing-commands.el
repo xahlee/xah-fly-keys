@@ -213,3 +213,9 @@ When called repeatedly, this command cycles the {“_”, “-”, “ ”} char
      ((looking-at "[[:upper:]]") (downcase-region (point) (1+ (point))))
      )
     (right-char)))
+
+(defun xah-insert-space-after ()
+  "Toggle the letter case of the letter to the left of cursor."
+  (interactive)
+  (insert " ")
+  (left-char))
