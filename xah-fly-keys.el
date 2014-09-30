@@ -57,6 +57,7 @@ To solve this problem, when your code only knows the relative path of another fi
 (load (xah-get-fullpath "xah-fly-keys-cursor-movement"))
 (load (xah-get-fullpath "xah-fly-keys-editing-commands"))
 (load (xah-get-fullpath "xah-fly-keys-text-selection"))
+(load (xah-get-fullpath "xah-fly-keys-misc-commands"))
 
 
 
@@ -127,13 +128,13 @@ To solve this problem, when your code only knows the relative path of another fi
   (progn
 
     (global-set-key (kbd ";") 'self-insert-command)
-    (global-set-key (kbd "=") 'self-insert-command)
+    (global-set-key (kbd "=") 'xah-next-emacs-buffer)
     (global-set-key (kbd "\\") 'self-insert-command)
     (global-set-key (kbd ".") 'backward-kill-word)
     (global-set-key (kbd "'") 'xah-compact-uncompact-block)
     (global-set-key (kbd ",") 'xah-shrink-whitespaces)
     (global-set-key (kbd "-") 'self-insert-command)
-    (global-set-key (kbd "/") 'self-insert-command)
+    (global-set-key (kbd "/") 'xah-previous-emacs-buffer)
     (global-set-key (kbd "[") 'xah-previous-user-buffer)
     (global-set-key (kbd "]") 'xah-next-user-buffer)
     (global-set-key (kbd "SPC") 'xfk-insert-mode-activate)
