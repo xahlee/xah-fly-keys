@@ -58,7 +58,8 @@ To solve this problem, when your code only knows the relative path of another fi
 (load (xah-get-fullpath "xah-fly-keys-editing-commands"))
 (load (xah-get-fullpath "xah-fly-keys-text-selection"))
 (load (xah-get-fullpath "xah-fly-keys-misc-commands"))
-(load (xah-get-fullpath "xah-fly-keys_emacs-1k-keymap"))
+(load (xah-get-fullpath "xah-fly-keys-emacs-1k-keymap"))
+(load (xah-get-fullpath "xah-fly-keys-some-keymap.el"))
 
 
 
