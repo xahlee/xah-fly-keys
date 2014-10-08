@@ -157,7 +157,7 @@
   (global-set-key (kbd "<menu> c c") 'bookmark-bmenu-list)
   (global-set-key (kbd "<menu> c l") 'bookmark-set)
   (global-set-key (kbd "<menu> c r") 'bookmark-jump)
-  (global-set-key (kbd "<menu> c u") 'find-file-at-point)
+  (global-set-key (kbd "<menu> c u") 'xah-open-file-path-under-cursor)
   (global-set-key (kbd "<menu> c e") 'dired-jump)
   (global-set-key (kbd "<menu> c f") 'make-frame-command)
   (global-set-key (kbd "<menu> c g") 'ido-switch-buffer)
@@ -386,8 +386,6 @@
 ;; • 2 keys vs 3 keys
 ;; • whether the key ends in a digit key 0 to 9. These probably should be most frequently used, or immediate effect.
 
-
-(substitute-key-definition 'find-file-at-point 'xah-open-file-at-cursor (current-global-map))
 
 
 
