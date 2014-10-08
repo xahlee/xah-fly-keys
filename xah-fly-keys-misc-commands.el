@@ -115,3 +115,55 @@ Else it is a user buffer."
     (mapc (lambda (f) (insert (cdr f) "\n"))
           xah-recently-closed-buffers)))
 
+(defun xah-open-in-external-app (&optional φfile)
+  "Open the current φfile or dired marked files in external app.
+
+The app is chosen from your OS's preference."
+  (interactive)
+  (let ( ξdoIt
+         (ξfileList
+          (cond
+           ((string-equal major-mode "dired-mode") (dired-get-marked-files))
+           ((not φfile) (list (buffer-file-name)))
+           (φfile (list φfile)))))
+
+    (setq ξdoIt (if (<= (length ξfileList) 5)
+                    t
+                  (y-or-n-p "Open more than 5 files? ")))
+
+    (when ξdoIt
+      (cond
+       ((string-equal system-type "windows-nt")
+        (mapc (lambda (fPath) (w32-shell-execute "open" (replace-regexp-in-string "/" "\\" fPath t t))) ξfileList))
+       ((string-equal system-type "darwin")
+        (mapc (lambda (fPath) (shell-command (format "open \"%s\"" fPath)))  ξfileList))
+       ((string-equal system-type "gnu/linux")
+        (mapc (lambda (fPath) (let ((process-connection-type nil)) (start-process "" nil "xdg-open" fPath))) ξfileList))))))
+
+(defun xah-open-in-desktop ()
+  "Show current file in desktop (OS's file manager)."
+  (interactive)
+  (cond
+   ((string-equal system-type "windows-nt")
+    (w32-shell-execute "explore" (replace-regexp-in-string "/" "\\" default-directory t t)))
+   ((string-equal system-type "darwin") (shell-command "open ."))
+   ((string-equal system-type "gnu/linux")
+    (let ((process-connection-type nil)) (start-process "" nil "xdg-open" "."))
+    ;; (shell-command "xdg-open .") ;; 2013-02-10 this sometimes froze emacs till the folder is closed. ⁖ with nautilus
+    )))
+
+(defun xah-new-empty-buffer ()
+  "Open a new empty buffer."
+  (interactive)
+  (let ((buf (generate-new-buffer "untitled")))
+    (switch-to-buffer buf)
+    (funcall (and initial-major-mode))
+    (setq buffer-offer-save t)))
+;; note: emacs won't offer to save a buffer that's
+;; not associated with a file,
+;; even if buffer-modified-p is true.
+;; One work around is to define your own my-kill-buffer function
+;; that wraps around kill-buffer, and check on the buffer modification
+;; status to offer save
+;; This custome kill buffer is close-current-buffer.
+
