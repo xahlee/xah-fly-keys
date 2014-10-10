@@ -365,14 +365,6 @@
 
 ;;;; misc
 
-;; (defun toggle-menu-key ()
-;;   "toggle the value of `w32-apps-modifier' between 'meta and 'nil"
-;;   (interactive)
-;;   (if (eq w32-apps-modifier 'meta)
-;;         (progn (setq w32-apps-modifier 'nil))
-;;       (progn (setq w32-apps-modifier 'meta) )
-;;       ))
-
 ;; ~/web/ergoemacs_org/emacs/gnu_emacs_keybinding_C-x.txt
 
 ;; some idea about command categories, in context to choosing keys for them

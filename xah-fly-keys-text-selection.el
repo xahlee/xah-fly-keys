@@ -16,7 +16,7 @@
     (set-mark p1)))
 
 (defun xah-select-current-line ()
-  "Select the current line."
+  "Select current line."
   (interactive)
   (end-of-line)
   (set-mark (line-beginning-position)))

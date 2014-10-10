@@ -1,5 +1,12 @@
 ;; -*- coding: utf-8 -*-
 
+(defun xah-delete-current-line ()
+  "Delete current line."
+  (interactive)
+  (delete-region (line-beginning-position) (line-end-position))
+  (when (looking-at "\n")
+    (delete-char 1)))
+
 (defun xah-copy-line-or-region ()
   "Copy current line, or text selection.
 When `universal-argument' is called first, copy whole buffer (but respect `narrow-to-region')."
