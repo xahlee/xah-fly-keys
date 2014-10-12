@@ -57,9 +57,13 @@ To solve this problem, when your code only knows the relative path of another fi
 (load (xah-get-fullpath "xah-fly-keys-cursor-movement"))
 (load (xah-get-fullpath "xah-fly-keys-editing-commands"))
 (load (xah-get-fullpath "xah-fly-keys-text-selection"))
+(load (xah-get-fullpath "xah-fly-keys-insert-commands"))
+(load (xah-get-fullpath "xah-fly-keys-replace-commands"))
+(load (xah-get-fullpath "xah-fly-keys-dired-commands"))
 (load (xah-get-fullpath "xah-fly-keys-misc-commands"))
 (load (xah-get-fullpath "xah-fly-keys-emacs-1k-keymap"))
-(load (xah-get-fullpath "xah-fly-keys-some-keymap.el"))
+(load (xah-get-fullpath "xah-fly-keys-some-keymap"))
+
 
 
 
@@ -147,7 +151,7 @@ To solve this problem, when your code only knows the relative path of another fi
     (global-set-key (kbd "4") 'split-window-vertically)
     (global-set-key (kbd "5") 'redo)
     (global-set-key (kbd "6") 'xah-select-current-block)
-    (global-set-key (kbd "7") 'xah-delete-current-line)
+    (global-set-key (kbd "7") 'xah-select-current-line)
     (global-set-key (kbd "8") 'xah-extend-selection)
     (global-set-key (kbd "9") 'xah-select-text-in-bracket-or-quote)
     (global-set-key (kbd "0") 'xah-forward-quote)
@@ -177,7 +181,7 @@ To solve this problem, when your code only knows the relative path of another fi
     (global-set-key (kbd "w") 'xah-insert-space-after)
     (global-set-key (kbd "x") 'xah-cycle-hyphen-underscore-space)
     (global-set-key (kbd "y") 'set-mark-command)
-    (global-set-key (kbd "z") 'comment-dwim)
+    (global-set-key (kbd "z") 'xah-insert-space-before)
 
 ))
 
