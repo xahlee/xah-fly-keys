@@ -322,3 +322,88 @@ use FireFox to visit it as local file (construct the proper URL)."
 
    (browse-url myStr)
    ))
+
+(defun xah-delete-current-file (&optional φno-backup-p)
+  "Delete the file associated with the current buffer.
+
+Also close the current buffer.  If no file is associated, just close buffer.
+
+A backup file is created with filename appended “~‹date time stamp›~”. Existing file of the same name is overwritten. If the file is not associated with buffer, the backup file name starts with “xx_”.
+
+When called with `universal-argument', don't create backup."
+  (interactive "P")
+  (let* (
+         (fName (buffer-file-name))
+         (bufferIsFile-p (if (null fName) nil t ))
+         (backupName (concat fName "~" (format-time-string "%Y%m%d_%H%M%S") "~")))
+    (if bufferIsFile-p
+        (progn
+          (save-buffer fName)
+          (if φno-backup-p
+              nil
+            (copy-file fName backupName t))
+          (delete-file fName)
+          (message "deleted and backup created at 「%s」." backupName))
+      (progn
+        (if φno-backup-p
+            nil
+          (write-region (point-min) (point-max) (concat "xx_~" (format-time-string "%Y%m%d_%H%M%S") "~")))))
+    (kill-buffer (current-buffer))))
+
+(defun xah-make-backup ()
+  "Make a backup copy of current file.
+The backup file name has the form 「‹name›~‹timestamp›~」, in the same dir. If such a file already exist, it's overwritten.
+If the current buffer is not associated with a file, nothing's done.
+URL `http://ergoemacs.org/emacs/elisp_make-backup.html'
+Version 2014-10-13"
+  (interactive)
+  (if (buffer-file-name)
+      (let* ((ξcurrentName (buffer-file-name))
+             (ξbackupName (concat ξcurrentName "~" (format-time-string "%Y%m%d_%H%M%S") "~")))
+        (copy-file ξcurrentName ξbackupName t)
+        (message (concat "Backup saved as: " (file-name-nondirectory ξbackupName))))
+    (user-error "Buffer is not a file")
+    ))
+
+(defun xah-run-current-file ()
+  "Execute the current file.
+For example, if the current buffer is the file xx.py,
+then it'll call “python xx.py” in a shell.
+The file can be php, perl, python, ruby, javascript, bash, ocaml, vb, elisp.
+File suffix is used to determine what program to run.
+
+If the file is modified, ask if you want to save first.
+
+If the file is emacs lisp, run the byte compiled version if exist."
+  (interactive)
+  (let* (
+         (suffixMap
+          `(
+            ("php" . "php")
+            ("pl" . "perl")
+            ("py" . "python")
+            ("py3" . ,(if (string-equal system-type "windows-nt") "c:/Python32/python.exe" "python3"))
+            ("rb" . "ruby")
+            ("js" . "node") ; node.js
+            ("sh" . "bash")
+            ("ml" . "ocaml")
+            ("vbs" . "cscript")
+            ;; ("pov" . "/usr/local/bin/povray +R2 +A0.1 +J1.2 +Am2 +Q9 +H480 +W640")
+            ))
+         (fName (buffer-file-name))
+         (fSuffix (file-name-extension fName))
+         (progName (cdr (assoc fSuffix suffixMap)))
+         (cmdStr (concat progName " \""   fName "\"")))
+
+    (when (buffer-modified-p)
+      (when (y-or-n-p "Buffer modified. Do you want to save first?")
+        (save-buffer)))
+
+    (if (string-equal fSuffix "el") ; special case for emacs lisp
+        (load (file-name-sans-extension fName))
+      (if progName
+          (progn
+            (message "Running…")
+            (shell-command cmdStr "*xah-run-current-file output*" ))
+        (message "No recognized program file suffix for this file.")))))
+
