@@ -63,6 +63,10 @@ To solve this problem, when your code only knows the relative path of another fi
 (load (xah-get-fullpath "xah-fly-keys-misc-commands"))
 (load (xah-get-fullpath "xah-fly-keys-emacs-1k-keymap"))
 (load (xah-get-fullpath "xah-fly-keys-some-keymap"))
+(load (xah-get-fullpath "xah-fly-keys-control-key"))
+(load (xah-get-fullpath "xah-fly-keys-meta-key"))
+(load (xah-get-fullpath "xah-fly-keys-special-keys"))
+(load (xah-get-fullpath "xah-fly-keys-mode-specific"))
 
 
 
