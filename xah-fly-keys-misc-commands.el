@@ -178,18 +178,19 @@ This command is similar to `find-file-at-point' but without prompting for confir
 
 URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
   (interactive)
-  (let ((ξpath (if (use-region-p)
-                   (buffer-substring-no-properties (region-beginning) (region-end))
-                 (let (p0 p1 p2)
-                   (setq p0 (point))
-                   ;; chars that are likely to be delimiters of full path, e.g. space, tabs, brakets.
-                   (skip-chars-backward "^  \"\t\n'|()[]{}<>〔〕“”〈〉《》【】〖〗«»‹›·。\\`")
-                   (setq p1 (point))
-                   (goto-char p0)
-                   (skip-chars-forward "^  \"\t\n'|()[]{}<>〔〕“”〈〉《》【】〖〗«»‹›·。\\'")
-                   (setq p2 (point))
-                   (goto-char p0)
-                   (buffer-substring-no-properties p1 p2)))))
+  (let* ((ξs (if (use-region-p)
+                 (buffer-substring-no-properties (region-beginning) (region-end))
+               (let (p0 p1 p2)
+                 (setq p0 (point))
+                 ;; chars that are likely to be delimiters of full path, e.g. space, tabs, brakets.
+                 (skip-chars-backward "^  \"\t\n'|()[]{}<>〔〕“”〈〉《》【】〖〗«»‹›·。\\`")
+                 (setq p1 (point))
+                 (goto-char p0)
+                 (skip-chars-forward "^  \"\t\n'|()[]{}<>〔〕“”〈〉《》【】〖〗«»‹›·。\\'")
+                 (setq p2 (point))
+                 (goto-char p0)
+                 (buffer-substring-no-properties p1 p2))))
+         (ξpath (replace-regexp-in-string ":\\'" "" ξs)))
     (if (string-match-p "\\`https?://" ξpath)
         (browse-url ξpath)
       (progn ; not starting “http://”
@@ -221,40 +222,41 @@ If path starts with “http://”, launch browser vistiting that URL, or open th
 
 Input path can be {relative, full path, URL}. See: `xahsite-web-path-to-filepath' for types of paths supported."
   (interactive)
-  (let (
-        (ξs
-         (xah-remove-uri-fragment
-          (if (use-region-p)
-              (buffer-substring-no-properties (region-beginning) (region-end))
-            (let (p0 p1 p2)
-              (setq p0 (point))
-              ;; chars that are likely to be delimiters of full path, e.g. space, tabs, brakets.
-              (skip-chars-backward "^  \"\t\n'|()[]{}<>〔〕“”〈〉《》【】〖〗«»‹›·。\\`")
-              (setq p1 (point))
-              (goto-char p0)
-              (skip-chars-forward "^  \"\t\n'|()[]{}<>〔〕“”〈〉《》【】〖〗«»‹›·。\\'")
-              (setq p2 (point))
-              (goto-char p0)
-              (buffer-substring-no-properties p1 p2)))))
-        fPath )
+  (let* (
+         (ξs1
+          (xah-remove-uri-fragment
+           (if (use-region-p)
+               (buffer-substring-no-properties (region-beginning) (region-end))
+             (let (p0 p1 p2)
+               (setq p0 (point))
+               ;; chars that are likely to be delimiters of full path, e.g. space, tabs, brakets.
+               (skip-chars-backward "^  \"\t\n'|()[]{}<>〔〕“”〈〉《》【】〖〗«»‹›·。\\`")
+               (setq p1 (point))
+               (goto-char p0)
+               (skip-chars-forward "^  \"\t\n'|()[]{}<>〔〕“”〈〉《》【】〖〗«»‹›·。\\'")
+               (setq p2 (point))
+               (goto-char p0)
+               (buffer-substring-no-properties p1 p2)))))
+         (ξs2 (replace-regexp-in-string ":\\'" "" ξs1))
+         fPath )
 
-    (if (string-equal ξs "")
-        (progn (message "No path under cursor"))
+    (if (string-equal ξs2 "")
+        (progn (user-error "No path under cursor" ))
       (progn
 
         ;; convenience. if the input string start with a xah domain name, make it a url string
         (setq ξp
               (cond
-               ((string-match "\\`//" ξs ) (concat "http:" ξs)) ; relative http protocol, used in css
-               ((string-match "\\`ergoemacs\\.org" ξs ) (concat "http://" ξs))
-               ((string-match "\\`wordyenglish\\.com" ξs ) (concat "http://" ξs))
-               ((string-match "\\`xaharts\\.org" ξs ) (concat "http://" ξs))
-               ((string-match "\\`xahlee\\.info" ξs ) (concat "http://" ξs))
-               ((string-match "\\`xahlee\\.org" ξs ) (concat "http://" ξs))
-               ((string-match "\\`xahmusic\\.org" ξs ) (concat "http://" ξs))
-               ((string-match "\\`xahporn\\.org" ξs ) (concat "http://" ξs))
-               ((string-match "\\`xahsl\\.org" ξs ) (concat "http://" ξs))
-               (t ξs)))
+               ((string-match "\\`//" ξs2 ) (concat "http:" ξs2)) ; relative http protocol, used in css
+               ((string-match "\\`ergoemacs\\.org" ξs2 ) (concat "http://" ξs2))
+               ((string-match "\\`wordyenglish\\.com" ξs2 ) (concat "http://" ξs2))
+               ((string-match "\\`xaharts\\.org" ξs2 ) (concat "http://" ξs2))
+               ((string-match "\\`xahlee\\.info" ξs2 ) (concat "http://" ξs2))
+               ((string-match "\\`xahlee\\.org" ξs2 ) (concat "http://" ξs2))
+               ((string-match "\\`xahmusic\\.org" ξs2 ) (concat "http://" ξs2))
+               ((string-match "\\`xahporn\\.org" ξs2 ) (concat "http://" ξs2))
+               ((string-match "\\`xahsl\\.org" ξs2 ) (concat "http://" ξs2))
+               (t ξs2)))
 
         (if (string-match-p "\\`https?://" ξp)
             (if (xahsite-url-is-xah-website-p ξp)

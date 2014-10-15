@@ -10,7 +10,7 @@
 (global-set-key (kbd "C-8") 'xah-forward-punct)
 (global-set-key (kbd "C-9") 'hippie-expand)
 
-;; (global-set-key (kbd "C-w") 'xah-close-current-buffer)
+(global-set-key (kbd "C-w") 'xah-close-current-buffer)
 ;; (global-set-key (kbd "C-o") 'find-file)
 ;; (global-set-key (kbd "C-a") 'mark-whole-buffer)
 ;; (global-set-key (kbd "C-s") 'save-buffer)

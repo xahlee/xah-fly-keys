@@ -174,3 +174,16 @@ See `xah-forward-quote'."
 ;;   (interactive)
 ;;   (goto-char (point-max))
 ;; )
+
+;; (defun xah-forward-space ()
+;;   "Move cursor to the next occurrence of white space."
+;;   (interactive)
+;;   (re-search-forward "[ \t\n]+" nil t))
+
+;; (defun xah-backward-space ()
+;;   "Move cursor to the next occurrence of white space."
+;;   (interactive)
+;;   ;; (skip-chars-backward "^ \t\n")
+;;   ;; (re-search-backward "[ \t\n]+" nil t)
+;;   (posix-search-backward "[ \t\n]+" nil t)
+;;   )
