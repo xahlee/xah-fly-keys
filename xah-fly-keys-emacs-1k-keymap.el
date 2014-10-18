@@ -102,8 +102,6 @@
 
   (global-set-key (kbd "<menu> SPC") 'xah-insert-keymap)
 
-  (global-set-key (kbd "<menu> <end>") 'xah-user-keymap)
-
 (global-set-key (kbd "<menu> .") 'universal-argument)
 (global-set-key (kbd "<menu> '") 'quoted-insert)
 (global-set-key (kbd "<menu> ,") nil)

@@ -1,5 +1,6 @@
 ;; -*- coding: utf-8 -*-
 
+;; haven't decided what goes here
 (global-set-key (kbd "M-1") nil)
 (global-set-key (kbd "M-2") nil)
 (global-set-key (kbd "M-3") nil)
