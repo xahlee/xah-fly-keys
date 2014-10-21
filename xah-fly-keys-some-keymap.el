@@ -153,7 +153,6 @@
   (define-key xah-dump-keymap (kbd "a") 'xah-show-all-overlays)
   (define-key xah-dump-keymap (kbd "b") 'xah-make-overlay-bold-region)
   (define-key xah-dump-keymap (kbd "c") 'xah-css-mode)
-  (define-key xah-dump-keymap (kbd "c") 'xah-forward-comment)
   (define-key xah-dump-keymap (kbd "d") nil)
   (define-key xah-dump-keymap (kbd "e") 'xah-elisp-mode)
   (define-key xah-dump-keymap (kbd "f") nil)

@@ -151,20 +151,20 @@
   (global-set-key (kbd "<menu> c SPC") nil)
   (global-set-key (kbd "<menu> c <return>") nil)
 
-  (global-set-key (kbd "<menu> c o") 'xah-open-in-desktop)
+  (global-set-key (kbd "<menu> c ,") 'xah-open-in-external-app)
+  (global-set-key (kbd "<menu> c .") 'find-file)
   (global-set-key (kbd "<menu> c c") 'bookmark-bmenu-list)
-  (global-set-key (kbd "<menu> c l") 'bookmark-set)
-  (global-set-key (kbd "<menu> c r") 'bookmark-jump)
-  (global-set-key (kbd "<menu> c u") 'xah-open-file-path-under-cursor)
   (global-set-key (kbd "<menu> c e") 'dired-jump)
   (global-set-key (kbd "<menu> c f") 'make-frame-command)
   (global-set-key (kbd "<menu> c g") 'ido-switch-buffer)
   (global-set-key (kbd "<menu> c h") 'recentf-open-files)
+  (global-set-key (kbd "<menu> c l") 'bookmark-set)
   (global-set-key (kbd "<menu> c n") 'xah-new-empty-buffer)
-  (global-set-key (kbd "<menu> c s") 'xah-open-in-external-app)
-  (global-set-key (kbd "<menu> c t") 'ibuffer)
-  (global-set-key (kbd "<menu> c .") 'find-file)
+  (global-set-key (kbd "<menu> c o") 'xah-open-in-desktop)
   (global-set-key (kbd "<menu> c p") 'xah-open-last-closed)
+  (global-set-key (kbd "<menu> c r") 'bookmark-jump)
+  (global-set-key (kbd "<menu> c t") 'ibuffer)
+  (global-set-key (kbd "<menu> c u") 'xah-open-file-path-under-cursor)
 
   )
 
@@ -236,12 +236,15 @@
   (define-key xah-harmless-keymap (kbd "e") 'eshell)
   (define-key xah-harmless-keymap (kbd "h") 'widen)
 
+
   (define-key xah-harmless-keymap (kbd "f") ctl-x-5-map) ; frame
 
   (define-key xah-harmless-keymap (kbd "n") 'narrow-to-region)
   (define-key xah-harmless-keymap (kbd "r") 'read-only-mode)
   (define-key xah-harmless-keymap (kbd "s") 'flyspell-buffer)
   (define-key xah-harmless-keymap (kbd "t") 'narrow-to-defun)
+  (define-key xah-harmless-keymap (kbd "u") 'menu-bar-open)
+  (define-key xah-harmless-keymap (kbd "w") 'eww)
   )
 
 (progn

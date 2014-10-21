@@ -29,8 +29,8 @@
   (global-set-key (kbd "<C-prior>") 'xah-previous-user-buffer)
 
   (progn
-    ;; uncomment if you want. 
-    ;; • you lose C-c for mode specific, 
+    ;; uncomment if you want.
+    ;; • you lose C-c for mode specific,
     ;; • helps you lose the habit of pressing emacs's C-x
 
     ;; (global-set-key (kbd "C-x") xah-cut-line-or-region) ; was C-x prefix
