@@ -82,53 +82,46 @@ Toggles between: “all lower”, “Init Caps”, “ALL CAPS”."
       (downcase-region p1 p2) (put this-command 'state "all lower")))))
 
 (defun xah-shrink-whitespaces ()
-  "Remove white spaces around cursor to just one or none.
-If current line does have visible chars, then shrink whitespace surrounding cursor to just one space.
+  "Remove whitespaces around cursor to just one or none.
+If current line does have visible chars, then shrink whitespace around cursor to just one space.
 If current line does not have visible chars, then shrink al neighboring blank lines to just one.
 If current line is a single space, remove that space.
-
-Calling this command 3 times will always result in no whitespaces around cursor."
+URL `http://ergoemacs.org/emacs/emacs_shrink_whitespace.html'
+version 2014-10-21"
   (interactive)
-  (let ((pos (point))
-        line-has-meat-p ; current line contains non-white space chars
-        space-tab-neighbor-p
-        whitespace-begin whitespace-end
-        space-or-tab-begin space-or-tab-end
+  (let ((ξpos (point))
+        ξline-has-meat-p ; current line contains non-white space chars
+        ξspace-tab-neighbor-p
+        ξwhitespace-begin ξwhitespace-end
+        ξspace-or-tab-begin ξspace-or-tab-end
         )
     (save-excursion
-      ;; todo: might consider whitespace as defined by syntax table, and also consider whitespace chars in unicode if syntax table doesn't already considered it.
-      (setq space-tab-neighbor-p (if (or (looking-at " \\|\t") (looking-back " \\|\t")) t nil))
+      (setq ξspace-tab-neighbor-p (if (or (looking-at " \\|\t") (looking-back " \\|\t")) t nil))
       (beginning-of-line)
-      (setq line-has-meat-p (search-forward-regexp "[[:graph:]]" (line-end-position) t))
+      (setq ξline-has-meat-p (search-forward-regexp "[[:graph:]]" (line-end-position) t))
 
-      (goto-char pos)
+      (goto-char ξpos)
       (skip-chars-backward "\t ")
-      (setq space-or-tab-begin (point))
+      (setq ξspace-or-tab-begin (point))
 
       (skip-chars-backward "\t \n")
-      (setq whitespace-begin (point))
+      (setq ξwhitespace-begin (point))
 
-      (goto-char pos)
+      (goto-char ξpos)
       (skip-chars-forward "\t ")
-      (setq space-or-tab-end (point))
+      (setq ξspace-or-tab-end (point))
       (skip-chars-forward "\t \n")
-      (setq whitespace-end (point)))
+      (setq ξwhitespace-end (point)))
 
-    (if line-has-meat-p
-        (let (deleted-text)
-          (when space-tab-neighbor-p
+    (if ξline-has-meat-p
+        (let (ξdeleted-text)
+          (when ξspace-tab-neighbor-p
             ;; remove all whitespaces in the range
-            (setq deleted-text (delete-and-extract-region space-or-tab-begin space-or-tab-end))
-            ;; insert a whitespace only if we have removed something
-            ;; different that a simple whitespace
-            (if (not (string= deleted-text " "))
+            (setq ξdeleted-text (delete-and-extract-region ξspace-or-tab-begin ξspace-or-tab-end))
+            ;; insert a whitespace only if we have removed something different than a simple whitespace
+            (if (not (string= ξdeleted-text " "))
                 (insert " "))))
-
-      (progn
-        (delete-blank-lines)
-        ;; (delete-region whitespace-begin whitespace-end)
-        ;; (insert "\n\n")
-        ))))
+      (progn (delete-blank-lines)))))
 
 (defun xah-compact-uncompact-block ()
   "Remove or insert newline characters on the current block of text.
