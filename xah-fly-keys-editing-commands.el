@@ -83,8 +83,8 @@ Toggles between: “all lower”, “Init Caps”, “ALL CAPS”."
 
 (defun xah-shrink-whitespaces ()
   "Remove whitespaces around cursor to just one or none.
-If current line does have visible chars, then shrink whitespace around cursor to just one space.
-If current line does not have visible chars, then shrink al neighboring blank lines to just one.
+If current line does have visible characters: shrink whitespace around cursor to just one space.
+If current line does not have visible chars, then shrink all neighboring blank lines to just one.
 If current line is a single space, remove that space.
 URL `http://ergoemacs.org/emacs/emacs_shrink_whitespace.html'
 version 2014-10-21"
