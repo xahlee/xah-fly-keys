@@ -4,12 +4,12 @@
   ;; haven't decided what goes here
   (global-set-key (kbd "C-1") 'xah-cycle-font-previous)
   (global-set-key (kbd "C-2") 'xah-cycle-font-next)
-  (global-set-key (kbd "C-3") 'xah-cycle-hyphen-underscore-space)
+  (global-set-key (kbd "C-3") 'xah-forward-punct)
   (global-set-key (kbd "C-4") 'xah-cycle-camel-style-case)
   (global-set-key (kbd "C-5") 'xah-cycle-font-2)
-  (global-set-key (kbd "C-6") 'xah-toggle-letter-case)
-  (global-set-key (kbd "C-7") 'xah-backward-punct)
-  (global-set-key (kbd "C-8") 'xah-forward-punct)
+  (global-set-key (kbd "C-6") 'xah-backward-punct)
+  (global-set-key (kbd "C-7") 'xah-cycle-hyphen-underscore-space)
+  (global-set-key (kbd "C-8") 'xah-toggle-letter-case)
   (global-set-key (kbd "C-9") 'hippie-expand))
 
 
