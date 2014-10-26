@@ -25,6 +25,8 @@
   (global-set-key (kbd "C-S-s") 'write-file)
   (global-set-key (kbd "C-S-t") 'xah-open-last-closed) ; was transpose-chars
 
+  (global-set-key (kbd "C-z") nil) ; was suspend-frame
+
   (global-set-key (kbd "<C-next>") 'xah-next-user-buffer)
   (global-set-key (kbd "<C-prior>") 'xah-previous-user-buffer)
 
