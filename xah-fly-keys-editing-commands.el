@@ -51,6 +51,8 @@ If `narrow-to-region' is in effect, then cut that region only."
   (kill-new (buffer-string))
   (delete-region (point-min) (point-max)))
 
+
+
 (defun xah-toggle-letter-case ()
   "Toggle the letter case of current word or text selection.
 Toggles between: “all lower”, “Init Caps”, “ALL CAPS”."
@@ -80,6 +82,18 @@ Toggles between: “all lower”, “Init Caps”, “ALL CAPS”."
       (upcase-region p1 p2) (put this-command 'state "all caps"))
      ((string= "all caps" (get this-command 'state))
       (downcase-region p1 p2) (put this-command 'state "all lower")))))
+
+(defun xah-toggle-previous-letter-case ()
+  "Toggle the letter case of the letter to the left of cursor."
+  (interactive)
+  (let ((case-fold-search nil))
+    (left-char 1)
+    (cond
+     ((looking-at "[[:lower:]]") (upcase-region (point) (1+ (point))))
+     ((looking-at "[[:upper:]]") (downcase-region (point) (1+ (point)))))
+    (right-char)))
+
+
 
 (defun xah-shrink-whitespaces ()
   "Remove whitespaces around cursor to just one or none.
@@ -202,17 +216,6 @@ When called repeatedly, this command cycles the {“_”, “-”, “ ”} char
       (setq deactivate-mark nil))
 
     (put 'xah-cycle-hyphen-underscore-space 'state nextState)))
-
-(defun xah-toggle-previous-letter-case ()
-  "Toggle the letter case of the letter to the left of cursor."
-  (interactive)
-  (let ((case-fold-search nil))
-    (left-char 1)
-    (cond
-     ((looking-at "[[:lower:]]") (upcase-region (point) (1+ (point))))
-     ((looking-at "[[:upper:]]") (downcase-region (point) (1+ (point))))
-     )
-    (right-char)))
 
 
 
