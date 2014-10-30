@@ -6,8 +6,6 @@
 ;; 〈Mac OS X: Keyboard Layout, Keymapping, Keybinding, Software ⌨〉
 ;; http://xahlee.info/kbd/Mac_OS_X_keymapping_keybinding_tools.html
 
-(define-key key-translation-map (kbd "<f17>") (kbd "C-g"))
-
 
 
 ;; (define-key key-translation-map (kbd "<henkan>") (kbd "<delete>")) ; henkan is the 変換 key on Japanese keyboard for “do convert”
@@ -57,3 +55,5 @@
 (global-set-key (kbd "C-<XF86Paste>") 'yank-pop)
 (global-set-key (kbd "<XF86Close>") 'xah-close-current-buffer)
 
+(define-key key-translation-map (kbd "<XF86Launch8>") (kbd "C-g"))
+(define-key key-translation-map (kbd "<f17>") (kbd "C-g"))
