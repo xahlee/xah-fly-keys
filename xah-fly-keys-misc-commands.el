@@ -369,8 +369,8 @@ Version 2014-10-13"
 
 (defun xah-run-current-file ()
   "Execute the current file.
-For example, if the current buffer is the file xx.py, then it'll call 「python xx.py」 in a shell.
-The file can be php, perl, python, ruby, javascript, bash, ocaml, vb, elisp.
+For example, if the current buffer is the file x.py, then it'll call 「python x.py」 in a shell.
+The file can be emacs lisp, php, perl, python, ruby, javascript, bash, ocaml, Visual Basic.
 File suffix is used to determine what program to run.
 
 If the file is modified, ask if you want to save first.
