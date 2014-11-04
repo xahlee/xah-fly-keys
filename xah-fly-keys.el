@@ -161,7 +161,7 @@ To solve this problem, when your code only knows the relative path of another fi
     (global-set-key (kbd "0") 'xah-forward-quote)
 
     (global-set-key (kbd "a") 'open-line)
-    (global-set-key (kbd "b") 'xah-forward-quote)
+    (global-set-key (kbd "b") 'xah-toggle-letter-case)
     (global-set-key (kbd "c") 'previous-line)
     (global-set-key (kbd "d") 'xah-beginning-of-line-or-block)
     (global-set-key (kbd "e") 'delete-backward-char)

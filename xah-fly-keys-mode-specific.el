@@ -57,9 +57,9 @@
   )
 (add-hook 'Man-mode-hook 'xah-Man-mode-keys)
 
-(when (fboundp 'cider-repl-mode)
-  (defun xah-cider-repl-mode-keys ()
-    "set keys for `cider-repl-mode'."
-    (local-set-key (kbd "<home>") 'xfk-command-mode-activate))
-  (add-hook 'cider-repl-mode-hook 'xah-cider-repl-mode-keys))
+;; (when (fboundp 'cider-repl-mode)
+;;   (defun xah-cider-repl-mode-keys ()
+;;     "Modify keys for `cider-repl-mode'."
+;;     (local-set-key (kbd "<home>") 'xfk-command-mode-activate))
+;;   (add-hook 'cider-repl-mode-hook 'xah-cider-repl-mode-keys))
 
