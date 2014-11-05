@@ -158,7 +158,7 @@ To solve this problem, when your code only knows the relative path of another fi
     (global-set-key (kbd "7") 'xah-select-current-line)
     (global-set-key (kbd "8") 'xah-extend-selection)
     (global-set-key (kbd "9") 'xah-select-text-in-bracket-or-quote)
-    (global-set-key (kbd "0") 'xah-forward-quote)
+    (global-set-key (kbd "0") 'xah-backward-punct)
 
     (global-set-key (kbd "a") 'open-line)
     (global-set-key (kbd "b") 'xah-toggle-letter-case)
@@ -171,7 +171,7 @@ To solve this problem, when your code only knows the relative path of another fi
     (global-set-key (kbd "i") 'kill-line)
     (global-set-key (kbd "j") 'xah-copy-line-or-region)
     (global-set-key (kbd "k") 'yank)
-    (global-set-key (kbd "l") 'isearch-forward)
+    (global-set-key (kbd "l") 'xah-forward-punct)
     (global-set-key (kbd "m") 'xah-backward-left-bracket)
     (global-set-key (kbd "n") 'forward-char)
     (global-set-key (kbd "o") 'other-window)
@@ -183,7 +183,7 @@ To solve this problem, when your code only knows the relative path of another fi
     (global-set-key (kbd "u") 'delete-char)
     (global-set-key (kbd "v") 'xah-forward-right-bracket)
     (global-set-key (kbd "w") 'xah-insert-space-after)
-    (global-set-key (kbd "x") 'xah-backward-quote)
+    (global-set-key (kbd "x") 'hippie-expand)
     (global-set-key (kbd "y") 'set-mark-command)
     (global-set-key (kbd "z") 'comment-dwim)
 
