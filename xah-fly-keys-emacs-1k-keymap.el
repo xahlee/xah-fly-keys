@@ -297,12 +297,13 @@
   (global-set-key (kbd "<menu> t SPC") 'exchange-point-and-mark)
   (global-set-key (kbd "<menu> t <return>") 'pop-global-mark)
 
-  (global-set-key (kbd "<menu> t 3") 'copy-to-register)
-  (global-set-key (kbd "<menu> t 4") 'insert-register)
   (global-set-key (kbd "<menu> t 5") 'number-to-register)
   (global-set-key (kbd "<menu> t 6") 'increment-register)
   (global-set-key (kbd "<menu> t 7") 'point-to-register)
   (global-set-key (kbd "<menu> t 8") 'jump-to-register)
+
+  (global-set-key (kbd "<menu> t e") 'copy-to-register)
+  (global-set-key (kbd "<menu> t u") 'insert-register)
 
   (global-set-key (kbd "<menu> t p") 'query-replace-regexp)
   (global-set-key (kbd "<menu> t q") 'xah-cut-line-or-region)

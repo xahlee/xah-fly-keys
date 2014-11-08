@@ -94,11 +94,26 @@
   (define-key xah-user-keymap (kbd "g f") 'xah-dired-2drawing)
 
   (define-key xah-user-keymap (kbd "h") nil)
+
   (define-key xah-user-keymap (kbd "i n") 'xah-insert-random-number)
   (define-key xah-user-keymap (kbd "i s") 'xah-insert-random-string)
   (define-key xah-user-keymap (kbd "i u") 'xah-insert-random-uuid)
   (define-key xah-user-keymap (kbd "i x") 'xah-insert-random-hex)
   (define-key xah-user-keymap (kbd "j") nil)
+
+  (define-key xah-user-keymap (kbd "j t") 'xwe-move-word-to-page)
+  (define-key xah-user-keymap (kbd "j t") 'xwe-new-word-entry)
+  (define-key xah-user-keymap (kbd "j t") 'xwe-insert-word-entry)
+  (define-key xah-user-keymap (kbd "j t") 'xwe-add-definition)
+  (define-key xah-user-keymap (kbd "j t") 'xwe-add-source)
+  (define-key xah-user-keymap (kbd "j t") 'xwe-add-comment)
+  (define-key xah-user-keymap (kbd "j t") 'xwe-search-next-unbold)
+  (define-key xah-user-keymap (kbd "j t") 'xwe-chinese-linkify)
+  (define-key xah-user-keymap (kbd "j k") 'xwe-annotate)
+  (define-key xah-user-keymap (kbd "j e") 'xwe-word-etymology-linkify)
+  (define-key xah-user-keymap (kbd "j t") 'xwe-query-find-then-bold)
+  (define-key xah-user-keymap (kbd "j t") 'xwe-find-word-usage)
+
   (define-key xah-user-keymap (kbd "k") nil)
   (define-key xah-user-keymap (kbd "l") nil)
   (define-key xah-user-keymap (kbd "m") 'magit-status)
@@ -181,7 +196,6 @@
 
   )
 
-
 (progn
 
   (define-prefix-command 'xah-insert-keymap)
@@ -230,6 +244,7 @@
   (define-key xah-insert-keymap (kbd "u") nil)
   (define-key xah-insert-keymap (kbd "v") nil)
   (define-key xah-insert-keymap (kbd "w") 'xah-insert-angle-bracket〈〉)
+  (define-key xah-insert-keymap (kbd "W") 'xah-insert-double-angle-bracket《》)
   (define-key xah-insert-keymap (kbd "x") nil)
   (define-key xah-insert-keymap (kbd "y") 'xah-insert-double-angle-quote«»)
   (define-key xah-insert-keymap (kbd "z") nil)
