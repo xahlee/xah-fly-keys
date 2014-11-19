@@ -176,17 +176,18 @@ Path may have a trailing “:‹n›” that indicates line number. If so, jump 
 If path does not have a file extention, automatically try with “.el” for elisp files.
 This command is similar to `find-file-at-point' but without prompting for confirmation.
 
-URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
+URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'
+version 2014-11-18"
   (interactive)
   (let* ((ξs (if (use-region-p)
                  (buffer-substring-no-properties (region-beginning) (region-end))
                (let (p0 p1 p2)
                  (setq p0 (point))
                  ;; chars that are likely to be delimiters of full path, e.g. space, tabs, brakets.
-                 (skip-chars-backward "^  \"\t\n'|()[]{}<>〔〕“”〈〉《》【】〖〗«»‹›·。\\`")
+                 (skip-chars-backward "^  \"\t\n`'|()[]{}<>〔〕“”〈〉《》【】〖〗«»‹›·。\\`")
                  (setq p1 (point))
                  (goto-char p0)
-                 (skip-chars-forward "^  \"\t\n'|()[]{}<>〔〕“”〈〉《》【】〖〗«»‹›·。\\'")
+                 (skip-chars-forward "^  \"\t\n`'|()[]{}<>〔〕“”〈〉《》【】〖〗«»‹›·。\\'")
                  (setq p2 (point))
                  (goto-char p0)
                  (buffer-substring-no-properties p1 p2))))
@@ -220,7 +221,10 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
 If there is text selection, use the text selection for path.
 If path starts with “http://”, launch browser vistiting that URL, or open the corresponding file, if it's xah site.
 
-Input path can be {relative, full path, URL}. See: `xahsite-web-path-to-filepath' for types of paths supported."
+Input path can be {relative, full path, URL}. See: `xahsite-web-path-to-filepath' for types of paths supported.
+
+version 2014-11-18
+"
   (interactive)
   (let* (
          (ξs1
@@ -230,10 +234,10 @@ Input path can be {relative, full path, URL}. See: `xahsite-web-path-to-filepath
              (let (p0 p1 p2)
                (setq p0 (point))
                ;; chars that are likely to be delimiters of full path, e.g. space, tabs, brakets.
-               (skip-chars-backward "^  \"\t\n'|()[]{}<>〔〕“”〈〉《》【】〖〗«»‹›·。\\`")
+               (skip-chars-backward "^  \"\t\n`'|()[]{}<>〔〕“”〈〉《》【】〖〗«»‹›·。\\`")
                (setq p1 (point))
                (goto-char p0)
-               (skip-chars-forward "^  \"\t\n'|()[]{}<>〔〕“”〈〉《》【】〖〗«»‹›·。\\'")
+               (skip-chars-forward "^  \"\t\n`'|()[]{}<>〔〕“”〈〉《》【】〖〗«»‹›·。\\'")
                (setq p2 (point))
                (goto-char p0)
                (buffer-substring-no-properties p1 p2)))))
