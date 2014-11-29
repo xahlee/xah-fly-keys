@@ -210,8 +210,8 @@
 )
 
 (progn
-  ;; commands here shouldn't change the buffer immediately.
-  ;; they turn on minor/major mode, change display, or prompt, etc.
+  ;; commands here are “safe”. They don't modify text.
+  ;; they turn on minor/major mode, change display, prompt, start shell, etc.
   (define-prefix-command 'xah-harmless-keymap)
   (global-set-key (kbd "<menu> n") xah-harmless-keymap)
 
@@ -228,14 +228,13 @@
   (define-key xah-harmless-keymap (kbd "9") 'shell-command)
   (define-key xah-harmless-keymap (kbd "0") 'shell-command-on-region)
 
+  (define-key xah-harmless-keymap (kbd "a") 'text-scale-adjust)
   (define-key xah-harmless-keymap (kbd "b") 'toggle-debug-on-error)
   (define-key xah-harmless-keymap (kbd "c") 'toggle-case-fold-search)
   (define-key xah-harmless-keymap (kbd "d") 'narrow-to-page)
   (define-key xah-harmless-keymap (kbd "e") 'eshell)
-  (define-key xah-harmless-keymap (kbd "h") 'widen)
-
-
   (define-key xah-harmless-keymap (kbd "f") ctl-x-5-map) ; frame
+  (define-key xah-harmless-keymap (kbd "h") 'widen)
 
   (define-key xah-harmless-keymap (kbd "n") 'narrow-to-region)
   (define-key xah-harmless-keymap (kbd "r") 'read-only-mode)

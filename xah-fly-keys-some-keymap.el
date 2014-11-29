@@ -157,8 +157,6 @@
   (define-key xah-dump-keymap (kbd "<f11>") nil)
   (define-key xah-dump-keymap (kbd "<f12>") nil)
 
-  (define-key xah-dump-keymap (kbd "<left>") 'xah-goto-previous-overlay)
-  (define-key xah-dump-keymap (kbd "<right>") 'xah-goto-next-overlay)
   (define-key xah-dump-keymap (kbd "<backspace>") 'xah-remove-overlays-region)
   (define-key xah-dump-keymap (kbd "<return>") 'xah-show-overlay-at-point)
 

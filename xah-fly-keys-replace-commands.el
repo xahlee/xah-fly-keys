@@ -1,5 +1,21 @@
 ;; -*- coding: utf-8 -*-
 
+
+(defun xah-latex-to-unicode (φp1 φp2)
+  "replace TeX markup to unicode
+"
+  (interactive "r")
+  (replace-pairs-region φp1 φp2 '(
+ ["\\rightarrow" "→"]
+ ["\\Sigma" "Σ"]
+ ["\\times" "×"]
+ ["\\alpha" "α"]
+ ["\\beta" "β"]
+ ["\\gamma" "γ"]
+ ["\\delta" "δ"]
+ ["\\epsilon" "ε"]
+)))
+
 (defun xah-replace-mathematica-symbols-region (φp1 φp2)
   "Replace Mathematica's special char encoding to Unicode of the same semantics.
 For example:
@@ -34,7 +50,8 @@ For example:
 ["tan(" "\\tan("]
 [" pi" "\\!\\pi"]
 ["R^2" "\\mathbb{R}^2"]
-["R^3" "\\mathbb{R}^3"])))
+["R^3" "\\mathbb{R}^3"]
+)))
 
 (defun xah-mathematica-to-lsl-region (φp1 φp2)
   "Change Mathematica syntax to LSL syntax on region.
