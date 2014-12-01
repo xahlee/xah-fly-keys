@@ -210,7 +210,7 @@
 )
 
 (progn
-  ;; commands here are “safe”. They don't modify text.
+  ;; commands here are hameless (safe). They don't modify text.
   ;; they turn on minor/major mode, change display, prompt, start shell, etc.
   (define-prefix-command 'xah-harmless-keymap)
   (global-set-key (kbd "<menu> n") xah-harmless-keymap)
