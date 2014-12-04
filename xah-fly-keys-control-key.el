@@ -17,15 +17,16 @@
 
 
 (progn
-  ;; standard keys
-  (global-set-key (kbd "C-w") 'xah-close-current-buffer) ; was kill-region
-  (global-set-key (kbd "C-o") 'find-file)         ; was open-line
-  (global-set-key (kbd "C-a") 'mark-whole-buffer) ; was move-beginning-of-line
-  (global-set-key (kbd "C-s") 'save-buffer) ; was isearch-forward
-  (global-set-key (kbd "C-n") 'xah-new-empty-buffer) ; was next-line
-  (global-set-key (kbd "C-S-n") 'make-frame-command)
-  (global-set-key (kbd "C-S-s") 'write-file)
-  (global-set-key (kbd "C-S-t") 'xah-open-last-closed) ; was transpose-chars
+
+  ;; ;; standard keys
+  ;; (global-set-key (kbd "C-w") 'xah-close-current-buffer) ; was kill-region
+  ;; (global-set-key (kbd "C-o") 'find-file)         ; was open-line
+  ;; (global-set-key (kbd "C-a") 'mark-whole-buffer) ; was move-beginning-of-line
+  ;; (global-set-key (kbd "C-s") 'save-buffer) ; was isearch-forward
+  ;; (global-set-key (kbd "C-n") 'xah-new-empty-buffer) ; was next-line
+  ;; (global-set-key (kbd "C-S-n") 'make-frame-command)
+  ;; (global-set-key (kbd "C-S-s") 'write-file)
+  ;; (global-set-key (kbd "C-S-t") 'xah-open-last-closed) ; was transpose-chars
 
   (global-set-key (kbd "C-z") nil) ; was suspend-frame
 
