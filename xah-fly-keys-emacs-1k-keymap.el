@@ -132,7 +132,7 @@
 (global-set-key (kbd "<menu> 2") 'delete-window)
 (global-set-key (kbd "<menu> 3") 'delete-other-windows)
 (global-set-key (kbd "<menu> 4") 'split-window-vertically)
-(global-set-key (kbd "<menu> 5") nil)
+(global-set-key (kbd "<menu> 5") 'split-window-horizontally)
 (global-set-key (kbd "<menu> 6") nil)
 (global-set-key (kbd "<menu> 7") nil)
 (global-set-key (kbd "<menu> 8") nil)
@@ -169,6 +169,7 @@
   (global-set-key (kbd "<menu> d") 'beginning-of-buffer)
 
   ;; (kbd "<menu> e") is mode-specific
+  ;; (kbd "<menu> e SPC") is mode-specific user's keys
 
 (global-set-key (kbd "<menu> f") nil)
 
@@ -234,6 +235,7 @@
   (define-key xah-harmless-keymap (kbd "d") 'narrow-to-page)
   (define-key xah-harmless-keymap (kbd "e") 'eshell)
   (define-key xah-harmless-keymap (kbd "f") ctl-x-5-map) ; frame
+  (define-key xah-harmless-keymap (kbd "g") 'toggle-frame-fullscreen)
   (define-key xah-harmless-keymap (kbd "h") 'widen)
 
   (define-key xah-harmless-keymap (kbd "n") 'narrow-to-region)
@@ -285,35 +287,34 @@
 
 (global-set-key (kbd "<menu> s") 'save-buffer)
 
-(global-set-key (kbd "<menu> S") 'write-file)
-
 (progn
   (define-prefix-command 'xah-menu-t-keymap)
   (global-set-key (kbd "<menu> t") xah-menu-t-keymap)
 
-  (global-set-key (kbd "<menu> t SPC") 'exchange-point-and-mark)
-  (global-set-key (kbd "<menu> t <return>") 'pop-global-mark)
+  (define-key xah-menu-t-keymap (kbd "SPC") 'exchange-point-and-mark)
+  (define-key xah-menu-t-keymap (kbd "<return>") 'pop-global-mark)
 
-  (global-set-key (kbd "<menu> t 5") 'number-to-register)
-  (global-set-key (kbd "<menu> t 6") 'increment-register)
-  (global-set-key (kbd "<menu> t 7") 'point-to-register)
-  (global-set-key (kbd "<menu> t 8") 'jump-to-register)
+  (define-key xah-menu-t-keymap (kbd "5") 'number-to-register)
+  (define-key xah-menu-t-keymap (kbd "6") 'increment-register)
+  (define-key xah-menu-t-keymap (kbd "7") 'point-to-register)
+  (define-key xah-menu-t-keymap (kbd "8") 'jump-to-register)
 
-  (global-set-key (kbd "<menu> t e") 'copy-to-register)
-  (global-set-key (kbd "<menu> t u") 'insert-register)
+  (define-key xah-menu-t-keymap (kbd "e") 'copy-to-register)
+  (define-key xah-menu-t-keymap (kbd "u") 'insert-register)
 
-  (global-set-key (kbd "<menu> t p") 'query-replace-regexp)
-  (global-set-key (kbd "<menu> t q") 'xah-cut-line-or-region)
-  (global-set-key (kbd "<menu> t j") 'xah-copy-line-or-region)
-  (global-set-key (kbd "<menu> t k") 'yank)
+  (define-key xah-menu-t-keymap (kbd "p") 'query-replace-regexp)
+  (define-key xah-menu-t-keymap (kbd "q") 'xah-cut-line-or-region)
+  (define-key xah-menu-t-keymap (kbd "j") 'xah-copy-line-or-region)
+  (define-key xah-menu-t-keymap (kbd "k") 'yank)
 
-  (global-set-key (kbd "<menu> t t") 'repeat)
-  (global-set-key (kbd "<menu> t h") 'repeat-complex-command)
+  (define-key xah-menu-t-keymap (kbd "t") 'repeat)
+  (define-key xah-menu-t-keymap (kbd "s") 'write-file)
+  (define-key xah-menu-t-keymap (kbd "h") 'repeat-complex-command)
 
-  (global-set-key (kbd "<menu> t f") 'frame-configuration-to-register)
-  (global-set-key (kbd "<menu> t r") 'copy-rectangle-to-register)
-  (global-set-key (kbd "<menu> t w") 'window-configuration-to-register)
-  (global-set-key (kbd "<menu> t v") 'vc-register)
+  (define-key xah-menu-t-keymap (kbd "f") 'frame-configuration-to-register)
+  (define-key xah-menu-t-keymap (kbd "r") 'copy-rectangle-to-register)
+  (define-key xah-menu-t-keymap (kbd "w") 'window-configuration-to-register)
+  (define-key xah-menu-t-keymap (kbd "v") 'vc-register)
 
   )
 
@@ -377,7 +378,6 @@
 ;; • 2 keys vs 3 keys
 ;; • whether the key ends in a digit key 0 to 9. These probably should be most frequently used, or immediate effect.
 
-
 
 
 ;; C-x C-p	mark-page
@@ -408,7 +408,6 @@
 ;; C-x .	set-fill-prefix
 
 ;; C-x +	balance-windows
-;; C-x 3	split-window-horizontally
 
 ;; C-x 4	ctl-x-4-prefix
 ;; C-x 5	ctl-x-5-prefix
