@@ -153,13 +153,14 @@
   (global-set-key (kbd "<menu> c .") 'find-file)
   (global-set-key (kbd "<menu> c c") 'bookmark-bmenu-list)
   (global-set-key (kbd "<menu> c e") 'dired-jump)
-  (global-set-key (kbd "<menu> c f") 'make-frame-command)
   (global-set-key (kbd "<menu> c g") 'ido-switch-buffer)
   (global-set-key (kbd "<menu> c h") 'recentf-open-files)
   (global-set-key (kbd "<menu> c l") 'bookmark-set)
   (global-set-key (kbd "<menu> c n") 'xah-new-empty-buffer)
   (global-set-key (kbd "<menu> c o") 'xah-open-in-desktop)
   (global-set-key (kbd "<menu> c p") 'xah-open-last-closed)
+  (global-set-key (kbd "<menu> c f") 'xah-open-recently-closed)
+  (global-set-key (kbd "<menu> c y") 'xah-list-recently-closed)
   (global-set-key (kbd "<menu> c r") 'bookmark-jump)
   (global-set-key (kbd "<menu> c t") 'ibuffer)
   (global-set-key (kbd "<menu> c u") 'xah-open-file-path-under-cursor)
@@ -219,6 +220,7 @@
   (define-key xah-harmless-keymap (kbd "SPC") nil)
   (define-key xah-harmless-keymap (kbd "<return>") nil)
 
+  (define-key xah-harmless-keymap (kbd "1") nil)
   (define-key xah-harmless-keymap (kbd "2") 'global-hl-line-mode)
   (define-key xah-harmless-keymap (kbd "3") 'whitespace-mode)
   (define-key xah-harmless-keymap (kbd "4") 'linum-mode)
@@ -228,7 +230,6 @@
   (define-key xah-harmless-keymap (kbd "8") 'shell)
   (define-key xah-harmless-keymap (kbd "9") 'shell-command)
   (define-key xah-harmless-keymap (kbd "0") 'shell-command-on-region)
-
   (define-key xah-harmless-keymap (kbd "a") 'text-scale-adjust)
   (define-key xah-harmless-keymap (kbd "b") 'toggle-debug-on-error)
   (define-key xah-harmless-keymap (kbd "c") 'toggle-case-fold-search)
@@ -237,13 +238,35 @@
   (define-key xah-harmless-keymap (kbd "f") ctl-x-5-map) ; frame
   (define-key xah-harmless-keymap (kbd "g") 'toggle-frame-fullscreen)
   (define-key xah-harmless-keymap (kbd "h") 'widen)
-
+  (define-key xah-harmless-keymap (kbd "i") 'make-frame-command)
+  (define-key xah-harmless-keymap (kbd "j") nil)
+  (define-key xah-harmless-keymap (kbd "k") nil)
+  (define-key xah-harmless-keymap (kbd "l") nil)
+  (define-key xah-harmless-keymap (kbd "m") nil)
   (define-key xah-harmless-keymap (kbd "n") 'narrow-to-region)
+  (define-key xah-harmless-keymap (kbd "o") nil)
+  (define-key xah-harmless-keymap (kbd "p") nil)
+  (define-key xah-harmless-keymap (kbd "q") nil)
   (define-key xah-harmless-keymap (kbd "r") 'read-only-mode)
   (define-key xah-harmless-keymap (kbd "s") 'flyspell-buffer)
   (define-key xah-harmless-keymap (kbd "t") 'narrow-to-defun)
   (define-key xah-harmless-keymap (kbd "u") 'menu-bar-open)
+  (define-key xah-harmless-keymap (kbd "v") nil)
   (define-key xah-harmless-keymap (kbd "w") 'eww)
+
+;; <menu> n f C-f  find-file-other-frame
+;; <menu> n f C-o  display-buffer-other-frame
+;; <menu> n f .    find-tag-other-frame
+;; <menu> n f 0    delete-frame
+;; <menu> n f 1    delete-other-frames
+;; <menu> n f 2    make-frame-command
+;; <menu> n f b    switch-to-buffer-other-frame
+;; <menu> n f d    dired-other-frame
+;; <menu> n f f    find-file-other-frame
+;; <menu> n f m    compose-mail-other-frame
+;; <menu> n f o    other-frame
+;; <menu> n f r    find-file-read-only-other-frame
+
   )
 
 (progn

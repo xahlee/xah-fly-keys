@@ -19,6 +19,7 @@
 (interactive "r")
   ;; (message "%s %s" φp1 φp2)
 ;; TODO with no text selection, it seems to act on some region starting at point. Expected behavior is error or empty region 
+;; check behavior of (interactive "r") when no region. and same for replace-pairs-region
   (replace-pairs-region φp1 φp2 '(
                                   ["\\rightarrow" "→"]
                                   ["\\Sigma" "Σ"]

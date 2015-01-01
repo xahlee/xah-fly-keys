@@ -113,7 +113,8 @@ Else it is a user buffer."
   (find-file (cdr (pop xah-recently-closed-buffers))))
 
 (defun xah-open-recently-closed ()
-  "Open recently closed file."
+  "Open recently closed file.
+Prompt for a choice."
   (interactive)
   (find-file (ido-completing-read "open:" (mapcar (lambda (f) (cdr f)) xah-recently-closed-buffers))))
 
