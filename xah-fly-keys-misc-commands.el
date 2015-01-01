@@ -1,12 +1,21 @@
 ;; -*- coding: utf-8 -*-
 
+;; (defvar xah-switch-buffer-ignore-dired t "If t, ignore dired buffer when calling `xah-next-user-buffer' or `xah-previous-user-buffer'")
+
+;; (setq xah-switch-buffer-ignore-dired t)
+
+;; (if (string-equal major-mode "dired-mode")
+;;                     xah-switch-buffer-ignore-dired
+;;                   nil )
+
 (defun xah-next-user-buffer ()
   "Switch to the next user buffer.
  (buffer name does not start with “*”.)"
   (interactive)
   (next-buffer)
   (let ((i 0))
-    (while (and (string-equal "*" (substring (buffer-name) 0 1)) (< i 20))
+    (while (and (string-equal "*" (substring (buffer-name) 0 1))
+                (< i 20))
       (setq i (1+ i)) (next-buffer))))
 
 (defun xah-previous-user-buffer ()
@@ -15,7 +24,8 @@
   (interactive)
   (previous-buffer)
   (let ((i 0))
-    (while (and (string-equal "*" (substring (buffer-name) 0 1)) (< i 20))
+    (while (and (string-equal "*" (substring (buffer-name) 0 1))
+                (< i 20))
       (setq i (1+ i)) (previous-buffer))))
 
 (defun xah-next-emacs-buffer ()

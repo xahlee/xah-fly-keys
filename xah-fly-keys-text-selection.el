@@ -102,6 +102,7 @@ This command works mostly in lisp syntax."
       (setq p1 (point))
       (forward-sexp 1)
       (setq p2 (point))
+
       (goto-char (1+ p1))
       (set-mark (1- p2)))))
 
