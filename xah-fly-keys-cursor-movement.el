@@ -74,10 +74,10 @@ See: `xah-forward-block'"
       (progn (xah-forward-block φn)))))
 
 (defvar xah-left-brackets nil "List of open bracket chars.")
-(setq xah-left-brackets '("(" "{" "[" "<" "〔" "【" "〖" "〈" "《" "「" "『" "“" "‘" "‹" "«"))
+(setq xah-left-brackets '("(" "{" "[" "<" "〔" "【" "〖" "〈" "《" "「" "『" "“" "‘" "‹" "«" "（"))
 
 (defvar xah-right-brackets nil "list of close bracket chars.")
-(setq xah-right-brackets '(")" "]" "}" ">" "〕" "】" "〗" "〉" "》" "」" "』" "”" "’" "›" "»"))
+(setq xah-right-brackets '(")" "]" "}" ">" "〕" "】" "〗" "〉" "》" "」" "』" "”" "’" "›" "»" "）"))
 
 (defvar xah-ascii-quotes nil "List of quotation chars.")
 (setq xah-ascii-quotes '("'" "\""))

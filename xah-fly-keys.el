@@ -138,7 +138,7 @@ To solve this problem, when your code only knows the relative path of another fi
   (interactive)
   (progn
 
-    (global-set-key (kbd ";") 'xah-insert-space-after)
+    (global-set-key (kbd ";") nil)
     ;; (global-set-key (kbd "=") nil)
     (global-set-key (kbd "\\") 'self-insert-command)
     (global-set-key (kbd ".") 'backward-kill-word)
