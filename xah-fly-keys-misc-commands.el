@@ -1,32 +1,43 @@
 ;; -*- coding: utf-8 -*-
 
-;; (defvar xah-switch-buffer-ignore-dired t "If t, ignore dired buffer when calling `xah-next-user-buffer' or `xah-previous-user-buffer'")
-
-;; (setq xah-switch-buffer-ignore-dired t)
-
-;; (if (string-equal major-mode "dired-mode")
-;;                     xah-switch-buffer-ignore-dired
-;;                   nil )
+(defvar xah-switch-buffer-ignore-dired t "If t, ignore dired buffer when calling `xah-next-user-buffer' or `xah-previous-user-buffer'")
+(setq xah-switch-buffer-ignore-dired t)
 
 (defun xah-next-user-buffer ()
   "Switch to the next user buffer.
- (buffer name does not start with “*”.)"
+ “user buffer” is a buffer whose name does not start with “*”.)
+If `xah-switch-buffer-ignore-dired' is true, also skip dired buffer."
   (interactive)
   (next-buffer)
   (let ((i 0))
-    (while (and (string-equal "*" (substring (buffer-name) 0 1))
-                (< i 20))
-      (setq i (1+ i)) (next-buffer))))
+    (while (< i 20)
+      (if (or
+           (string-equal "*" (substring (buffer-name) 0 1))
+           (if (string-equal major-mode "dired-mode")
+               xah-switch-buffer-ignore-dired
+             nil
+             ))
+          (progn (next-buffer)
+                 (setq i (1+ i)))
+        (progn (setq i 100))))))
 
 (defun xah-previous-user-buffer ()
   "Switch to the previous user buffer.
- (buffer name does not start with “*”.)"
+ “user buffer” is a buffer whose name does not start with “*”.)
+If `xah-switch-buffer-ignore-dired' is true, also skip dired buffer."
   (interactive)
   (previous-buffer)
   (let ((i 0))
-    (while (and (string-equal "*" (substring (buffer-name) 0 1))
-                (< i 20))
-      (setq i (1+ i)) (previous-buffer))))
+    (while (< i 20)
+      (if (or
+           (string-equal "*" (substring (buffer-name) 0 1))
+           (if (string-equal major-mode "dired-mode")
+               xah-switch-buffer-ignore-dired
+             nil
+             ))
+          (progn (previous-buffer)
+                 (setq i (1+ i)))
+        (progn (setq i 100))))))
 
 (defun xah-next-emacs-buffer ()
   "Switch to the next emacs buffer.
@@ -426,3 +437,27 @@ version 2014-10-28"
             (shell-command ξcmdStr "*xah-run-current-file output*" ))
         (message "No recognized program file suffix for this file.")))))
 
+(defun xah-search-current-word ()
+  "call `isearch' on current word or text selection.
+ “word” here is not mode dependent.
+2015-01-04 todo incomlete
+"
+  (interactive)
+  (let ((ξsstr
+         (if (use-region-p)
+             (buffer-substring-no-properties (region-beginning) (region-end))
+           (let (p1 p2)
+             (save-excursion
+               ;; (skip-chars-backward "^ \n\t(){}[]<>")
+               (skip-chars-backward "-_A-Za-z0-9")
+               (setq p1 (point))
+               (right-char)
+               (skip-chars-forward "-_A-Za-z0-9")
+               (setq p2 (point)))
+             (buffer-substring-no-properties p1 p2)))))
+    (setq mark-active nil)
+    (isearch-mode t)
+    (isearch-yank-string ξsstr)
+    ;; (isearch-update )
+    (isearch-search-and-update )
+    ))
