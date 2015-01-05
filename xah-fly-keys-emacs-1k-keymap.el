@@ -172,7 +172,7 @@
   ;; (kbd "<menu> e") is mode-specific
   ;; (kbd "<menu> e SPC") is mode-specific user's keys
 
-(global-set-key (kbd "<menu> f") nil)
+(global-set-key (kbd "<menu> f") 'xah-search-current-word)
 
 (global-set-key (kbd "<menu> g") 'isearch-forward)
 
