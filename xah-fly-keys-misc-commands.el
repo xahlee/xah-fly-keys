@@ -5,8 +5,9 @@
 
 (defun xah-next-user-buffer ()
   "Switch to the next user buffer.
- “user buffer” is a buffer whose name does not start with “*”.)
-If `xah-switch-buffer-ignore-dired' is true, also skip dired buffer."
+ “user buffer” is a buffer whose name does not start with “*”.
+If `xah-switch-buffer-ignore-dired' is true, also skip directory buffer.
+2015-01-05 URL `http://ergoemacs.org/emacs/elisp_next_prev_user_buffer.html'"
   (interactive)
   (next-buffer)
   (let ((i 0))
@@ -23,8 +24,9 @@ If `xah-switch-buffer-ignore-dired' is true, also skip dired buffer."
 
 (defun xah-previous-user-buffer ()
   "Switch to the previous user buffer.
- “user buffer” is a buffer whose name does not start with “*”.)
-If `xah-switch-buffer-ignore-dired' is true, also skip dired buffer."
+ “user buffer” is a buffer whose name does not start with “*”.
+If `xah-switch-buffer-ignore-dired' is true, also skip directory buffer.
+2015-01-05 URL `http://ergoemacs.org/emacs/elisp_next_prev_user_buffer.html'"
   (interactive)
   (previous-buffer)
   (let ((i 0))
