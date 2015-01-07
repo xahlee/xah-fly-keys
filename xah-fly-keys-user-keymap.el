@@ -84,7 +84,6 @@
   (define-key xah-user-keymap (kbd "r p") 'xah-convert-asian/ascii-space)
   (define-key xah-user-keymap (kbd "r p") 'xah-replace-profanity)
   (define-key xah-user-keymap (kbd "r t") 'xah-twitterfy)
-  (define-key xah-user-keymap (kbd "r u") 'xah-decode-percent-encoded-uri)
   (define-key xah-user-keymap (kbd "r w") 'xah-convert-fullwidth-chars)
 
   (define-key xah-user-keymap (kbd "s") nil)
