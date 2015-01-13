@@ -146,38 +146,54 @@ When there is a text selection, act on the the selection, else, act on a text bl
   ;; This command symbol has a property “'stateIsCompact-p”, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
   (let ( currentStateIsCompact
          (deactivate-mark nil)
-         (blanklinesRegex "\n[ \t]*\n"))
+         (blanklinesRegex "\n[ \t]*\n")
+         p1 p2
+         )
+
+    (progn
+      ;; set region boundary p1 p2
+      (if (use-region-p)
+          (progn (setq p1 (region-beginning))
+                 (setq p2 (region-end)))
+        (save-excursion
+          (if (re-search-backward "\n[ \t]*\n" nil "NOERROR")
+              (progn (re-search-forward "\n[ \t]*\n")
+                     (setq p1 (point)))
+            (setq p1 (point)))
+          (if (re-search-forward "\n[ \t]*\n" nil "NOERROR")
+              (progn (re-search-backward "\n[ \t]*\n")
+                     (setq p2 (point)))
+            (setq p2 (point))))))
 
     (save-excursion
       (setq currentStateIsCompact
             (if (eq last-command this-command)
                 (get this-command 'stateIsCompact-p)
-              (if (> (- (line-end-position) (line-beginning-position)) fill-column) t nil)))
+              (progn
+                (goto-char p1)
+                (if (> (- (line-end-position) (line-beginning-position)) fill-column) t nil))))
 
-      (if (use-region-p)
-          (if currentStateIsCompact
-              (fill-region (region-beginning) (region-end))
-            (xah-compact-newline-whitespaces-to-space (region-beginning) (region-end)))
-
-        (let (p1 p2)
-          (progn
-            ;; set p1 p2 as boundary of text block
-            (if (re-search-backward blanklinesRegex nil "move")
-                (progn (re-search-forward blanklinesRegex)
-                       (setq p1 (point)))
-              (setq p1 (point)))
-            (if (re-search-forward blanklinesRegex nil "move")
-                (progn (re-search-backward blanklinesRegex)
-                       (setq p2 (point)))
-              (setq p2 (point))))
-
-          (if currentStateIsCompact
-              (fill-region p1 p2)
-            (xah-compact-newline-whitespaces-to-space p1 p2))))
+      (if currentStateIsCompact
+          (fill-region p1 p2)
+        (xah-replace-newline-whitespaces-to-space p1 p2))
 
       (put this-command 'stateIsCompact-p (if currentStateIsCompact nil t)))))
 
-(defun xah-compact-newline-whitespaces-to-space (&optional p1 p2)
+(defun xah-unfill-paragraph ()
+  "Replace newline chars in current paragraph by single spaces.
+This command does the inverse of `fill-paragraph'."
+  (interactive)
+  (let ((fill-column 90002000)) ; 90002000 is just random. you can use `most-positive-fixnum'
+    (fill-paragraph nil)))
+
+(defun xah-unfill-region (start end)
+  "Replace newline chars in region by single spaces.
+This command does the inverse of `fill-region'."
+  (interactive "r")
+  (let ((fill-column 90002000))
+    (fill-region start end)))
+
+(defun xah-replace-newline-whitespaces-to-space (&optional p1 p2)
   "Replace newline with surrounding {tab, space} characters to 1 space, in current text block or selection.
 This is similar to `fill-paragraph' or `fill-region' for making a text block into a single line, except that fill command does many other things. For example, if you have
 

@@ -36,7 +36,7 @@
     ;;    (define-key dired-mode-map (kbd "M-s") 'isearch-forward)
     ;;    (define-key dired-mode-map (kbd "M-S") 'isearch-backward)
     ;; (define-key dired-mode-map (kbd "<tab>") (make-keymap))
-    (define-key dired-mode-map (kbd "<delete> t") 'wdired-change-to-wdired-mode) ; emacs 23 or later only
+    (define-key dired-mode-map (kbd "<menu> e t") 'wdired-change-to-wdired-mode) ; emacs 23 or later only
     ))
 
 (defun xah-help-mode-setup ()
@@ -109,3 +109,9 @@
 ;;     (local-set-key (kbd "<home>") 'xfk-command-mode-activate))
 ;;   (add-hook 'cider-repl-mode-hook 'xah-cider-repl-mode-keys))
 
+
+(defun xah-calc-mode-keys ()
+  "keys for `Man-mode'."
+  (local-set-key (kbd "o") 'other-window)
+  )
+(add-hook 'calc-mode-hook 'xah-calc-mode-keys)
