@@ -518,6 +518,20 @@
 ;; C-x 6 s	2C-split
 ;; C-x 6 <f2>	2C-two-columns
 
+;; M-o ESC         Prefix Command
+;; M-o b           facemenu-set-bold
+;; M-o d           facemenu-set-default
+;; M-o i           facemenu-set-italic
+;; M-o l           facemenu-set-bold-italic
+;; M-o o           facemenu-set-face
+;; M-o u           facemenu-set-underline
+
+;; M-o M-S         center-paragraph
+;; M-o M-o         font-lock-fontify-block
+;; M-o M-s         center-line
+
+
+
 ;; ;; todo
 ;; select all, copy all, open, those standard keys
 

@@ -17,3 +17,4 @@
 (global-set-key (kbd "M-9") nil)
 (global-set-key (kbd "M-0") nil)
 
+(global-set-key (kbd "M-o") 'other-window) ; was set face prefix key

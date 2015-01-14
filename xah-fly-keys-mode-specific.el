@@ -25,12 +25,12 @@
   ;; (define-key dired-mode-map (kbd "M-g") 'backward-word)
   ;; (define-key dired-mode-map (kbd "M-c") 'previous-line)
   ;; (define-key dired-mode-map (kbd "C-o") 'ido-find-file)
-  (define-key dired-mode-map (kbd "o") 'other-window)
+  (define-key dired-mode-map (kbd "o") 'other-window) ; was dired-find-file-other-window
   (define-key dired-mode-map (kbd "1") 'xah-previous-user-buffer)
   (define-key dired-mode-map (kbd "2") 'delete-window)
   (define-key dired-mode-map (kbd "3") 'delete-other-windows)
   (define-key dired-mode-map (kbd "4") 'split-window-vertically)
-  (define-key dired-mode-map (kbd "C-o") 'find-file)
+  (define-key dired-mode-map (kbd "C-o") 'find-file) ; was dired-display-file
 
   (when (>= emacs-major-version 23)
     ;;    (define-key dired-mode-map (kbd "M-s") 'isearch-forward)
@@ -39,15 +39,21 @@
     (define-key dired-mode-map (kbd "<menu> e t") 'wdired-change-to-wdired-mode) ; emacs 23 or later only
     ))
 
-(defun xah-help-mode-setup ()
-  "for `help-mode'."
-  (local-set-key (kbd "g") 'backward-word)
-  (local-unset-key (kbd "r"))
-  (local-unset-key (kbd "8"))
-  (local-unset-key (kbd "2"))
-  (local-unset-key (kbd "3"))
-  (local-unset-key (kbd "4")))
-(add-hook 'help-mode-hook 'xah-help-mode-setup)
+(progn
+  (defun xah-help-mode-setup ()
+    "for `help-mode'."
+    (local-set-key (kbd "g") 'backward-word)
+    (local-unset-key (kbd "r"))
+    (local-unset-key (kbd "8"))
+    (local-unset-key (kbd "2"))
+    (local-unset-key (kbd "3"))
+    (local-unset-key (kbd "4")))
+  (add-hook 'help-mode-hook 'xah-help-mode-setup))
+
+(progn
+  (require 'ibuffer)
+  (define-key ibuffer-mode-map (kbd "o") 'other-window) ; 'ibuffer-visit-buffer-other-window
+  )
 
 (defun xah-eww-mode-setup ()
   "for `eww-mode'."
@@ -108,7 +114,6 @@
 ;;     "Modify keys for `cider-repl-mode'."
 ;;     (local-set-key (kbd "<home>") 'xfk-command-mode-activate))
 ;;   (add-hook 'cider-repl-mode-hook 'xah-cider-repl-mode-keys))
-
 
 (defun xah-calc-mode-keys ()
   "keys for `Man-mode'."
