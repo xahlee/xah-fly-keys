@@ -86,29 +86,19 @@ See: `xah-forward-block'"
 (setq xah-punctuations '("=" ";"))
 
 (defvar xah-punctuation-regex nil "a regex string for the purpose of jumping to punctuations in programing modes.")
-(setq xah-punctuation-regex "[=;]+")
+(setq xah-punctuation-regex "= *['\"]")
 
 (defun xah-forward-punct (&optional φn)
   "Move cursor to the next occurrence of punctuation.
-
-The list of punctuations to jump to is defined by `xah-punctuations'"
+The list of punctuations to jump to is defined by `xah-punctuation-regex'"
   (interactive "p")
-  (if (and φn (> 0 φn))
-      (xah-backward-punct (- 0 φn))
-    (forward-char 1)
-    (search-forward-regexp xah-punctuation-regex nil t φn)
-    (backward-char 1)))
+  (search-forward-regexp xah-punctuation-regex nil t φn))
 
 (defun xah-backward-punct (&optional φn)
   "Move cursor to the previous occurrence of punctuation.
-
-The list of punctuations to jump to is defined by `xah-punctuations'"
+See `xah-forward-punct'"
   (interactive "p")
-  (if (and φn (> 0 φn))
-      (xah-forward-punct (- 0 φn))
-    (search-backward-regexp xah-punctuation-regex nil t φn)))
-
-;; (eval-when-compile (regexp-opt xah-punctuations))
+  (search-backward-regexp xah-punctuation-regex nil t φn))
 
 (defun xah-forward-all-bracket (&optional φn)
   "Move cursor to the next occurrence of left bracket or quotation mark.

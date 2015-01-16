@@ -262,7 +262,9 @@ When called repeatedly, this command cycles the {“_”, “-”, “ ”} char
 
 (defun xah-copy-file-path (&optional φdir-path-only-p)
   "Copy the current buffer's file path or dired path to `kill-ring'.
-If `universal-argument' is called, copy only the dir path."
+If `universal-argument' is called, copy only the dir path.
+Version 2015-01-14
+URL `http://ergoemacs.org/emacs/emacs_copy_file_path.html'"
   (interactive "P")
   (let ((fPath
          (if (equal major-mode 'dired-mode)
@@ -271,8 +273,8 @@ If `universal-argument' is called, copy only the dir path."
     (kill-new
      (if (equal φdir-path-only-p nil)
          fPath
-       (file-name-directory fPath))))
-  (message "File path copied."))
+       (file-name-directory fPath)))
+    (message "File path copied: 「%s」" fPath)))
 
 (defun xah-delete-text-block ()
   "delete the current text block (paragraph) and also put it to `kill-ring'."

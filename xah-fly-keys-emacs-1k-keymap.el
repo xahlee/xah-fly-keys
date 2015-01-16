@@ -97,22 +97,22 @@
 
   (define-key xah-menu-tab-keymap (kbd "<tab>") 'indent-for-tab-command)
 
-  (define-key xah-menu-tab-keymap (kbd "SPC") 'expand-abbrev)
-
   (define-key xah-menu-tab-keymap (kbd "i") 'complete-symbol)
   (define-key xah-menu-tab-keymap (kbd "g") 'indent-rigidly)
   (define-key xah-menu-tab-keymap (kbd "r") 'indent-region)
+  (define-key xah-menu-tab-keymap (kbd "s") 'indent-sexp)
 
-  (define-key xah-menu-tab-keymap (kbd "'") 'abbrev-prefix-mark)
-  (define-key xah-menu-tab-keymap (kbd "e") 'edit-abbrevs)
-  (define-key xah-menu-tab-keymap (kbd "r") 'expand-region-abbrevs)
-  (define-key xah-menu-tab-keymap (kbd "u") 'unexpand-abbrev)
-  (define-key xah-menu-tab-keymap (kbd "g") 'add-global-abbrev)
-  (define-key xah-menu-tab-keymap (kbd "a") 'add-mode-abbrev)
-  (define-key xah-menu-tab-keymap (kbd "v") 'inverse-add-global-abbrev)
-  (define-key xah-menu-tab-keymap (kbd "l") 'inverse-add-mode-abbrev)
-  (define-key xah-menu-tab-keymap (kbd "n") 'expand-jump-to-next-slot)
-  (define-key xah-menu-tab-keymap (kbd "p") 'expand-jump-to-previous-slot)
+  (define-key xah-menu-tab-keymap (kbd "SPC SPC") 'expand-abbrev)
+  (define-key xah-menu-tab-keymap (kbd "SPC '") 'abbrev-prefix-mark)
+  (define-key xah-menu-tab-keymap (kbd "SPC e") 'edit-abbrevs)
+  (define-key xah-menu-tab-keymap (kbd "SPC r") 'expand-region-abbrevs)
+  (define-key xah-menu-tab-keymap (kbd "SPC u") 'unexpand-abbrev)
+  (define-key xah-menu-tab-keymap (kbd "SPC g") 'add-global-abbrev)
+  (define-key xah-menu-tab-keymap (kbd "SPC a") 'add-mode-abbrev)
+  (define-key xah-menu-tab-keymap (kbd "SPC v") 'inverse-add-global-abbrev)
+  (define-key xah-menu-tab-keymap (kbd "SPC l") 'inverse-add-mode-abbrev)
+  (define-key xah-menu-tab-keymap (kbd "SPC n") 'expand-jump-to-next-slot)
+  (define-key xah-menu-tab-keymap (kbd "SPC p") 'expand-jump-to-previous-slot)
 
   )
 
@@ -529,8 +529,6 @@
 ;; M-o M-S         center-paragraph
 ;; M-o M-o         font-lock-fontify-block
 ;; M-o M-s         center-line
-
-
 
 ;; ;; todo
 ;; select all, copy all, open, those standard keys

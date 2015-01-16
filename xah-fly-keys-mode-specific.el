@@ -30,6 +30,7 @@
   (define-key dired-mode-map (kbd "2") 'delete-window)
   (define-key dired-mode-map (kbd "3") 'delete-other-windows)
   (define-key dired-mode-map (kbd "4") 'split-window-vertically)
+  (define-key dired-mode-map (kbd "6") 'dired-up-directory)
   (define-key dired-mode-map (kbd "C-o") 'find-file) ; was dired-display-file
 
   (when (>= emacs-major-version 23)
@@ -37,6 +38,7 @@
     ;;    (define-key dired-mode-map (kbd "M-S") 'isearch-backward)
     ;; (define-key dired-mode-map (kbd "<tab>") (make-keymap))
     (define-key dired-mode-map (kbd "<menu> e t") 'wdired-change-to-wdired-mode) ; emacs 23 or later only
+    (define-key dired-mode-map (kbd "<delete> t") 'wdired-change-to-wdired-mode) ; emacs 23 or later only
     ))
 
 (progn
