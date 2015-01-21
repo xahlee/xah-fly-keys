@@ -12,9 +12,9 @@
 (global-set-key (kbd "M-4") nil)
 (global-set-key (kbd "M-5") nil)
 (global-set-key (kbd "M-6") nil)
-(global-set-key (kbd "M-7") nil)
-(global-set-key (kbd "M-8") nil)
-(global-set-key (kbd "M-9") nil)
+(global-set-key (kbd "M-7") 'xah-previous-user-buffer)
+(global-set-key (kbd "M-8") 'xah-next-user-buffer)
+(global-set-key (kbd "M-9") 'xah-close-current-buffer)
 (global-set-key (kbd "M-0") nil)
 
 (global-set-key (kbd "M-o") 'other-window) ; was set face prefix key

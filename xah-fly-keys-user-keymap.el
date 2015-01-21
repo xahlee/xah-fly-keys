@@ -10,7 +10,7 @@
 
   (define-key xah-user-keymap (kbd "SPC") 'xah-toggle-previous-letter-case)
   (define-key xah-user-keymap (kbd "<menu>") nil)
-  (define-key xah-user-keymap (kbd "<return>") 'xah-run-current-file)
+  (define-key xah-user-keymap (kbd "<return>") nil)
   (define-key xah-user-keymap (kbd "<backspace>") 'xah-delete-current-file)
   (define-key xah-user-keymap (kbd "<tab>") nil)
   (define-key xah-user-keymap (kbd "<delete>") nil)

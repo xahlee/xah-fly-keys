@@ -371,11 +371,12 @@
   (define-prefix-command 'xah-menu-w-keymap)
   (global-set-key (kbd "<menu> w") xah-menu-w-keymap)
 
-  (global-set-key (kbd "<menu> w .") 'eval-buffer)
-  (global-set-key (kbd "<menu> w u") 'eval-region)
-  (global-set-key (kbd "<menu> w m") 'eval-last-sexp)
-  (global-set-key (kbd "<menu> w p") 'eval-expression)
-  (global-set-key (kbd "<menu> w e") 'eval-defun)
+  (define-key xah-menu-w-keymap (kbd "RET") 'xah-run-current-file)
+  (define-key xah-menu-w-keymap (kbd ".") 'eval-buffer)
+  (define-key xah-menu-w-keymap (kbd "u") 'eval-region)
+  (define-key xah-menu-w-keymap (kbd "m") 'eval-last-sexp)
+  (define-key xah-menu-w-keymap (kbd "p") 'eval-expression)
+  (define-key xah-menu-w-keymap (kbd "e") 'eval-defun)
 
   )
 
