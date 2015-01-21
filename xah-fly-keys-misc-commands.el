@@ -123,7 +123,9 @@ Else it is a user buffer."
 (defun xah-open-last-closed ()
   "Open the last closed file."
   (interactive)
-  (find-file (cdr (pop xah-recently-closed-buffers))))
+  (if (> (length xah-recently-closed-buffers) 0)
+      (find-file (cdr (pop xah-recently-closed-buffers)))
+    (progn (message "No recently close buffer in this session."))))
 
 (defun xah-open-recently-closed ()
   "Open recently closed file.
