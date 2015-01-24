@@ -365,3 +365,46 @@ nil
 
 )))))
 
+(defun xah-escape-quotes ()
+  "Replace 「\"」 by 「\\\"」 in current line or text selection.
+That is, add 1 backslash in front of double quote (Unicode codepoint 34).
+See also: `xah-unescape-quotes'
+
+Version 2015-01-24
+URL `http://ergoemacs.org/emacs/elisp_escape_quotes.html'
+"
+  (interactive)
+  (let (p1 p2)
+    (if (use-region-p)
+        (progn (setq p1 (region-beginning))
+               (setq p2 (region-end)))
+      (progn (setq p1 (line-beginning-position))
+             (setq p2 (line-end-position))))
+    (save-excursion
+      (save-restriction
+        (narrow-to-region p1 p2)
+        (goto-char (point-min))
+        (while (search-forward "\"" nil t)
+          (replace-match "\\\"" 'FIXEDCASE 'LITERAL))))))
+
+(defun xah-unescape-quotes ()
+  "Replace  「\\\"」 by 「\"」 in current line or text selection.
+That is, remove 1 backslash in front of double quote (Unicode codepoint 34), if exist.
+See also: `xah-escape-quotes'
+
+Version 2015-01-24
+URL `http://ergoemacs.org/emacs/elisp_escape_quotes.html'
+"
+  (interactive)
+  (let (p1 p2)
+    (if (use-region-p)
+        (progn (setq p1 (region-beginning))
+               (setq p2 (region-end)))
+      (progn (setq p1 (line-beginning-position))
+             (setq p2 (line-end-position))))
+    (save-excursion
+      (save-restriction
+        (narrow-to-region p1 p2)
+        (goto-char (point-min))
+        (while (search-forward "\\\"" nil t)
+          (replace-match "\"" 'FIXEDCASE 'LITERAL))))))
