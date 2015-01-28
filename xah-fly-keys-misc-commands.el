@@ -141,30 +141,34 @@ Prompt for a choice."
     (mapc (lambda (f) (insert (cdr f) "\n"))
           xah-recently-closed-buffers)))
 
-(defun xah-open-in-external-app (&optional φfile)
-  "Open the current φfile or dired marked files in external app.
+(defun xah-open-in-external-app ()
+  "Open the current file or dired marked files in external app.
+The app is chosen from your OS's preference.
 
-The app is chosen from your OS's preference."
+Version 2015-01-26
+URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
   (interactive)
-  (let ( ξdoIt
-         (ξfileList
-          (cond
-           ((string-equal major-mode "dired-mode") (dired-get-marked-files))
-           ((not φfile) (list (buffer-file-name)))
-           (φfile (list φfile)))))
+  (let* (
+         (ξfile-list
+          (if (string-equal major-mode "dired-mode")
+              (dired-get-marked-files)
+            (list (buffer-file-name))))
+         (ξdo-it-p (if (<= (length ξfile-list) 5)
+                       t
+                     (y-or-n-p "Open more than 5 files? "))))
 
-    (setq ξdoIt (if (<= (length ξfileList) 5)
-                    t
-                  (y-or-n-p "Open more than 5 files? ")))
-
-    (when ξdoIt
+    (when ξdo-it-p
       (cond
        ((string-equal system-type "windows-nt")
-        (mapc (lambda (fPath) (w32-shell-execute "open" (replace-regexp-in-string "/" "\\" fPath t t))) ξfileList))
+        (mapc
+         (lambda (fPath)
+           (w32-shell-execute "open" (replace-regexp-in-string "/" "\\" fPath t t))) ξfile-list))
        ((string-equal system-type "darwin")
-        (mapc (lambda (fPath) (shell-command (format "open \"%s\"" fPath)))  ξfileList))
+        (mapc
+         (lambda (fPath) (shell-command (format "open \"%s\"" fPath)))  ξfile-list))
        ((string-equal system-type "gnu/linux")
-        (mapc (lambda (fPath) (let ((process-connection-type nil)) (start-process "" nil "xdg-open" fPath))) ξfileList))))))
+        (mapc
+         (lambda (fPath) (let ((process-connection-type nil)) (start-process "" nil "xdg-open" fPath))) ξfile-list))))))
 
 (defun xah-open-in-desktop ()
   "Show current file in desktop (OS's file manager)."
@@ -465,3 +469,49 @@ version 2014-10-28"
     ;; (isearch-update )
     (isearch-search-and-update )
     ))
+
+(defun xah-toggle-line-spacing ()
+  "Toggle line spacing between no extra space to extra half line height."
+  (interactive)
+  (if (null line-spacing)
+      (setq line-spacing 0.5) ; add 0.5 height between lines
+    (setq line-spacing nil)   ; no extra heigh between lines
+    )
+  (redraw-frame (selected-frame)))
+
+(defun xah-toggle-margin-right ()
+  "Toggle the right margin between `fill-column' or window width.
+This command is convenient when reading novel, documentation."
+  (interactive)
+  (if (null (cdr (window-margins)))
+      (set-window-margins nil 0 (- (window-body-width) fill-column))
+    (set-window-margins nil 0 0) ) )
+
+(defun xah-toggle-read-novel-mode ()
+  "Setup current window to be suitable for reading long novel/article text.
+
+• Line wrap at word boundaries.
+• Set a right margin.
+• line spacing is increased.
+• variable width font is used.
+
+Call again to toggle back."
+  (interactive)
+  (if (null (get this-command 'state-on-p))
+      (progn
+        (set-window-margins nil 0
+                            (if (> fill-column (window-body-width))
+                                0
+                              (progn
+                                (- (window-body-width) fill-column))))
+        (variable-pitch-mode 1)
+        (setq line-spacing 0.4)
+        (setq word-wrap t)
+        (put this-command 'state-on-p t))
+    (progn
+      (set-window-margins nil 0 0)
+      (variable-pitch-mode 0)
+      (setq line-spacing nil)
+      (setq word-wrap nil)
+      (put this-command 'state-on-p nil)))
+  (redraw-frame (selected-frame)))

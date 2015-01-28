@@ -53,7 +53,7 @@
   (global-set-key (kbd "C-z") 'undo) ; was suspend-frame
   (global-set-key (kbd "C-S-n") 'make-frame-command)   ; was nil
   (global-set-key (kbd "C-S-s") 'write-file)           ; was nil
-  (global-set-key (kbd "C-S-t") 'xah-open-last-closed) ; was nil.
+  (global-set-key (kbd "C-S-t") 'xah-open-last-closed) ; was nil
 
   (global-set-key (kbd "<C-next>") 'xah-next-user-buffer)
   (global-set-key (kbd "<C-prior>") 'xah-previous-user-buffer)

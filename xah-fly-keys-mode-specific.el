@@ -122,3 +122,12 @@
   (local-set-key (kbd "o") 'other-window)
   )
 (add-hook 'calc-mode-hook 'xah-calc-mode-keys)
+
+(defun xah-c-mode-keys ()
+  "keys for `c-mode'."
+  ;; , runs the command c-electric-semi&comma (found in c-mode-map), which
+  (setq c-electric-flag nil)
+  )
+(add-hook 'c-mode-hook 'xah-c-mode-keys)
+
+

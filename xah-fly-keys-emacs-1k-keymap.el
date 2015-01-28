@@ -217,7 +217,6 @@
   (define-prefix-command 'xah-harmless-keymap)
   (global-set-key (kbd "<menu> n") xah-harmless-keymap)
 
-  (define-key xah-harmless-keymap (kbd "SPC") nil)
   (define-key xah-harmless-keymap (kbd "<return>") nil)
 
   (define-key xah-harmless-keymap (kbd "1") nil)
@@ -254,18 +253,24 @@
   (define-key xah-harmless-keymap (kbd "v") nil)
   (define-key xah-harmless-keymap (kbd "w") 'eww)
 
-;; <menu> n f C-f  find-file-other-frame
-;; <menu> n f C-o  display-buffer-other-frame
-;; <menu> n f .    find-tag-other-frame
-;; <menu> n f 0    delete-frame
-;; <menu> n f 1    delete-other-frames
-;; <menu> n f 2    make-frame-command
-;; <menu> n f b    switch-to-buffer-other-frame
-;; <menu> n f d    dired-other-frame
-;; <menu> n f f    find-file-other-frame
-;; <menu> n f m    compose-mail-other-frame
-;; <menu> n f o    other-frame
-;; <menu> n f r    find-file-read-only-other-frame
+  (progn
+    (define-key xah-harmless-keymap (kbd "SPC") nil)
+    (define-key xah-harmless-keymap (kbd "SPC h") 'xah-toggle-read-novel-mode)
+    (define-key xah-harmless-keymap (kbd "SPC t") 'xah-toggle-margin-right)
+    (define-key xah-harmless-keymap (kbd "SPC n") 'xah-toggle-line-spacing))
+
+  ;; <menu> n f C-f  find-file-other-frame
+  ;; <menu> n f C-o  display-buffer-other-frame
+  ;; <menu> n f .    find-tag-other-frame
+  ;; <menu> n f 0    delete-frame
+  ;; <menu> n f 1    delete-other-frames
+  ;; <menu> n f 2    make-frame-command
+  ;; <menu> n f b    switch-to-buffer-other-frame
+  ;; <menu> n f d    dired-other-frame
+  ;; <menu> n f f    find-file-other-frame
+  ;; <menu> n f m    compose-mail-other-frame
+  ;; <menu> n f o    other-frame
+  ;; <menu> n f r    find-file-read-only-other-frame
 
   )
 

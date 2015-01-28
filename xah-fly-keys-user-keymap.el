@@ -94,7 +94,7 @@
   (define-key xah-user-keymap (kbd "v") nil)
   (define-key xah-user-keymap (kbd "w") 'xah-angle-brackets-to-html)
   (define-key xah-user-keymap (kbd "y") 'xah-open-last-closed)
-  (define-key xah-user-keymap (kbd "z") 'xah-toggle-read-novel-mode)
+  (define-key xah-user-keymap (kbd "z") nil)
 
   )
 
