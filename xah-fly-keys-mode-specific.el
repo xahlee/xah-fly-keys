@@ -129,5 +129,3 @@
   (setq c-electric-flag nil)
   )
 (add-hook 'c-mode-hook 'xah-c-mode-keys)
-
-

@@ -157,10 +157,10 @@ To solve this problem, when your code only knows the relative path of another fi
     (global-set-key (kbd "3") 'delete-other-windows)
     (global-set-key (kbd "4") 'split-window-vertically)
     (global-set-key (kbd "5") 'redo)
-    (global-set-key (kbd "6") 'xah-select-current-block)
-    (global-set-key (kbd "7") 'xah-select-current-line)
+    (global-set-key (kbd "6") nil)
+    (global-set-key (kbd "7") nil)
     (global-set-key (kbd "8") 'xah-extend-selection)
-    (global-set-key (kbd "9") 'xah-select-text-in-bracket-or-quote)
+    (global-set-key (kbd "9") nil)
     (global-set-key (kbd "0") 'xah-backward-punct)
 
     (global-set-key (kbd "a") 'open-line)
