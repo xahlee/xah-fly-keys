@@ -158,9 +158,9 @@ To solve this problem, when your code only knows the relative path of another fi
     (global-set-key (kbd "4") 'split-window-vertically)
     (global-set-key (kbd "5") 'redo)
     (global-set-key (kbd "6") nil)
-    (global-set-key (kbd "7") nil)
+    (global-set-key (kbd "7") 'xah-backward-quote)
     (global-set-key (kbd "8") 'xah-extend-selection)
-    (global-set-key (kbd "9") nil)
+    (global-set-key (kbd "9") 'xah-forward-quote)
     (global-set-key (kbd "0") 'xah-backward-punct)
 
     (global-set-key (kbd "a") 'open-line)
