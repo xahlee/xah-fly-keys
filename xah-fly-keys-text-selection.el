@@ -57,7 +57,7 @@ This command works mostly in lisp syntax."
           (forward-sexp)))
       (mark-sexp -1))))
 
-(defun xah-select-text-in-quote ()
+(defun xah-select-text-in-quote-by-syntax-table ()
   "Select text between ASCII quotes, single or double."
   (interactive)
   (let (p1 p2 (parse-sexp-lookup-properties nil)
@@ -66,16 +66,43 @@ This command works mostly in lisp syntax."
     (with-syntax-table ξtemp-syn-table
       (if (nth 3 (syntax-ppss))
           (progn
-            (backward-up-list 1 "ESCAPE-STRINGS" "NO-SYNTAX-CROSSING")
+            (if (>= emacs-major-version 25)
+                (backward-up-list 1 "ESCAPE-STRINGS" "NO-SYNTAX-CROSSING")
+              (backward-up-list 1))
             (setq p1 (point))
             (forward-sexp 1)
             (setq p2 (point))
             (goto-char (1+ p1))
             (set-mark (1- p2)))
         (progn
-          (error "Cursor not inside quote"))))))
+          (user-error "Cursor not inside quote"))))))
 
-(defun xah-select-text-in-bracket ()
+(defun xah-select-text-in-bracket-or-quote-by-syntax-table ()
+  "Select text between the nearest brackets or quote."
+  (interactive)
+  (let (pos p1 p2 (parse-sexp-lookup-properties nil)
+            (ξtemp-syn-table (make-syntax-table)))
+    (modify-syntax-entry ?\" "\"" ξtemp-syn-table)
+    (modify-syntax-entry ?\« "(»" ξtemp-syn-table)
+    (modify-syntax-entry ?\» ")«" ξtemp-syn-table)
+    (modify-syntax-entry ?\‹ "(›" ξtemp-syn-table)
+    (modify-syntax-entry ?\› ")‹" ξtemp-syn-table)
+    (modify-syntax-entry ?\“ "(”" ξtemp-syn-table)
+    (modify-syntax-entry ?\” ")“" ξtemp-syn-table)
+    (when (or
+           (string= major-mode "xah-html-mode")
+           (string= major-mode "xml-mode")
+           (string= major-mode "nxml-mode")
+           (string= major-mode "html-mode"))
+      (modify-syntax-entry ?\> "(<" ξtemp-syn-table)
+      (modify-syntax-entry ?\< ")>" ξtemp-syn-table))
+
+    (with-syntax-table ξtemp-syn-table
+      (if (nth 3 (syntax-ppss))
+          (xah-select-text-in-quote-by-syntax-table)
+        (xah-select-text-in-bracket-by-syntax-table)))))
+
+(defun xah-select-text-in-bracket-by-syntax-table ()
   "Select text between the nearest brackets.
 ⁖  () [] {} «» ‹› “” 〖〗 【】 「」 『』 （） 〈〉 《》 〔〕 ⦗⦘ 〘〙 ⦅⦆ 〚〛 ⦃⦄ ⟨⟩."
   (interactive)
@@ -106,30 +133,16 @@ This command works mostly in lisp syntax."
       (goto-char (1+ p1))
       (set-mark (1- p2)))))
 
-(defun xah-select-text-in-bracket-or-quote ()
-  "Select text between the nearest brackets or quote."
+(defun xah-select-text-in-quote ()
+  "Select text between the nearest left and right delimiters.
+Delimiters are paired characters: () [] {} <> «» ‹› “” ‘’ 「」 【】, including \"\"."
   (interactive)
-  (let (pos p1 p2 (parse-sexp-lookup-properties nil)
-            (ξtemp-syn-table (make-syntax-table)))
-    (modify-syntax-entry ?\" "\"" ξtemp-syn-table)
-    (modify-syntax-entry ?\« "(»" ξtemp-syn-table)
-    (modify-syntax-entry ?\» ")«" ξtemp-syn-table)
-    (modify-syntax-entry ?\‹ "(›" ξtemp-syn-table)
-    (modify-syntax-entry ?\› ")‹" ξtemp-syn-table)
-    (modify-syntax-entry ?\“ "(”" ξtemp-syn-table)
-    (modify-syntax-entry ?\” ")“" ξtemp-syn-table)
-    (when (or
-           (string= major-mode "xah-html-mode")
-           (string= major-mode "xml-mode")
-           (string= major-mode "nxml-mode")
-           (string= major-mode "html-mode"))
-      (modify-syntax-entry ?\> "(<" ξtemp-syn-table)
-      (modify-syntax-entry ?\< ")>" ξtemp-syn-table))
-
-    (with-syntax-table ξtemp-syn-table
-      (if (nth 3 (syntax-ppss))
-          (xah-select-text-in-quote)
-        (xah-select-text-in-bracket)))))
+  (let (p1 p2)
+    (skip-chars-backward "^<>(“{[「«‹【\"‘")
+    (setq p1 (point))
+    (skip-chars-forward "^<>)”}]」】»›\"’")
+    (setq p2 (point))
+    (set-mark p1)))
 
 (defun xah-select-text-in-html-bracket ()
   "Select text between <…> or >…<."
