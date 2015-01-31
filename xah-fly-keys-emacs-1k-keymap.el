@@ -215,9 +215,19 @@
   (define-prefix-command 'xah-harmless-keymap)
   (global-set-key (kbd "<menu> n") xah-harmless-keymap)
 
-  (define-key xah-harmless-keymap (kbd "<return>") nil)
+  (define-key xah-harmless-keymap (kbd "RET") nil)
+  (define-key xah-harmless-keymap (kbd "RET F") 'set-file-name-coding-system)
+  (define-key xah-harmless-keymap (kbd "RET X") 'set-next-selection-coding-system)
+  (define-key xah-harmless-keymap (kbd "RET c") 'universal-coding-system-argument)
+  (define-key xah-harmless-keymap (kbd "RET f") 'set-buffer-file-coding-system)
+  (define-key xah-harmless-keymap (kbd "RET k") 'set-keyboard-coding-system)
+  (define-key xah-harmless-keymap (kbd "RET l") 'set-language-environment)
+  (define-key xah-harmless-keymap (kbd "RET p") 'set-buffer-process-coding-system)
+  (define-key xah-harmless-keymap (kbd "RET r") 'revert-buffer-with-coding-system)
+  (define-key xah-harmless-keymap (kbd "RET t") 'set-terminal-coding-system)
+  (define-key xah-harmless-keymap (kbd "RET x") 'set-selection-coding-system)
 
-  (define-key xah-harmless-keymap (kbd "1") nil)
+  (define-key xah-harmless-keymap (kbd "1") 'set-input-method)
   (define-key xah-harmless-keymap (kbd "2") 'global-hl-line-mode)
   (define-key xah-harmless-keymap (kbd "3") 'whitespace-mode)
   (define-key xah-harmless-keymap (kbd "4") 'linum-mode)
@@ -319,6 +329,7 @@
 
   (define-key xah-menu-t-keymap (kbd "SPC") 'exchange-point-and-mark)
   (define-key xah-menu-t-keymap (kbd "<return>") 'pop-global-mark)
+  (define-key xah-menu-t-keymap (kbd ".") 'insert-char)
 
   (define-key xah-menu-t-keymap (kbd "5") 'number-to-register)
   (define-key xah-menu-t-keymap (kbd "6") 'increment-register)
@@ -383,7 +394,7 @@
 
   )
 
-(global-set-key (kbd "<menu> x") ctl-x-map)
+(global-set-key (kbd "<menu> x") nil)
 
 (global-set-key (kbd "<menu> y") nil)
 
@@ -493,17 +504,7 @@
 ;; C-x C-k r	apply-macro-to-region-lines
 ;; C-x C-k s	kmacro-start-macro
 
-;; C-x RET C-\	set-input-method
-;; C-x RET F	set-file-name-coding-system
-;; C-x RET X	set-next-selection-coding-system
-;; C-x RET c	universal-coding-system-argument
-;; C-x RET f	set-buffer-file-coding-system
-;; C-x RET k	set-keyboard-coding-system
-;; C-x RET l	set-language-environment
-;; C-x RET p	set-buffer-process-coding-system
-;; C-x RET r	revert-buffer-with-coding-system
-;; C-x RET t	set-terminal-coding-system
-;; C-x RET x	set-selection-coding-system
+
 
 ;; C-x 4 C-f	find-file-other-window
 ;; C-x 4 C-o	display-buffer
