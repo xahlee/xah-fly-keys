@@ -382,15 +382,16 @@
   )
 
 (progn
-  (define-prefix-command 'xah-menu-w-keymap)
-  (global-set-key (kbd "<menu> w") xah-menu-w-keymap)
+  (define-prefix-command 'xah-danger-keymap)
+  (global-set-key (kbd "<menu> w") xah-danger-keymap)
 
-  (define-key xah-menu-w-keymap (kbd "RET") 'xah-run-current-file)
-  (define-key xah-menu-w-keymap (kbd ".") 'eval-buffer)
-  (define-key xah-menu-w-keymap (kbd "u") 'eval-region)
-  (define-key xah-menu-w-keymap (kbd "m") 'eval-last-sexp)
-  (define-key xah-menu-w-keymap (kbd "p") 'eval-expression)
-  (define-key xah-menu-w-keymap (kbd "e") 'eval-defun)
+  (define-key xah-danger-keymap (kbd "RET") 'xah-run-current-file)
+  (define-key xah-danger-keymap (kbd ".") 'eval-buffer)
+  (define-key xah-danger-keymap (kbd "u") 'eval-region)
+  (define-key xah-danger-keymap (kbd "m") 'eval-last-sexp)
+  (define-key xah-danger-keymap (kbd "p") 'eval-expression)
+  (define-key xah-danger-keymap (kbd "e") 'eval-defun)
+  (define-key xah-danger-keymap (kbd "w") 'save-buffers-kill-terminal)
 
   )
 
