@@ -27,7 +27,7 @@
 ;; some design principles
 ;; • each key sequence should have 2 or 3 keys. (counting the lead key) some command may have 4 keys, but any command used daily have max of 3 keys.
 
-;; • the keys:
+;; • the most easy finger positions are (dvorak notation):
 
 ;; .p gc
 ;; eu ht
@@ -38,12 +38,9 @@
 
 ;; basically, after the menu key, there are a total of 12 keys to start, 6 for each hand. These keys are on the home row or the row above, and are pressed by 2nd 3rd 4th fingers. (thumb is 1st finger) like this:
 
-;; ,.p gcr
-;; oeu htn
-
-;; • the 【menu space ‹key›】 space is reserved for user to define their own commands
-;; • the 【menu h ‹key›】 space is for emacs help. basically equivalent to 【C-h ‹key›】
-;; • the 【menu u ‹key›】 space is for inserting brackets (){}[]""''“”‘’ and other brackets, and for inserting “=” “+” any unicode chars.
+;; a key sequence involving SPACE is for user's own definition. For example, 【menu SPACE …】, 【menu t SPACE …】, 
+;; • the 【menu h …】 is for emacs help. basically equivalent to 【C-h ‹key›】
+;; • the 【menu u …】 is for inserting brackets (){}[]""''“”‘’ and other brackets, and for inserting “=” “+” any unicode chars.
 ;; • the 【menu p】 is for query-replace
 ;; • the 【menu g】 is for isearch
 ;; • the 【menu .】 is for universal-argument.
@@ -59,9 +56,7 @@
 ;; Emacs vs vi: How to Compute a Keybinding's Efficiency? http://xahlee.info/kbd/efficiency_of_keybinding_emacs_vs_vim.html
 ;; Emacs's Command Frequency Statistics http://ergoemacs.org/emacs/command-frequency.html
 
-;; • none of the key sequence should be mapped to a fast-repeat command.
-;; Emacs: Fast-repeat vs Non-fast-repeat Commands ＆ Keys
-;; http://xahlee.info/kbd/repeatable_vs_non-repeatable_keys_commands.html
+;; • none of the key sequence should be mapped to a “fast-repeat command”. See 《Emacs: Fast-repeat vs Non-fast-repeat Commands ＆ Keys》 http://xahlee.info/kbd/repeatable_vs_non-repeatable_keys_commands.html
 
 ;; the above is the sketch of the design. However, i realized that some exceptions is ok, or even optimal. One thing i learned is that a strict regularity or rule may not be optimal, as some exception or irregularity sometimes makes it more convenient, easier to remember, or make your fingers good because they don't always use the same keys. These reasoning may be fallacy, I don't have a solid analysis on it yet.
 
@@ -93,26 +88,27 @@
 (progn
   (define-prefix-command 'xah-menu-tab-keymap)
 
-  (global-set-key (kbd "<menu> <tab>") xah-menu-tab-keymap)
+  (global-set-key (kbd "<menu> TAB") xah-menu-tab-keymap)
 
-  (define-key xah-menu-tab-keymap (kbd "<tab>") 'indent-for-tab-command)
+  (define-key xah-menu-tab-keymap (kbd "TAB") 'indent-for-tab-command)
 
   (define-key xah-menu-tab-keymap (kbd "i") 'complete-symbol)
   (define-key xah-menu-tab-keymap (kbd "g") 'indent-rigidly)
   (define-key xah-menu-tab-keymap (kbd "r") 'indent-region)
   (define-key xah-menu-tab-keymap (kbd "s") 'indent-sexp)
 
-  (define-key xah-menu-tab-keymap (kbd "SPC SPC") 'expand-abbrev)
-  (define-key xah-menu-tab-keymap (kbd "SPC '") 'abbrev-prefix-mark)
-  (define-key xah-menu-tab-keymap (kbd "SPC e") 'edit-abbrevs)
-  (define-key xah-menu-tab-keymap (kbd "SPC r") 'expand-region-abbrevs)
-  (define-key xah-menu-tab-keymap (kbd "SPC u") 'unexpand-abbrev)
-  (define-key xah-menu-tab-keymap (kbd "SPC g") 'add-global-abbrev)
-  (define-key xah-menu-tab-keymap (kbd "SPC a") 'add-mode-abbrev)
-  (define-key xah-menu-tab-keymap (kbd "SPC v") 'inverse-add-global-abbrev)
-  (define-key xah-menu-tab-keymap (kbd "SPC l") 'inverse-add-mode-abbrev)
-  (define-key xah-menu-tab-keymap (kbd "SPC n") 'expand-jump-to-next-slot)
-  (define-key xah-menu-tab-keymap (kbd "SPC p") 'expand-jump-to-previous-slot)
+  (define-key xah-menu-tab-keymap (kbd "e") nil)
+  (define-key xah-menu-tab-keymap (kbd "e '") 'abbrev-prefix-mark)
+  (define-key xah-menu-tab-keymap (kbd "e e") 'edit-abbrevs)
+  (define-key xah-menu-tab-keymap (kbd "e p") 'expand-abbrev)
+  (define-key xah-menu-tab-keymap (kbd "e r") 'expand-region-abbrevs)
+  (define-key xah-menu-tab-keymap (kbd "e u") 'unexpand-abbrev)
+  (define-key xah-menu-tab-keymap (kbd "e g") 'add-global-abbrev)
+  (define-key xah-menu-tab-keymap (kbd "e a") 'add-mode-abbrev)
+  (define-key xah-menu-tab-keymap (kbd "e v") 'inverse-add-global-abbrev)
+  (define-key xah-menu-tab-keymap (kbd "e l") 'inverse-add-mode-abbrev)
+  (define-key xah-menu-tab-keymap (kbd "e n") 'expand-jump-to-next-slot)
+  (define-key xah-menu-tab-keymap (kbd "e p") 'expand-jump-to-previous-slot)
 
   )
 
@@ -180,7 +176,7 @@
   (define-prefix-command 'xah-menu-i-keymap) ; commands in goto-map
   (global-set-key (kbd "<menu> i") xah-menu-i-keymap)
 
-  (define-key xah-menu-i-keymap (kbd "<tab>") 'move-to-column)
+  (define-key xah-menu-i-keymap (kbd "TAB") 'move-to-column)
   (define-key xah-menu-i-keymap (kbd "c") 'goto-char)
   (define-key xah-menu-i-keymap (kbd "g") 'goto-line)
   (define-key xah-menu-i-keymap (kbd "n") 'next-error)
@@ -210,7 +206,7 @@
 )
 
 (progn
-  ;; commands here are hameless (safe). They don't modify text.
+  ;; commands here are harmless (safe). They don't modify text.
   ;; they turn on minor/major mode, change display, prompt, start shell, etc.
   (define-prefix-command 'xah-harmless-keymap)
   (global-set-key (kbd "<menu> n") xah-harmless-keymap)
@@ -247,7 +243,7 @@
   (define-key xah-harmless-keymap (kbd "h") 'widen)
   (define-key xah-harmless-keymap (kbd "i") 'make-frame-command)
   (define-key xah-harmless-keymap (kbd "j") nil)
-  (define-key xah-harmless-keymap (kbd "k") nil)
+  (define-key xah-harmless-keymap (kbd "k") 'toggle-input-method)
   (define-key xah-harmless-keymap (kbd "l") nil)
   (define-key xah-harmless-keymap (kbd "m") nil)
   (define-key xah-harmless-keymap (kbd "n") 'narrow-to-region)
@@ -260,6 +256,9 @@
   (define-key xah-harmless-keymap (kbd "u") 'menu-bar-open)
   (define-key xah-harmless-keymap (kbd "v") nil)
   (define-key xah-harmless-keymap (kbd "w") 'eww)
+  (define-key xah-harmless-keymap (kbd "x") 'nil)
+  (define-key xah-harmless-keymap (kbd "y") 'nil)
+  (define-key xah-harmless-keymap (kbd "z") 'nil)
 
   (progn
     (define-key xah-harmless-keymap (kbd "SPC") nil)
@@ -309,7 +308,6 @@
 
   (define-key xah-edit-cmds-keymap (kbd "e") 'call-last-kbd-macro)
 
-  (define-key xah-edit-cmds-keymap (kbd "SPC") 'rectangle-mark-mode)
   (define-key xah-edit-cmds-keymap (kbd "c") 'replace-rectangle)
   (define-key xah-edit-cmds-keymap (kbd "d") 'delete-rectangle)
   (define-key xah-edit-cmds-keymap (kbd "g") 'kill-rectangle)
@@ -317,6 +315,7 @@
   (define-key xah-edit-cmds-keymap (kbd "n") 'rectangle-number-lines)
   (define-key xah-edit-cmds-keymap (kbd "o") 'open-rectangle)
   (define-key xah-edit-cmds-keymap (kbd "r") 'yank-rectangle)
+  (define-key xah-edit-cmds-keymap (kbd "t") 'rectangle-mark-mode)
   (define-key xah-edit-cmds-keymap (kbd "y") 'delete-whitespace-rectangle)
 
   )
@@ -327,7 +326,6 @@
   (define-prefix-command 'xah-menu-t-keymap)
   (global-set-key (kbd "<menu> t") xah-menu-t-keymap)
 
-  (define-key xah-menu-t-keymap (kbd "SPC") 'exchange-point-and-mark)
   (define-key xah-menu-t-keymap (kbd "<return>") 'pop-global-mark)
   (define-key xah-menu-t-keymap (kbd ".") 'insert-char)
 
@@ -343,6 +341,7 @@
   (define-key xah-menu-t-keymap (kbd "q") 'xah-cut-line-or-region)
   (define-key xah-menu-t-keymap (kbd "j") 'xah-copy-line-or-region)
   (define-key xah-menu-t-keymap (kbd "k") 'yank)
+  (define-key xah-menu-t-keymap (kbd "n") 'exchange-point-and-mark)
 
   (define-key xah-menu-t-keymap (kbd "t") 'repeat)
   (define-key xah-menu-t-keymap (kbd "s") 'write-file)
@@ -541,9 +540,7 @@
 
 ;; • add all emacs commands to my key sequence system
 
-;; 'toggle-input-method
-
 ;; ;; 2013-11-04 make emacs auto show suggestions when a prefix key is pressed
 ;; (require 'guide-key)
-;; (setq guide-key/guide-key-sequence '("<menu> t" "<tab> t" ))
+;; (setq guide-key/guide-key-sequence '("<menu> t" "TAB t" ))
 ;; (guide-key-mode 1)
