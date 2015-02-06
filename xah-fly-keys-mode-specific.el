@@ -122,9 +122,10 @@
   )
 (add-hook 'calc-mode-hook 'xah-calc-mode-keys)
 
-(defun xah-c-mode-keys ()
-  "keys for `c-mode'."
-  ;; , runs the command c-electric-semi&comma (found in c-mode-map), which
-  (setq c-electric-flag nil)
+
+(progn 
+  ;; used by modes {C, C++, java}
+  (require 'cc-mode)
+  ;; (setq c-electric-flag nil)
+  (define-key c-mode-base-map "," nil) ; was c-electric-semi&comma
   )
-(add-hook 'c-mode-hook 'xah-c-mode-keys)

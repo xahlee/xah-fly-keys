@@ -135,12 +135,12 @@ This command works mostly in lisp syntax."
 
 (defun xah-select-text-in-quote ()
   "Select text between the nearest left and right delimiters.
-Delimiters are paired characters: () [] {} <> «» ‹› “” ‘’ 「」 【】《》〈〉, including \"\"."
+Delimiters are paired characters: () [] {} <> «» ‹› “” ‘’ 「」 【】《》〈〉〔〕, including \"\"."
   (interactive)
   (let (p1 p2)
-    (skip-chars-backward "^<>(“{[«‹「【《〈\"‘")
+    (skip-chars-backward "^<>(“{[«‹「【《〈〔\"‘")
     (setq p1 (point))
-    (skip-chars-forward "^<>)”}]»›」】》〉\"’")
+    (skip-chars-forward "^<>)”}]»›」】》〉〕\"’")
     (setq p2 (point))
     (set-mark p1)))
 
