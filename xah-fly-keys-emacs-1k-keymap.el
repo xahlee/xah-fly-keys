@@ -38,7 +38,7 @@
 
 ;; basically, after the menu key, there are a total of 12 keys to start, 6 for each hand. These keys are on the home row or the row above, and are pressed by 2nd 3rd 4th fingers. (thumb is 1st finger) like this:
 
-;; a key sequence involving SPACE is for user's own definition. For example, 【menu SPACE …】, 【menu t SPACE …】, 
+;; a key sequence involving SPACE is for user's own definition. For example, 【menu SPACE …】, 【menu t SPACE …】,
 ;; • the 【menu h …】 is for emacs help. basically equivalent to 【C-h ‹key›】
 ;; • the 【menu u …】 is for inserting brackets (){}[]""''“”‘’ and other brackets, and for inserting “=” “+” any unicode chars.
 ;; • the 【menu p】 is for query-replace
@@ -113,6 +113,8 @@
   )
 
   (global-set-key (kbd "<menu> SPC") 'xah-insert-keymap)
+
+(global-set-key (kbd "<menu> <menu>") 'exchange-point-and-mark)
 
 (global-set-key (kbd "<menu> .") 'universal-argument)
 (global-set-key (kbd "<menu> '") nil)
@@ -258,7 +260,7 @@
   (define-key xah-harmless-keymap (kbd "w") 'eww)
   (define-key xah-harmless-keymap (kbd "x") 'nil)
   (define-key xah-harmless-keymap (kbd "y") 'nil)
-  (define-key xah-harmless-keymap (kbd "z") 'nil)
+  (define-key xah-harmless-keymap (kbd "z") 'abort-recursive-edit)
 
   (progn
     (define-key xah-harmless-keymap (kbd "SPC") nil)
@@ -385,12 +387,14 @@
   (global-set-key (kbd "<menu> w") xah-danger-keymap)
 
   (define-key xah-danger-keymap (kbd "RET") 'xah-run-current-file)
+  (define-key xah-danger-keymap (kbd "DEL") 'xah-delete-current-file)
+
   (define-key xah-danger-keymap (kbd ".") 'eval-buffer)
   (define-key xah-danger-keymap (kbd "u") 'eval-region)
   (define-key xah-danger-keymap (kbd "m") 'eval-last-sexp)
   (define-key xah-danger-keymap (kbd "p") 'eval-expression)
   (define-key xah-danger-keymap (kbd "e") 'eval-defun)
-  (define-key xah-danger-keymap (kbd "w") 'save-buffers-kill-terminal)
+  (define-key xah-danger-keymap (kbd "q") 'save-buffers-kill-terminal)
 
   )
 

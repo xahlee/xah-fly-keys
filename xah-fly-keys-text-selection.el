@@ -1,7 +1,10 @@
 ;; -*- coding: utf-8 -*-
 
 (defun xah-select-current-block ()
-  "Select the current block of text between blank  lines."
+  "Select the current block of text between blank lines.
+URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
+Version 2015-02-07
+"
   (interactive)
   (let (p1 p2)
     (progn
@@ -16,7 +19,10 @@
     (set-mark p1)))
 
 (defun xah-select-current-line ()
-  "Select current line."
+  "Select current line.
+URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
+Version 2015-02-07
+"
   (interactive)
   (end-of-line)
   (set-mark (line-beginning-position)))
@@ -135,12 +141,16 @@ This command works mostly in lisp syntax."
 
 (defun xah-select-text-in-quote ()
   "Select text between the nearest left and right delimiters.
-Delimiters are paired characters: () [] {} <> «» ‹› “” ‘’ 「」 【】《》〈〉〔〕, including \"\"."
+Delimiters are paired characters: () [] {} <> «» ‹› “” ‘’ 「」 【】《》〈〉〔〕（）, including \"\".
+
+URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
+Version 2015-02-07
+"
   (interactive)
   (let (p1 p2)
-    (skip-chars-backward "^<>(“{[«‹「【《〈〔\"‘")
+    (skip-chars-backward "^<>(“{[«‹「【《〈〔（\"‘")
     (setq p1 (point))
-    (skip-chars-forward "^<>)”}]»›」】》〉〕\"’")
+    (skip-chars-forward "^<>)”}]»›」】》〉〕）\"’")
     (setq p2 (point))
     (set-mark p1)))
 

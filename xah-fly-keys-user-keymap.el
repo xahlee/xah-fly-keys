@@ -9,13 +9,6 @@
   (define-prefix-command 'xah-user-keymap)
 
   (define-key xah-user-keymap (kbd "SPC") 'xah-toggle-previous-letter-case)
-  (define-key xah-user-keymap (kbd "<menu>") nil)
-  (define-key xah-user-keymap (kbd "<return>") nil)
-  (define-key xah-user-keymap (kbd "<backspace>") 'xah-delete-current-file)
-  (define-key xah-user-keymap (kbd "<tab>") nil)
-  (define-key xah-user-keymap (kbd "<delete>") nil)
-  (define-key xah-user-keymap (kbd "<home>") nil)
-  (define-key xah-user-keymap (kbd "<end>") nil)
 
   (define-key xah-user-keymap (kbd "-") 'xah-insert-form-feed)
   (define-key xah-user-keymap (kbd ".") 'title-case-string-region-or-line)
@@ -103,15 +96,15 @@
   (define-prefix-command 'xah-dump-keymap)
 
   (define-key xah-dump-keymap (kbd "SPC") nil)
-  (define-key xah-dump-keymap (kbd "<return>") nil)
+  (define-key xah-dump-keymap (kbd "RET") nil)
 
   (define-key xah-dump-keymap (kbd "<f9>") nil)
   (define-key xah-dump-keymap (kbd "<f10>") nil)
   (define-key xah-dump-keymap (kbd "<f11>") nil)
   (define-key xah-dump-keymap (kbd "<f12>") nil)
 
-  (define-key xah-dump-keymap (kbd "<backspace>") 'xah-remove-overlays-region)
-  (define-key xah-dump-keymap (kbd "<return>") 'xah-show-overlay-at-point)
+  (define-key xah-dump-keymap (kbd "DEL") 'xah-remove-overlays-region)
+  (define-key xah-dump-keymap (kbd "RET") 'xah-show-overlay-at-point)
 
   (define-key xah-dump-keymap (kbd "7") 'xah-syntax-bracket-backward)
   (define-key xah-dump-keymap (kbd "8") 'xah-syntax-bracket-forward)

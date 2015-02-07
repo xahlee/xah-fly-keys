@@ -360,26 +360,27 @@ use FireFox to visit it as local file (construct the proper URL)."
    ))
 
 (defun xah-delete-current-file (&optional φno-backup-p)
-  "Delete the file associated with the current buffer.
-
-Also close the current buffer.  If no file is associated, just close buffer.
+  "Delete the file associated with the current buffer (also closes the buffer).
 
 A backup file is created with filename appended “~‹date time stamp›~”. Existing file of the same name is overwritten. If the file is not associated with buffer, the backup file name starts with “xx_”.
 
-When called with `universal-argument', don't create backup."
+When called with `universal-argument', don't create backup.
+
+URL `http://ergoemacs.org/emacs/elisp_delete-current-file.html'
+Version 2015-02-07"
   (interactive "P")
   (let* (
-         (fName (buffer-file-name))
-         (bufferIsFile-p (if (null fName) nil t ))
-         (backupName (concat fName "~" (format-time-string "%Y%m%d_%H%M%S") "~")))
-    (if bufferIsFile-p
+         (ξfname (buffer-file-name))
+         (ξbuffer-is-file-p (if (null ξfname) nil t ))
+         (ξbackup-name (concat ξfname "~" (format-time-string "%Y%m%d_%H%M%S") "~")))
+    (if ξbuffer-is-file-p
         (progn
-          (save-buffer fName)
+          (save-buffer ξfname)
           (if φno-backup-p
               nil
-            (copy-file fName backupName t))
-          (delete-file fName)
-          (message "deleted and backup created at 「%s」." backupName))
+            (copy-file ξfname ξbackup-name t))
+          (delete-file ξfname)
+          (message "Deleted and backup created at 「%s」." ξbackup-name))
       (progn
         (if φno-backup-p
             nil
@@ -395,9 +396,9 @@ Version 2014-10-13"
   (interactive)
   (if (buffer-file-name)
       (let* ((ξcurrentName (buffer-file-name))
-             (ξbackupName (concat ξcurrentName "~" (format-time-string "%Y%m%d_%H%M%S") "~")))
-        (copy-file ξcurrentName ξbackupName t)
-        (message (concat "Backup saved as: " (file-name-nondirectory ξbackupName))))
+             (ξbackup-name (concat ξcurrentName "~" (format-time-string "%Y%m%d_%H%M%S") "~")))
+        (copy-file ξcurrentName ξbackup-name t)
+        (message (concat "Backup saved as: " (file-name-nondirectory ξbackup-name))))
     (user-error "Buffer is not a file")
     ))
 
@@ -413,7 +414,7 @@ URL `http://ergoemacs.org/emacs/elisp_run_current_file.html'
 version 2014-10-28"
   (interactive)
   (let* (
-         (ξsuffixMap
+         (ξsuffix-map
           ;; (‹extension› . ‹shell program name›)
           `(
             ("php" . "php")
@@ -428,21 +429,21 @@ version 2014-10-28"
             ("vbs" . "cscript")
             ;; ("pov" . "/usr/local/bin/povray +R2 +A0.1 +J1.2 +Am2 +Q9 +H480 +W640")
             ))
-         (ξfName (buffer-file-name))
-         (ξfSuffix (file-name-extension ξfName))
-         (ξprogName (cdr (assoc ξfSuffix ξsuffixMap)))
-         (ξcmdStr (concat ξprogName " \""   ξfName "\"")))
+         (ξfname (buffer-file-name))
+         (ξfSuffix (file-name-extension ξfname))
+         (ξprog-name (cdr (assoc ξfSuffix ξsuffix-map)))
+         (ξcmd-str (concat ξprog-name " \""   ξfname "\"")))
 
     (when (buffer-modified-p)
       (when (y-or-n-p "Buffer modified. Do you want to save first?")
         (save-buffer)))
 
     (if (string-equal ξfSuffix "el") ; special case for emacs lisp
-        (load ξfName)
-      (if ξprogName
+        (load ξfname)
+      (if ξprog-name
           (progn
             (message "Running…")
-            (shell-command ξcmdStr "*xah-run-current-file output*" ))
+            (shell-command ξcmd-str "*xah-run-current-file output*" ))
         (message "No recognized program file suffix for this file.")))))
 
 (defun xah-search-current-word ()
