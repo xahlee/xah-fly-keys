@@ -131,10 +131,10 @@
 (global-set-key (kbd "<menu> 3") 'delete-other-windows)
 (global-set-key (kbd "<menu> 4") 'split-window-vertically)
 (global-set-key (kbd "<menu> 5") 'split-window-horizontally)
-(global-set-key (kbd "<menu> 6") 'xah-select-current-block)
-(global-set-key (kbd "<menu> 7") 'xah-select-current-line)
+(global-set-key (kbd "<menu> 6") nil)
+(global-set-key (kbd "<menu> 7") nil)
 (global-set-key (kbd "<menu> 8") nil)
-(global-set-key (kbd "<menu> 9") 'xah-select-text-in-quote)
+(global-set-key (kbd "<menu> 9") nil)
 (global-set-key (kbd "<menu> 0") 'ispell-word)
 
 (global-set-key (kbd "<menu> a") 'mark-whole-buffer)
@@ -251,8 +251,8 @@
   (define-key xah-harmless-keymap (kbd "n") 'narrow-to-region)
   (define-key xah-harmless-keymap (kbd "o") nil)
   (define-key xah-harmless-keymap (kbd "p") nil)
-  (define-key xah-harmless-keymap (kbd "q") nil)
-  (define-key xah-harmless-keymap (kbd "r") 'read-only-mode)
+  (define-key xah-harmless-keymap (kbd "q") 'read-only-mode) ; toggle-read-only
+  (define-key xah-harmless-keymap (kbd "r") nil)
   (define-key xah-harmless-keymap (kbd "s") 'flyspell-buffer)
   (define-key xah-harmless-keymap (kbd "t") 'narrow-to-defun)
   (define-key xah-harmless-keymap (kbd "u") 'menu-bar-open)
@@ -343,7 +343,6 @@
   (define-key xah-menu-t-keymap (kbd "q") 'xah-cut-line-or-region)
   (define-key xah-menu-t-keymap (kbd "j") 'xah-copy-line-or-region)
   (define-key xah-menu-t-keymap (kbd "k") 'yank)
-  (define-key xah-menu-t-keymap (kbd "n") 'exchange-point-and-mark)
 
   (define-key xah-menu-t-keymap (kbd "t") 'repeat)
   (define-key xah-menu-t-keymap (kbd "s") 'write-file)
@@ -429,7 +428,6 @@
 
 ;; C-x C-t	transpose-lines
 ;; C-x C-o	delete-blank-lines
-;; C-x C-q	toggle-read-only
 
 ;; C-x C-r	find-file-read-only
 ;; C-x C-v	find-alternate-file
@@ -468,7 +466,6 @@
 ;; C-x l	count-lines-page
 ;; C-x m	compose-mail
 ;; C-x n	Prefix Command
-;; C-x o	other-window
 ;; C-x r	Prefix Command
 ;; C-x s	save-some-buffers
 
@@ -476,14 +473,6 @@
 ;; C-x {	shrink-window-horizontally
 ;; C-x }	enlarge-window-horizontally
 ;; C-x DEL	backward-kill-sentence
-;; C-x C-+	text-scale-adjust
-;; C-x C--	text-scale-adjust
-;; C-x C-0	text-scale-adjust
-;; C-x C-=	text-scale-adjust
-;; C-x <C-left>	previous-buffer
-;; C-x <C-right>	next-buffer
-;; C-x <left>	previous-buffer
-;; C-x <right>	next-buffer
 
 ;; C-x C-k C-a	kmacro-add-counter
 ;; C-x C-k C-c	kmacro-set-counter
