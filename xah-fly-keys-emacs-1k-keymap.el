@@ -117,7 +117,7 @@
 (global-set-key (kbd "<menu> <menu>") 'exchange-point-and-mark)
 
 (global-set-key (kbd "<menu> .") 'universal-argument)
-(global-set-key (kbd "<menu> '") nil)
+(global-set-key (kbd "<menu> '") 'quoted-insert)
 (global-set-key (kbd "<menu> ,") nil)
 (global-set-key (kbd "<menu> -") nil)
 (global-set-key (kbd "<menu> /") nil)
@@ -225,6 +225,9 @@
   (define-key xah-harmless-keymap (kbd "RET t") 'set-terminal-coding-system)
   (define-key xah-harmless-keymap (kbd "RET x") 'set-selection-coding-system)
 
+  (define-key xah-harmless-keymap (kbd "'") 'frame-configuration-to-register)
+  (define-key xah-harmless-keymap (kbd ";") 'window-configuration-to-register)
+
   (define-key xah-harmless-keymap (kbd "1") 'set-input-method)
   (define-key xah-harmless-keymap (kbd "2") 'global-hl-line-mode)
   (define-key xah-harmless-keymap (kbd "3") 'whitespace-mode)
@@ -235,6 +238,7 @@
   (define-key xah-harmless-keymap (kbd "8") 'shell)
   (define-key xah-harmless-keymap (kbd "9") 'shell-command)
   (define-key xah-harmless-keymap (kbd "0") 'shell-command-on-region)
+
   (define-key xah-harmless-keymap (kbd "a") 'text-scale-adjust)
   (define-key xah-harmless-keymap (kbd "b") 'toggle-debug-on-error)
   (define-key xah-harmless-keymap (kbd "c") 'toggle-case-fold-search)
@@ -331,28 +335,23 @@
   (define-key xah-menu-t-keymap (kbd "<return>") 'pop-global-mark)
   (define-key xah-menu-t-keymap (kbd ".") 'insert-char)
 
+  (define-key xah-menu-t-keymap (kbd "3") 'point-to-register)
+  (define-key xah-menu-t-keymap (kbd "4") 'jump-to-register)
   (define-key xah-menu-t-keymap (kbd "5") 'number-to-register)
   (define-key xah-menu-t-keymap (kbd "6") 'increment-register)
-  (define-key xah-menu-t-keymap (kbd "7") 'point-to-register)
-  (define-key xah-menu-t-keymap (kbd "8") 'jump-to-register)
 
   (define-key xah-menu-t-keymap (kbd "e") 'copy-to-register)
-  (define-key xah-menu-t-keymap (kbd "u") 'insert-register)
-
-  (define-key xah-menu-t-keymap (kbd "p") 'query-replace-regexp)
-  (define-key xah-menu-t-keymap (kbd "q") 'xah-cut-line-or-region)
+  (define-key xah-menu-t-keymap (kbd "h") 'xah-close-current-buffer)
   (define-key xah-menu-t-keymap (kbd "j") 'xah-copy-line-or-region)
   (define-key xah-menu-t-keymap (kbd "k") 'yank)
-
-  (define-key xah-menu-t-keymap (kbd "t") 'repeat)
-  (define-key xah-menu-t-keymap (kbd "s") 'write-file)
-  (define-key xah-menu-t-keymap (kbd "h") 'repeat-complex-command)
-
-  (define-key xah-menu-t-keymap (kbd "f") 'frame-configuration-to-register)
+  (define-key xah-menu-t-keymap (kbd "n") 'repeat-complex-command)
+  (define-key xah-menu-t-keymap (kbd "p") 'query-replace-regexp)
+  (define-key xah-menu-t-keymap (kbd "q") 'xah-cut-line-or-region)
   (define-key xah-menu-t-keymap (kbd "r") 'copy-rectangle-to-register)
-  (define-key xah-menu-t-keymap (kbd "w") 'window-configuration-to-register)
-  (define-key xah-menu-t-keymap (kbd "v") 'vc-register)
-
+  (define-key xah-menu-t-keymap (kbd "s") 'write-file)
+  (define-key xah-menu-t-keymap (kbd "t") 'repeat)
+  (define-key xah-menu-t-keymap (kbd "u") 'insert-register)
+  
   )
 
   (global-set-key (kbd "<menu> u") 'xah-dump-keymap)
@@ -389,12 +388,12 @@
   (define-key xah-danger-keymap (kbd "DEL") 'xah-delete-current-file)
 
   (define-key xah-danger-keymap (kbd ".") 'eval-buffer)
-  (define-key xah-danger-keymap (kbd "u") 'eval-region)
+  (define-key xah-danger-keymap (kbd "e") 'eval-defun)
   (define-key xah-danger-keymap (kbd "m") 'eval-last-sexp)
   (define-key xah-danger-keymap (kbd "p") 'eval-expression)
-  (define-key xah-danger-keymap (kbd "e") 'eval-defun)
   (define-key xah-danger-keymap (kbd "q") 'save-buffers-kill-terminal)
-
+  (define-key xah-danger-keymap (kbd "u") 'eval-region)
+  
   )
 
 (global-set-key (kbd "<menu> x") nil)
