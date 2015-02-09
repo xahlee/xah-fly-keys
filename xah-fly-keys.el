@@ -65,7 +65,6 @@ To solve this problem, when your code only knows the relative path of another fi
 (load (xah-get-fullpath "xah-fly-keys-help-keymap"))
 (load (xah-get-fullpath "xah-fly-keys-user-keymap"))
 (load (xah-get-fullpath "xah-fly-keys-control-key"))
-(load (xah-get-fullpath "xah-fly-keys-meta-key"))
 (load (xah-get-fullpath "xah-fly-keys-special-keys"))
 (load (xah-get-fullpath "xah-fly-keys-mode-specific"))
 
