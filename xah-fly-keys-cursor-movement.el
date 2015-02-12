@@ -86,7 +86,7 @@ See: `xah-forward-block'"
 (setq xah-punctuations '("=" ";"))
 
 (defvar xah-punctuation-regex nil "a regex string for the purpose of jumping to punctuations in programing modes.")
-(setq xah-punctuation-regex "= *['\"]")
+(setq xah-punctuation-regex "[\\!\?\"'#$%&*+,/:;<=>@^`|~]+")
 
 (defun xah-forward-punct (&optional φn)
   "Move cursor to the next occurrence of punctuation.
@@ -148,6 +148,16 @@ See also: `xah-backward-quote'."
 See `xah-forward-quote'."
   (interactive)
   (search-backward-regexp (eval-when-compile (regexp-opt xah-ascii-quotes)) nil t))
+
+(defun xah-forward-dot-comma ()
+  "Move cursor to the next occurrence of 「.」 「,」 「;」"
+  (interactive)
+  (search-forward-regexp "\\.+\\|,+\\|;+" nil t))
+
+(defun xah-backward-dot-comma ()
+  "Move cursor to the previous occurrence of 「.」 「,」 「;」"
+  (interactive)
+  (search-backward-regexp "\\.+\\|,+\\|;+" nil t))
 
 ;; (defun goto-point-min ()
 ;;   "Goto the beginning of buffer.

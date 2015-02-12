@@ -142,9 +142,9 @@ To solve this problem, when your code only knows the relative path of another fi
     (global-set-key (kbd ",") 'xah-shrink-whitespaces)
     (global-set-key (kbd "-") nil)
     (global-set-key (kbd ".") 'backward-kill-word)
-    (global-set-key (kbd "/") nil)
+    (global-set-key (kbd "/") 'xah-backward-dot-comma)
     (global-set-key (kbd ";") nil)
-    (global-set-key (kbd "=") nil)
+    (global-set-key (kbd "=") 'xah-forward-dot-comma)
     (global-set-key (kbd "SPC") 'xfk-insert-mode-activate)
     (global-set-key (kbd "[") 'xah-backward-quote)
     (global-set-key (kbd "\\") nil)
@@ -183,13 +183,20 @@ To solve this problem, when your code only knows the relative path of another fi
     (global-set-key (kbd "s") 'xah-end-of-line-or-block)
     (global-set-key (kbd "t") 'next-line)
     (global-set-key (kbd "u") 'delete-char)
-    (global-set-key (kbd "v") 'xah-forward-right-bracket)
-    (global-set-key (kbd "w") 'xah-insert-space-after)
+    (global-set-key (kbd "v") 'xah-insert-space-after)
+    (global-set-key (kbd "w") 'xah-forward-right-bracket)
     (global-set-key (kbd "x") nil)
     (global-set-key (kbd "y") 'set-mark-command)
     (global-set-key (kbd "z") 'comment-dwim)
 
 ))
+
+;; 67890
+;; fgcrl
+;; dhtns
+;; x z
+;; 
+
 
 (defun xfk-mode-toggle ()
   "Switch between {insertion, command} modes."

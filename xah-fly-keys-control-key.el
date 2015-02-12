@@ -25,7 +25,7 @@
 ;;   (global-set-key (kbd "C-s") 'save-buffer)  ; was isearch-forward
 ;;   (global-set-key (kbd "C-S-s") 'write-file) ; was nil
 ;;   (global-set-key (kbd "C-S-t") 'xah-open-last-closed) ; was nil
-;;   (global-set-key (kbd "C-w") 'xah-close-current-buffer) ; was kill-region
+  (global-set-key (kbd "C-w") 'xah-close-current-buffer) ; was kill-region
 ;;   (global-set-key (kbd "C-y") 'redo)                     ; was yank
 ;;   (global-set-key (kbd "C-z") 'undo) ; was suspend-frame
 ;;   )
