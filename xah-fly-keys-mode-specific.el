@@ -122,10 +122,15 @@
   )
 (add-hook 'calc-mode-hook 'xah-calc-mode-keys)
 
-
-(progn 
+(progn
   ;; used by modes {C, C++, java}
   (require 'cc-mode)
   ;; (setq c-electric-flag nil)
   (define-key c-mode-base-map "," nil) ; was c-electric-semi&comma
   )
+
+(defun xah-occur-mode-keys ()
+  "keys for `occur-mode'."
+  (define-key occur-mode-map (kbd "o") 'other-window)
+  )
+(add-hook 'occur-mode-hook 'xah-occur-mode-keys)
