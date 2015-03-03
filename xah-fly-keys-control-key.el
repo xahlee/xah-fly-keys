@@ -15,6 +15,8 @@
   (global-set-key (kbd "C-7") 'xah-cycle-camel-style-case)
   (global-set-key (kbd "C-8") 'xah-cycle-hyphen-underscore-space)
   (global-set-key (kbd "C-9") 'hippie-expand)
+  (global-set-key (kbd "C-0") 'yank-pop)
+
   )
 
 ;; (progn                                            ; standard keys

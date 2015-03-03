@@ -187,7 +187,7 @@
 
 (global-set-key (kbd "<menu> j") 'xah-copy-all)
 
-(global-set-key (kbd "<menu> k") 'xah-clean-whitespace)
+(global-set-key (kbd "<menu> k") 'xah-clean-whitespace-and-save)
 
 (global-set-key (kbd "<menu> l") 'recenter-top-bottom)
 
@@ -351,7 +351,7 @@
   (define-key xah-menu-t-keymap (kbd "s") 'write-file)
   (define-key xah-menu-t-keymap (kbd "t") 'repeat)
   (define-key xah-menu-t-keymap (kbd "u") 'insert-register)
-  
+
   )
 
   (global-set-key (kbd "<menu> u") 'xah-dump-keymap)
@@ -394,7 +394,7 @@
   (define-key xah-danger-keymap (kbd "q") 'save-buffers-kill-terminal)
   (define-key xah-danger-keymap (kbd "u") 'eval-region)
   (define-key xah-danger-keymap (kbd "w") 'close-frame)
-  
+
   )
 
 (global-set-key (kbd "<menu> x") nil)
