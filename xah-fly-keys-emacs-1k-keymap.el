@@ -251,7 +251,7 @@
   (define-key xah-harmless-keymap (kbd "j") nil)
   (define-key xah-harmless-keymap (kbd "k") 'menu-bar-open)
   (define-key xah-harmless-keymap (kbd "l") 'toggle-word-wrap)
-  (define-key xah-harmless-keymap (kbd "m") nil)
+  (define-key xah-harmless-keymap (kbd "m") 'global-linum-mode)
   (define-key xah-harmless-keymap (kbd "n") 'narrow-to-region)
   (define-key xah-harmless-keymap (kbd "o") nil)
   (define-key xah-harmless-keymap (kbd "p") nil)
