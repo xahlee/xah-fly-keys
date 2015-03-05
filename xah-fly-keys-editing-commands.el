@@ -95,24 +95,24 @@ Toggles between: “all lower”, “Init Caps”, “ALL CAPS”."
 
 
 
-(defun xah-shrink-whitespaces ()
+(defun xah-shrink-whitespaces-old-2015-03-03 ()
   "Remove whitespaces around cursor to just one or none.
 If current line does have visible characters: shrink whitespace around cursor to just one space.
 If current line does not have visible chars, then shrink all neighboring blank lines to just one.
 If current line is a single space, remove that space.
 URL `http://ergoemacs.org/emacs/emacs_shrink_whitespace.html'
-version 2014-10-21"
+Version 2015-03-03"
   (interactive)
   (let ((ξpos (point))
-        ξline-has-meat-p ; current line contains non-white space chars
-        ξspace-tab-neighbor-p
+        ξline-has-char-p ; current line contains non-white space chars
+        ξhas-space-tab-neighbor-p
         ξwhitespace-begin ξwhitespace-end
         ξspace-or-tab-begin ξspace-or-tab-end
         )
     (save-excursion
-      (setq ξspace-tab-neighbor-p (if (or (looking-at " \\|\t") (looking-back " \\|\t")) t nil))
+      (setq ξhas-space-tab-neighbor-p (if (or (looking-at " \\|\t") (looking-back " \\|\t")) t nil))
       (beginning-of-line)
-      (setq ξline-has-meat-p (search-forward-regexp "[[:graph:]]" (line-end-position) t))
+      (setq ξline-has-char-p (search-forward-regexp "[[:graph:]]" (line-end-position) t))
 
       (goto-char ξpos)
       (skip-chars-backward "\t ")
@@ -127,14 +127,59 @@ version 2014-10-21"
       (skip-chars-forward "\t \n")
       (setq ξwhitespace-end (point)))
 
-    (if ξline-has-meat-p
+    (if ξline-has-char-p
         (let (ξdeleted-text)
-          (when ξspace-tab-neighbor-p
+          (when ξhas-space-tab-neighbor-p
             ;; remove all whitespaces in the range
             (setq ξdeleted-text (delete-and-extract-region ξspace-or-tab-begin ξspace-or-tab-end))
             ;; insert a whitespace only if we have removed something different than a simple whitespace
             (if (not (string= ξdeleted-text " "))
                 (insert " "))))
+      (progn (delete-blank-lines)))))
+
+(defun xah-shrink-whitespaces ()
+  "Remove whitespaces around cursor to just one or none.
+Remove whitespaces around cursor to just one space, or remove neighboring blank lines to just one or none.
+URL `http://ergoemacs.org/emacs/emacs_shrink_whitespace.html'
+Version 2015-03-03"
+  (interactive)
+  (let ((ξpos (point))
+        ξline-has-char-p ; current line contains non-white space chars
+        ξhas-space-tab-neighbor-p
+        ξwhitespace-begin ξwhitespace-end
+        ξspace-or-tab-begin ξspace-or-tab-end
+        )
+    (save-excursion
+      (setq ξhas-space-tab-neighbor-p (if (or (looking-at " \\|\t") (looking-back " \\|\t")) t nil))
+      (beginning-of-line)
+      (setq ξline-has-char-p (search-forward-regexp "[[:graph:]]" (line-end-position) t))
+
+      (goto-char ξpos)
+      (skip-chars-backward "\t ")
+      (setq ξspace-or-tab-begin (point))
+
+      (skip-chars-backward "\t \n")
+      (setq ξwhitespace-begin (point))
+
+      (goto-char ξpos)
+      (skip-chars-forward "\t ")
+      (setq ξspace-or-tab-end (point))
+      (skip-chars-forward "\t \n")
+      (setq ξwhitespace-end (point)))
+
+    (if ξline-has-char-p
+        (if ξhas-space-tab-neighbor-p
+            (let (ξdeleted-text)
+              ;; remove all whitespaces in the range
+              (setq ξdeleted-text
+                    (delete-and-extract-region ξspace-or-tab-begin ξspace-or-tab-end))
+              ;; insert a whitespace only if we have removed something different than a simple whitespace
+              (when (not (string= ξdeleted-text " "))
+                (insert " ")))
+
+          (progn
+            (when (equal (char-before) 10) (delete-char -1))
+            (when (equal (char-after) 10) (delete-char 1))))
       (progn (delete-blank-lines)))))
 
 (defun xah-compact-uncompact-block ()
