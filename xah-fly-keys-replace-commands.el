@@ -3,23 +3,27 @@
 (defun xah-latex-to-unicode (φp1 φp2)
   "Replace TeX markup to Unicode.
 ⁖  \\alpha becomes α"
+  (interactive
+   (let (p1 p2)
+     (if (use-region-p)
+         (progn 
+           (setq p1 (region-beginning))
+           (setq p2 (region-end)))
+       (progn 
+         (save-excursion
+           (if (re-search-backward "\n[ \t]*\n" nil "move")
+               (progn (re-search-forward "\n[ \t]*\n")
+                      (setq p1 (point)))
+             (setq p1 (point)))
+           (if (re-search-forward "\n[ \t]*\n" nil "move")
+               (progn (re-search-backward "\n[ \t]*\n")
+                      (setq p2 (point)))
+             (setq p2 (point))))))
+     (list p1 p2)))
 
-;; (interactive
-;;    (let (p1 p2)
-;;      (if (re-search-backward "\n[ \t]*\n" nil "move")
-;;          (progn (re-search-forward "\n[ \t]*\n")
-;;                 (setq p1 (point)))
-;;        (setq p1 (point)))
-;;      (if (re-search-forward "\n[ \t]*\n" nil "move")
-;;          (progn (re-search-backward "\n[ \t]*\n")
-;;                 (setq p2 (point)))
-;;        (setq p2 (point))))
-;;    (list p1 p2))
-
-(interactive "r")
   ;; (message "%s %s" φp1 φp2)
-;; TODO with no text selection, it seems to act on some region starting at point. Expected behavior is error or empty region 
-;; check behavior of (interactive "r") when no region. and same for replace-pairs-region
+  ;; TODO with no text selection, it seems to act on some region starting at point. Expected behavior is error or empty region 
+  ;; check behavior of (interactive "r") when no region. and same for replace-pairs-region
   (replace-pairs-region φp1 φp2 '(
                                   ["\\rightarrow" "→"]
                                   ["\\Sigma" "Σ"]
@@ -30,6 +34,7 @@
                                   ["\\delta" "δ"]
                                   ["\\Lambda" "Λ"]
                                   ["\\epsilon" "ε"]
+                                  ["\\omega" "ω"]
                                   ["\\cup" "∪"]
                                   ["\\in" "∈"]
                                   )))
