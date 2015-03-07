@@ -112,7 +112,7 @@
 
   )
 
-  (global-set-key (kbd "<menu> SPC") 'xah-insert-keymap)
+  (global-set-key (kbd "<menu> SPC") 'xah-dump-keymap)
 
 (global-set-key (kbd "<menu> <menu>") 'exchange-point-and-mark)
 
@@ -354,7 +354,7 @@
 
   )
 
-  (global-set-key (kbd "<menu> u") 'xah-dump-keymap)
+  (global-set-key (kbd "<menu> u") 'xah-insertion-keymap)
 
 (progn
   (define-prefix-command 'xah-menu-v-keymap)
@@ -469,7 +469,6 @@
 ;; C-x r	Prefix Command
 ;; C-x s	save-some-buffers
 
-;; C-x v	vc-prefix-map
 ;; C-x {	shrink-window-horizontally
 ;; C-x }	enlarge-window-horizontally
 ;; C-x DEL	backward-kill-sentence

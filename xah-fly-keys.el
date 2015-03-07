@@ -24,7 +24,6 @@
 ;; • make it a proper minor mode.
 ;; • make it support diff Keyboard layouts
 ;; • fine-tune keys in command mode. (introduce key sequence there. Consider whether {open, close, save} should be there. and some other commands such as {dired-jump, query-replace-regexp, xah-toggle-letter-case}.)
-;; • support different keyboard layouts.
 
 
 
@@ -64,10 +63,10 @@ To solve this problem, when your code only knows the relative path of another fi
 (load (xah-get-fullpath "xah-fly-keys-emacs-1k-keymap"))
 (load (xah-get-fullpath "xah-fly-keys-help-keymap"))
 (load (xah-get-fullpath "xah-fly-keys-user-keymap"))
+(load (xah-get-fullpath "xah-fly-keys-insertion-keymap"))
 (load (xah-get-fullpath "xah-fly-keys-control-key"))
 (load (xah-get-fullpath "xah-fly-keys-special-keys"))
 (load (xah-get-fullpath "xah-fly-keys-mode-specific"))
-
 
 
 
@@ -195,8 +194,7 @@ To solve this problem, when your code only knows the relative path of another fi
 ;; fgcrl
 ;; dhtns
 ;; x z
-;; 
-
+;;
 
 (defun xfk-mode-toggle ()
   "Switch between {insertion, command} modes."
@@ -231,32 +229,3 @@ To solve this problem, when your code only knows the relative path of another fi
 
 
 (provide 'xah-fly-keys)
-
-    ;; ;; (global-set-key (kbd "S-SPC") 'self-insert-command)
-    ;; ;; (global-set-key (kbd "S-SPC") 'xah-toggle-previous-letter-case)
-    ;; (global-set-key (kbd "A") nil)
-    ;; (global-set-key (kbd "B") nil)
-    ;; (global-set-key (kbd "C") 'backward-up-list)
-    ;; (global-set-key (kbd "D") nil)
-    ;; (global-set-key (kbd "E") nil)
-    ;; (global-set-key (kbd "F") nil)
-    ;; (global-set-key (kbd "G") 'xah-backward-quote)
-    ;; (global-set-key (kbd "H") 'backward-sexp)
-    ;; (global-set-key (kbd "I") nil)
-    ;; (global-set-key (kbd "J") nil)
-    ;; (global-set-key (kbd "K") nil)
-    ;; (global-set-key (kbd "L") nil)
-    ;; (global-set-key (kbd "M") 'xah-backward-punct)
-    ;; (global-set-key (kbd "N") 'forward-sexp)
-    ;; (global-set-key (kbd "O") nil)
-    ;; (global-set-key (kbd "P") nil)
-    ;; (global-set-key (kbd "Q") nil)
-    ;; (global-set-key (kbd "R") 'xah-forward-quote)
-    ;; (global-set-key (kbd "S") nil)
-    ;; (global-set-key (kbd "T") 'down-list)
-    ;; (global-set-key (kbd "U") nil)
-    ;; (global-set-key (kbd "V") 'xah-forward-punct)
-    ;; (global-set-key (kbd "W") nil)
-    ;; (global-set-key (kbd "X") nil)
-    ;; (global-set-key (kbd "Y") nil)
-    ;; (global-set-key (kbd "Z") nil)

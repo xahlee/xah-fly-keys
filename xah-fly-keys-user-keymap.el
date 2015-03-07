@@ -8,8 +8,6 @@
   ;; this should reserved for user-defined keys
   (define-prefix-command 'xah-user-keymap)
 
-  (define-key xah-user-keymap (kbd "SPC") 'xah-toggle-previous-letter-case)
-
   (define-key xah-user-keymap (kbd "-") 'xah-insert-form-feed)
   (define-key xah-user-keymap (kbd ".") 'title-case-string-region-or-line)
 
@@ -24,7 +22,7 @@
   (define-key xah-user-keymap (kbd "9") 'xah-find-replace-text-regex)
   (define-key xah-user-keymap (kbd "0") 'xah-find-text-regex)
 
-  (define-key xah-user-keymap (kbd "a") nil)
+  (define-key xah-user-keymap (kbd "a") 'xah-toggle-previous-letter-case)
   (define-key xah-user-keymap (kbd "b") 'xah-shell-commands)
   (define-key xah-user-keymap (kbd "c") 'xah-cite)
   (define-key xah-user-keymap (kbd "d") 'insert-date)
@@ -95,14 +93,6 @@
   ;; command dump. temp, rare, or whatever. put them here to have a key for now. worry later
   (define-prefix-command 'xah-dump-keymap)
 
-  (define-key xah-dump-keymap (kbd "SPC") nil)
-  (define-key xah-dump-keymap (kbd "RET") nil)
-
-  (define-key xah-dump-keymap (kbd "<f9>") nil)
-  (define-key xah-dump-keymap (kbd "<f10>") nil)
-  (define-key xah-dump-keymap (kbd "<f11>") nil)
-  (define-key xah-dump-keymap (kbd "<f12>") nil)
-
   (define-key xah-dump-keymap (kbd "DEL") 'xah-remove-overlays-region)
   (define-key xah-dump-keymap (kbd "RET") 'xah-show-overlay-at-point)
 
@@ -139,64 +129,3 @@
   (define-key xah-dump-keymap (kbd "z") nil)
 
   )
-
-(progn
-
-  (define-prefix-command 'xah-insert-keymap)
-
-  (define-key xah-insert-keymap (kbd "RET") 'ucs-insert)
-
-  (define-key key-translation-map (kbd "<menu> SPC .") nil)
-
-  (define-key key-translation-map (kbd "<menu> SPC <down>") (kbd "↓"))
-  (define-key key-translation-map (kbd "<menu> SPC <left>") (kbd "←"))
-  (define-key key-translation-map (kbd "<menu> SPC <right>") (kbd "→"))
-  (define-key key-translation-map (kbd "<menu> SPC <up>") (kbd "↑"))
-  (define-key key-translation-map (kbd "<menu> SPC \\") (kbd "、")) ; IDEOGRAPHIC COMMA
-
-  (define-key xah-insert-keymap (kbd ".") 'xah-insert-unicode)
-  (define-key xah-insert-keymap (kbd ",") nil)
-
-  (define-key key-translation-map (kbd "<menu> SPC 3") (kbd "φ"))
-  (define-key key-translation-map (kbd "<menu> SPC 4") (kbd "ξ"))
-
-  (define-key key-translation-map (kbd "<menu> SPC 6") (kbd "ƒ"))
-  (define-key key-translation-map (kbd "<menu> SPC 7") (kbd "＆"))
-  (define-key key-translation-map (kbd "<menu> SPC 8") (kbd "•"))
-  (define-key key-translation-map (kbd "<menu> SPC 9") (kbd "—")) ; EM DASH
-
-  (define-key xah-insert-keymap (kbd "a") nil)
-  (define-key xah-insert-keymap (kbd "b") 'xah-insert-black-lenticular-bracket【】)
-  (define-key xah-insert-keymap (kbd "c") 'xah-insert-ascii-single-quote)
-  (define-key xah-insert-keymap (kbd "d") 'xah-insert-double-curly-quote“”)
-  (define-key xah-insert-keymap (kbd "e") 'xah-insert-greater-less)
-  (define-key xah-insert-keymap (kbd "f") 'xah-insert-emacs-quote)
-  (define-key xah-insert-keymap (kbd "g") 'xah-insert-ascii-double-quote)
-  (define-key xah-insert-keymap (kbd "h") 'xah-insert-brace) ; {}
-  (define-key xah-insert-keymap (kbd "i") 'xah-insert-curly-single-quote‘’)
-  (define-key xah-insert-keymap (kbd "j") nil)
-  (define-key xah-insert-keymap (kbd "k") nil)
-  (define-key key-translation-map (kbd "<menu> SPC l") (kbd "…")) ; HORIZONTAL ELLIPSIS
-  (define-key xah-insert-keymap (kbd "m") 'xah-insert-corner-bracket「」)
-  (define-key xah-insert-keymap (kbd "n") 'xah-insert-bracket)            ;[]
-  (define-key xah-insert-keymap (kbd "o") nil)
-  (define-key xah-insert-keymap (kbd "p") 'xah-insert-single-angle-quote‹›)
-  (define-key xah-insert-keymap (kbd "q") nil)
-  (define-key xah-insert-keymap (kbd "r") 'xah-insert-tortoise-shell-bracket〔〕)
-  (define-key xah-insert-keymap (kbd "s") nil)
-  (define-key xah-insert-keymap (kbd "t") 'xah-insert-paren)
-  (define-key xah-insert-keymap (kbd "u") nil)
-  (define-key xah-insert-keymap (kbd "v") nil)
-  (define-key xah-insert-keymap (kbd "w") 'xah-insert-double-angle-bracket《》)
-  (define-key xah-insert-keymap (kbd "W") 'xah-insert-angle-bracket〈〉)
-  (define-key xah-insert-keymap (kbd "x") nil)
-  (define-key xah-insert-keymap (kbd "y") 'xah-insert-double-angle-quote«»)
-  (define-key xah-insert-keymap (kbd "z") 'xah-insert-word-3)
-
-  )
-
-;; temp
-(global-set-key (kbd "<C-f7>") 'xah-goto-previous-overlay)
-(global-set-key (kbd "<C-f8>") 'xah-goto-next-overlay)
-(global-set-key (kbd "<C-f9>") 'xah-syntax-bracket-backward)
-(global-set-key (kbd "<C-f10>") 'xah-syntax-bracket-forward)
