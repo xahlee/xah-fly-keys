@@ -93,14 +93,8 @@
   ;; command dump. temp, rare, or whatever. put them here to have a key for now. worry later
   (define-prefix-command 'xah-dump-keymap)
 
-  (define-key xah-dump-keymap (kbd "DEL") 'xah-remove-overlays-region)
-  (define-key xah-dump-keymap (kbd "RET") 'xah-show-overlay-at-point)
-
-  (define-key xah-dump-keymap (kbd "7") 'xah-syntax-bracket-backward)
-  (define-key xah-dump-keymap (kbd "8") 'xah-syntax-bracket-forward)
-
-  (define-key xah-dump-keymap (kbd "a") 'xah-show-all-overlays)
-  (define-key xah-dump-keymap (kbd "b") 'xah-make-overlay-bold-region)
+  (define-key xah-dump-keymap (kbd "a") nil)
+  (define-key xah-dump-keymap (kbd "b") nil)
   (define-key xah-dump-keymap (kbd "c") 'xah-css-mode)
   (define-key xah-dump-keymap (kbd "d") nil)
   (define-key xah-dump-keymap (kbd "e") 'xah-elisp-mode)
@@ -115,17 +109,16 @@
   (define-key xah-dump-keymap (kbd "m") nil)
   (define-key xah-dump-keymap (kbd "n") nil)
   (define-key xah-dump-keymap (kbd "o") nil)
-  (define-key xah-dump-keymap (kbd "p") 'xah-parse-partial-sexp)
+  (define-key xah-dump-keymap (kbd "p") nil)
   (define-key xah-dump-keymap (kbd "p") nil)
   (define-key xah-dump-keymap (kbd "q") nil)
   (define-key xah-dump-keymap (kbd "r") nil)
-  (define-key xah-dump-keymap (kbd "s") 'xah-scan-sexps)
+  (define-key xah-dump-keymap (kbd "s") nil)
   (define-key xah-dump-keymap (kbd "t") 'xah-clojure-mode)
   (define-key xah-dump-keymap (kbd "u") nil)
   (define-key xah-dump-keymap (kbd "v") nil)
   (define-key xah-dump-keymap (kbd "w") nil)
   (define-key xah-dump-keymap (kbd "x") nil)
   (define-key xah-dump-keymap (kbd "y") nil)
-  (define-key xah-dump-keymap (kbd "z") nil)
-
+  (define-key xah-dump-keymap (kbd "z") 'xah-insert-word-3)
   )
