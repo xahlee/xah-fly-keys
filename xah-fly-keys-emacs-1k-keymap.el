@@ -67,23 +67,37 @@
   ;; Mac OS X  doesn't have menu, even if using pc keyboard
   (define-key key-translation-map (kbd "C-p") (kbd "<menu>")))
 
-(global-set-key (kbd "<end>") 'xah-user-keymap)
-
 (define-prefix-command 'xah-menu-keymap)
 (global-set-key (kbd "<menu>") 'xah-menu-keymap)
 
 (global-set-key (kbd "<menu> <return>") 'smex) ; todo check if  bound, else execute-extended-command
 
-(progn
-  (define-prefix-command 'xah-menu-backspace-keymap)
-  (global-set-key (kbd "<menu> <backspace>") xah-menu-backspace-keymap)
-;; 'xah-delete-text-block
-  )
+(global-set-key (kbd "<menu> <backspace>") nil)
+(global-set-key (kbd "<menu> <delete>") nil)
+(global-set-key (kbd "<menu> SPC") 'xah-user-keymap)
 
-(progn
-  (define-prefix-command 'xah-menu-delete-keymap)
-  (global-set-key (kbd "<menu> <delete>") xah-menu-delete-keymap)
-  )
+(global-set-key (kbd "<menu> <menu>") 'exchange-point-and-mark)
+
+(global-set-key (kbd "<menu> .") 'universal-argument)
+(global-set-key (kbd "<menu> '") 'quoted-insert)
+(global-set-key (kbd "<menu> ,") nil)
+(global-set-key (kbd "<menu> -") nil)
+(global-set-key (kbd "<menu> /") nil)
+(global-set-key (kbd "<menu> ;") nil)
+(global-set-key (kbd "<menu> =") nil)
+(global-set-key (kbd "<menu> [") nil)
+(global-set-key (kbd "<menu> \\") nil)
+(global-set-key (kbd "<menu> `") nil)
+(global-set-key (kbd "<menu> 1") nil)
+(global-set-key (kbd "<menu> 2") 'delete-window)
+(global-set-key (kbd "<menu> 3") 'delete-other-windows)
+(global-set-key (kbd "<menu> 4") 'split-window-vertically)
+(global-set-key (kbd "<menu> 5") 'split-window-horizontally)
+(global-set-key (kbd "<menu> 6") nil)
+(global-set-key (kbd "<menu> 7") nil)
+(global-set-key (kbd "<menu> 8") nil)
+(global-set-key (kbd "<menu> 9") nil)
+(global-set-key (kbd "<menu> 0") 'ispell-word)
 
 (progn
   (define-prefix-command 'xah-menu-tab-keymap)
@@ -112,30 +126,7 @@
 
   )
 
-  (global-set-key (kbd "<menu> SPC") 'xah-dump-keymap)
-
-(global-set-key (kbd "<menu> <menu>") 'exchange-point-and-mark)
-
-(global-set-key (kbd "<menu> .") 'universal-argument)
-(global-set-key (kbd "<menu> '") 'quoted-insert)
-(global-set-key (kbd "<menu> ,") nil)
-(global-set-key (kbd "<menu> -") nil)
-(global-set-key (kbd "<menu> /") nil)
-(global-set-key (kbd "<menu> ;") nil)
-(global-set-key (kbd "<menu> =") nil)
-(global-set-key (kbd "<menu> [") nil)
-(global-set-key (kbd "<menu> \\") nil)
-(global-set-key (kbd "<menu> `") nil)
-(global-set-key (kbd "<menu> 1") nil)
-(global-set-key (kbd "<menu> 2") 'delete-window)
-(global-set-key (kbd "<menu> 3") 'delete-other-windows)
-(global-set-key (kbd "<menu> 4") 'split-window-vertically)
-(global-set-key (kbd "<menu> 5") 'split-window-horizontally)
-(global-set-key (kbd "<menu> 6") nil)
-(global-set-key (kbd "<menu> 7") nil)
-(global-set-key (kbd "<menu> 8") nil)
-(global-set-key (kbd "<menu> 9") nil)
-(global-set-key (kbd "<menu> 0") 'ispell-word)
+
 
 (global-set-key (kbd "<menu> a") 'mark-whole-buffer)
 
@@ -260,7 +251,7 @@
   (define-key xah-harmless-keymap (kbd "s") 'flyspell-buffer)
   (define-key xah-harmless-keymap (kbd "t") 'narrow-to-defun)
   (define-key xah-harmless-keymap (kbd "u") 'toggle-input-method)
-  (define-key xah-harmless-keymap (kbd "v") nil)
+  (define-key xah-harmless-keymap (kbd "v") 'variable-pitch-mode)
   (define-key xah-harmless-keymap (kbd "w") 'eww)
   (define-key xah-harmless-keymap (kbd "x") 'nil)
   (define-key xah-harmless-keymap (kbd "y") 'nil)

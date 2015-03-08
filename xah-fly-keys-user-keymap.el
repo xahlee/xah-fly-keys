@@ -8,6 +8,7 @@
   ;; this should reserved for user-defined keys
   (define-prefix-command 'xah-user-keymap)
 
+  (define-key xah-user-keymap (kbd "SPC") 'xah-dump-keymap)
   (define-key xah-user-keymap (kbd "-") 'xah-insert-form-feed)
   (define-key xah-user-keymap (kbd ".") 'title-case-string-region-or-line)
 
