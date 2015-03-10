@@ -1,9 +1,5 @@
 ;; -*- coding: utf-8 -*-
 
-;; (require 'xmsi-math-symbols-input)
-;; (define-key xmsi-keymap (kbd "S-SPC") 'xmsi-change-to-symbol)
-;; (define-key xmsi-keymap (kbd "<end> <menu>") nil)
-
 (progn
   ;; this should reserved for user-defined keys
   (define-prefix-command 'xah-user-keymap)
