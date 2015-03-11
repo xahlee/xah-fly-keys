@@ -76,7 +76,7 @@
 
 (global-set-key (kbd "<menu> <backspace>") nil)
 (global-set-key (kbd "<menu> <delete>") nil)
-(global-set-key (kbd "<menu> SPC") 'xah-user-keymap)
+(global-set-key (kbd "<menu> SPC") nil)
 
 (global-set-key (kbd "<menu> <menu>") 'exchange-point-and-mark)
 
