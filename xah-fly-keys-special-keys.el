@@ -55,6 +55,6 @@
 (global-set-key (kbd "C-<XF86Paste>") 'yank-pop)
 (global-set-key (kbd "<XF86Close>") 'xah-close-current-buffer)
 
-(define-key key-translation-map (kbd "<end>") (kbd "C-g"))
+(define-key key-translation-map (kbd "<f17>") (kbd "C-g"))
 
 

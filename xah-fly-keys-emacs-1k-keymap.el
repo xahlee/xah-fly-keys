@@ -60,6 +60,8 @@
 
 ;; the above is the sketch of the design. However, i realized that some exceptions is ok, or even optimal. One thing i learned is that a strict regularity or rule may not be optimal, as some exception or irregularity sometimes makes it more convenient, easier to remember, or make your fingers good because they don't always use the same keys. These reasoning may be fallacy, I don't have a solid analysis on it yet.
 
+(global-set-key (kbd "<end>") 'xah-user-keymap)
+
 (when (string-equal system-type "windows-nt")
   (define-key key-translation-map (kbd "<apps>") (kbd "<menu>")))
 
