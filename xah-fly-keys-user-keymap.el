@@ -31,6 +31,8 @@
   (define-key xah-user-keymap (kbd "f b") 'xah-dired-crop-image)
   (define-key xah-user-keymap (kbd "f d") 'xah-dired-image-autocrop)
   (define-key xah-user-keymap (kbd "f f") 'xah-dired-2drawing)
+  (define-key xah-user-keymap (kbd "f e") 'xah-dired-show-metadata)
+  (define-key xah-user-keymap (kbd "f u") 'xah-dired-remove-all-metadata)
 
   (define-key xah-user-keymap (kbd "h") nil)
 
