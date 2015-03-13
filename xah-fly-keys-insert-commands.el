@@ -131,7 +131,7 @@ Note: this command is similar to `rectangle-number-lines', starting at 65 or 97,
         ("◇" . "3" )
         ("◆" . "4" )
         ("¤" . "2" )
-        ("…" . "l" )
+        ("…" . "." )
         (" " . "s" )
         ("、" . "," )
         ("•" . "8" )
