@@ -42,6 +42,7 @@
 
 
 (global-set-key (kbd "<insert>") 'other-frame)
+(global-set-key (kbd "<f16>") 'other-frame)
 
 
 
