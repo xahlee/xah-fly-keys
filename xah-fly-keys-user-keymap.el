@@ -11,7 +11,7 @@
   (define-key xah-user-keymap (kbd "1") 'xah-copy-to-register-1)
   (define-key xah-user-keymap (kbd "2") 'xah-paste-from-register-1)
   (define-key xah-user-keymap (kbd "3") 'xah-asciify-region)
-  (define-key xah-user-keymap (kbd "4") nil)
+  (define-key xah-user-keymap (kbd "4") 'xah-clean-whitespace-and-save)
   (define-key xah-user-keymap (kbd "5") nil)
   (define-key xah-user-keymap (kbd "6") nil)
   (define-key xah-user-keymap (kbd "7") nil)
@@ -78,13 +78,13 @@
   (define-key xah-user-keymap (kbd "r u") 'xah-replace-newline-whitespaces-to-space)
   (define-key xah-user-keymap (kbd "r w") 'xah-convert-fullwidth-chars)
 
-  (define-key xah-user-keymap (kbd "s") nil)
+  (define-key xah-user-keymap (kbd "s") 'xah-insert-word-3)
   (define-key xah-user-keymap (kbd "t") nil)
   (define-key xah-user-keymap (kbd "u") 'xah-find-replace-text)
   (define-key xah-user-keymap (kbd "v") nil)
   (define-key xah-user-keymap (kbd "w") nil)
   (define-key xah-user-keymap (kbd "y") 'xah-open-last-closed)
-  (define-key xah-user-keymap (kbd "z") 'xah-insert-word-3)
+  (define-key xah-user-keymap (kbd "z") nil)
 
   )
 

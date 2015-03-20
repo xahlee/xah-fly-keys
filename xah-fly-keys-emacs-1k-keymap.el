@@ -178,9 +178,9 @@
   (define-key xah-menu-i-keymap (kbd "p") 'previous-error)
   )
 
-(global-set-key (kbd "<menu> j") 'xah-copy-all)
+(global-set-key (kbd "<menu> j") 'xah-copy-line-or-region)
 
-(global-set-key (kbd "<menu> k") 'xah-clean-whitespace-and-save)
+(global-set-key (kbd "<menu> k") 'yank)
 
 (global-set-key (kbd "<menu> l") 'recenter-top-bottom)
 
@@ -287,7 +287,7 @@
 
 (global-set-key (kbd "<menu> p") 'query-replace)
 
-(global-set-key (kbd "<menu> q") 'xah-cut-all)
+(global-set-key (kbd "<menu> q") 'xah-cut-line-or-region)
 
 (progn
   ;; kinda replacement related
@@ -335,11 +335,11 @@
 
   (define-key xah-menu-t-keymap (kbd "e") 'copy-to-register)
   (define-key xah-menu-t-keymap (kbd "h") 'xah-close-current-buffer)
-  (define-key xah-menu-t-keymap (kbd "j") 'xah-copy-line-or-region)
-  (define-key xah-menu-t-keymap (kbd "k") 'yank)
+  (define-key xah-menu-t-keymap (kbd "j") 'xah-copy-all)
+  (define-key xah-menu-t-keymap (kbd "k") nil)
   (define-key xah-menu-t-keymap (kbd "n") 'repeat-complex-command)
   (define-key xah-menu-t-keymap (kbd "p") 'query-replace-regexp)
-  (define-key xah-menu-t-keymap (kbd "q") 'xah-cut-line-or-region)
+  (define-key xah-menu-t-keymap (kbd "q") 'xah-cut-all)
   (define-key xah-menu-t-keymap (kbd "r") 'copy-rectangle-to-register)
   (define-key xah-menu-t-keymap (kbd "s") 'write-file)
   (define-key xah-menu-t-keymap (kbd "t") 'repeat)
@@ -390,7 +390,7 @@
 
   )
 
-(global-set-key (kbd "<menu> x") nil)
+(global-set-key (kbd "<menu> x") 'yank-pop)
 
 (global-set-key (kbd "<menu> y") nil)
 
