@@ -34,3 +34,17 @@
 (progn
   (global-set-key (kbd "<C-next>") 'xah-next-user-buffer)
   (global-set-key (kbd "<C-prior>") 'xah-previous-user-buffer))
+
+;; (progn
+;;   (global-set-key (kbd "C-t") ctl-x-map)
+
+;;   ;; (define-key key-translation-map (kbd "M-t") (kbd "C-c"))
+;;   ;; (define-key key-translation-map (kbd "C-c") (kbd "M-t"))
+;;   ;; (define-key key-translation-map (kbd "C-t") (kbd "C-x"))
+;;   ;; (define-key key-translation-map (kbd "C-x") (kbd "C-t"))
+;;   ;; (global-set-key (kbd "C-t") 'xah-cut-line-or-region)
+;;   ;; (global-set-key (kbd "M-t") 'xah-copy-line-or-region)
+
+;;   (global-set-key (kbd "C-x") 'xah-cut-line-or-region)
+;;   (global-set-key (kbd "C-v") 'yank)
+;;   )

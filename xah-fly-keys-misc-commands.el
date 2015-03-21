@@ -207,21 +207,22 @@ If path does not have a file extention, automatically try with “.el” for eli
 This command is similar to `find-file-at-point' but without prompting for confirmation.
 
 URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'
-version 2014-11-18"
+Version 2015-03-20"
   (interactive)
-  (let* ((ξs (if (use-region-p)
+  (let* ((ξinputStr (if (use-region-p)
                  (buffer-substring-no-properties (region-beginning) (region-end))
-               (let (p0 ξp1 ξp2)
-                 (setq p0 (point))
+               (let (ξp0 ξp1 ξp2 
+                         (ξcharSkipRegex "^  \"\t\n`':|()[]{}<>〔〕“”〈〉《》【】〖〗«»‹›·。\\`"))
+                 (setq ξp0 (point))
                  ;; chars that are likely to be delimiters of full path, e.g. space, tabs, brakets.
-                 (skip-chars-backward "^  \"\t\n`'|()[]{}<>〔〕“”〈〉《》【】〖〗«»‹›·。\\`")
+                 (skip-chars-backward ξcharSkipRegex)
                  (setq ξp1 (point))
-                 (goto-char p0)
-                 (skip-chars-forward "^  \"\t\n`'|()[]{}<>〔〕“”〈〉《》【】〖〗«»‹›·。\\'")
+                 (goto-char ξp0)
+                 (skip-chars-forward ξcharSkipRegex)
                  (setq ξp2 (point))
-                 (goto-char p0)
+                 (goto-char ξp0)
                  (buffer-substring-no-properties ξp1 ξp2))))
-         (ξpath (replace-regexp-in-string ":\\'" "" ξs)))
+         (ξpath (replace-regexp-in-string ":\\'" "" ξinputStr)))
     (if (string-match-p "\\`https?://" ξpath)
         (browse-url ξpath)
       (progn ; not starting “http://”
@@ -253,44 +254,45 @@ If path starts with “http://”, launch browser vistiting that URL, or open th
 
 Input path can be {relative, full path, URL}. See: `xahsite-web-path-to-filepath' for types of paths supported.
 
-version 2014-11-18
+Version 2015-03-20
 "
   (interactive)
   (let* (
-         (ξs1
+         (ξinputStr1
           (xah-remove-uri-fragment
            (if (use-region-p)
                (buffer-substring-no-properties (region-beginning) (region-end))
-             (let (p0 ξp1 ξp2)
-               (setq p0 (point))
+             (let (ξp0 ξp1 ξp2
+                       (ξcharSkipRegex "^  \"\t\n`':|()[]{}<>〔〕“”〈〉《》【】〖〗«»‹›·。\\`"))
+               (setq ξp0 (point))
                ;; chars that are likely to be delimiters of full path, e.g. space, tabs, brakets.
-               (skip-chars-backward "^  \"\t\n`'|()[]{}<>〔〕“”「」〈〉《》【】〖〗«»‹›·。\\`")
+               (skip-chars-backward ξcharSkipRegex)
                (setq ξp1 (point))
-               (goto-char p0)
-               (skip-chars-forward "^  \"\t\n`'|()[]{}<>〔〕“”「」〈〉《》【】〖〗«»‹›·。\\'")
+               (goto-char ξp0)
+               (skip-chars-forward ξcharSkipRegex)
                (setq ξp2 (point))
-               (goto-char p0)
+               (goto-char ξp0)
                (buffer-substring-no-properties ξp1 ξp2)))))
-         (ξs2 (replace-regexp-in-string ":\\'" "" ξs1))
+         (ξinputStr2 (replace-regexp-in-string ":\\'" "" ξinputStr1))
          fPath )
 
-    (if (string-equal ξs2 "")
+    (if (string-equal ξinputStr2 "")
         (progn (user-error "No path under cursor" ))
       (progn
 
         ;; convenience. if the input string start with a xah domain name, make it a url string
         (setq ξp
               (cond
-               ((string-match "\\`//" ξs2 ) (concat "http:" ξs2)) ; relative http protocol, used in css
-               ((string-match "\\`ergoemacs\\.org" ξs2 ) (concat "http://" ξs2))
-               ((string-match "\\`wordyenglish\\.com" ξs2 ) (concat "http://" ξs2))
-               ((string-match "\\`xaharts\\.org" ξs2 ) (concat "http://" ξs2))
-               ((string-match "\\`xahlee\\.info" ξs2 ) (concat "http://" ξs2))
-               ((string-match "\\`xahlee\\.org" ξs2 ) (concat "http://" ξs2))
-               ((string-match "\\`xahmusic\\.org" ξs2 ) (concat "http://" ξs2))
-               ((string-match "\\`xahporn\\.org" ξs2 ) (concat "http://" ξs2))
-               ((string-match "\\`xahsl\\.org" ξs2 ) (concat "http://" ξs2))
-               (t ξs2)))
+               ((string-match "\\`//" ξinputStr2 ) (concat "http:" ξinputStr2)) ; relative http protocol, used in css
+               ((string-match "\\`ergoemacs\\.org" ξinputStr2 ) (concat "http://" ξinputStr2))
+               ((string-match "\\`wordyenglish\\.com" ξinputStr2 ) (concat "http://" ξinputStr2))
+               ((string-match "\\`xaharts\\.org" ξinputStr2 ) (concat "http://" ξinputStr2))
+               ((string-match "\\`xahlee\\.info" ξinputStr2 ) (concat "http://" ξinputStr2))
+               ((string-match "\\`xahlee\\.org" ξinputStr2 ) (concat "http://" ξinputStr2))
+               ((string-match "\\`xahmusic\\.org" ξinputStr2 ) (concat "http://" ξinputStr2))
+               ((string-match "\\`xahporn\\.org" ξinputStr2 ) (concat "http://" ξinputStr2))
+               ((string-match "\\`xahsl\\.org" ξinputStr2 ) (concat "http://" ξinputStr2))
+               (t ξinputStr2)))
 
         (if (string-match-p "\\`https?://" ξp)
             (if (xahsite-url-is-xah-website-p ξp)
@@ -312,22 +314,22 @@ version 2014-11-18
 The clipboard should contain a file path or url to xah site. Open that file in emacs."
   (interactive)
   (let (
-        (ξs
+        (ξinputStr
          (with-temp-buffer
            (yank)
            (buffer-string)))
         fpath
         )
 
-    (if (string-match-p "\\`http://" ξs)
+    (if (string-match-p "\\`http://" ξinputStr)
         (progn
-          (setq fpath (xahsite-url-to-filepath ξs "addFileName"))
+          (setq fpath (xahsite-url-to-filepath ξinputStr "addFileName"))
           (if (file-exists-p fpath)
               (progn (find-file fpath))
             (progn (error "file doesn't exist 「%s」" fpath))))
       (progn ; not starting “http://”
-        (setq ξs (xah-remove-uri-fragment ξs))
-        (setq fpath (xahsite-web-path-to-filepath ξs default-directory))
+        (setq ξinputStr (xah-remove-uri-fragment ξinputStr))
+        (setq fpath (xahsite-web-path-to-filepath ξinputStr default-directory))
         (if (file-exists-p fpath)
             (progn (find-file fpath))
           (progn (user-error "file doesn't exist 「%s」" fpath)))))))
