@@ -1,7 +1,6 @@
 ;;-*- coding: utf-8 -*-
 ;; 〈Emacs Unicode Math Symbols Input Mode (xmsi-mode)〉 http://ergoemacs.org/emacs/xmsi-math-symbols-input.html
 
-
 (defun xah-insert-bracket-pair (φleft-bracket φright-bracket)
   "Insert a matching bracket and place cursor in between.
 
@@ -48,7 +47,7 @@ The arguments φleft-bracket ＆ φright-bracket are strings.
 ;; (insert-parentheses)
 
 (defun xah-insert-paren () (interactive) (xah-insert-bracket-pair "(" ")") )
-(defun xah-insert-bracket () (interactive) (xah-insert-bracket-pair "[" "]") )
+(defun xah-insert-square-bracket () (interactive) (xah-insert-bracket-pair "[" "]") )
 (defun xah-insert-brace () (interactive) (xah-insert-bracket-pair "{" "}") )
 (defun xah-insert-greater-less () (interactive) (xah-insert-bracket-pair "<" ">") )
 
@@ -68,6 +67,13 @@ The arguments φleft-bracket ＆ φright-bracket are strings.
 (defun xah-insert-tortoise-shell-bracket〔〕 () (interactive) (xah-insert-bracket-pair "〔" "〕") )
 
 
+
+(defun xah-insert-string-assignment ()
+  "Insert space before cursor"
+  (interactive)
+  (progn (insert "= \"\"")
+         (left-char)))
+
 (defun xah-insert-space-before ()
   "Insert space before cursor"
   (interactive)
