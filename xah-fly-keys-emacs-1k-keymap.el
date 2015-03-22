@@ -72,7 +72,7 @@
 (define-prefix-command 'xah-menu-keymap)
 (global-set-key (kbd "<menu>") 'xah-menu-keymap)
 
-;; (global-set-key (kbd "<menu> RET") 'smex) ; todo check if bound, else execute-extended-command
+(global-set-key (kbd "<menu> RET") 'smex) ; todo check if bound, else execute-extended-command
 
 (global-set-key (kbd "<menu> <backspace>") nil)
 (global-set-key (kbd "<menu> <delete>") nil)
