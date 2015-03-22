@@ -72,7 +72,7 @@
 (define-prefix-command 'xah-menu-keymap)
 (global-set-key (kbd "<menu>") 'xah-menu-keymap)
 
-(global-set-key (kbd "<menu> <return>") 'smex) ; todo check if  bound, else execute-extended-command
+;; (global-set-key (kbd "<menu> RET") 'smex) ; todo check if bound, else execute-extended-command
 
 (global-set-key (kbd "<menu> <backspace>") nil)
 (global-set-key (kbd "<menu> <delete>") nil)
@@ -325,7 +325,7 @@
   (define-prefix-command 'xah-menu-t-keymap)
   (global-set-key (kbd "<menu> t") xah-menu-t-keymap)
 
-  (define-key xah-menu-t-keymap (kbd "<return>") 'pop-global-mark)
+  (define-key xah-menu-t-keymap (kbd "RET") 'pop-global-mark)
   (define-key xah-menu-t-keymap (kbd ".") 'insert-char)
 
   (define-key xah-menu-t-keymap (kbd "3") 'point-to-register)
