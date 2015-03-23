@@ -17,7 +17,7 @@
   (global-set-key (kbd "C-6") nil)
   (global-set-key (kbd "C-7") 'xah-cycle-camel-style-case)
   (global-set-key (kbd "C-8") 'xah-cycle-hyphen-underscore-space)
-  (global-set-key (kbd "C-9") nil)
+  (global-set-key (kbd "C-9") 'hippie-expand)
   (global-set-key (kbd "C-0") nil)
 
   )

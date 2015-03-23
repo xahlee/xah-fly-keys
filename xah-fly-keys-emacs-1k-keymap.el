@@ -34,7 +34,7 @@
 
 ;; should be the most frequently used. Each is 3-keys sequence. ⁖ 【menu e 3】, 【menu u h】,
 
-;; of these 8 keys, the {. p g} are special. Each used for 2 key sequences, for 3 of the most frequently used commands. 【menu .】 is for universal-argument. 【menu p】 is for query-replace. 【menu g】 is isearch.
+;; of these 8 keys, the {. p g} are special. Each used for 2 key sequences, for 3 of the most frequently used commands. 【menu p】 is for query-replace. 【menu g】 is isearch.
 
 ;; basically, after the menu key, there are a total of 12 keys to start, 6 for each hand. These keys are on the home row or the row above, and are pressed by 2nd 3rd 4th fingers. (thumb is 1st finger) like this:
 
@@ -43,7 +43,6 @@
 ;; • the 【menu u …】 is for inserting brackets (){}[]""''“”‘’ and other brackets, and for inserting “=” “+” any unicode chars.
 ;; • the 【menu p】 is for query-replace
 ;; • the 【menu g】 is for isearch
-;; • the 【menu .】 is for universal-argument.
 ;; • 【menu enter】 is for execute-extended-command
 ;; • 【menu menu】  is undecided.
 
@@ -80,7 +79,22 @@
 
 (global-set-key (kbd "<menu> <menu>") 'exchange-point-and-mark)
 
-(global-set-key (kbd "<menu> .") 'universal-argument)
+(progn
+  (define-prefix-command 'xah-highlight-keymap) ; commands in search-map
+  (global-set-key (kbd "<menu> .") xah-highlight-keymap)
+
+  (define-key xah-highlight-keymap (kbd ".") 'isearch-forward-symbol-at-point)
+  (define-key xah-highlight-keymap (kbd "s") 'isearch-forward-symbol)
+  (define-key xah-highlight-keymap (kbd "w") 'isearch-forward-word)
+  (define-key xah-highlight-keymap (kbd "h .") 'highlight-symbol-at-point)
+  (define-key xah-highlight-keymap (kbd "h f") 'hi-lock-find-patterns)
+  (define-key xah-highlight-keymap (kbd "h l") 'highlight-lines-matching-regexp)
+  (define-key xah-highlight-keymap (kbd "h p") 'highlight-phrase)
+  (define-key xah-highlight-keymap (kbd "h r") 'highlight-regexp)
+  (define-key xah-highlight-keymap (kbd "h u") 'unhighlight-regexp)
+  (define-key xah-highlight-keymap (kbd "h w") 'hi-lock-write-interactive-patterns)
+)
+
 (global-set-key (kbd "<menu> '") 'quoted-insert)
 (global-set-key (kbd "<menu> ,") nil)
 (global-set-key (kbd "<menu> -") nil)
@@ -178,27 +192,13 @@
   (define-key xah-menu-i-keymap (kbd "p") 'previous-error)
   )
 
-(global-set-key (kbd "<menu> j") 'xah-copy-line-or-region)
+(global-set-key (kbd "<menu> j") 'xah-copy-all)
 
 (global-set-key (kbd "<menu> k") 'yank)
 
 (global-set-key (kbd "<menu> l") 'recenter-top-bottom)
 
-(progn
-  (define-prefix-command 'xah-menu-m-keymap) ; commands in search-map
-  (global-set-key (kbd "<menu> m") xah-menu-m-keymap)
-
-  (define-key xah-menu-m-keymap (kbd ".") 'isearch-forward-symbol-at-point)
-  (define-key xah-menu-m-keymap (kbd "s") 'isearch-forward-symbol)
-  (define-key xah-menu-m-keymap (kbd "w") 'isearch-forward-word)
-  (define-key xah-menu-m-keymap (kbd "h .") 'highlight-symbol-at-point)
-  (define-key xah-menu-m-keymap (kbd "h f") 'hi-lock-find-patterns)
-  (define-key xah-menu-m-keymap (kbd "h l") 'highlight-lines-matching-regexp)
-  (define-key xah-menu-m-keymap (kbd "h p") 'highlight-phrase)
-  (define-key xah-menu-m-keymap (kbd "h r") 'highlight-regexp)
-  (define-key xah-menu-m-keymap (kbd "h u") 'unhighlight-regexp)
-  (define-key xah-menu-m-keymap (kbd "h w") 'hi-lock-write-interactive-patterns)
-)
+(global-set-key (kbd "<menu> m") 'universal-argument)
 
 (progn
   ;; commands here are harmless (safe). They don't modify text.
@@ -287,7 +287,7 @@
 
 (global-set-key (kbd "<menu> p") 'query-replace)
 
-(global-set-key (kbd "<menu> q") 'xah-cut-line-or-region)
+(global-set-key (kbd "<menu> q") 'xah-cut-all)
 
 (progn
   ;; kinda replacement related
@@ -335,11 +335,11 @@
 
   (define-key xah-menu-t-keymap (kbd "e") 'copy-to-register)
   (define-key xah-menu-t-keymap (kbd "h") 'xah-close-current-buffer)
-  (define-key xah-menu-t-keymap (kbd "j") 'xah-copy-all)
+  (define-key xah-menu-t-keymap (kbd "j") nil)
   (define-key xah-menu-t-keymap (kbd "k") nil)
   (define-key xah-menu-t-keymap (kbd "n") 'repeat-complex-command)
   (define-key xah-menu-t-keymap (kbd "p") 'query-replace-regexp)
-  (define-key xah-menu-t-keymap (kbd "q") 'xah-cut-all)
+  (define-key xah-menu-t-keymap (kbd "q") nil)
   (define-key xah-menu-t-keymap (kbd "r") 'copy-rectangle-to-register)
   (define-key xah-menu-t-keymap (kbd "s") 'write-file)
   (define-key xah-menu-t-keymap (kbd "t") 'repeat)
@@ -390,7 +390,7 @@
 
   )
 
-(global-set-key (kbd "<menu> x") 'yank-pop)
+(global-set-key (kbd "<menu> x") nil)
 
 (global-set-key (kbd "<menu> y") nil)
 
