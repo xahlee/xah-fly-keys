@@ -126,36 +126,48 @@ The list of brackets to jump to is defined by `xah-left-brackets' and `xah-right
 
 (defun xah-backward-left-bracket ()
   "Move cursor to the previous occurrence of left bracket.
-The list of brackets to jump to is defined by `xah-left-brackets'."
+The list of brackets to jump to is defined by `xah-left-brackets'.
+URL `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
+Version 2015-03-24"
   (interactive)
   (search-backward-regexp (eval-when-compile (regexp-opt xah-left-brackets)) nil t))
 
 (defun xah-forward-right-bracket ()
   "Move cursor to the next occurrence of right bracket.
-The list of brackets to jump to is defined by `xah-right-brackets'."
+The list of brackets to jump to is defined by `xah-right-brackets'.
+URL `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
+Version 2015-03-24"
   (interactive)
   (search-forward-regexp (eval-when-compile (regexp-opt xah-right-brackets)) nil t))
 
 (defun xah-forward-quote ()
-  "Move cursor to the next occurrence of ASCII quotation mark.
-The list of quotes to jump to is defined by `xah-ascii-quotes'.
-See also: `xah-backward-quote'."
+  "Move cursor to the next occurrence of ' or \".
+URL `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
+Version 2015-03-24"
   (interactive)
-  (search-forward-regexp (eval-when-compile (regexp-opt xah-ascii-quotes)) nil t))
+  (search-forward-regexp "'+\\|\\\"+" nil t))
 
 (defun xah-backward-quote ()
-  "Move cursor to the previous occurrence of ASCII quotation mark.
-See `xah-forward-quote'."
+  "Move cursor to the previous occurrence of ' or \".
+URL `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
+Version 2015-03-24"
   (interactive)
-  (search-backward-regexp (eval-when-compile (regexp-opt xah-ascii-quotes)) nil t))
+  (search-backward-regexp "'+\\|\\\"+" nil t)
+  (let ( (thisChar (char-after)))
+    (while (char-equal (char-before) thisChar)
+      (left-char ))))
 
 (defun xah-forward-dot-comma ()
-  "Move cursor to the next occurrence of 「.」 「,」 「;」"
+  "Move cursor to the next occurrence of 「.」 「,」 「;」.
+URL `http://ergoemacs.org/emacs/emacs_jump_to_punctuations.html'
+Version 2015-03-24"
   (interactive)
   (search-forward-regexp "\\.+\\|,+\\|;+" nil t))
 
 (defun xah-backward-dot-comma ()
-  "Move cursor to the previous occurrence of 「.」 「,」 「;」"
+  "Move cursor to the previous occurrence of 「.」 「,」 「;」
+URL `http://ergoemacs.org/emacs/emacs_jump_to_punctuations.html'
+Version 2015-03-24"
   (interactive)
   (search-backward-regexp "\\.+\\|,+\\|;+" nil t))
 
