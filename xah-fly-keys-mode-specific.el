@@ -1,20 +1,18 @@
 ;;-*- coding: utf-8 -*-
 
 (progn
-  (define-key isearch-mode-map (kbd "<f11>") 'isearch-ring-retreat )
-  (define-key isearch-mode-map (kbd "<f12>") 'isearch-ring-advance )
-  (define-key isearch-mode-map (kbd "<prior>") 'isearch-repeat-backward)
-  (define-key isearch-mode-map (kbd "<next>") 'isearch-repeat-forward)
-
-  (define-key isearch-mode-map (kbd "<f4>") 'isearch-yank-pop)
-
-)
+  (define-key isearch-mode-map (kbd "M-7") 'isearch-ring-retreat )
+  (define-key isearch-mode-map (kbd "M-8") 'isearch-ring-advance )
+  (define-key isearch-mode-map (kbd "<up>") 'isearch-repeat-backward) ; single key, useful
+  (define-key isearch-mode-map (kbd "<down>") 'isearch-repeat-forward) ; single key, useful
+  (define-key isearch-mode-map (kbd "M-v") 'isearch-yank-pop)
+ )
 
 (progn
-  (define-key minibuffer-local-map (kbd "<f11>") 'previous-history-element)
-  (define-key minibuffer-local-map (kbd "<f12>") 'next-history-element)
-  (define-key minibuffer-local-map (kbd "S-<f11>") 'previous-matching-history-element)
-  (define-key minibuffer-local-map (kbd "S-<f12>") 'next-matching-history-element)
+  (define-key minibuffer-local-map (kbd "M-7") 'previous-history-element)
+  (define-key minibuffer-local-map (kbd "M-8") 'next-history-element)
+  (define-key minibuffer-local-map (kbd "M-S-7") 'previous-matching-history-element)
+  (define-key minibuffer-local-map (kbd "M-S-8") 'next-matching-history-element)
   )
 
 (progn
