@@ -1,10 +1,10 @@
 ;;-*- coding: utf-8 -*-
 
 (progn
-  (define-key isearch-mode-map (kbd "M-7") 'isearch-ring-retreat )
-  (define-key isearch-mode-map (kbd "M-8") 'isearch-ring-advance )
-  (define-key isearch-mode-map (kbd "<up>") 'isearch-repeat-backward) ; single key, useful
-  (define-key isearch-mode-map (kbd "<down>") 'isearch-repeat-forward) ; single key, useful
+  (define-key isearch-mode-map (kbd "<up>") 'isearch-ring-retreat )
+  (define-key isearch-mode-map (kbd "<down>") 'isearch-ring-advance )
+  (define-key isearch-mode-map (kbd "<left>") 'isearch-repeat-backward) ; single key, useful
+  (define-key isearch-mode-map (kbd "<right>") 'isearch-repeat-forward) ; single key, useful
   (define-key isearch-mode-map (kbd "M-v") 'isearch-yank-pop)
  )
 
