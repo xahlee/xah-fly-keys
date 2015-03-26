@@ -237,7 +237,7 @@
   (define-key xah-harmless-keymap (kbd "c") 'toggle-case-fold-search)
   (define-key xah-harmless-keymap (kbd "d") 'narrow-to-page)
   (define-key xah-harmless-keymap (kbd "e") 'eshell)
-  (define-key xah-harmless-keymap (kbd "f") ctl-x-5-map) ; frame
+  (define-key xah-harmless-keymap (kbd "f") nil)
   (define-key xah-harmless-keymap (kbd "g") 'toggle-frame-fullscreen)
   (define-key xah-harmless-keymap (kbd "h") 'widen)
   (define-key xah-harmless-keymap (kbd "i") 'make-frame-command)
@@ -264,19 +264,6 @@
     (define-key xah-harmless-keymap (kbd "SPC h") 'xah-toggle-read-novel-mode)
     (define-key xah-harmless-keymap (kbd "SPC t") 'xah-toggle-margin-right)
     (define-key xah-harmless-keymap (kbd "SPC n") 'xah-toggle-line-spacing))
-
-  ;; <menu> n f C-f  find-file-other-frame
-  ;; <menu> n f C-o  display-buffer-other-frame
-  ;; <menu> n f .    find-tag-other-frame
-  ;; <menu> n f 0    delete-frame
-  ;; <menu> n f 1    delete-other-frames
-  ;; <menu> n f 2    make-frame-command
-  ;; <menu> n f b    switch-to-buffer-other-frame
-  ;; <menu> n f d    dired-other-frame
-  ;; <menu> n f f    find-file-other-frame
-  ;; <menu> n f m    compose-mail-other-frame
-  ;; <menu> n f o    other-frame
-  ;; <menu> n f r    find-file-read-only-other-frame
 
   )
 
@@ -386,7 +373,7 @@
   (define-key xah-danger-keymap (kbd "p") 'eval-expression)
   (define-key xah-danger-keymap (kbd "q") 'save-buffers-kill-terminal)
   (define-key xah-danger-keymap (kbd "u") 'eval-region)
-  (define-key xah-danger-keymap (kbd "w") 'close-frame)
+  (define-key xah-danger-keymap (kbd "w") 'delete-frame)
 
   )
 
@@ -414,8 +401,19 @@
 
 
 
-;; C-x C-p	mark-page
+;; these commands has a key in emacs, but i decided not to have them.
 
+  ;; C-x 5 C-f  find-file-other-frame
+  ;; C-x 5 C-o  display-buffer-other-frame
+  ;; C-x 5 .    find-tag-other-frame
+  ;; C-x 5 1    delete-other-frames
+  ;; C-x 5 b    switch-to-buffer-other-frame
+  ;; C-x 5 d    dired-other-frame
+  ;; C-x 5 f    find-file-other-frame
+  ;; C-x 5 m    compose-mail-other-frame
+  ;; C-x 5 r    find-file-read-only-other-frame
+
+;; C-x C-p	mark-page
 ;; C-x C-l	downcase-region
 ;; C-x C-u	upcase-region
 
@@ -424,47 +422,63 @@
 
 ;; C-x C-r	find-file-read-only
 ;; C-x C-v	find-alternate-file
-;; C-x C-w	write-file
+
+;; C-x =	what-cursor-position, use describe-char instead
+;; C-x <	scroll-left
+;; C-x >	scroll-right
+;; C-x [	backward-page
+;; C-x ]	forward-page
+;; C-x ^	enlarge-window
+
+;; C-x {	shrink-window-horizontally
+;; C-x }	enlarge-window-horizontally
+;; C-x DEL	backward-kill-sentence
+
+;; C-x s	save-some-buffers
+
+;; M-o ESC         Prefix Command
+;; M-o b           facemenu-set-bold
+;; M-o d           facemenu-set-default
+;; M-o i           facemenu-set-italic
+;; M-o l           facemenu-set-bold-italic
+;; M-o o           facemenu-set-face
+;; M-o u           facemenu-set-underline
+;; M-o M-S         center-paragraph
+;; M-o M-o         font-lock-fontify-block
+;; M-o M-s         center-line
+
+;; C-x C-z	suspend-frame
+;; C-x +	balance-windows
+
+;; C-x k	kill-buffer , use xah-close-current-buffer
+;; C-x l	count-lines-page
+;; C-x m	compose-mail
+
+
+;; undecided yet
 
 ;; C-x e	kmacro-end-and-call-macro
 ;; C-x q	kbd-macro-query
 ;; C-x C-k	kmacro-keymap
 
-;; C-x C-c	save-buffers-kill-terminal
 ;; C-x C-d	list-directory
 ;; C-x C-n	set-goal-column
-;; C-x C-z	suspend-frame
 ;; C-x ESC	Prefix Command
 ;; C-x $	set-selective-display
 ;; C-x *	calc-dispatch
 ;; C-x -	shrink-window-if-larger-than-buffer
 ;; C-x .	set-fill-prefix
 
-;; C-x +	balance-windows
-
 ;; C-x 4	ctl-x-4-prefix
 ;; C-x 5	ctl-x-5-prefix
 ;; C-x 6	2C-command
 ;; C-x ;	comment-set-column
-;; C-x <	scroll-left
-;; C-x =	what-cursor-position
-;; C-x >	scroll-right
-;; C-x [	backward-page
-;; C-x ]	forward-page
-;; C-x ^	enlarge-window
+
 ;; C-x `	next-error
 ;; C-x f	set-fill-column
 ;; C-x i	insert-file
-;; C-x k	kill-buffer
-;; C-x l	count-lines-page
-;; C-x m	compose-mail
 ;; C-x n	Prefix Command
 ;; C-x r	Prefix Command
-;; C-x s	save-some-buffers
-
-;; C-x {	shrink-window-horizontally
-;; C-x }	enlarge-window-horizontally
-;; C-x DEL	backward-kill-sentence
 
 ;; C-x C-k C-a	kmacro-add-counter
 ;; C-x C-k C-c	kmacro-set-counter
@@ -507,18 +521,6 @@
 ;; C-x 6 b	2C-associate-buffer
 ;; C-x 6 s	2C-split
 ;; C-x 6 <f2>	2C-two-columns
-
-;; M-o ESC         Prefix Command
-;; M-o b           facemenu-set-bold
-;; M-o d           facemenu-set-default
-;; M-o i           facemenu-set-italic
-;; M-o l           facemenu-set-bold-italic
-;; M-o o           facemenu-set-face
-;; M-o u           facemenu-set-underline
-
-;; M-o M-S         center-paragraph
-;; M-o M-o         font-lock-fontify-block
-;; M-o M-s         center-line
 
 ;; ;; todo
 ;; select all, copy all, open, those standard keys
