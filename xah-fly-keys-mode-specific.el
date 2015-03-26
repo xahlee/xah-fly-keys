@@ -72,29 +72,36 @@
 (local-set-key (kbd "S-SPC") nil) ; 'scroll-down-command
 (local-set-key (kbd "<delete>") nil) ; 'scroll-down-command
 
+
+(local-set-key (kbd "b") nil)
+(local-set-key (kbd "d") nil)
+(local-set-key (kbd "g") nil)
+(local-set-key (kbd "l") nil)
+(local-set-key (kbd "r") nil)
+(local-set-key (kbd "n") nil) ; 'eww-next-url
+(local-set-key (kbd "p") nil) ; 'eww-previous-url
+(local-set-key (kbd "t") nil) ; 'eww-top-url
+(local-set-key (kbd "u") nil) ; 'eww-up-url
+
   ;; default keys
 (local-set-key (kbd "TAB") 'shr-next-link)
 (local-set-key (kbd "C-M-i") 'shr-previous-link)
 
 (local-set-key (kbd "&") nil) ; 'eww-browse-with-external-browser
 (local-set-key (kbd "-") nil) ; 'negative-argument
-(local-set-key (kbd "<menu> B") 'eww-list-bookmarks)
-(local-set-key (kbd "<menu> C") 'url-cookie-list)
-(local-set-key (kbd "<menu> H") 'eww-list-histories)
-(local-set-key (kbd "<menu> b") 'eww-add-bookmark)
-(local-set-key (kbd "<menu> d") 'eww-download)
-(local-set-key (kbd "<menu> g") 'eww-reload)
-(local-set-key (kbd "<menu> l") 'eww-back-url)
-(local-set-key (kbd "<menu> q") 'quit-window)
-(local-set-key (kbd "<menu> r") 'eww-forward-url)
+(local-set-key (kbd "<menu> e B") 'eww-list-bookmarks)
+(local-set-key (kbd "<menu> e C") 'url-cookie-list)
+(local-set-key (kbd "<menu> e H") 'eww-list-histories)
 
-(local-set-key (kbd "n") nil) ; 'eww-next-url
-(local-set-key (kbd "p") nil) ; 'eww-previous-url
-(local-set-key (kbd "t") nil) ; 'eww-top-url
-(local-set-key (kbd "u") nil) ; 'eww-up-url
+(local-set-key (kbd "<menu> e b") 'eww-add-bookmark)
+(local-set-key (kbd "<menu> e d") 'eww-download)
+(local-set-key (kbd "<menu> e g") 'eww-reload)
+(local-set-key (kbd "<menu> e l") 'eww-back-url)
+(local-set-key (kbd "<menu> e q") 'quit-window)
+(local-set-key (kbd "<menu> e r") 'eww-forward-url)
 
-(local-set-key (kbd "<menu> v") 'eww-view-source)
-(local-set-key (kbd "<menu> w") 'eww-copy-page-url)
+(local-set-key (kbd "<menu> e v") 'eww-view-source)
+(local-set-key (kbd "<menu> e w") 'eww-copy-page-url)
 (local-set-key (kbd "M-n") 'eww-next-bookmark)
 (local-set-key (kbd "M-p") 'eww-previous-bookmark)
 
