@@ -6,14 +6,14 @@
 
   (define-key xah-insertion-keymap (kbd "RET") 'ucs-insert)
 
-  (define-key xah-insertion-keymap (kbd ".") 'xah-insert-unicode)
+  (define-key xah-insertion-keymap (kbd ".") 'xah-insert-greater-less)
   (define-key xah-insertion-keymap (kbd ",") nil)
 
   (define-key xah-insertion-keymap (kbd "a") nil)
   (define-key xah-insertion-keymap (kbd "b") 'xah-insert-black-lenticular-bracket【】)
   (define-key xah-insertion-keymap (kbd "c") 'xah-insert-ascii-single-quote)
   (define-key xah-insertion-keymap (kbd "d") 'xah-insert-double-curly-quote“”)
-  (define-key xah-insertion-keymap (kbd "e") 'xah-insert-greater-less)
+  (define-key xah-insertion-keymap (kbd "e") 'xah-insert-unicode)
   (define-key xah-insertion-keymap (kbd "f") 'xah-insert-emacs-quote)
   (define-key xah-insertion-keymap (kbd "g") 'xah-insert-ascii-double-quote)
   (define-key xah-insertion-keymap (kbd "h") 'xah-insert-brace) ; {}
