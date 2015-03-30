@@ -6,18 +6,16 @@
 
 (progn
   ;; haven't decided what goes here
-  (global-set-key (kbd "<C-f1>") 'xah-cycle-font-previous)
-  (global-set-key (kbd "<C-f2>") 'xah-cycle-font-next)
 
-  (global-set-key (kbd "C-1") 'xah-cycle-font-2)
+  (global-set-key (kbd "C-1") nil)
   (global-set-key (kbd "C-2") nil)
   (global-set-key (kbd "C-3") nil)
   (global-set-key (kbd "C-4") nil)
   (global-set-key (kbd "C-5") nil)
   (global-set-key (kbd "C-6") nil)
-  (global-set-key (kbd "C-7") 'xah-cycle-camel-style-case)
-  (global-set-key (kbd "C-8") 'xah-cycle-hyphen-underscore-space)
-  (global-set-key (kbd "C-9") 'hippie-expand)
+  (global-set-key (kbd "C-7") nil)
+  (global-set-key (kbd "C-8") nil)
+  (global-set-key (kbd "C-9") nil)
   (global-set-key (kbd "C-0") nil)
 
   )
