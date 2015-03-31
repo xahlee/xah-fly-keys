@@ -263,7 +263,7 @@ Version 2015-03-20
            (if (use-region-p)
                (buffer-substring-no-properties (region-beginning) (region-end))
              (let (ξp0 ξp1 ξp2
-                       (ξcharSkipRegex "^  \"\t\n`':|()[]{}<>〔〕“”〈〉《》【】〖〗«»‹›·。\\`"))
+                       (ξcharSkipRegex "^  \"\t\n`'|()[]{}<>〔〕“”〈〉《》【】〖〗«»‹›·。\\`"))
                (setq ξp0 (point))
                ;; chars that are likely to be delimiters of full path, e.g. space, tabs, brakets.
                (skip-chars-backward ξcharSkipRegex)

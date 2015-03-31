@@ -72,7 +72,6 @@
 (local-set-key (kbd "S-SPC") nil) ; 'scroll-down-command
 (local-set-key (kbd "<delete>") nil) ; 'scroll-down-command
 
-
 (local-set-key (kbd "b") nil)
 (local-set-key (kbd "d") nil)
 (local-set-key (kbd "g") nil)
@@ -143,3 +142,14 @@
   (define-key occur-mode-map (kbd "o") 'other-window)
   )
 (add-hook 'occur-mode-hook 'xah-occur-mode-keys)
+
+;; used by message buffer. override it
+(setq special-mode-map
+      (let ((myMap (make-sparse-keymap)))
+        (suppress-keymap myMap)
+        (define-key myMap "q" 'quit-window)
+        (define-key myMap " " 'scroll-up-command)
+        (define-key myMap [?\S-\ ] 'scroll-down-command)
+        (define-key myMap "\C-?" 'scroll-down-command)
+        myMap))
+
