@@ -71,7 +71,7 @@ The arguments φleft-bracket ＆ φright-bracket are strings.
 (defun xah-insert-string-assignment ()
   "Insert space before cursor"
   (interactive)
-  (progn (insert "= \"\"")
+  (progn (insert "=\"\"")
          (left-char)))
 
 (defun xah-insert-space-before ()

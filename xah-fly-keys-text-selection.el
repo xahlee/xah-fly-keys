@@ -6,17 +6,17 @@ URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
 Version 2015-02-07
 "
   (interactive)
-  (let (p1 p2)
+  (let (ξp1 ξp2)
     (progn
       (if (re-search-backward "\n[ \t]*\n" nil "move")
           (progn (re-search-forward "\n[ \t]*\n")
-                 (setq p1 (point)))
-        (setq p1 (point)))
+                 (setq ξp1 (point)))
+        (setq ξp1 (point)))
       (if (re-search-forward "\n[ \t]*\n" nil "move")
           (progn (re-search-backward "\n[ \t]*\n")
-                 (setq p2 (point)))
-        (setq p2 (point))))
-    (set-mark p1)))
+                 (setq ξp2 (point)))
+        (setq ξp2 (point))))
+    (set-mark ξp1)))
 
 (defun xah-select-current-line ()
   "Select current line.
@@ -65,44 +65,45 @@ This command works mostly in lisp syntax."
 
 (defun xah-select-text-in-quote ()
   "Select text between the nearest left and right delimiters.
-Delimiters are paired characters: () [] {} <> «» ‹› “” ‘’ 「」 【】《》〈〉〔〕（）, including \"\".
-
+Delimiters here includes the following chars: \"<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕
+This command does not properly deal with nested brackets.
 URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
-Version 2015-02-07
-"
+Version 2015-04-02"
   (interactive)
-  (let (p1 p2)
-    (skip-chars-backward "^<>(“{[«‹「【《〈〔（\"‘")
-    (setq p1 (point))
-    (skip-chars-forward "^<>)”}]»›」】》〉〕）\"’")
-    (setq p2 (point))
-    (set-mark p1)))
+  (let (ξp1
+        ξp2
+        (ξskipChars "^\"<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕"))
+    (skip-chars-backward ξskipChars)
+    (setq ξp1 (point))
+    (skip-chars-forward ξskipChars)
+    (setq ξp2 (point))
+    (set-mark ξp1)))
 
 (defun xah-select-text-in-html-bracket ()
   "Select text between <…> or >…<."
   (interactive)
-  (let (p0 p1< p1> p2< p2>
+  (let (ξp0 ξp1< ξp1> ξp2< ξp2>
            distance-p1<
            distance-p1>
            )
-    (setq p0 (point))
+    (setq ξp0 (point))
     (search-backward "<" nil "NOERROR" )
-    (setq p1< (point))
-    (goto-char p0)
+    (setq ξp1< (point))
+    (goto-char ξp0)
     (search-backward ">" nil "NOERROR" )
-    (setq p1> (point))
-    (setq distance-p1< (abs (- p0 p1<)))
-    (setq distance-p1> (abs (- p1> p0)))
-    (if (< distance-p1< distance-p1>)
+    (setq ξp1> (point))
+    (setq distance-p1< (abs (- ξp0 ξp1<)))
+    (setq distance-p1> (abs (- ξp1> ξp0)))
+    (if (< distance-p1< distance-ξp1>)
         (progn
-          (goto-char p0)
+          (goto-char ξp0)
           (search-forward ">" nil "NOERROR" )
-          (setq p2> (point))
-          (goto-char (1+ p1<))
-          (set-mark (1- p2>)))
+          (setq ξp2> (point))
+          (goto-char (1+ ξp1<))
+          (set-mark (1- ξp2>)))
       (progn
-        (goto-char p0)
+        (goto-char ξp0)
         (search-forward "<" nil "NOERROR" )
-        (setq p2< (point))
-        (goto-char (1+ p1>))
-        (set-mark (1- p2<))))))
+        (setq ξp2< (point))
+        (goto-char (1+ ξp1>))
+        (set-mark (1- ξp2<))))))
