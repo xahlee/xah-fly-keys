@@ -8,7 +8,7 @@
   (define-key xah-user-keymap (kbd "RET") 'xah-shell-commands)
 
   (define-key xah-user-keymap (kbd "-") 'xah-insert-form-feed)
-  (define-key xah-user-keymap (kbd ".") 'xah-title-case-string-region-or-line)
+  (define-key xah-user-keymap (kbd ".") 'xah-title-case-region-or-line)
 
   (define-key xah-user-keymap (kbd "1") 'xah-copy-to-register-1)
   (define-key xah-user-keymap (kbd "2") 'xah-paste-from-register-1)
