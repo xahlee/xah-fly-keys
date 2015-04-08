@@ -460,7 +460,7 @@ Capitalize first letter of each word, except words like {to, of, the, a, in, or,
 
 When called in a elisp program, φp1 φp2 are region boundaries.
 URL `http://ergoemacs.org/emacs/elisp_title_case_text.html'
-Version 2015-04-06"
+Version 2015-04-08"
   (interactive
    (if (use-region-p)
        (list (region-beginning) (region-end))
@@ -498,14 +498,14 @@ Version 2015-04-06"
                      [" From " " from "]
                      ["'S " "'s "]
                      ]))
-    (let ((case-fold-search nil))
-      (save-restriction
-        (narrow-to-region φp1 φp2)
-        (upcase-initials-region (point-min) (point-max))
+    (save-restriction
+      (narrow-to-region φp1 φp2)
+      (upcase-initials-region (point-min) (point-max))
+      (let ((case-fold-search nil))
         (mapc
          (lambda (ξx)
            (goto-char (point-min))
            (while
                (search-forward (aref ξx 0) nil t)
-             (replace-match (aref ξx 1))))
+             (replace-match (aref ξx 1) 'FIXEDCASE 'LITERAL)))
          ξstrPairs)))))
