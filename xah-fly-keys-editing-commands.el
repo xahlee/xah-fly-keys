@@ -456,7 +456,6 @@ URL `http://ergoemacs.org/emacs/elisp_escape_quotes.html'
 
 (defun xah-title-case-region-or-line (φp1 φp2)
   "Title case text between nearest brackets, or current line, or text selection.
-
 Capitalize first letter of each word, except words like {to, of, the, a, in, or, and, …}. If a word already contains cap letters such as HTTP, URL, they are left as is.
 
 When called in a elisp program, φp1 φp2 are region boundaries.
@@ -475,7 +474,6 @@ Version 2015-04-06"
          (skip-chars-forward ξskipChars (line-end-position))
          (setq ξp2 (point)))
        (list ξp1 ξp2))))
-
   (let* (
          (ξstrPairs [
                      [" A " " a "]
@@ -500,18 +498,14 @@ Version 2015-04-06"
                      [" From " " from "]
                      ["'S " "'s "]
                      ]))
-
     (let ((case-fold-search nil))
       (save-restriction
         (narrow-to-region φp1 φp2)
         (upcase-initials-region (point-min) (point-max))
-
         (mapc
          (lambda (ξx)
            (goto-char (point-min))
            (while
                (search-forward (aref ξx 0) nil t)
              (replace-match (aref ξx 1))))
-         ξstrPairs)
-        ;; (replace-regexp-pairs-region (point-min) (point-max) ξstrPairs t t)
-        ))))
+         ξstrPairs)))))

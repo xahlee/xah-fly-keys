@@ -369,7 +369,7 @@ A backup file is created with filename appended “~‹date time stamp›~”. E
 When called with `universal-argument', don't create backup.
 
 URL `http://ergoemacs.org/emacs/elisp_delete-current-file.html'
-Version 2015-02-07"
+Version 2015-04-06"
   (interactive "P")
   (let* (
          (ξfname (buffer-file-name))
@@ -382,7 +382,7 @@ Version 2015-02-07"
               nil
             (copy-file ξfname ξbackup-name t))
           (delete-file ξfname)
-          (message "Deleted and backup created at 「%s」." ξbackup-name))
+          (message "Deleted. Backup created at 「%s」." ξbackup-name))
       (progn
         (if φno-backup-p
             nil
@@ -449,17 +449,17 @@ version 2014-10-28"
         (message "No recognized program file suffix for this file.")))))
 
 (defun xah-search-current-word ()
-  "call `isearch' on current word or text selection.
- “word” here is not mode dependent.
-2015-01-04 todo incomlete
-"
+  "Call `isearch' on current word or text selection.
+“word” here is A to Z, a to z, and hyphen 「-」 and underline 「_」, independent of syntax table.
+
+URL `http://ergoemacs.org/emacs/modernization_isearch.html'
+Version 2015-04-07"
   (interactive)
   (let ((ξsstr
          (if (use-region-p)
              (buffer-substring-no-properties (region-beginning) (region-end))
            (let (ξp1 ξp2)
              (save-excursion
-               ;; (skip-chars-backward "^ \n\t(){}[]<>")
                (skip-chars-backward "-_A-Za-z0-9")
                (setq ξp1 (point))
                (right-char)
@@ -469,9 +469,7 @@ version 2014-10-28"
     (setq mark-active nil)
     (isearch-mode t)
     (isearch-yank-string ξsstr)
-    ;; (isearch-update )
-    (isearch-search-and-update )
-    ))
+    (isearch-search-and-update )))
 
 (defun xah-toggle-line-spacing ()
   "Toggle line spacing between no extra space to extra half line height."
