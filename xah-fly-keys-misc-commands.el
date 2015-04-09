@@ -516,3 +516,8 @@ Call again to toggle back."
       (setq word-wrap nil)
       (put this-command 'state-on-p nil)))
   (redraw-frame (selected-frame)))
+
+(defun xah-describe-major-mode ()
+  "Display inline doc for current `major-mode'."
+  (interactive)
+  (describe-function major-mode))
