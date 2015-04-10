@@ -451,25 +451,26 @@ version 2014-10-28"
 (defun xah-search-current-word ()
   "Call `isearch' on current word or text selection.
 “word” here is A to Z, a to z, and hyphen 「-」 and underline 「_」, independent of syntax table.
-
 URL `http://ergoemacs.org/emacs/modernization_isearch.html'
-Version 2015-04-07"
+Version 2015-04-09"
   (interactive)
-  (let ((ξsstr
-         (if (use-region-p)
-             (buffer-substring-no-properties (region-beginning) (region-end))
-           (let (ξp1 ξp2)
-             (save-excursion
-               (skip-chars-backward "-_A-Za-z0-9")
-               (setq ξp1 (point))
-               (right-char)
-               (skip-chars-forward "-_A-Za-z0-9")
-               (setq ξp2 (point)))
-             (buffer-substring-no-properties ξp1 ξp2)))))
+  (let ( ξp1 ξp2 ξsstr )
+    (if (use-region-p)
+        (progn 
+          (setq ξp1 (region-beginning))
+          (setq ξp2 (region-end)))
+      (save-excursion
+        (skip-chars-backward "-_A-Za-z0-9")
+        (setq ξp1 (point))
+        (right-char)
+        (skip-chars-forward "-_A-Za-z0-9")
+        (setq ξp2 (point))))
+    (setq ξsstr (buffer-substring-no-properties ξp1 ξp2))
     (setq mark-active nil)
+    (when (< ξp1 (point))
+      (goto-char ξp1))
     (isearch-mode t)
-    (isearch-yank-string ξsstr)
-    (isearch-search-and-update )))
+    (isearch-yank-string ξsstr)))
 
 (defun xah-toggle-line-spacing ()
   "Toggle line spacing between no extra space to extra half line height."
