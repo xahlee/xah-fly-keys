@@ -69,6 +69,7 @@
   (define-key xah-user-keymap (kbd "r ,") 'xah-remove-punctuation-trailing-redundant-space )
   (define-key xah-user-keymap (kbd "r .") 'xah-convert-english-chinese-punctuation)
   (define-key xah-user-keymap (kbd "r [") 'xah-remove-square-brackets)
+  (define-key xah-user-keymap (kbd "r b") 'xah-change-bracket-pairs)
   (define-key xah-user-keymap (kbd "r c") 'xah-escape-quotes)
   (define-key xah-user-keymap (kbd "r d") 'fix-datetimestamp)
   (define-key xah-user-keymap (kbd "r e") 'xah-replace-straight-quotes)
@@ -79,6 +80,7 @@
   (define-key xah-user-keymap (kbd "r t") 'xah-twitterfy)
   (define-key xah-user-keymap (kbd "r u") 'xah-replace-newline-whitespaces-to-space)
   (define-key xah-user-keymap (kbd "r w") 'xah-convert-fullwidth-chars)
+  (define-key xah-user-keymap (kbd "r x") 'xah-remove-quotes-or-brackets)
 
   (define-key xah-user-keymap (kbd "s") nil)
   (define-key xah-user-keymap (kbd "t") nil)
