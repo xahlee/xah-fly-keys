@@ -618,8 +618,7 @@ Version 2015-04-12"
           (line-end-position)
           (ido-completing-read "Replace this:" ξbracketsList )
           (ido-completing-read "To:" ξbracketsList ))))))
-  (let* (
-         (ξfindReplaceMap
+  (let ((ξfindReplaceMap
           (vector
            (vector (char-to-string (elt φfromType 0)) (char-to-string (elt φtoType 0)))
            (vector (char-to-string (elt φfromType 1)) (char-to-string (elt φtoType 1))))))
@@ -633,3 +632,72 @@ Version 2015-04-12"
              (while (search-forward (elt ξx 0) nil t)
                (replace-match (elt ξx 1) 'FIXEDCASE 'LITERAL)))
            ξfindReplaceMap))))))
+
+(defun xah-twitterfy (φp1 φp2 &optional φto-direction)
+  "Shorten words for Twitter 140 char limit on current line or selection.
+The conversion direction is automatically determined.
+
+If `universal-argument' is called, ask for conversion direction.
+
+When called in lisp code, φp1 φp2 are region begin/end positions. φto-direction must be one of the following values: 「\"auto\"」, 「\"twitterfy\"」, 「\"untwitterfy\"」.
+
+URL `http://ergoemacs.org/emacs/elisp_twitterfy.html'
+Version 2015-04-12"
+  (interactive
+   (list
+    (if (use-region-p) (region-beginning) (line-beginning-position))
+    (if (use-region-p) (region-end) (line-end-position))
+    (if current-prefix-arg
+        (ido-completing-read
+         "Direction: "
+         '( "twitterfy"  "untwitterfy")
+         "PREDICATE"
+         "REQUIRE-MATCH")
+      "auto"
+      )))
+
+  (let ((ξtwitterfy-map
+         [
+          [" are " " r "]
+          [" are, " " r,"]
+          [" you " " u "]
+          [" you," " u,"]
+          [" you." " u."]
+          [" to " " 2 "]
+          [" you." " u。"]
+          [" your" " ur "]
+          [" and " "＆"]
+          ["because" "cuz"]
+          [" at " " @ "]
+          [" love " " ♥ "]
+          [" one " " 1 "]
+          [" two " " 2 "]
+          [" three " " 3 "]
+          [" four " " 4 "]
+          [" zero " " 0 "]
+          [", " "，"]
+          ["..." "…"]
+          [". " "。"]
+          ["? " "？"]
+          [": " "："]
+          ["! " "！"]]
+         ))
+    (save-excursion
+      (save-restriction
+        (narrow-to-region φp1 φp2)
+        (when (string= φto-direction "auto")
+          (goto-char (point-min))
+          (if
+              (re-search-forward "。\\|，\\|？\\|！" nil 'NOERROR)
+              (setq φto-direction "untwitterfy")
+            (setq φto-direction "twitterfy")))
+
+        (let ( (case-fold-search nil))
+          (mapc
+           (lambda (ξx)
+             (goto-char (point-min))
+             (while (search-forward (elt ξx 0) nil t)
+               (replace-match (elt ξx 1) 'FIXEDCASE 'LITERAL)))
+           (if (string= φto-direction "twitterfy")
+               ξtwitterfy-map
+             (mapcar (lambda (ξpair) (vector (elt ξpair 1) (elt ξpair 0))) ξtwitterfy-map))))))))
