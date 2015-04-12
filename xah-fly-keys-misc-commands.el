@@ -701,3 +701,148 @@ Version 2015-04-12"
            (if (string= φto-direction "twitterfy")
                ξtwitterfy-map
              (mapcar (lambda (ξpair) (vector (elt ξpair 1) (elt ξpair 0))) ξtwitterfy-map))))))))
+
+(defun xah-replace-straight-quotes (φp1 φp2)
+  "Replace straight double quotes to curly ones, and others.
+Works on current text selection, else the current text block between empty lines.
+
+Examples of changes:
+ 「\"…\"」 ⇒ 「“…”」
+ 「...」 ⇒ 「…」
+ 「I’m」 => 「I'm」
+ 「--」 ⇒ 「—」
+ 「~=」 ⇒ 「≈」
+
+When called in lisp code, φp1 and φp2 are region begin/end positions.
+
+Version 2015-04-12"
+  ;; some examples for debug
+  ;; do "‘em all -- done..."
+  ;; I’am not
+  ;; said "can’t have it, can’t, just can’t"
+  ;; ‘I’ve can’t’
+  (interactive
+   (if (use-region-p)
+       (list (region-beginning) (region-end))
+     (list (line-beginning-position) (line-end-position))))
+
+  (let ( (case-fold-search nil)
+         (ξfindReplaceMap1
+          [
+           ;; dash and ellipsis etc
+           ["--" " — "]
+           ["—" " — "]
+           ["..." "…"]
+           [" :)" " ☺"]
+           [" :(" " ☹"]
+           [";)" "😉"]
+           ["e.g. " "⁖ "]
+           ["~=" "≈"]
+           ["  —  " " — "] ; rid of extra space in em-dash
+           [" , " ", "]
+           ;; fix GNU style ASCII quotes
+           ["``" "“"]
+           ["''" "”"]
+           ;; "straight quote" ⇒ “double quotes”
+           ["\n\"" "\n“"]
+           [">\"" ">“"]
+           ["(\"" "(“"]
+           [" \"" " “"]
+           ["\" " "” "]
+           ["\"," "”,"]
+           ["\"." "”."]
+           ["\"?" "”?"]
+           ["\";" "”;"]
+           ["\":" "”:"]
+           ["\")" "”)"]
+           ["\"]" "”]"]
+           [".\"" ".”"]
+           [",\"" ",”"]
+           ["!\"" "!”"]
+           ["?\"" "?”"]
+           ["\"<" "”<"]
+           ["\"\n" "”\n"]
+           ]
+          ))
+
+    (save-excursion
+      (save-restriction
+        (narrow-to-region φp1 φp2)
+        ;; Note: order is important since this is huristic.
+        (mapc
+         (lambda (ξx)
+           (goto-char (point-min))
+           (while (search-forward (elt ξx 0) nil t)
+             (replace-match (elt ξx 1) 'FIXEDCASE 'LITERAL)))
+         ξfindReplaceMap1)
+
+        ;; fix straight double quotes by regex
+        (xah-replace-regexp-pairs-region
+         (point-min) (point-max)
+         [
+          ["\\`\"" "“"]
+          ])
+
+        ;; fix single quotes to curly
+        (xah-replace-pairs-region
+         (point-min) (point-max)
+         [
+          [">\'" ">‘"]
+          [" \'" " ‘"]
+          ["\' " "’ "]
+          ["\'," "’,"]
+          [".\'" ".’"]
+          ["!\'" "!’"]
+          ["?\'" "?’"]
+          ["(\'" "(‘"]
+          ["\')" "’)"]
+          ["\']" "’]"]
+          ])
+
+        ;; fix apostrophe
+        (xah-replace-regexp-pairs-region
+         (point-min) (point-max)
+         [
+          ["\\bcan’t\\b" "can't"]
+          ["\\bdon’t\\b" "don't"]
+          ["\\bdoesn’t\\b" "doesn't"]
+          ["\\bain’t\\b" "ain't"]
+          ["\\bdidn’t\\b" "didn't"]
+          ["\\baren’t\\b" "aren't"]
+          ["\\bwasn’t\\b" "wasn't"]
+          ["\\bweren’t\\b" "weren't"]
+          ["\\bcouldn’t\\b" "couldn't"]
+          ["\\bshouldn’t\\b" "shouldn't"]
+
+          ["\\b’ve\\b" "'ve"]
+          ["\\b’re\\b" "'re"]
+          ["\\b‘em\\b" "'em"]
+          ["\\b’ll\\b" "'ll"]
+          ["\\b’m\\b" "'m"]
+          ["\\b’d\\b" "'d"]
+          ["\\b’s\\b" "'s"]
+          ["s’ " "s' "]
+          ["s’\n" "s'\n"]
+
+          ["\"$" "”"]
+          ])
+
+        ;; fix back escaped quotes in code
+        (xah-replace-pairs-region
+         (point-min) (point-max)
+         [
+          ["\\”" "\\\""]
+          ])
+
+        ;; fix back. quotes in HTML code
+        (xah-replace-regexp-pairs-region
+         (point-min) (point-max)
+         [
+          ["” \\([-a-z]+\\)="       "\" \\1="] ; any 「” some-thing=」
+          ["=\”" "=\""]
+          ["/” " "/\" "]
+          ["\"\\([0-9]+\\)” "     "\"\\1\" "]
+          ]
+         )
+
+        (xah-remove-punctuation-trailing-redundant-space (point-min) (point-max))))))
