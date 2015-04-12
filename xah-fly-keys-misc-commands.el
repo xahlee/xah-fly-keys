@@ -211,7 +211,7 @@ Version 2015-03-20"
   (interactive)
   (let* ((ξinputStr (if (use-region-p)
                  (buffer-substring-no-properties (region-beginning) (region-end))
-               (let (ξp0 ξp1 ξp2 
+               (let (ξp0 ξp1 ξp2
                          (ξcharSkipRegex "^  \"\t\n`':|()[]{}<>〔〕“”〈〉《》【】〖〗«»‹›·。\\`"))
                  (setq ξp0 (point))
                  ;; chars that are likely to be delimiters of full path, e.g. space, tabs, brakets.
@@ -456,7 +456,7 @@ Version 2015-04-09"
   (interactive)
   (let ( ξp1 ξp2 )
     (if (use-region-p)
-        (progn 
+        (progn
           (setq ξp1 (region-beginning))
           (setq ξp2 (region-end)))
       (save-excursion
@@ -521,3 +521,52 @@ Call again to toggle back."
   "Display inline doc for current `major-mode'."
   (interactive)
   (describe-function major-mode))
+
+(defun xah-convert-latin-alphabet-gothic (φp1 φp2 φreverse-direction-p)
+  "Replace English alphabets to Unicode gothic characters.
+For example, A ⇒ 𝔄, a ⇒ 𝔞.
+
+When called interactively, work on current text block or text selection. (a “text block” is text between empty lines)
+
+If any `universal-argument' is called first, reverse direction.
+
+When called in elisp, the φp1 and φp2 are region begin/end positions to work on.
+
+URL `http://ergoemacs.org/misc/thou_shalt_use_emacs_lisp.html'
+Version 2015-04-12"
+  (interactive
+   (if (use-region-p)
+       (progn
+         (list (region-beginning) (region-end) current-prefix-arg ))
+     (let (ξp1 ξp2)
+       (progn
+         (if (re-search-backward "\n[ \t]*\n" nil "move")
+             (progn (re-search-forward "\n[ \t]*\n")
+                    (setq ξp1 (point)))
+           (setq ξp1 (point)))
+         (if (re-search-forward "\n[ \t]*\n" nil "move")
+             (progn (re-search-backward "\n[ \t]*\n")
+                    (setq ξp2 (point)))
+           (setq ξp2 (point))))
+       (list ξp1 ξp2 current-prefix-arg ))))
+  (let (
+        (ξlatin-to-gothic [ ["A" "𝔄"] ["B" "𝔅"] ["C" "ℭ"] ["D" "𝔇"] ["E" "𝔈"] ["F" "𝔉"] ["G" "𝔊"] ["H" "ℌ"] ["I" "ℑ"] ["J" "𝔍"] ["K" "𝔎"] ["L" "𝔏"] ["M" "𝔐"] ["N" "𝔑"] ["O" "𝔒"] ["P" "𝔓"] ["Q" "𝔔"] ["R" "ℜ"] ["S" "𝔖"] ["T" "𝔗"] ["U" "𝔘"] ["V" "𝔙"] ["W" "𝔚"] ["X" "𝔛"] ["Y" "𝔜"] ["Z" "ℨ"] ["a" "𝔞"] ["b" "𝔟"] ["c" "𝔠"] ["d" "𝔡"] ["e" "𝔢"] ["f" "𝔣"] ["g" "𝔤"] ["h" "𝔥"] ["i" "𝔦"] ["j" "𝔧"] ["k" "𝔨"] ["l" "𝔩"] ["m" "𝔪"] ["n" "𝔫"] ["o" "𝔬"] ["p" "𝔭"] ["q" "𝔮"] ["r" "𝔯"] ["s" "𝔰"] ["t" "𝔱"] ["u" "𝔲"] ["v" "𝔳"] ["w" "𝔴"] ["x" "𝔵"] ["y" "𝔶"] ["z" "𝔷"] ])
+        ξuseMap
+        )
+    (if φreverse-direction-p
+        (progn (setq ξuseMap
+                     (mapcar
+                      (lambda (ξx)
+                        (vector (aref ξx 1) (aref ξx 0)))
+                      ξlatin-to-gothic)))
+      (progn (setq ξuseMap ξlatin-to-gothic)))
+    (save-excursion
+      (save-restriction
+        (narrow-to-region φp1 φp2)
+        (let ( (case-fold-search nil))
+          (mapc
+           (lambda (ξx)
+             (goto-char (point-min))
+             (while (search-forward (elt ξx 0) nil t)
+               (replace-match (elt ξx 1) 'FIXEDCASE 'LITERAL)))
+           ξuseMap))))))
