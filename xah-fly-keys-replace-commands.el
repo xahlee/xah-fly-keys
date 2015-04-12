@@ -24,7 +24,7 @@
   ;; (message "%s %s" φp1 φp2)
   ;; TODO with no text selection, it seems to act on some region starting at point. Expected behavior is error or empty region 
   ;; check behavior of (interactive "r") when no region. and same for replace-pairs-region
-  (replace-pairs-region φp1 φp2 '(
+  (xah-replace-pairs-region φp1 φp2 '(
                                   ["\\rightarrow" "→"]
                                   ["\\Sigma" "Σ"]
                                   ["\\times" "×"]
@@ -42,7 +42,7 @@
 (defun xah-replace-text-to-latex-region (φp1 φp2)
   "Replace some math function names or symbols by their LaTeX markup."
   (interactive "r")
-(replace-pairs-region φp1 φp2 '(
+(xah-replace-pairs-region φp1 φp2 '(
 ["*" "\\ "]
 ["cos(" "\\cos("]
 ["sin(" "\\sin("]
@@ -58,14 +58,14 @@ For example:
  \\=\\[Infinity] ⇒ ∞
  \\=\\[Equal] ⇒ =="
   (interactive "r")
-  (replace-pairs-region φp1 φp2 '(
+  (xah-replace-pairs-region φp1 φp2 '(
  ["\\[Infinity]" "∞"]
  ["\\[Equal]" "=="])))
 
 (defun xah-replace-greek-region (φp1 φp2)
   "Replace math symbols. e.g. alpha to α."
   (interactive "r")
-(replace-pairs-region φp1 φp2 '(
+(xah-replace-pairs-region φp1 φp2 '(
 ["alpha" "α"]
 ["beta" "β"]
 ["gamma" "γ"]
@@ -82,7 +82,7 @@ For example:
 LSL is Linden Scripting Language.
 This command does simple string replacement only."
   (interactive "r")
-(replace-pairs-region φp1 φp2 '(
+(xah-replace-pairs-region φp1 φp2 '(
 ["Cos[" "llCos("]
 ["Sin[" "llSin("]
 ["Tan[" "llTan("]

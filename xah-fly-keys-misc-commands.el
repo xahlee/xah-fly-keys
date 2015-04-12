@@ -454,7 +454,7 @@ version 2014-10-28"
 URL `http://ergoemacs.org/emacs/modernization_isearch.html'
 Version 2015-04-09"
   (interactive)
-  (let ( ξp1 ξp2 ξsstr )
+  (let ( ξp1 ξp2 )
     (if (use-region-p)
         (progn 
           (setq ξp1 (region-beginning))
@@ -465,12 +465,11 @@ Version 2015-04-09"
         (right-char)
         (skip-chars-forward "-_A-Za-z0-9")
         (setq ξp2 (point))))
-    (setq ξsstr (buffer-substring-no-properties ξp1 ξp2))
     (setq mark-active nil)
     (when (< ξp1 (point))
       (goto-char ξp1))
     (isearch-mode t)
-    (isearch-yank-string ξsstr)))
+    (isearch-yank-string (buffer-substring-no-properties ξp1 ξp2))))
 
 (defun xah-toggle-line-spacing ()
   "Toggle line spacing between no extra space to extra half line height."
