@@ -262,42 +262,46 @@ it'll remove the second >."
       (goto-char (point-min))
       (while (search-forward-regexp "[ \t]*\n[ \t]*" nil t) (replace-match " ")))))
 
-(defun xah-cycle-hyphen-underscore-space ()
-  "Cyclically replace {underscore, space, hypen} chars on current word or text selection.
-When called repeatedly, this command cycles the {“_”, “-”, “ ”} characters."
-  (interactive)
-  ;; this function sets a property 「'state」. Possible values are 0 to length of charArray.
-  (let (inputText ξbds charArray p1 p2 currentState nextState changeFrom
-                  changeTo startedWithRegion-p )
-    (if (region-active-p)
-        (setq startedWithRegion-p t )
-      (setq startedWithRegion-p nil ))
+(defun xah-cycle-hyphen-underscore-space (φp1 φp2)
+  "Cycle {underscore, space, hypen} chars of current word or text selection.
+When called repeatedly, this command cycles the {“_”, “-”, “ ”} characters, in that order.
 
-    (setq ξbds (get-selection-or-unit 'glyphs))
-    (setq inputText (elt ξbds 0) p1 (elt ξbds 1) p2 (elt ξbds 2))
-
-    (setq charArray [" " "_" "-"])
-
-    ;; when called first time, set state to 0
-    (setq currentState
+When called in elisp code, φp1 φp2 are region begin/end positions.
+URL `http://ergoemacs.org/emacs/elisp_change_space-hyphen_underscore.html'
+Version 2015-04-13"
+  (interactive
+   (if (use-region-p)
+       (list (region-beginning) (region-end))
+     (let ((ξbounds (bounds-of-thing-at-point 'symbol)))
+       (list (car ξbounds) (cdr ξbounds)))))
+  ;; this function sets a property 「'state」. Possible values are 0 to length of ξcharArray.
+  (let* ((ξinputText (buffer-substring-no-properties φp1 φp2))
+         (ξcharArray ["_" "-" " "])
+         (ξlength (length ξcharArray))
+         (ξregionWasActive-p (region-active-p))
+         (ξnowState
           (if (equal last-command this-command )
               (get 'xah-cycle-hyphen-underscore-space 'state)
             0 ))
-
-    (setq nextState (% (+ currentState 1) (length charArray)))
-    (setq changeFrom (elt charArray currentState ))
-    (setq changeTo (elt charArray nextState ))
-
-    (setq inputText (replace-regexp-in-string changeFrom changeTo (buffer-substring-no-properties p1 p2)))
-    (delete-region p1 p2)
-    (insert inputText)
-
-    (when (or (string= changeTo " ") startedWithRegion-p)
-      (goto-char p2)
-      (set-mark p1)
+         (ξchangeTo (elt ξcharArray ξnowState)))
+    (save-excursion
+      (save-restriction
+        (narrow-to-region φp1 φp2)
+        (goto-char (point-min))
+        (while
+            (search-forward-regexp
+             (concat
+              (elt ξcharArray (% (+ ξnowState 1) ξlength))
+              "\\|"
+              (elt ξcharArray (% (+ ξnowState 2) ξlength)))
+             (point-max)
+             'NOERROR)
+          (replace-match ξchangeTo 'FIXEDCASE 'LITERAL))))
+    (when (or (string= ξchangeTo " ") ξregionWasActive-p)
+      (goto-char φp2)
+      (set-mark φp1)
       (setq deactivate-mark nil))
-
-    (put 'xah-cycle-hyphen-underscore-space 'state nextState)))
+    (put 'xah-cycle-hyphen-underscore-space 'state (% (+ ξnowState 1) ξlength))))
 
 
 
