@@ -126,7 +126,7 @@ WARNING: this command is currently unstable."
 ;; (chinese-numeral-simple "○一二三四五六七八九十")
 ;; (english-numeral "0123456789")
 
-;;         (ξenglish-chinese-punctuation-map
+;;         (ξreplacePairs
 ;;          [
 ;;           [":</" "：</"]
 ;;           ]
@@ -150,44 +150,58 @@ WARNING: this command is currently unstable."
 
 ;;     (xah-replace-pairs-region p1 p2
 ;;                               (cond
-;;                                ((string= φ-to-direction "chinese") ξenglish-chinese-punctuation-map)
-;;                                ((string= φ-to-direction "english") (mapcar (lambda (ξpair) (vector (elt ξpair 1) (elt ξpair 0))) ξenglish-chinese-punctuation-map))
+;;                                ((string= φ-to-direction "chinese") ξreplacePairs)
+;;                                ((string= φ-to-direction "english") (mapcar (lambda (ξpair) (vector (elt ξpair 1) (elt ξpair 0))) ξreplacePairs))
 ;;                                ((string= φ-to-direction "auto")
 ;;                                 (if (string-match ",\\|. " ξinput-str)
-;;                                   ξenglish-chinese-punctuation-map
-;;                                   (mapcar (lambda (ξpair) (vector (elt ξpair 1) (elt ξpair 0))) ξenglish-chinese-punctuation-map)
+;;                                   ξreplacePairs
+;;                                   (mapcar (lambda (ξpair) (vector (elt ξpair 1) (elt ξpair 0))) ξreplacePairs)
 ;;                                   ))
 
 ;;                                (t (user-error "Your 3rd argument 「%s」 isn't valid" φ-to-direction)) ) ) ) )
 
-(defun xah-convert-english-chinese-punctuation (p1 p2 &optional φto-direction)
+(defun xah-convert-english-chinese-punctuation (φp1 φp2 &optional φto-direction)
   "Convert punctuation from/to English/Chinese characters.
 
 When called interactively, do current text block or selection. The conversion direction is automatically determined.
 
 If `universal-argument' is called, ask user for change direction.
 
-When called in lisp code, p1 p2 are region begin/end positions. φto-direction must be any of the following values: 「\"chinese\"」, 「\"english\"」, 「\"auto\"」.
+When called in lisp code, φp1 φp2 are region begin/end positions. φto-direction must be any of the following values: 「\"chinese\"」, 「\"english\"」, 「\"auto\"」.
 
 See also: `xah-remove-punctuation-trailing-redundant-space'.
 
 URL `http://ergoemacs.org/emacs/elisp_convert_chinese_punctuation.html'
-Version 2015-02-04
-"
+Version 2015-04-13"
   (interactive
-   (let ( (ξboundary (get-selection-or-unit 'block)))
-     (list (elt ξboundary 1) (elt ξboundary 2)
-           (if current-prefix-arg
-               (ido-completing-read
-                "Change to: "
-                '( "english"  "chinese")
-                "PREDICATE"
-                "REQUIRE-MATCH")
-             "auto"
-             ))))
+   (let ( ξp1 ξp2)
+     (if (use-region-p)
+         (progn
+           (setq ξp1 (region-beginning))
+           (setq ξp2 (region-end)))
+       (progn
+         (if (re-search-backward "\n[ \t]*\n" nil "move")
+             (progn (re-search-forward "\n[ \t]*\n")
+                    (setq ξp1 (point)))
+           (setq ξp1 (point)))
+         (if (re-search-forward "\n[ \t]*\n" nil "move")
+             (progn (re-search-backward "\n[ \t]*\n")
+                    (setq ξp2 (point)))
+           (setq ξp2 (point)))))
+     (list
+      ξp1
+      ξp2
+      (if current-prefix-arg
+          (ido-completing-read
+           "Change to: "
+           '( "english"  "chinese")
+           "PREDICATE"
+           "REQUIRE-MATCH")
+        "auto"
+        ))))
   (let (
-        (ξinput-str (buffer-substring-no-properties p1 p2))
-        (ξenglish-chinese-punctuation-map
+        (ξinput-str (buffer-substring-no-properties φp1 φp2))
+        (ξreplacePairs
          [
           [". " "。"]
           [".\n" "。\n"]
@@ -215,19 +229,25 @@ Version 2015-02-04
                (string-match "！" ξinput-str))
            "english"
          "chinese")))
+    (save-excursion
+      (save-restriction
+        (narrow-to-region φp1 φp2)
+        (mapc 
+         (lambda (ξx) 
+           (progn
+             (goto-char (point-min))
+             (while (search-forward (aref ξx 0) nil "noerror")
+               (replace-match (aref ξx 1)))))
+         (cond
+          ((string= φto-direction "chinese") ξreplacePairs)
+          ((string= φto-direction "english") (mapcar (lambda (ξpair) (vector (elt ξpair 1) (elt ξpair 0))) ξreplacePairs))
+          (t (user-error "Your 3rd argument 「%s」 isn't valid" φto-direction))))))))
 
-    (xah-replace-pairs-region
-     p1 p2
-     (cond
-      ((string= φto-direction "chinese") ξenglish-chinese-punctuation-map)
-      ((string= φto-direction "english") (mapcar (lambda (ξpair) (vector (elt ξpair 1) (elt ξpair 0))) ξenglish-chinese-punctuation-map))
-      (t (user-error "Your 3rd argument 「%s」 isn't valid" φto-direction))))))
-
-(defun xah-convert-asian/ascii-space (p1 p2)
+(defun xah-convert-asian/ascii-space (φp1 φp2)
   "Change all space characters between Asian Ideographic one to ASCII one.
 Works on current block or text selection.
 
-When called in emacs lisp code, the p1 p2 are cursor positions for region.
+When called in emacs lisp code, the φp1 φp2 are cursor positions for region.
 
 See also `xah-convert-english-chinese-punctuation'
  `xah-remove-punctuation-trailing-redundant-space'
@@ -240,8 +260,8 @@ See also `xah-convert-english-chinese-punctuation'
           ["　" " "]
           ]
          ))
-    (xah-replace-regexp-pairs-region p1 p2
-                                 (if (string-match "　" (buffer-substring-no-properties p1 p2))
+    (xah-replace-regexp-pairs-region φp1 φp2
+                                 (if (string-match "　" (buffer-substring-no-properties φp1 φp2))
                                      ξ-space-char-map
                                    (mapcar (lambda (ξpair) (vector (elt ξpair 1) (elt ξpair 0))) ξ-space-char-map))
                                  "FIXEDCASE" "LITERAL")))
@@ -255,8 +275,7 @@ When called in emacs lisp code, the φp1 φp2 are cursor positions for region.
 See also `xah-convert-english-chinese-punctuation'.
 
 URL `http://ergoemacs.org/emacs/elisp_convert_chinese_punctuation.html'
-version 2015-02-04
-"
+version 2015-02-04"
   (interactive
    (let ((ξboundary (get-selection-or-unit 'block)))
      (list (elt ξboundary 1) (elt ξboundary 2))))

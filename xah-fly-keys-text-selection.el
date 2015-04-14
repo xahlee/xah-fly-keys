@@ -3,8 +3,7 @@
 (defun xah-select-current-block ()
   "Select the current block of text between blank lines.
 URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
-Version 2015-02-07
-"
+Version 2015-02-07"
   (interactive)
   (let (ξp1 ξp2)
     (progn

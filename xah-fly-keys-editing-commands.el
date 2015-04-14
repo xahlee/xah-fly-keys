@@ -99,7 +99,7 @@ If current line is a single space, remove that space.
 URL `http://ergoemacs.org/emacs/emacs_shrink_whitespace.html'
 Version 2015-03-03"
   (interactive)
-  (let ((ξpos (point))
+  (let ((pos0 (point))
         ξline-has-char-p ; current line contains non-white space chars
         ξhas-space-tab-neighbor-p
         ξwhitespace-begin ξwhitespace-end
@@ -110,14 +110,14 @@ Version 2015-03-03"
       (beginning-of-line)
       (setq ξline-has-char-p (search-forward-regexp "[[:graph:]]" (line-end-position) t))
 
-      (goto-char ξpos)
+      (goto-char pos0)
       (skip-chars-backward "\t ")
       (setq ξspace-or-tab-begin (point))
 
       (skip-chars-backward "\t \n")
       (setq ξwhitespace-begin (point))
 
-      (goto-char ξpos)
+      (goto-char pos0)
       (skip-chars-forward "\t ")
       (setq ξspace-or-tab-end (point))
       (skip-chars-forward "\t \n")
@@ -139,7 +139,7 @@ Remove whitespaces around cursor to just one space, or remove neighboring blank 
 URL `http://ergoemacs.org/emacs/emacs_shrink_whitespace.html'
 Version 2015-03-03"
   (interactive)
-  (let ((ξpos (point))
+  (let ((pos0 (point))
         ξline-has-char-p ; current line contains non-white space chars
         ξhas-space-tab-neighbor-p
         ξwhitespace-begin ξwhitespace-end
@@ -150,14 +150,14 @@ Version 2015-03-03"
       (beginning-of-line)
       (setq ξline-has-char-p (search-forward-regexp "[[:graph:]]" (line-end-position) t))
 
-      (goto-char ξpos)
+      (goto-char pos0)
       (skip-chars-backward "\t ")
       (setq ξspace-or-tab-begin (point))
 
       (skip-chars-backward "\t \n")
       (setq ξwhitespace-begin (point))
 
-      (goto-char ξpos)
+      (goto-char pos0)
       (skip-chars-forward "\t ")
       (setq ξspace-or-tab-end (point))
       (skip-chars-forward "\t \n")
