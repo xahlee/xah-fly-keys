@@ -153,3 +153,17 @@
         (define-key myMap "\C-?" 'scroll-down-command)
         myMap))
 
+(defun xah-magit-mode-keys ()
+  "keys for `magit-mode'."
+  (define-key magit-mode-map (kbd "1") nil)
+  (define-key magit-mode-map (kbd "2") nil)
+  (define-key magit-mode-map (kbd "3") nil)
+  (define-key magit-mode-map (kbd "4") nil)
+  (define-key magit-mode-map (kbd "o") nil)
+
+  (define-key magit-mode-map (kbd "<menu> e o") 'magit-key-mode-popup-submodule)
+  (define-key magit-mode-map (kbd "<menu> e 1") 'magit-show-level-1)
+  (define-key magit-mode-map (kbd "<menu> e 2") 'magit-show-level-2)
+  (define-key magit-mode-map (kbd "<menu> e 3") 'magit-show-level-3)
+  (define-key magit-mode-map (kbd "<menu> e 4") 'magit-show-level-4))
+(add-hook 'magit-mode-hook 'xah-magit-mode-keys)
