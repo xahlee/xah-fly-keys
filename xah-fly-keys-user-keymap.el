@@ -71,7 +71,7 @@
   (define-key xah-user-keymap (kbd "r [") 'xah-remove-square-brackets)
   (define-key xah-user-keymap (kbd "r b") 'xah-change-bracket-pairs)
   (define-key xah-user-keymap (kbd "r c") 'xah-escape-quotes)
-  (define-key xah-user-keymap (kbd "r d") 'fix-datetimestamp)
+  (define-key xah-user-keymap (kbd "r d") 'xah-fix-datetime-stamp)
   (define-key xah-user-keymap (kbd "r e") 'xah-replace-straight-quotes)
   (define-key xah-user-keymap (kbd "r g") 'xah-convert-latin-alphabet-gothic)
   (define-key xah-user-keymap (kbd "r l") 'xah-unescape-quotes)
