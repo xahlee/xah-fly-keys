@@ -2,47 +2,42 @@
 ;; 〈Emacs Unicode Math Symbols Input Mode (xmsi-mode)〉 http://ergoemacs.org/emacs/xmsi-math-symbols-input.html
 
 (defun xah-insert-bracket-pair (φleft-bracket φright-bracket)
-  "Insert a matching bracket and place cursor in between.
+  "Wrap or Insert a matching bracket and place cursor in between.
 
-If there's a text selection, insert brackets around it.
-If there's no text selection:
-  If the char before cursor is alphanumeric, insert brackets around current word.
-  else, insert brackets at cursor position.
+If there's a text selection, wrap brackets around it. Else, smartly decide wrap or insert. (basically, if there's no char after cursor, just insert bracket pair.)
 
-Alphanumeric char here includes hyphen ＆ underscore.
+φleft-bracket ＆ φright-bracket are strings.
 
-The arguments φleft-bracket ＆ φright-bracket are strings.
-
-• 〈Emacs Lisp: Insert Brackets by Pair〉 http://ergoemacs.org/emacs/elisp_insert_brackets_by_pair.html
-• 〈Matching Brackets in Unicode〉 URL `http://xahlee.info/comp/unicode_matching_brackets.html'
-"
+URL `http://ergoemacs.org/emacs/elisp_insert_brackets_by_pair.html'
+Version 2015-04-14"
   (if (use-region-p)
       (progn
         (let (
-              (p1 (region-beginning))
-              (p2 (region-end)))
-          (goto-char p2)
+              (ξp1 (region-beginning))
+              (ξp2 (region-end)))
+          (goto-char ξp2)
           (insert φright-bracket)
-          (goto-char p1)
+          (goto-char ξp1)
           (insert φleft-bracket)
-          (goto-char (+ p2 2))))
+          (goto-char (+ ξp2 2))))
     (progn ; no text selection
-      (if (or
-           (looking-at "[_-A-Za-z0-9]"))
+      (if (looking-at "[ \n\t]")
           (progn
-            (let ( p1 p2)
-              (skip-chars-backward "-A-Za-z0-9")
-              (setq p1 (point))
-              (skip-chars-forward "-A-Za-z0-9")
-              (setq p2 (point))
-              (goto-char p2)
-              (insert φright-bracket)
-              (goto-char p1)
-              (insert φleft-bracket)
-              (goto-char (+ p2 (length φleft-bracket)))))
+            (insert φleft-bracket φright-bracket)
+            (search-backward φright-bracket ))
         (progn
-          (insert φleft-bracket φright-bracket)
-          (search-backward φright-bracket ))))))
+          (let (ξp1 ξp2)
+            ;; basically, want all alphanumeric, plus hyphen and underscore, but don't want space or punctuations. Also want chinese.
+            ;; 我有一帘幽梦，不知与谁能共。多少秘密在其中，欲诉无人能懂。
+            (skip-chars-backward "-_[:alnum:]")
+            (setq ξp1 (point))
+            (skip-chars-forward "-_[:alnum:]")
+            (setq ξp2 (point))
+            (goto-char ξp2)
+            (insert φright-bracket)
+            (goto-char ξp1)
+            (insert φleft-bracket)
+            (goto-char (+ ξp2 (length φleft-bracket)))))))))
 
 ;; (insert-parentheses)
 
