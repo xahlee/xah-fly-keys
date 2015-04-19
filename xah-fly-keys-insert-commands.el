@@ -9,7 +9,7 @@ If there's a text selection, wrap brackets around it. Else, smartly decide wrap 
 φleft-bracket ＆ φright-bracket are strings.
 
 URL `http://ergoemacs.org/emacs/elisp_insert_brackets_by_pair.html'
-Version 2015-04-14"
+Version 2015-04-19"
   (if (use-region-p)
       (progn
         (let (
@@ -21,7 +21,7 @@ Version 2015-04-14"
           (insert φleft-bracket)
           (goto-char (+ ξp2 2))))
     (progn ; no text selection
-      (if (looking-at "[ \n\t]")
+      (if (looking-at "[^-_[:alnum:]]")
           (progn
             (insert φleft-bracket φright-bracket)
             (search-backward φright-bracket ))
