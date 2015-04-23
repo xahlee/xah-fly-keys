@@ -21,7 +21,10 @@ Version 2015-04-19"
           (insert φleft-bracket)
           (goto-char (+ ξp2 2))))
     (progn ; no text selection
-      (if (looking-at "[^-_[:alnum:]]")
+      (if 
+          (or  
+           (looking-at "[^-_[:alnum:]]") 
+           (eq (point) (point-max)))
           (progn
             (insert φleft-bracket φright-bracket)
             (search-backward φright-bracket ))
