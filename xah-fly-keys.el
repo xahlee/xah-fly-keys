@@ -230,7 +230,7 @@ To solve this problem, when your code only knows the relative path of another fi
 
 
 
-(defvar xfk-major-mode-lead-key nil "Lead key for all major mode's key sequence. By default, it's 【<menu> e】")
+(defvar xfk-major-mode-lead-key nil "Lead key for all major mode's key sequence. By default, it's (kbd \"<menu> e\"). Only supported by xah's modes.")
 (setq xfk-major-mode-lead-key (kbd "<menu> e"))
 
 (provide 'xah-fly-keys)
