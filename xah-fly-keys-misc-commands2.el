@@ -1,6 +1,6 @@
 ;; -*- coding: utf-8 -*-
 
-(require 'xfrp_find_replace_pairs)
+(require 'xah-replace-pairs)
 (require 'xeu_elisp_util)
 
 (defun xah-camelCase-underscore (φbegin φend)
