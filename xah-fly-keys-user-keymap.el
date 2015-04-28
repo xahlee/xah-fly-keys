@@ -126,9 +126,4 @@
     (define-key xah-dump-keymap (kbd "w") nil)
     (define-key xah-dump-keymap (kbd "x") nil)
     (define-key xah-dump-keymap (kbd "y") nil)
-    (define-key xah-dump-keymap (kbd "z") nil)
-    )
-
-  (progn
-    (global-set-key (kbd "j") 'xah-cut-line-or-region)
-    (global-set-key (kbd "q") nil)))
+    (define-key xah-dump-keymap (kbd "z") nil)))

@@ -29,6 +29,14 @@
 
 (global-set-key (kbd "<home>") 'xfk-command-mode-activate)
 
+(defvar xfk-major-mode-lead-key nil "Lead key for all major mode's key sequence. By default, it's (kbd \"<menu> e\"). Only supported by xah's modes.")
+(setq xfk-major-mode-lead-key (kbd "<menu> e"))
+
+(defvar xfk-use-xah-keys-p nil "If true, use xah lee's personal keys, that may not be suitable for other keyboard or workflow.")
+(setq xfk-use-xah-keys-p t)
+
+
+
 (defun xah-get-fullpath (φfile-relative-path)
   "Return the full path of ΦFILE-RELATIVE-PATH, relative to caller's file location.
 
@@ -190,7 +198,13 @@ To solve this problem, when your code only knows the relative path of another fi
     (global-set-key (kbd "y") 'set-mark-command)
     (global-set-key (kbd "z") 'comment-dwim)
 
-))
+    (if xfk-use-xah-keys-p
+        (progn
+          (global-set-key (kbd "q") nil)
+          (global-set-key (kbd "j") 'xah-cut-line-or-region))
+      (progn
+        (global-set-key (kbd "j") 'xah-copy-line-or-region)
+        (global-set-key (kbd "q") 'xah-cut-line-or-region)))))
 
 ;; 67890
 ;; fgcrl
@@ -229,12 +243,6 @@ To solve this problem, when your code only knows the relative path of another fi
 (add-hook 'shell-mode-hook 'xfk-insert-mode-activate)
 
 
-
-(defvar xfk-major-mode-lead-key nil "Lead key for all major mode's key sequence. By default, it's (kbd \"<menu> e\"). Only supported by xah's modes.")
-(setq xfk-major-mode-lead-key (kbd "<menu> e"))
-
-(defvar xfk-use-xah-keys-p nil "If true, use xah lee's personal keys, that may not be suitable for other keyboard or workflow.")
-(setq xfk-use-xah-keys-p t)
 
 (provide 'xah-fly-keys)
 
