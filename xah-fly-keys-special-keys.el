@@ -57,4 +57,4 @@
 (global-set-key (kbd "<XF86Close>") 'xah-close-current-buffer)
 
 (define-key key-translation-map (kbd "<f17>") (kbd "C-g"))
-
+(define-key key-translation-map (kbd "ESC") (kbd "C-g"))

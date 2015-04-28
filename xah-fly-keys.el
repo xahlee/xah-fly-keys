@@ -63,12 +63,12 @@ To solve this problem, when your code only knows the relative path of another fi
 (load (xah-get-fullpath "xah-fly-keys-misc-commands2"))
 (load (xah-get-fullpath "xah-fly-keys-emacs-1k-keymap"))
 (load (xah-get-fullpath "xah-fly-keys-help-keymap"))
-(load (xah-get-fullpath "xah-fly-keys-user-keymap"))
 (load (xah-get-fullpath "xah-fly-keys-insertion-keymap"))
 (load (xah-get-fullpath "xah-fly-keys-control-key"))
 (load (xah-get-fullpath "xah-fly-keys-meta-key"))
 (load (xah-get-fullpath "xah-fly-keys-special-keys"))
 (load (xah-get-fullpath "xah-fly-keys-mode-specific"))
+(load (xah-get-fullpath "xah-fly-keys-user-keymap"))
 
 
 
@@ -233,4 +233,8 @@ To solve this problem, when your code only knows the relative path of another fi
 (defvar xfk-major-mode-lead-key nil "Lead key for all major mode's key sequence. By default, it's (kbd \"<menu> e\"). Only supported by xah's modes.")
 (setq xfk-major-mode-lead-key (kbd "<menu> e"))
 
+(defvar xfk-use-xah-keys-p nil "If true, use xah lee's personal keys, that may not be suitable for other keyboard or workflow.")
+(setq xfk-use-xah-keys-p t)
+
 (provide 'xah-fly-keys)
+

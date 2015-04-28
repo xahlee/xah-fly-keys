@@ -35,7 +35,7 @@
     ;;    (define-key dired-mode-map (kbd "M-s") 'isearch-forward)
     ;;    (define-key dired-mode-map (kbd "M-S") 'isearch-backward)
     ;; (define-key dired-mode-map (kbd "<tab>") (make-keymap))
-    (define-key dired-mode-map (kbd "<menu> e t") 'wdired-change-to-wdired-mode) ; emacs 23 or later only
+    (define-key dired-mode-map (kbd "<delete> t") 'wdired-change-to-wdired-mode) ; emacs 23 or later only
     ))
 
 (progn
