@@ -1,101 +1,117 @@
 ;; -*- coding: utf-8 -*-
 
-(defun xah-latex-to-unicode (φp1 φp2)
-  "Replace TeX markup to Unicode.
-⁖  \\alpha becomes α"
+(defun xah-replace-latex-to-unicode (φbegin φend)
+  "Replace TeX markup to Unicode in current line or selection.
+Example: \\alpha becomes α.
+Version 2015-04-28"
   (interactive
-   (let (p1 p2)
-     (if (use-region-p)
-         (progn 
-           (setq p1 (region-beginning))
-           (setq p2 (region-end)))
-       (progn 
-         (save-excursion
-           (if (re-search-backward "\n[ \t]*\n" nil "move")
-               (progn (re-search-forward "\n[ \t]*\n")
-                      (setq p1 (point)))
-             (setq p1 (point)))
-           (if (re-search-forward "\n[ \t]*\n" nil "move")
-               (progn (re-search-backward "\n[ \t]*\n")
-                      (setq p2 (point)))
-             (setq p2 (point))))))
-     (list p1 p2)))
+   (if (use-region-p)
+       (list (region-beginning) (region-end))
+     (list (line-beginning-position) (line-end-position))))
+  (xah-replace-pairs-region
+   φbegin
+   φend
+   '(
+     ["\\rightarrow" "→"]
+     ["\\Sigma" "Σ"]
+     ["\\times" "×"]
+     ["\\alpha" "α"]
+     ["\\beta" "β"]
+     ["\\gamma" "γ"]
+     ["\\delta" "δ"]
+     ["\\Lambda" "Λ"]
+     ["\\epsilon" "ε"]
+     ["\\omega" "ω"]
+     ["\\cup" "∪"]
+     ["\\in" "∈"]
+     )))
 
-  ;; (message "%s %s" φp1 φp2)
-  ;; TODO with no text selection, it seems to act on some region starting at point. Expected behavior is error or empty region 
-  ;; check behavior of (interactive "r") when no region. and same for replace-pairs-region
-  (xah-replace-pairs-region φp1 φp2 '(
-                                  ["\\rightarrow" "→"]
-                                  ["\\Sigma" "Σ"]
-                                  ["\\times" "×"]
-                                  ["\\alpha" "α"]
-                                  ["\\beta" "β"]
-                                  ["\\gamma" "γ"]
-                                  ["\\delta" "δ"]
-                                  ["\\Lambda" "Λ"]
-                                  ["\\epsilon" "ε"]
-                                  ["\\omega" "ω"]
-                                  ["\\cup" "∪"]
-                                  ["\\in" "∈"]
-                                  )))
+(defun xah-replace-text-to-latex-region (φbegin φend)
+  "Replace math function names or symbols by their LaTeX markup.
+Work on current line or selection.
+Version 2015-04-28"
+  (interactive
+   (if (use-region-p)
+       (list (region-beginning) (region-end))
+     (list (line-beginning-position) (line-end-position))))
+  (xah-replace-pairs-region
+   φbegin
+   φend
+   '(
+     ["*" "\\ "]
+     ["cos(" "\\cos("]
+     ["sin(" "\\sin("]
+     ["tan(" "\\tan("]
+     [" pi" "\\!\\pi"]
+     ["R^2" "\\mathbb{R}^2"]
+     ["R^3" "\\mathbb{R}^3"]
+     )))
 
-(defun xah-replace-text-to-latex-region (φp1 φp2)
-  "Replace some math function names or symbols by their LaTeX markup."
-  (interactive "r")
-(xah-replace-pairs-region φp1 φp2 '(
-["*" "\\ "]
-["cos(" "\\cos("]
-["sin(" "\\sin("]
-["tan(" "\\tan("]
-[" pi" "\\!\\pi"]
-["R^2" "\\mathbb{R}^2"]
-["R^3" "\\mathbb{R}^3"]
-)))
-
-(defun xah-replace-mathematica-symbols-region (φp1 φp2)
-  "Replace Mathematica's special char markup to Unicode.
+(defun xah-replace-mathematica-symbols (φbegin φend)
+  "Replace Mathematica's special char markup to Unicode in current line or selection.
 For example:
  \\=\\[Infinity] ⇒ ∞
- \\=\\[Equal] ⇒ =="
-  (interactive "r")
-  (xah-replace-pairs-region φp1 φp2 '(
- ["\\[Infinity]" "∞"]
- ["\\[Equal]" "=="])))
+ \\=\\[Equal] ⇒ ==
+Version 2015-04-28"
+  (interactive
+   (if (use-region-p)
+       (list (region-beginning) (region-end))
+     (list (line-beginning-position) (line-end-position))))
+  (xah-replace-pairs-region
+   φbegin
+   φend
+   '(
+     ["\\[Infinity]" "∞"]
+     ["\\[Equal]" "=="])))
 
-(defun xah-replace-greek-region (φp1 φp2)
-  "Replace math symbols. e.g. alpha to α."
-  (interactive "r")
-(xah-replace-pairs-region φp1 φp2 '(
-["alpha" "α"]
-["beta" "β"]
-["gamma" "γ"]
-["theta" "θ"]
-["lambda" "λ"]
-["delta" "δ"]
-["epsilon" "φ"]
-["omega" "ω"]
-["Pi" "π"])))
+(defun xah-replace-greeks-to-symbols (φbegin φend)
+  "Replace alpha to α etc in current line or selection.
+Version 2015-04-28"
+  (interactive
+   (if (use-region-p)
+       (list (region-beginning) (region-end))
+     (list (line-beginning-position) (line-end-position))))
+  (xah-replace-pairs-region
+   φbegin
+   φend
+   '(
+     ["alpha" "α"]
+     ["beta" "β"]
+     ["gamma" "γ"]
+     ["theta" "θ"]
+     ["lambda" "λ"]
+     ["delta" "δ"]
+     ["epsilon" "φ"]
+     ["omega" "ω"]
+     ["Pi" "π"])))
 
-(defun xah-mathematica-to-lsl-region (φp1 φp2)
+(defun xah-replace-mathematica-to-lsl (φbegin φend)
   "Change Mathematica syntax to LSL syntax on region.
 
 LSL is Linden Scripting Language.
-This command does simple string replacement only."
-  (interactive "r")
-(xah-replace-pairs-region φp1 φp2 '(
-["Cos[" "llCos("]
-["Sin[" "llSin("]
-["Tan[" "llTan("]
-["Pi" "PI"]
-["π" "PI"]
-["{" "<"]
-["}" ">"])))
+Version 2015-04-28"
+  (interactive
+   (if (use-region-p)
+       (list (region-beginning) (region-end))
+     (list (line-beginning-position) (line-end-position))))
+  (xah-replace-pairs-region
+   φbegin
+   φend
+   '(
+     ["Cos[" "llCos("]
+     ["Sin[" "llSin("]
+     ["Tan[" "llTan("]
+     ["Pi" "PI"]
+     ["π" "PI"]
+     ["{" "<"]
+     ["}" ">"])))
 
 (defun xah-clean-Mathematica-graphics-buffer ()
   "Remove whitespace, truncate numbers, of current buffer of Mathematica graphics file.
 This command does several find/replace on the current buffer.
 Removing spaces, removing new lines, truncate numbers to 3 decimals, etc.
-The goal of these replacement is to reduce the file size of a Mathematica Graphics file (.mgs) that are read over the net by JavaView."
+The goal of these replacement is to reduce the file size of a Mathematica Graphics file (.mgs) that are read over the net by JavaView.
+Version 2015-04-28"
   (interactive)
 
   (goto-char 1)

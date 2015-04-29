@@ -160,34 +160,28 @@ WARNING: this command is currently unstable."
 
 ;;                                (t (user-error "Your 3rd argument 「%s」 isn't valid" φ-to-direction)) ) ) ) )
 
-(defun xah-convert-english-chinese-punctuation (φp1 φp2 &optional φto-direction)
+(defun xah-convert-english-chinese-punctuation (φbegin φend &optional φto-direction)
   "Convert punctuation from/to English/Chinese characters.
 
-When called interactively, do current text block or selection. The conversion direction is automatically determined.
+When called interactively, do current line or selection. The conversion direction is automatically determined.
 
 If `universal-argument' is called, ask user for change direction.
 
-When called in lisp code, φp1 φp2 are region begin/end positions. φto-direction must be any of the following values: 「\"chinese\"」, 「\"english\"」, 「\"auto\"」.
+When called in lisp code, φbegin φend are region begin/end positions. φto-direction must be any of the following values: 「\"chinese\"」, 「\"english\"」, 「\"auto\"」.
 
 See also: `xah-remove-punctuation-trailing-redundant-space'.
 
 URL `http://ergoemacs.org/emacs/elisp_convert_chinese_punctuation.html'
-Version 2015-04-13"
+Version 2015-04-29"
   (interactive
-   (let ( ξp1 ξp2)
+   (let (ξp1 ξp2)
      (if (use-region-p)
          (progn
            (setq ξp1 (region-beginning))
            (setq ξp2 (region-end)))
        (progn
-         (if (re-search-backward "\n[ \t]*\n" nil "move")
-             (progn (re-search-forward "\n[ \t]*\n")
-                    (setq ξp1 (point)))
-           (setq ξp1 (point)))
-         (if (re-search-forward "\n[ \t]*\n" nil "move")
-             (progn (re-search-backward "\n[ \t]*\n")
-                    (setq ξp2 (point)))
-           (setq ξp2 (point)))))
+         (setq ξp1 (line-beginning-position) )
+         (setq ξp2 (line-end-position) )))
      (list
       ξp1
       ξp2
@@ -200,7 +194,7 @@ Version 2015-04-13"
         "auto"
         ))))
   (let (
-        (ξinput-str (buffer-substring-no-properties φp1 φp2))
+        (ξinput-str (buffer-substring-no-properties φbegin φend))
         (ξreplacePairs
          [
           [". " "。"]
@@ -231,7 +225,7 @@ Version 2015-04-13"
          "chinese")))
     (save-excursion
       (save-restriction
-        (narrow-to-region φp1 φp2)
+        (narrow-to-region φbegin φend)
         (mapc 
          (lambda (ξx) 
            (progn
@@ -243,11 +237,11 @@ Version 2015-04-13"
           ((string= φto-direction "english") (mapcar (lambda (ξpair) (vector (elt ξpair 1) (elt ξpair 0))) ξreplacePairs))
           (t (user-error "Your 3rd argument 「%s」 isn't valid" φto-direction))))))))
 
-(defun xah-convert-asian/ascii-space (φp1 φp2)
+(defun xah-convert-asian/ascii-space (φbegin φend)
   "Change all space characters between Asian Ideographic one to ASCII one.
 Works on current block or text selection.
 
-When called in emacs lisp code, the φp1 φp2 are cursor positions for region.
+When called in emacs lisp code, the φbegin φend are cursor positions for region.
 
 See also `xah-convert-english-chinese-punctuation'
  `xah-remove-punctuation-trailing-redundant-space'
@@ -260,17 +254,17 @@ See also `xah-convert-english-chinese-punctuation'
           ["　" " "]
           ]
          ))
-    (xah-replace-regexp-pairs-region φp1 φp2
-                                 (if (string-match "　" (buffer-substring-no-properties φp1 φp2))
+    (xah-replace-regexp-pairs-region φbegin φend
+                                 (if (string-match "　" (buffer-substring-no-properties φbegin φend))
                                      ξ-space-char-map
                                    (mapcar (lambda (ξpair) (vector (elt ξpair 1) (elt ξpair 0))) ξ-space-char-map))
                                  "FIXEDCASE" "LITERAL")))
 
-(defun xah-remove-punctuation-trailing-redundant-space (φp1 φp2)
+(defun xah-remove-punctuation-trailing-redundant-space (φbegin φend)
   "Remove redundant whitespace after punctuation.
 Works on current block or text selection.
 
-When called in emacs lisp code, the φp1 φp2 are cursor positions for region.
+When called in emacs lisp code, the φbegin φend are cursor positions for region.
 
 See also `xah-convert-english-chinese-punctuation'.
 
@@ -279,7 +273,7 @@ version 2015-02-04"
   (interactive
    (let ((ξboundary (get-selection-or-unit 'block)))
      (list (elt ξboundary 1) (elt ξboundary 2))))
-  (xah-replace-regexp-pairs-region φp1 φp2
+  (xah-replace-regexp-pairs-region φbegin φend
                                [
                                 ;; clean up. Remove extra space.
                                 [" +," ","]
@@ -299,7 +293,7 @@ version 2015-02-04"
                                 ]
                                "FIXEDCASE" "LITERAL"))
 
-(defun xah-convert-fullwidth-chars (φp1 φp2 &optional φto-direction)
+(defun xah-convert-fullwidth-chars (φbegin φend &optional φto-direction)
   "Convert ASCII chars to/from Unicode fullwidth version.
 
 When called interactively, do text selection or text block (paragraph).
@@ -313,7 +307,7 @@ If `universal-argument' is called:
  C-u 1 → to ASCII
  C-u 2 → to Unicode
 
-When called in lisp code, φp1 φp2 are region begin/end positions. φto-direction must be any of the following values: 「\"unicode\"」, 「\"ascii\"」, 「\"auto\"」.
+When called in lisp code, φbegin φend are region begin/end positions. φto-direction must be any of the following values: 「\"unicode\"」, 「\"ascii\"」, 「\"auto\"」.
 
 See also: `xah-remove-punctuation-trailing-redundant-space'."
   (interactive
@@ -351,7 +345,7 @@ See also: `xah-remove-punctuation-trailing-redundant-space'."
 
     (let ((case-fold-search nil))
       (xah-replace-pairs-region
-       φp1 φp2
+       φbegin φend
        (cond
         ((string= φto-direction "unicode") ξ-ascii-unicode-map)
         ((string= φto-direction "ascii") ξ-reverse-map)

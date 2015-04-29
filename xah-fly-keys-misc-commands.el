@@ -522,7 +522,7 @@ Call again to toggle back."
   (interactive)
   (describe-function major-mode))
 
-(defun xah-convert-latin-alphabet-gothic (φp1 φp2 φreverse-direction-p)
+(defun xah-convert-latin-alphabet-gothic (φbegin φend φreverse-direction-p)
   "Replace English alphabets to Unicode gothic characters.
 For example, A ⇒ 𝔄, a ⇒ 𝔞.
 
@@ -530,7 +530,7 @@ When called interactively, work on current line or text selection.
 
 If any `universal-argument' is called first, reverse direction.
 
-When called in elisp, the φp1 and φp2 are region begin/end positions to work on.
+When called in elisp, the φbegin and φend are region begin/end positions to work on.
 
 URL `http://ergoemacs.org/misc/thou_shalt_use_emacs_lisp.html'
 Version 2015-04-12"
@@ -552,7 +552,7 @@ Version 2015-04-12"
       (progn (setq ξuseMap ξlatin-to-gothic)))
     (save-excursion
       (save-restriction
-        (narrow-to-region φp1 φp2)
+        (narrow-to-region φbegin φend)
         (let ( (case-fold-search nil))
           (mapc
            (lambda (ξx)
@@ -561,10 +561,10 @@ Version 2015-04-12"
                (replace-match (elt ξx 1) 'FIXEDCASE 'LITERAL)))
            ξuseMap))))))
 
-(defun xah-remove-quotes-or-brackets (φp1 φp2 φbracketType)
+(defun xah-remove-quotes-or-brackets (φbegin φend φbracketType)
   "Remove quotes/brackets in current line or text selection.
 
-When called in lisp program, φp1 φp2 are region begin/end position, φbracketType is a string of a bracket pair. ⁖ \"()\",  \"[]\", etc.
+When called in lisp program, φbegin φend are region begin/end position, φbracketType is a string of a bracket pair. ⁖ \"()\",  \"[]\", etc.
 URL `http://ergoemacs.org/emacs/elisp_change_brackets.html'
 Version 2015-04-12"
   (interactive
@@ -587,7 +587,7 @@ Version 2015-04-12"
            (vector (char-to-string (elt φbracketType 1)) (char-to-string (elt φbracketType 1))))))
     (save-excursion
       (save-restriction
-        (narrow-to-region φp1 φp2)
+        (narrow-to-region φbegin φend)
         (let ( (case-fold-search nil))
           (mapc
            (lambda (ξx)
@@ -596,11 +596,11 @@ Version 2015-04-12"
                (replace-match "" 'FIXEDCASE 'LITERAL)))
            ξfindReplaceMap))))))
 
-(defun xah-change-bracket-pairs (φp1 φp2 φfromType φtoType)
+(defun xah-change-bracket-pairs (φbegin φend φfromType φtoType)
   "Change bracket pairs from one type to another on current line or selection.
 For example, change all parenthesis () to square brackets [].
 
-When called in lisp program, φp1 φp2 are region begin/end position, φfromType or φtoType is a string of a bracket pair. ⁖ \"()\",  \"[]\", etc.
+When called in lisp program, φbegin φend are region begin/end position, φfromType or φtoType is a string of a bracket pair. ⁖ \"()\",  \"[]\", etc.
 URL `http://ergoemacs.org/emacs/elisp_change_brackets.html'
 Version 2015-04-12"
   (interactive
@@ -624,7 +624,7 @@ Version 2015-04-12"
            (vector (char-to-string (elt φfromType 1)) (char-to-string (elt φtoType 1))))))
     (save-excursion
       (save-restriction
-        (narrow-to-region φp1 φp2)
+        (narrow-to-region φbegin φend)
         (let ( (case-fold-search nil))
           (mapc
            (lambda (ξx)
@@ -633,13 +633,13 @@ Version 2015-04-12"
                (replace-match (elt ξx 1) 'FIXEDCASE 'LITERAL)))
            ξfindReplaceMap))))))
 
-(defun xah-twitterfy (φp1 φp2 &optional φto-direction)
+(defun xah-twitterfy (φbegin φend &optional φto-direction)
   "Shorten words for Twitter 140 char limit on current line or selection.
 The conversion direction is automatically determined.
 
 If `universal-argument' is called, ask for conversion direction.
 
-When called in lisp code, φp1 φp2 are region begin/end positions. φto-direction must be one of the following values: 「\"auto\"」, 「\"twitterfy\"」, 「\"untwitterfy\"」.
+When called in lisp code, φbegin φend are region begin/end positions. φto-direction must be one of the following values: 「\"auto\"」, 「\"twitterfy\"」, 「\"untwitterfy\"」.
 
 URL `http://ergoemacs.org/emacs/elisp_twitterfy.html'
 Version 2015-04-12"
@@ -684,7 +684,7 @@ Version 2015-04-12"
          ))
     (save-excursion
       (save-restriction
-        (narrow-to-region φp1 φp2)
+        (narrow-to-region φbegin φend)
         (when (string= φto-direction "auto")
           (goto-char (point-min))
           (if
@@ -702,7 +702,7 @@ Version 2015-04-12"
                ξtwitterfy-map
              (mapcar (lambda (ξpair) (vector (elt ξpair 1) (elt ξpair 0))) ξtwitterfy-map))))))))
 
-(defun xah-replace-straight-quotes (φp1 φp2)
+(defun xah-replace-straight-quotes (φbegin φend)
   "Replace straight double quotes to curly ones, and others.
 Works on current text selection, else the current text block between empty lines.
 
@@ -713,7 +713,7 @@ Examples of changes:
  「--」 ⇒ 「—」
  「~=」 ⇒ 「≈」
 
-When called in lisp code, φp1 and φp2 are region begin/end positions.
+When called in lisp code, φbegin and φend are region begin/end positions.
 
 Version 2015-04-12"
   ;; some examples for debug
@@ -767,7 +767,7 @@ Version 2015-04-12"
 
     (save-excursion
       (save-restriction
-        (narrow-to-region φp1 φp2)
+        (narrow-to-region φbegin φend)
         ;; Note: order is important since this is huristic.
         (mapc
          (lambda (ξx)
