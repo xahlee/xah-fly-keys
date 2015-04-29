@@ -143,15 +143,21 @@
   )
 (add-hook 'occur-mode-hook 'xah-occur-mode-keys)
 
-;; used by message buffer. override it
 (setq special-mode-map
       (let ((myMap (make-sparse-keymap)))
         (suppress-keymap myMap)
+        (define-key myMap "2" 'delete-window)
+        (define-key myMap "3" 'delete-other-windows)
         (define-key myMap "q" 'quit-window)
         (define-key myMap " " 'scroll-up-command)
         (define-key myMap [?\S-\ ] 'scroll-down-command)
         (define-key myMap "\C-?" 'scroll-down-command)
         myMap))
+
+;; used by message buffer. override it
+(progn
+  (define-key messages-buffer-mode-map "2" nil)
+  (define-key messages-buffer-mode-map "3" nil))
 
 (defun xah-magit-mode-keys ()
   "keys for `magit-mode'."
@@ -167,7 +173,6 @@
   (define-key magit-mode-map (kbd "<menu> e 3") 'magit-show-level-3)
   (define-key magit-mode-map (kbd "<menu> e 4") 'magit-show-level-4))
 (add-hook 'magit-mode-hook 'xah-magit-mode-keys)
-
 
 (defun xah-Info-mode-keys ()
   "Modify keybindings for `Info-mode'.

@@ -71,7 +71,8 @@
 (define-prefix-command 'xah-menu-keymap)
 (global-set-key (kbd "<menu>") 'xah-menu-keymap)
 
-(global-set-key (kbd "<menu> RET") 'smex) ; todo check if bound, else execute-extended-command
+;; (global-set-key (kbd "<menu> RET") (if (fboundp 'smex) 'smex 'execute-extended-command ))
+(global-set-key (kbd "<menu> RET") nil)
 
 (global-set-key (kbd "<menu> <backspace>") nil)
 (global-set-key (kbd "<menu> <delete>") nil)
@@ -192,7 +193,7 @@
   (define-key xah-menu-i-keymap (kbd "p") 'previous-error)
   )
 
-(global-set-key (kbd "<menu> j") 'xah-copy-all)
+(global-set-key (kbd "<menu> j") 'xah-copy-line-or-region)
 
 (global-set-key (kbd "<menu> k") 'yank)
 

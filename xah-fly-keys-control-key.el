@@ -21,15 +21,34 @@
 
 (progn                                            ; standard keys
   (global-set-key (kbd "C-a") 'mark-whole-buffer) ; was move-beginning-of-line
+
+  (global-set-key (kbd "C-b") nil) ; was backward-char
+  ;; (global-set-key (kbd "C-c") nil) ; was mode specific
+  (global-set-key (kbd "C-d") nil) ; was delete-char
+  (global-set-key (kbd "C-e") nil) ; was move-end-of-line
+  (global-set-key (kbd "C-f") nil) ; was forward-char
+  ;; C-g cancel
+  ;; C-h help prefix
+  ;; C-i tab
+  ;; C-j newline
+  (global-set-key (kbd "C-k") nil) ; was kill-line
+  (global-set-key (kbd "C-l") nil) ; was recenter-top-bottom
+  ;; C-m ; was newline
   (global-set-key (kbd "C-n") 'xah-new-empty-buffer) ; was next-line
   (global-set-key (kbd "C-S-n") 'make-frame-command) ; was nil
   (global-set-key (kbd "C-o") 'find-file)            ; was open-line
+  (global-set-key (kbd "C-p") nil) ; was previous-line
+  ;; C-q quoted-insert
+  (global-set-key (kbd "C-r") nil)           ; was isearch-backward
   (global-set-key (kbd "C-s") 'save-buffer)  ; was isearch-forward
   (global-set-key (kbd "C-S-s") 'write-file) ; was nil
   (global-set-key (kbd "C-S-t") 'xah-open-last-closed) ; was nil
   (global-set-key (kbd "C-t") 'xah-copy-line-or-region) ; was transpose-chars
+  (global-set-key (kbd "C-u") nil) ; was universal-argument
+  (global-set-key (kbd "C-v") nil) ; was scroll-up-command
   (global-set-key (kbd "C-w") 'xah-close-current-buffer) ; was kill-region
-  (global-set-key (kbd "C-y") 'redo)                     ; was yank
+  ;; C-x prefix
+  (global-set-key (kbd "C-y") 'redo) ; was yank
   (global-set-key (kbd "C-z") 'undo) ; was suspend-frame
   )
 
