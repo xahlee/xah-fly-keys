@@ -9,44 +9,42 @@
 
 (defun xah-copy-line-or-region ()
   "Copy current line, or text selection.
-When `universal-argument' is called first, copy whole buffer (but respect `narrow-to-region')."
+When `universal-argument' is called first, copy whole buffer (respects `narrow-to-region')."
   (interactive)
   (let (ξp1 ξp2)
-    (if (null current-prefix-arg)
-        (progn (if (use-region-p)
-                   (progn (setq ξp1 (region-beginning))
-                          (setq ξp2 (region-end)))
-                 (progn (setq ξp1 (line-beginning-position))
-                        (setq ξp2 (line-end-position)))))
-      (progn (setq ξp1 (point-min))
-             (setq ξp2 (point-max))))
+    (if current-prefix-arg
+        (progn (setq ξp1 (point-min))
+               (setq ξp2 (point-max)))
+      (progn (if (use-region-p)
+                 (progn (setq ξp1 (region-beginning))
+                        (setq ξp2 (region-end)))
+               (progn (setq ξp1 (line-beginning-position))
+                      (setq ξp2 (line-end-position))))))
     (kill-ring-save ξp1 ξp2)))
 
 (defun xah-cut-line-or-region ()
   "Cut current line, or text selection.
-When `universal-argument' is called first, cut whole buffer (but respect `narrow-to-region')."
+When `universal-argument' is called first, cut whole buffer (respects `narrow-to-region')."
   (interactive)
   (let (ξp1 ξp2)
-    (if (null current-prefix-arg)
-        (progn (if (use-region-p)
-                   (progn (setq ξp1 (region-beginning))
-                          (setq ξp2 (region-end)))
-                 (progn (setq ξp1 (line-beginning-position))
-                        (setq ξp2 (line-beginning-position 2)))))
-      (progn (setq ξp1 (point-min))
-             (setq ξp2 (point-max))))
+    (if current-prefix-arg        
+        (progn (setq ξp1 (point-min))
+               (setq ξp2 (point-max)))
+      (progn (if (use-region-p)
+                 (progn (setq ξp1 (region-beginning))
+                        (setq ξp2 (region-end)))
+               (progn (setq ξp1 (line-beginning-position))
+                      (setq ξp2 (line-beginning-position 2))))))
     (kill-region ξp1 ξp2)))
 
 (defun xah-copy-all ()
-  "Put the whole buffer content into the `kill-ring'.
-If `narrow-to-region' is in effect, then copy that region only."
+  "Put the whole buffer content into the `kill-ring'. (respects `narrow-to-region')"
   (interactive)
   (kill-new (buffer-string))
   (message "Buffer content copied."))
 
 (defun xah-cut-all ()
-  "Cut the whole buffer content into the `kill-ring'.
-If `narrow-to-region' is in effect, then cut that region only."
+  "Cut the whole buffer content into the `kill-ring'. (respects `narrow-to-region')"
   (interactive)
   (kill-new (buffer-string))
   (delete-region (point-min) (point-max)))
@@ -415,9 +413,8 @@ nil
 That is, add 1 backslash in front of double quote (Unicode codepoint 34).
 See also: `xah-unescape-quotes'
 
-Version 2015-01-24
 URL `http://ergoemacs.org/emacs/elisp_escape_quotes.html'
-"
+Version 2015-04-29"
   (interactive)
   (let (p1 p2)
     (if (use-region-p)
@@ -437,9 +434,8 @@ URL `http://ergoemacs.org/emacs/elisp_escape_quotes.html'
 That is, remove 1 backslash in front of double quote (Unicode codepoint 34), if exist.
 See also: `xah-escape-quotes'
 
-Version 2015-01-24
 URL `http://ergoemacs.org/emacs/elisp_escape_quotes.html'
-"
+Version 2015-04-29"
   (interactive)
   (let (p1 p2)
     (if (use-region-p)

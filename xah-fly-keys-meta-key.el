@@ -28,7 +28,7 @@
 (global-set-key (kbd "M-l") nil)
 (global-set-key (kbd "M-m") nil)
 (global-set-key (kbd "M-n") nil)
-(global-set-key (kbd "M-o") nil)
+(global-set-key (kbd "M-o") 'other-window)
 (global-set-key (kbd "M-p") nil)
 (global-set-key (kbd "M-q") nil)
 (global-set-key (kbd "M-r") 'hippie-expand)
@@ -36,7 +36,7 @@
 (global-set-key (kbd "M-t") 'xah-toggle-letter-case)
 (global-set-key (kbd "M-u") nil)
 (global-set-key (kbd "M-v") nil)
-(global-set-key (kbd "M-w") 'other-window) ; was kill-ring-save, copy
+;; (global-set-key (kbd "M-w") nil) ; was kill-ring-save, copy
 ;; (global-set-key (kbd "M-x") nil) ; was execute-extended-command
 (global-set-key (kbd "M-y") nil)
 (global-set-key (kbd "M-z") nil)

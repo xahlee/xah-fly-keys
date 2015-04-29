@@ -20,7 +20,7 @@
   )
 
 (progn                                            ; standard keys
-  (global-set-key (kbd "C-a") 'mark-whole-buffer) ; was move-beginning-of-line
+  (global-set-key (kbd "C-a") nil) ; was move-beginning-of-line
 
   (global-set-key (kbd "C-b") nil) ; was backward-char
   ;; (global-set-key (kbd "C-c") nil) ; was mode specific
@@ -36,12 +36,12 @@
   ;; C-m ; was newline
   (global-set-key (kbd "C-n") 'xah-new-empty-buffer) ; was next-line
   (global-set-key (kbd "C-S-n") 'make-frame-command) ; was nil
-  (global-set-key (kbd "C-o") 'find-file)            ; was open-line
+  (global-set-key (kbd "C-o") nil)            ; was open-line
   (global-set-key (kbd "C-p") nil) ; was previous-line
   ;; C-q quoted-insert
   (global-set-key (kbd "C-r") nil)           ; was isearch-backward
-  (global-set-key (kbd "C-s") 'save-buffer)  ; was isearch-forward
-  (global-set-key (kbd "C-S-s") 'write-file) ; was nil
+  (global-set-key (kbd "C-s") nil)  ; was isearch-forward
+  (global-set-key (kbd "C-S-s") nil) ; was nil
   (global-set-key (kbd "C-S-t") 'xah-open-last-closed) ; was nil
   (global-set-key (kbd "C-t") 'xah-copy-line-or-region) ; was transpose-chars
   (global-set-key (kbd "C-u") nil) ; was universal-argument
