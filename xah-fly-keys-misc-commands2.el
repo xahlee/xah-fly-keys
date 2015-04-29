@@ -96,69 +96,31 @@ WARNING: this command is currently unstable."
     (put 'xah-cycle-camel-style-case 'state next_state)
     ) )
 
-;; (defun xah-convert-chinese-numeral (p1 p2 &optional φ-to-direction)
-;;   "Replace punctuation from/to Chinese/English numeral.
-
-;; When called interactively, do current text block (paragraph) or text selection. The conversion direction is automatically determined.
-
-;; If `universal-argument' is called:
-;;  no C-u → Automatic.
-;;  C-u → to English
-;;  C-u 1 → to English
-;;  C-u 2 → to Chinese
-
-;; When called in lisp code, p1 p2 are region begin/end positions. φ-to-direction must be any of the following values: 「\"chinese\"」, 「\"english\"」, 「\"auto\"」.
-
-;; See also: `xah-remove-punctuation-trailing-redundant-space'."
-;;   (interactive
-;;    (let ( (ξboundary (get-selection-or-unit 'block)))
-;;      (list (elt ξboundary 1) (elt ξboundary 2)
-;;            (cond
-;;             ((equal current-prefix-arg nil) "auto")
-;;             ((equal current-prefix-arg '(4)) "english")
-;;             ((equal current-prefix-arg 1) "english")
-;;             ((equal current-prefix-arg 2) "chinese")
-;;             (t "chinese")
-;;             )
-;;            ) ) )
-;;   (let* (
-;;         (ξinput-str (buffer-substring-no-properties p1 p2))
-;; (chinese-numeral-simple "○一二三四五六七八九十")
-;; (english-numeral "0123456789")
-
-;;         (ξreplacePairs
-;;          [
-;;           [":</" "：</"]
-;;           ]
-;;          ))
-
-;; ;; (let* (
-;; ;;        (chinese-numeral-simple "○一二三四五六七八九十")
-;; ;;        (english-numeral "0123456789")
-;; ;;        (result (make-vector (length chinese-numeral-simple) nil))
-;; ;;        )
-;; ;;   (dotimes (ii (- (length chinese-numeral-simple) 1) )
-;; ;;     (aset result ii
-;; ;;           (vector
-;; ;;            (char-to-string (elt chinese-numeral-simple ii ))
-;; ;;            (char-to-string (elt english-numeral ii )) ))
-;; ;;     )
-;; ;;   result
-;; ;;   )
-
-;; ;; [["○" "0"] ["一" "1"] ["二" "2"] ["三" "3"] ["四" "4"] ["五" "5"] ["六" "6"] ["七" "7"] ["八" "8"] ["九" "9"] nil]
-
-;;     (xah-replace-pairs-region p1 p2
-;;                               (cond
-;;                                ((string= φ-to-direction "chinese") ξreplacePairs)
-;;                                ((string= φ-to-direction "english") (mapcar (lambda (ξpair) (vector (elt ξpair 1) (elt ξpair 0))) ξreplacePairs))
-;;                                ((string= φ-to-direction "auto")
-;;                                 (if (string-match ",\\|. " ξinput-str)
-;;                                   ξreplacePairs
-;;                                   (mapcar (lambda (ξpair) (vector (elt ξpair 1) (elt ξpair 0))) ξreplacePairs)
-;;                                   ))
-
-;;                                (t (user-error "Your 3rd argument 「%s」 isn't valid" φ-to-direction)) ) ) ) )
+(defun xah-convert-chinese-numeral (φbegin φend &optional φto-chinese)
+  "Replace convert Chinese number to English, or reverse.
+On current line or selection.
+If `universal-argument' is called first, do reverse direction.
+Version 2015-04-29"
+  (interactive
+   (if (use-region-p)
+       (list
+        (region-beginning)
+        (region-end)
+        current-prefix-arg)
+     (list
+      (line-beginning-position)
+      (line-end-position)
+      current-prefix-arg)))
+  (let* (
+         (ξnumMap [["○" "0"] ["一" "1"] ["二" "2"] ["三" "3"] ["四" "4"] ["五" "5"] ["六" "6"] ["七" "7"] ["八" "8"] ["九" "9"] ]))
+    (xah-replace-pairs-region
+     φbegin φend
+     (if φto-chinese
+         (mapcar
+          (lambda (x) (vector (elt x 1) (elt x 0)))
+          ξnumMap)
+       ξnumMap
+       ))))
 
 (defun xah-convert-english-chinese-punctuation (φbegin φend &optional φto-direction)
   "Convert punctuation from/to English/Chinese characters.
@@ -226,15 +188,15 @@ Version 2015-04-29"
     (save-excursion
       (save-restriction
         (narrow-to-region φbegin φend)
-        (mapc 
-         (lambda (ξx) 
+        (mapc
+         (lambda (ξx)
            (progn
              (goto-char (point-min))
              (while (search-forward (aref ξx 0) nil "noerror")
                (replace-match (aref ξx 1)))))
          (cond
           ((string= φto-direction "chinese") ξreplacePairs)
-          ((string= φto-direction "english") (mapcar (lambda (ξpair) (vector (elt ξpair 1) (elt ξpair 0))) ξreplacePairs))
+          ((string= φto-direction "english") (mapcar (lambda (x) (vector (elt x 1) (elt x 0))) ξreplacePairs))
           (t (user-error "Your 3rd argument 「%s」 isn't valid" φto-direction))))))))
 
 (defun xah-convert-asian/ascii-space (φbegin φend)
@@ -257,7 +219,7 @@ See also `xah-convert-english-chinese-punctuation'
     (xah-replace-regexp-pairs-region φbegin φend
                                  (if (string-match "　" (buffer-substring-no-properties φbegin φend))
                                      ξ-space-char-map
-                                   (mapcar (lambda (ξpair) (vector (elt ξpair 1) (elt ξpair 0))) ξ-space-char-map))
+                                   (mapcar (lambda (x) (vector (elt x 1) (elt x 0))) ξ-space-char-map))
                                  "FIXEDCASE" "LITERAL")))
 
 (defun xah-remove-punctuation-trailing-redundant-space (φbegin φend)
@@ -329,7 +291,10 @@ See also: `xah-remove-punctuation-trailing-redundant-space'."
            ["&" "＆"] ["@" "＠"] ["#" "＃"] ["%" "％"] ["+" "＋"] ["-" "－"] ["*" "＊"] ["=" "＝"] ["<" "＜"] [">" "＞"] ["(" "（"] [")" "）"] ["[" "［"] ["]" "］"] ["{" "｛"] ["}" "｝"] ["(" "｟"] [")" "｠"] ["|" "｜"] ["¦" "￤"] ["/" "／"] ["\\" "＼"] ["¬" "￢"] ["$" "＄"] ["£" "￡"] ["¢" "￠"] ["₩" "￦"] ["¥" "￥"]
            ]
           )
-         (ξ-reverse-map (mapcar (lambda (ξpair) (vector (elt ξpair 1) (elt ξpair 0))) ξ-ascii-unicode-map))
+         (ξ-reverse-map
+          (mapcar
+           (lambda (x) (vector (elt x 1) (elt x 0)))
+           ξ-ascii-unicode-map))
 
          (cmdStates ["to-unicode" "to-ascii"])
          (stateBefore (if (get 'xah-convert-fullwidth-chars 'state) (get 'xah-convert-fullwidth-chars 'state) 0))
