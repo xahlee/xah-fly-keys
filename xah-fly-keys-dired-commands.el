@@ -127,17 +127,16 @@ Requires ImageMagick shell command."
   "Create a JPG version of images of marked files in dired.
 Requires ImageMagick shell command.
 URL `http://ergoemacs.org/emacs/emacs_dired_convert_images.html'
-Version 2015-03-10"
+Version 2015-04-30"
   (interactive
    (let (
          (myFileList
           (cond
            ((string-equal major-mode "dired-mode") (dired-get-marked-files))
            ((string-equal major-mode "image-mode") (list (buffer-file-name)))
-           (t (list (read-from-minibuffer "file name:") )) ) ) )
-     (list myFileList) )
-   )
-  (xah-process-image φfile-list "" "-2" ".jpg" ))
+           (t (list (read-from-minibuffer "file name:"))))))
+     (list myFileList)))
+  (xah-process-image φfile-list "-quality 90%" "-2" ".jpg" ))
 
 (defun xah-dired-crop-image (φfile-list)
   " .......
