@@ -308,7 +308,7 @@
   )
 
 (global-set-key (kbd "<menu> s") 'save-buffer)
-(global-set-key (kbd "<menu> s") nil)
+(global-set-key (kbd "<menu> s") 'ding)
 
 (progn
   (define-prefix-command 'xah-menu-t-keymap)
