@@ -193,7 +193,7 @@ To solve this problem, when your code only knows the relative path of another fi
     (global-set-key (kbd "t") 'next-line)
     (global-set-key (kbd "u") 'delete-char)
     (global-set-key (kbd "v") 'xah-forward-right-bracket)
-    (global-set-key (kbd "w") 'other-window)
+    (global-set-key (kbd "w") 'open-line)
     (global-set-key (kbd "x") nil)
     (global-set-key (kbd "y") 'set-mark-command)
     (global-set-key (kbd "z") 'comment-dwim)))
