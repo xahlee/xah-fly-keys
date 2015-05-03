@@ -164,7 +164,7 @@ To solve this problem, when your code only knows the relative path of another fi
     (global-set-key (kbd "`") 'xfk-insert-mode-activate)
 
     (global-set-key (kbd "1") nil)
-    (global-set-key (kbd "2") nil)
+    (global-set-key (kbd "2") 'delete-window)
     (global-set-key (kbd "3") 'delete-other-windows)
     (global-set-key (kbd "4") 'split-window-vertically)
     (global-set-key (kbd "5") 'redo)
@@ -190,7 +190,7 @@ To solve this problem, when your code only knows the relative path of another fi
     (global-set-key (kbd "n") 'forward-char)
     (global-set-key (kbd "o") 'other-window)
     (global-set-key (kbd "p") 'kill-word)
-    (global-set-key (kbd "q") nil)
+    (global-set-key (kbd "q") 'xah-copy-line-or-region)
     (global-set-key (kbd "r") 'forward-word)
     (global-set-key (kbd "s") 'xah-end-of-line-or-block)
     (global-set-key (kbd "t") 'next-line)

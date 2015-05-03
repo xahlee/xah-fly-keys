@@ -109,12 +109,13 @@
 
 (defun xah-Man-mode-keys ()
   "keys for `Man-mode'."
-  (local-set-key (kbd "1") 'xah-previous-user-buffer)
-  (local-set-key (kbd "2") 'delete-window)
-  (local-set-key (kbd "3") 'delete-other-windows)
-  (local-set-key (kbd "4") 'split-window-vertically)
-  (local-set-key (kbd "6") 'xah-select-current-block)
-  (local-set-key (kbd "8") 'xah-extend-selection)
+  (local-set-key (kbd "1") nil)
+  (local-set-key (kbd "2") nil)
+  (local-set-key (kbd "3") nil)
+  (local-set-key (kbd "4") nil)
+  (local-set-key (kbd "6") nil)
+  (local-set-key (kbd "8") nil)
+  (local-set-key (kbd "s") nil)
   )
 (add-hook 'Man-mode-hook 'xah-Man-mode-keys)
 
