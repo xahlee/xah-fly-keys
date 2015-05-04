@@ -27,7 +27,7 @@ When `universal-argument' is called first, copy whole buffer (respects `narrow-t
 When `universal-argument' is called first, cut whole buffer (respects `narrow-to-region')."
   (interactive)
   (let (ξp1 ξp2)
-    (if current-prefix-arg        
+    (if current-prefix-arg
         (progn (setq ξp1 (point-min))
                (setq ξp2 (point-max)))
       (progn (if (use-region-p)
@@ -408,47 +408,37 @@ nil
 
 )))))
 
-(defun xah-escape-quotes ()
+(defun xah-escape-quotes (φbegin φend)
   "Replace 「\"」 by 「\\\"」 in current line or text selection.
-That is, add 1 backslash in front of double quote (Unicode codepoint 34).
 See also: `xah-unescape-quotes'
-
 URL `http://ergoemacs.org/emacs/elisp_escape_quotes.html'
-Version 2015-04-29"
-  (interactive)
-  (let (p1 p2)
-    (if (use-region-p)
-        (progn (setq p1 (region-beginning))
-               (setq p2 (region-end)))
-      (progn (setq p1 (line-beginning-position))
-             (setq p2 (line-end-position))))
-    (save-excursion
+Version 2015-05-04"
+  (interactive
+   (if (use-region-p)
+       (list (region-beginning) (region-end))
+     (list (line-beginning-position) (line-end-position))))
+  (save-excursion
       (save-restriction
-        (narrow-to-region p1 p2)
+        (narrow-to-region φbegin φend)
         (goto-char (point-min))
         (while (search-forward "\"" nil t)
-          (replace-match "\\\"" 'FIXEDCASE 'LITERAL))))))
+          (replace-match "\\\"" 'FIXEDCASE 'LITERAL)))))
 
-(defun xah-unescape-quotes ()
+(defun xah-unescape-quotes (φbegin φend)
   "Replace  「\\\"」 by 「\"」 in current line or text selection.
-That is, remove 1 backslash in front of double quote (Unicode codepoint 34), if exist.
 See also: `xah-escape-quotes'
-
 URL `http://ergoemacs.org/emacs/elisp_escape_quotes.html'
-Version 2015-04-29"
-  (interactive)
-  (let (p1 p2)
-    (if (use-region-p)
-        (progn (setq p1 (region-beginning))
-               (setq p2 (region-end)))
-      (progn (setq p1 (line-beginning-position))
-             (setq p2 (line-end-position))))
-    (save-excursion
-      (save-restriction
-        (narrow-to-region p1 p2)
-        (goto-char (point-min))
-        (while (search-forward "\\\"" nil t)
-          (replace-match "\"" 'FIXEDCASE 'LITERAL))))))
+Version 2015-05-04"
+  (interactive
+   (if (use-region-p)
+       (list (region-beginning) (region-end))
+     (list (line-beginning-position) (line-end-position))))
+  (save-excursion
+    (save-restriction
+      (narrow-to-region φbegin φend)
+      (goto-char (point-min))
+      (while (search-forward "\\\"" nil t)
+        (replace-match "\"" 'FIXEDCASE 'LITERAL)))))
 
 (defun xah-title-case-region-or-line (φbegin φend)
   "Title case text between nearest brackets, or current line, or text selection.
