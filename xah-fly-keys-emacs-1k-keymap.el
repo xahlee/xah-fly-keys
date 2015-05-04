@@ -17,11 +17,6 @@
 
 
 
-;; 2014-06-06 this file are keybinding of key sequences, starting with the menu key
-;; the goal is to have a key system to completely replace emacs 1k+ keys.
-
-;; design sketch
-
 ;; the keys are now hardcoded for dvorak.
 
 ;; some design principles
@@ -193,7 +188,7 @@
   (define-key xah-menu-i-keymap (kbd "p") 'previous-error)
   )
 
-(global-set-key (kbd "<menu> j") 'xah-copy-line-or-region)
+(global-set-key (kbd "<menu> j") 'xah-cut-line-or-region)
 
 (global-set-key (kbd "<menu> k") 'yank)
 
@@ -275,7 +270,7 @@
 
 (global-set-key (kbd "<menu> p") 'query-replace)
 
-(global-set-key (kbd "<menu> q") 'xah-cut-all)
+(global-set-key (kbd "<menu> q") 'xah-copy-line-or-region)
 
 (progn
   ;; kinda replacement related

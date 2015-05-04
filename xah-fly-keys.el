@@ -1,6 +1,5 @@
 ;; -*- coding: utf-8 -*-
 
-;; ergoemacs-xah (eex).
 ;; a vi-like modal keybinding for emacs.
 ;; created: 2013-09-10
 ;; Xah Lee
