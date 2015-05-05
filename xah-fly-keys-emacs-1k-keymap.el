@@ -107,7 +107,7 @@
 (global-set-key (kbd "<menu> 6") 'delete-window)
 (global-set-key (kbd "<menu> 7") nil)
 (global-set-key (kbd "<menu> 8") nil)
-(global-set-key (kbd "<menu> 9") nil)
+(global-set-key (kbd "<menu> 9") 'ispell-word)
 (global-set-key (kbd "<menu> 0") nil)
 
 (progn

@@ -159,10 +159,10 @@ To solve this problem, when your code only knows the relative path of another fi
     (global-set-key (kbd "SPC") 'xfk-insert-mode-activate)
     (global-set-key (kbd "[") 'xah-backward-quote)
     (global-set-key (kbd "\\") nil)
-    (global-set-key (kbd "]") 'xah-forward-quote)
-    (global-set-key (kbd "`") 'xfk-insert-mode-activate)
+    (global-set-key (kbd "]") 'xah-forward-equal-quote)
+    (global-set-key (kbd "`") nil)
 
-    (global-set-key (kbd "1") nil)
+    (global-set-key (kbd "1") 'xfk-insert-mode-activate)
     (global-set-key (kbd "2") 'delete-window)
     (global-set-key (kbd "3") 'delete-other-windows)
     (global-set-key (kbd "4") 'split-window-vertically)

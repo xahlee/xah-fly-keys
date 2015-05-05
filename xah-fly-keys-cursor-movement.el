@@ -140,6 +140,13 @@ Version 2015-03-24"
   (interactive)
   (search-forward-regexp (eval-when-compile (regexp-opt xah-right-brackets)) nil t))
 
+(defun xah-forward-equal-quote ()
+  "Move cursor to the next occurrence of 「='」 or 「=\"」, with or without space.
+URL `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
+Version 2015-05-05"
+  (interactive)
+  (search-forward-regexp "=[ \n]*\\('+\\|\\\"+\\)" nil t))
+
 (defun xah-forward-quote ()
   "Move cursor to the next occurrence of ' or \".
 URL `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
