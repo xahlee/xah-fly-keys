@@ -105,8 +105,8 @@
 (global-set-key (kbd "<menu> 4") 'split-window-vertically)
 (global-set-key (kbd "<menu> 5") 'split-window-horizontally)
 (global-set-key (kbd "<menu> 6") 'delete-window)
-(global-set-key (kbd "<menu> 7") nil)
-(global-set-key (kbd "<menu> 8") nil)
+(global-set-key (kbd "<menu> 7") 'dired-jump)
+(global-set-key (kbd "<menu> 8") 'xah-open-file-path-under-cursor)
 (global-set-key (kbd "<menu> 9") 'ispell-word)
 (global-set-key (kbd "<menu> 0") nil)
 
@@ -150,7 +150,7 @@
   (define-key xah-menu-c-keymap (kbd ",") 'xah-open-in-external-app)
   (define-key xah-menu-c-keymap (kbd ".") 'find-file)
   (define-key xah-menu-c-keymap (kbd "c") 'bookmark-bmenu-list)
-  (define-key xah-menu-c-keymap (kbd "e") 'dired-jump)
+  (define-key xah-menu-c-keymap (kbd "e") nil)
   (define-key xah-menu-c-keymap (kbd "g") 'ido-switch-buffer)
   (define-key xah-menu-c-keymap (kbd "h") 'recentf-open-files)
   (define-key xah-menu-c-keymap (kbd "l") 'bookmark-set)
@@ -162,7 +162,7 @@
   (define-key xah-menu-c-keymap (kbd "r") 'bookmark-jump)
   (define-key xah-menu-c-keymap (kbd "s") 'write-file)
   (define-key xah-menu-c-keymap (kbd "t") 'ibuffer)
-  (define-key xah-menu-c-keymap (kbd "u") 'xah-open-file-path-under-cursor)
+  (define-key xah-menu-c-keymap (kbd "u") nil)
 
   )
 

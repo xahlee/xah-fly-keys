@@ -9,7 +9,10 @@
 
 (defun xah-copy-line-or-region ()
   "Copy current line, or text selection.
-When `universal-argument' is called first, copy whole buffer (respects `narrow-to-region')."
+When `universal-argument' is called first, copy whole buffer (respects `narrow-to-region').
+
+URL `http://ergoemacs.org/emacs/emacs_copy_cut_current_line.html'
+Version 2015-05-06"
   (interactive)
   (let (ξp1 ξp2)
     (if current-prefix-arg
@@ -20,11 +23,17 @@ When `universal-argument' is called first, copy whole buffer (respects `narrow-t
                         (setq ξp2 (region-end)))
                (progn (setq ξp1 (line-beginning-position))
                       (setq ξp2 (line-end-position))))))
-    (kill-ring-save ξp1 ξp2)))
+    (kill-ring-save ξp1 ξp2)
+    (if current-prefix-arg
+        (message "buffer text copied")
+      (message "text copied"))))
 
 (defun xah-cut-line-or-region ()
   "Cut current line, or text selection.
-When `universal-argument' is called first, cut whole buffer (respects `narrow-to-region')."
+When `universal-argument' is called first, cut whole buffer (respects `narrow-to-region').
+
+URL `http://ergoemacs.org/emacs/emacs_copy_cut_current_line.html'
+Version 2015-05-06"
   (interactive)
   (let (ξp1 ξp2)
     (if current-prefix-arg
@@ -38,7 +47,10 @@ When `universal-argument' is called first, cut whole buffer (respects `narrow-to
     (kill-region ξp1 ξp2)))
 
 (defun xah-copy-all ()
-  "Put the whole buffer content into the `kill-ring'. (respects `narrow-to-region')"
+  "Put the whole buffer content into the `kill-ring'.
+(respects `narrow-to-region')
+URL `http://ergoemacs.org/emacs/elisp_cut_copy_yank_kill-ring.html'
+Version 2015-05-06"
   (interactive)
   (kill-new (buffer-string))
   (message "Buffer content copied."))
