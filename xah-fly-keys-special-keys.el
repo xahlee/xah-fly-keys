@@ -15,15 +15,9 @@
 (global-set-key (kbd "<f2>") 'xah-cut-line-or-region)
 (global-set-key (kbd "<f3>") 'xah-copy-line-or-region)
 (global-set-key (kbd "<f4>") 'yank)
-(global-set-key (kbd "<C-f4>") 'yank-pop)
-(global-set-key (kbd "<f5>") 'undo)
-(global-set-key (kbd "<C-f5>") 'redo)
 
 (global-set-key (kbd "<f11>") 'xah-previous-user-buffer)
 (global-set-key (kbd "<f12>") 'xah-next-user-buffer)
-
-(global-set-key (kbd "<S-f11>") 'xah-previous-emacs-buffer)
-(global-set-key (kbd "<S-f12>") 'xah-next-emacs-buffer)
 
 
 
@@ -58,5 +52,3 @@
 
 (define-key key-translation-map (kbd "<f17>") (kbd "C-g"))
 (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
-
-
