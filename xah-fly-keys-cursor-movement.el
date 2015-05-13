@@ -147,6 +147,20 @@ Version 2015-05-05"
   (interactive)
   (search-forward-regexp "=[ \n]*\\('+\\|\\\"+\\)" nil t))
 
+(defun xah-forward-equal-sign ()
+  "Move cursor to the next occurrence of equal sign 「=」.
+URL `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
+Version 2015-05-12"
+  (interactive)
+  (search-forward "=" nil t))
+
+(defun xah-backward-equal-sign ()
+  "Move cursor to the previous occurrence of equal sign 「=」.
+URL `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
+Version 2015-05-12"
+  (interactive)
+  (search-backward "=" nil t))
+
 (defun xah-forward-quote ()
   "Move cursor to the next occurrence of ' or \".
 URL `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
