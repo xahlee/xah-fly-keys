@@ -192,43 +192,39 @@ Version 2015-03-03"
   "Remove or insert newline characters on the current block of text.
 This is similar to a toggle for `fill-paragraph' and `unfill-paragraph'.
 
-When there is a text selection, act on the the selection, else, act on a text block separated by blank lines."
+When there is a text selection, act on the the selection, else, act on a text block separated by blank lines.
+Version 2015-05-15"
   (interactive)
   ;; This command symbol has a property “'stateIsCompact-p”, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
-  (let ( currentStateIsCompact
-         (deactivate-mark nil)
-         (blanklinesRegex "\n[ \t]*\n")
+  (let ( ξis-compact-p
+         ;; (deactivate-mark nil)
+         (ξblanks-regex "\n[ \t]*\n")
          ξp1 ξp2
          )
-
     (progn
-      ;; set region boundary ξp1 ξp2
       (if (use-region-p)
           (progn (setq ξp1 (region-beginning))
                  (setq ξp2 (region-end)))
         (save-excursion
-          (if (re-search-backward "\n[ \t]*\n" nil "NOERROR")
-              (progn (re-search-forward "\n[ \t]*\n")
+          (if (re-search-backward ξblanks-regex nil "NOERROR")
+              (progn (re-search-forward ξblanks-regex)
                      (setq ξp1 (point)))
             (setq ξp1 (point)))
-          (if (re-search-forward "\n[ \t]*\n" nil "NOERROR")
-              (progn (re-search-backward "\n[ \t]*\n")
+          (if (re-search-forward ξblanks-regex nil "NOERROR")
+              (progn (re-search-backward ξblanks-regex)
                      (setq ξp2 (point)))
             (setq ξp2 (point))))))
-
     (save-excursion
-      (setq currentStateIsCompact
+      (setq ξis-compact-p
             (if (eq last-command this-command)
                 (get this-command 'stateIsCompact-p)
               (progn
                 (goto-char ξp1)
                 (if (> (- (line-end-position) (line-beginning-position)) fill-column) t nil))))
-
-      (if currentStateIsCompact
+      (if ξis-compact-p
           (fill-region ξp1 ξp2)
         (xah-replace-newline-whitespaces-to-space ξp1 ξp2))
-
-      (put this-command 'stateIsCompact-p (if currentStateIsCompact nil t)))))
+      (put this-command 'stateIsCompact-p (if ξis-compact-p nil t)))))
 
 (defun xah-unfill-paragraph ()
   "Replace newline chars in current paragraph by single spaces.
