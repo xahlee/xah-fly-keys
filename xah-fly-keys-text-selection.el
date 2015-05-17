@@ -64,14 +64,14 @@ This command works mostly in lisp syntax."
 
 (defun xah-select-text-in-quote ()
   "Select text between the nearest left and right delimiters.
-Delimiters here includes the following chars: \"<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕
+Delimiters here includes the following chars: \"<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕（）
 This command does not properly deal with nested brackets.
 URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
-Version 2015-04-02"
+Version 2015-05-16"
   (interactive)
   (let (ξp1
         ξp2
-        (ξskipChars "^\"<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕"))
+        (ξskipChars "^\"<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕（）"))
     (skip-chars-backward ξskipChars)
     (setq ξp1 (point))
     (skip-chars-forward ξskipChars)
