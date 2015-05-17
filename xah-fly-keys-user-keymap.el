@@ -45,7 +45,7 @@
     (define-key xah-user-keymap (kbd "i n") 'xah-insert-random-number)
     (define-key xah-user-keymap (kbd "i s") 'xah-insert-random-string)
     (define-key xah-user-keymap (kbd "i u") 'xah-insert-random-uuid)
-    (define-key xah-user-keymap (kbd "i x") 'xah-insert-random-hex)
+    (define-key xah-user-keymap (kbd "i t") 'xah-insert-random-hex)
 
     (define-key xah-user-keymap (kbd "j") nil)
     (define-key xah-user-keymap (kbd "j c") 'xah-words-add-comment)

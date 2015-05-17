@@ -173,6 +173,7 @@
   (define-key magit-mode-map (kbd "3") nil)
   (define-key magit-mode-map (kbd "4") nil)
   (define-key magit-mode-map (kbd "o") nil)
+  (define-key magit-mode-map (kbd "C-w") 'xah-close-current-buffer)
 
   (define-key magit-mode-map (kbd "<menu> e o") 'magit-key-mode-popup-submodule)
   (define-key magit-mode-map (kbd "<menu> e 1") 'magit-show-level-1)
