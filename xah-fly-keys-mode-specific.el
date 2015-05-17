@@ -55,6 +55,11 @@
   (define-key ibuffer-mode-map (kbd "o") 'other-window) ; 'ibuffer-visit-buffer-other-window
   )
 
+(progn
+  (require 'org)
+  (org-defkey org-mode-map (kbd "<C-tab>") 'xah-next-user-buffer) ; was 'org-force-cycle-archived
+  )
+
 (defun xah-eww-mode-setup ()
   "for `eww-mode'."
   (local-set-key (kbd "1") nil)
