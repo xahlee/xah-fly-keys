@@ -73,11 +73,34 @@ See: `xah-forward-block'"
           (end-of-line))
       (progn (xah-forward-block φn)))))
 
-(defvar xah-left-brackets nil "List of open bracket chars.")
-(setq xah-left-brackets '("(" "{" "[" "<" "〔" "【" "〖" "〈" "《" "「" "『" "“" "‘" "‹" "«" "（"))
+(defvar xah-brackets nil "string of brackets")
+(setq xah-brackets "()[]{}（）［］｛｝⦅⦆〚〛⦃⦄“”‘’‹›«»「」〈〉《》【】〔〕⦗⦘『』〖〗〘〙｢｣⟦⟧⟨⟩⟪⟫⟮⟯⟬⟭⌈⌉⌊⌋⦇⦈⦉⦊❛❜❝❞❨❩❪❫❴❵❬❭❮❯❰❱❲❳〈〉⦑⦒⧼⧽﹙﹚﹛﹜﹝﹞⁽⁾₍₎⦋⦌⦍⦎⦏⦐⁅⁆⸢⸣⸤⸥⟅⟆⦓⦔⦕⦖⸦⸧⸨⸩｟｠⧘⧙⧚⧛⸜⸝⸌⸍⸂⸃⸄⸅⸉⸊᚛᚜༺༻༼༽⏜⏝⎴⎵⏞⏟⏠⏡﹁﹂﹃﹄︹︺︻︼︗︘︿﹀︽︾﹇﹈︷︸")
 
-(defvar xah-right-brackets nil "list of close bracket chars.")
-(setq xah-right-brackets '(")" "]" "}" ">" "〕" "】" "〗" "〉" "》" "」" "』" "”" "’" "›" "»" "）"))
+(defvar
+  xah-left-brackets
+  '("(" "{" "[" "<" "〔" "【" "〖" "〈" "《" "「" "『" "“" "‘" "‹" "«" )
+  "List of left bracket chars.")
+(progn
+  (setq xah-left-brackets '())
+  (dotimes (x (- (length xah-brackets) 1))
+    (message "%s" x)
+    (when (= (% x 2) 0)
+      (push (char-to-string (elt xah-brackets x))
+            xah-left-brackets)))
+  (setq xah-left-brackets (reverse xah-left-brackets)))
+
+(defvar
+  xah-right-brackets
+  '(")" "]" "}" ">" "〕" "】" "〗" "〉" "》" "」" "』" "”" "’" "›" "»")
+  "list of right bracket chars.")
+(progn
+  (setq xah-right-brackets '())
+  (dotimes (x (- (length xah-brackets) 1))
+    (message "%s" x)
+    (when (= (% x 2) 1)
+      (push (char-to-string (elt xah-brackets x))
+            xah-right-brackets)))
+  (setq xah-right-brackets (reverse xah-right-brackets)))
 
 (defvar xah-ascii-quotes nil "List of quotation chars.")
 (setq xah-ascii-quotes '("'" "\""))

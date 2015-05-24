@@ -209,7 +209,7 @@ See also `xah-convert-english-chinese-punctuation'
  `xah-remove-punctuation-trailing-redundant-space'
 "
   (interactive
-   (let ( (ξboundary (get-selection-or-unit 'block)))
+   (let ( (ξboundary (xah-get-thing-or-selection 'block)))
      (list (elt ξboundary 1) (elt ξboundary 2))))
   (let ((ξ-space-char-map
          [
@@ -233,7 +233,7 @@ See also `xah-convert-english-chinese-punctuation'.
 URL `http://ergoemacs.org/emacs/elisp_convert_chinese_punctuation.html'
 version 2015-02-04"
   (interactive
-   (let ((ξboundary (get-selection-or-unit 'block)))
+   (let ((ξboundary (xah-get-thing-or-selection 'block)))
      (list (elt ξboundary 1) (elt ξboundary 2))))
   (xah-replace-regexp-pairs-region φbegin φend
                                [
@@ -273,7 +273,7 @@ When called in lisp code, φbegin φend are region begin/end positions. φto-dir
 
 See also: `xah-remove-punctuation-trailing-redundant-space'."
   (interactive
-   (let ( (ξboundary (get-selection-or-unit 'block)))
+   (let ( (ξboundary (xah-get-thing-or-selection 'block)))
      (list (elt ξboundary 1) (elt ξboundary 2)
            (cond
             ((equal current-prefix-arg nil) "auto")
@@ -331,7 +331,7 @@ in text selection or text block.
 Example: 「it’s」 ⇒ 「it's」."
   (interactive "r")
 (let (ξboundary p1 p2)
-    (setq ξboundary (get-selection-or-unit 'block))
+    (setq ξboundary (xah-get-thing-or-selection 'block))
     (setq p1 (elt ξboundary 1) p2 (elt ξboundary 2)  )
     (xah-replace-pairs-region p1 p2 '(
 ["‘tis" "'tis"]
@@ -350,7 +350,7 @@ Example: 「it’s」 ⇒ 「it's」."
   "Replace fuck shit scumbag … in current line or text selection.
 "
   (interactive)
-  (let* ((ξboundary (get-selection-or-unit 'line))
+  (let* ((ξboundary (xah-get-thing-or-selection 'line))
          (p1 (elt ξboundary 1))
          (p2 (elt ξboundary 2)))
     (xah-replace-pairs-region p1 p2 '(

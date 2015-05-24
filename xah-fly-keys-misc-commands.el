@@ -347,7 +347,7 @@ If the cursor is on like one of the following
 ~/web/somedir/somefile.html
 use FireFox to visit it as local file (construct the proper URL)."
  (interactive)
- (let ((myStr (elt (get-selection-or-unit 'url) 0) ))
+ (let ((myStr (elt (xah-get-thing-or-selection 'url) 0) ))
  (setq myStr (replace-regexp-in-string "&amp;" "&" myStr))
 
    ;; on Mac, map specific links to particular browser
