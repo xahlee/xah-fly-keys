@@ -448,7 +448,7 @@ WARNING: If region has comment or string, the code'd be fucked up."
 
 (defun xah-clean-whitespace-and-save (p1 p2)
   "Delete trailing whitespace, and replace repeated blank lines into just 2.
-This function works on whole buffer or text selection.
+Works on whole buffer or text selection, respects `narrow-to-region'.
 
 URL `http://ergoemacs.org/emacs/elisp_compact_empty_lines.html'
 Version 2015-03-03"

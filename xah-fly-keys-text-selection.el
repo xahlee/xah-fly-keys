@@ -69,9 +69,14 @@ This command does not properly deal with nested brackets.
 URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
 Version 2015-05-16"
   (interactive)
-  (let (ξp1
+  (let (
+        (ξskipChars
+         (if (boundp 'xah-brackets)
+             (concat "^\"" xah-brackets)
+           "^\"<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕（）"))
+        ξp1
         ξp2
-        (ξskipChars "^\"<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕（）"))
+        )
     (skip-chars-backward ξskipChars)
     (setq ξp1 (point))
     (skip-chars-forward ξskipChars)
