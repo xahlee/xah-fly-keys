@@ -45,9 +45,9 @@
   (global-set-key (kbd "C-S-t") 'xah-open-last-closed) ; was nil
   (global-set-key (kbd "C-t") 'xah-copy-line-or-region) ; was transpose-chars
   (global-set-key (kbd "C-u") nil) ; was universal-argument
-  (global-set-key (kbd "C-v") nil) ; was scroll-up-command
+  (global-set-key (kbd "C-v") 'yank) ; was scroll-up-command
   (global-set-key (kbd "C-w") 'xah-close-current-buffer) ; was kill-region
-  ;; C-x prefix
+  (global-set-key (kbd "C-x") 'xah-cut-line-or-region) ; was ctl-x-map
   (global-set-key (kbd "C-y") 'redo) ; was yank
   (global-set-key (kbd "C-z") 'undo) ; was suspend-frame
   )
@@ -55,17 +55,3 @@
 (progn
   (global-set-key (kbd "<C-next>") 'xah-next-user-buffer)
   (global-set-key (kbd "<C-prior>") 'xah-previous-user-buffer))
-
-;; (progn
-;;   (global-set-key (kbd "C-t") ctl-x-map)
-
-;;   ;; (define-key key-translation-map (kbd "M-t") (kbd "C-c"))
-;;   ;; (define-key key-translation-map (kbd "C-c") (kbd "M-t"))
-;;   ;; (define-key key-translation-map (kbd "C-t") (kbd "C-x"))
-;;   ;; (define-key key-translation-map (kbd "C-x") (kbd "C-t"))
-;;   ;; (global-set-key (kbd "C-t") 'xah-cut-line-or-region)
-;;   ;; (global-set-key (kbd "M-t") 'xah-copy-line-or-region)
-
-;;   (global-set-key (kbd "C-x") 'xah-cut-line-or-region)
-;;   (global-set-key (kbd "C-v") 'yank)
-;;   )

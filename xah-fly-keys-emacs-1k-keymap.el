@@ -391,7 +391,7 @@
 
   )
 
-(global-set-key (kbd "<menu> x") nil)
+(global-set-key (kbd "<menu> x") ctl-x-map) ; backup
 
 (global-set-key (kbd "<menu> y") nil)
 
