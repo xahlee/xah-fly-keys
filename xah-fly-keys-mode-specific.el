@@ -163,9 +163,17 @@
 
 ;; used by message buffer. override it
 (progn
+  (define-key messages-buffer-mode-map "1" nil)
   (define-key messages-buffer-mode-map "2" nil)
   (define-key messages-buffer-mode-map "3" nil)
-  (define-key messages-buffer-mode-map "4" nil))
+  (define-key messages-buffer-mode-map "4" nil)
+  (define-key messages-buffer-mode-map "5" nil)
+  (define-key messages-buffer-mode-map "6" nil)
+  (define-key messages-buffer-mode-map "7" nil)
+  (define-key messages-buffer-mode-map "8" nil)
+  (define-key messages-buffer-mode-map "9" nil)
+  (define-key messages-buffer-mode-map "0" nil)
+)
 
 (defun xah-magit-mode-keys ()
   "keys for `magit-mode'."
