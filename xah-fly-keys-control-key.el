@@ -43,7 +43,7 @@
   (global-set-key (kbd "C-s") nil)  ; was isearch-forward
   (global-set-key (kbd "C-S-s") nil) ; was nil
   (global-set-key (kbd "C-S-t") 'xah-open-last-closed) ; was nil
-  (global-set-key (kbd "C-t") 'xah-copy-line-or-region) ; was transpose-chars
+  (global-set-key (kbd "C-t") nil) ; was transpose-chars
   (global-set-key (kbd "C-u") nil) ; was universal-argument
   (global-set-key (kbd "C-v") 'yank) ; was scroll-up-command
   (global-set-key (kbd "C-w") 'xah-close-current-buffer) ; was kill-region

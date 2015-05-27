@@ -335,7 +335,7 @@ The clipboard should contain a file path or url to xah site. Open that file in e
           (progn (user-error "file doesn't exist 「%s」" fpath)))))))
 
 (defun xah-browse-url-at-point ()
-"Switch to web browser and load the URL at cursor position.
+  "Switch to web browser and load the URL at cursor position.
 This code is designed to work on Mac OS X only.
 
 If the cursor is on a URL, visit it
@@ -346,20 +346,19 @@ If the cursor is on like one of the following
  /somedir/somefile.html or
 ~/web/somedir/somefile.html
 use FireFox to visit it as local file (construct the proper URL)."
- (interactive)
- (let ((myStr (elt (xah-get-thing-or-selection 'url) 0) ))
- (setq myStr (replace-regexp-in-string "&amp;" "&" myStr))
+  (interactive)
+  (let ((myStr (elt (xah-get-thing-or-selection 'url) 0)))
+    (setq myStr (replace-regexp-in-string "&amp;" "&" myStr))
 
-   ;; on Mac, map specific links to particular browser
-   ;; (cond
-   ;;  ((string-match "flickr.com/" myStr) (shell-command (concat "open -a safari " "\"" myStr "\"")))
-   ;;  ((string-match "blogspot.com/" myStr) (shell-command (concat "open -a safari " "\"" myStr "\"")))
-   ;;  ((string-match "livejournal.com/" myStr) (shell-command (concat "open -a safari " "\"" myStr "\"")))
-   ;;  ((string-match "yahoo.com/" myStr) (shell-command (concat "open -a safari " "\"" myStr "\"")))
-   ;;  (t (browse-url myStr)))
+    ;; on Mac, map specific links to particular browser
+    ;; (cond
+    ;;  ((string-match "flickr.com/" myStr) (shell-command (concat "open -a safari " "\"" myStr "\"")))
+    ;;  ((string-match "blogspot.com/" myStr) (shell-command (concat "open -a safari " "\"" myStr "\"")))
+    ;;  ((string-match "livejournal.com/" myStr) (shell-command (concat "open -a safari " "\"" myStr "\"")))
+    ;;  ((string-match "yahoo.com/" myStr) (shell-command (concat "open -a safari " "\"" myStr "\"")))
+    ;;  (t (browse-url myStr)))
 
-   (browse-url myStr)
-   ))
+    (browse-url myStr)))
 
 (defun xah-delete-current-file (&optional φno-backup-p)
   "Delete the file associated with the current buffer (also closes the buffer).
@@ -369,24 +368,26 @@ A backup file is created with filename appended “~‹date time stamp›~”. E
 When called with `universal-argument', don't create backup.
 
 URL `http://ergoemacs.org/emacs/elisp_delete-current-file.html'
-Version 2015-04-06"
+Version 2015-05-26"
   (interactive "P")
   (let* (
          (ξfname (buffer-file-name))
-         (ξbuffer-is-file-p (if (null ξfname) nil t ))
-         (ξbackup-name (concat ξfname "~" (format-time-string "%Y%m%d_%H%M%S") "~")))
+         (ξbuffer-is-file-p ξfname)
+         (ξbackup-suffix (concat "~" (format-time-string "%Y%m%dT%H%M%S") "~")))
     (if ξbuffer-is-file-p
         (progn
           (save-buffer ξfname)
-          (if φno-backup-p
-              nil
-            (copy-file ξfname ξbackup-name t))
+          (when (not φno-backup-p)
+            (copy-file
+             ξfname
+             (concat ξfname ξbackup-suffix)
+             t))
           (delete-file ξfname)
-          (message "Deleted. Backup created at 「%s」." ξbackup-name))
-      (progn
-        (if φno-backup-p
-            nil
-          (write-region (point-min) (point-max) (concat "xx_~" (format-time-string "%Y%m%d_%H%M%S") "~")))))
+          (message "Deleted. Backup created at 「%s」." (concat ξfname ξbackup-suffix)))
+      (when (not φno-backup-p)
+        (widen)
+        (write-region (point-min) (point-max) (concat "xx" ξbackup-suffix))
+        (message "Backup created at 「%s」." (concat "xx" ξbackup-suffix))))
     (kill-buffer (current-buffer))))
 
 (defun xah-make-backup ()
@@ -394,15 +395,14 @@ Version 2015-04-06"
 The backup file name has the form 「‹name›~‹timestamp›~」, in the same dir. If such a file already exist, it's overwritten.
 If the current buffer is not associated with a file, nothing's done.
 URL `http://ergoemacs.org/emacs/elisp_make-backup.html'
-Version 2014-10-13"
+Version 2015-05-26"
   (interactive)
   (if (buffer-file-name)
       (let* ((ξcurrentName (buffer-file-name))
-             (ξbackup-name (concat ξcurrentName "~" (format-time-string "%Y%m%d_%H%M%S") "~")))
+             (ξbackup-name (concat ξcurrentName "~" (format-time-string "%Y%m%dT%H%M%S") "~")))
         (copy-file ξcurrentName ξbackup-name t)
         (message (concat "Backup saved as: " (file-name-nondirectory ξbackup-name))))
-    (user-error "Buffer is not a file")
-    ))
+    (user-error "Buffer is not a file")))
 
 (defun xah-run-current-file ()
   "Execute the current file.

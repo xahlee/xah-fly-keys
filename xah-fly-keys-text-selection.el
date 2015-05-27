@@ -26,8 +26,9 @@ Version 2015-02-07
   (end-of-line)
   (set-mark (line-beginning-position)))
 
-;; by Nikolaj Schumacher, 2008-10-20. Released under GPL.
 (defun xah-semnav-up (arg)
+"Called by `xah-extend-selection'.
+Written by Nikolaj Schumacher, 2008-10-20. Released under GPL 2"
   (interactive "p")
   (when (nth 3 (syntax-ppss))
     (if (> arg 0)
@@ -40,15 +41,16 @@ Version 2015-02-07
       (setq arg (1+ arg) )))
   (up-list arg))
 
-;; by Nikolaj Schumacher, 2008-10-20. Released under GPL.
 (defun xah-extend-selection (arg &optional incremental)
   "Select the current word.
 Subsequent calls expands the selection to larger semantic unit.
 
-This command works mostly in lisp syntax."
-  (interactive (list (prefix-numeric-value current-prefix-arg)
-                     (or (use-region-p)
-                         (eq last-command this-command))))
+This command works mostly in lisp syntax.
+Written by Nikolaj Schumacher, 2008-10-20. Released under GPL 2"
+  (interactive
+   (list (prefix-numeric-value current-prefix-arg)
+         (or (use-region-p)
+             (eq last-command this-command))))
   (if incremental
       (progn
         (xah-semnav-up (- arg))

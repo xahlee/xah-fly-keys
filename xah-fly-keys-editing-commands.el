@@ -328,7 +328,8 @@ URL `http://ergoemacs.org/emacs/emacs_copy_file_path.html'"
     (message "File path copied: 「%s」" fPath)))
 
 (defun xah-delete-text-block ()
-  "delete the current text block (paragraph) and also put it to `kill-ring'."
+  "delete the current text block (paragraph) and also put it to `kill-ring'.
+Version 2015-05-26"
   (interactive)
   (let (p1 p2)
     (progn
@@ -340,8 +341,7 @@ URL `http://ergoemacs.org/emacs/emacs_copy_file_path.html'"
           (progn (re-search-backward "\n[ \t]*\n")
                  (setq p2 (point)))
         (setq p2 (point))))
-    (kill-region p1 p2)
-    (delete-blank-lines)))
+    (kill-region p1 p2)))
 
 (defun xah-copy-to-register-1 ()
   "Copy current line or text selection to register 1.
