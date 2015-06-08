@@ -93,34 +93,20 @@ WARNING: this command is currently unstable."
       (delete-region (point-min) (point-max))
       (insert replace_text))
 
-    (put 'xah-cycle-camel-style-case 'state next_state)
-    ) )
+    (put 'xah-cycle-camel-style-case 'state next_state)))
+
 
 (defun xah-convert-chinese-numeral (φbegin φend &optional φto-chinese)
-  "Replace convert Chinese number to English, or reverse.
+  "Replace convert Chinese numeral to Arabic numeral, or reverse.
 On current line or selection.
 If `universal-argument' is called first, do reverse direction.
 Version 2015-04-29"
   (interactive
    (if (use-region-p)
-       (list
-        (region-beginning)
-        (region-end)
-        current-prefix-arg)
-     (list
-      (line-beginning-position)
-      (line-end-position)
-      current-prefix-arg)))
-  (let* (
-         (ξnumMap [["○" "0"] ["一" "1"] ["二" "2"] ["三" "3"] ["四" "4"] ["五" "5"] ["六" "6"] ["七" "7"] ["八" "8"] ["九" "9"] ]))
-    (xah-replace-pairs-region
-     φbegin φend
-     (if φto-chinese
-         (mapcar
-          (lambda (x) (vector (elt x 1) (elt x 0)))
-          ξnumMap)
-       ξnumMap
-       ))))
+       (list (region-beginning) (region-end) current-prefix-arg)
+     (list (line-beginning-position) (line-end-position) current-prefix-arg)))
+  (let* ((ξnumMap [["○" "0"] ["一" "1"] ["二" "2"] ["三" "3"] ["四" "4"] ["五" "5"] ["六" "6"] ["七" "7"] ["八" "8"] ["九" "9"] ]))
+    (xah-replace-pairs-region φbegin φend (if φto-chinese (mapcar (lambda (x) (vector (elt x 1) (elt x 0))) ξnumMap) ξnumMap ))))
 
 (defun xah-convert-english-chinese-punctuation (φbegin φend &optional φto-direction)
   "Convert punctuation from/to English/Chinese characters.
@@ -330,21 +316,19 @@ See also: `xah-remove-punctuation-trailing-redundant-space'."
 in text selection or text block.
 Example: 「it’s」 ⇒ 「it's」."
   (interactive "r")
-(let (ξboundary p1 p2)
+  (let (ξboundary p1 p2)
     (setq ξboundary (xah-get-thing-or-selection 'block))
-    (setq p1 (elt ξboundary 1) p2 (elt ξboundary 2)  )
+    (setq p1 (elt ξboundary 1) p2 (elt ξboundary 2))
     (xah-replace-pairs-region p1 p2 '(
-["‘tis" "'tis"]
-["’s" "'s"]
-["’d" "'d"]
-["n’t" "n't"]
-["’ve" "'ve"]
-["’ll" "'ll"]
-["’m" "'m"]
-["’re" "'re"]
-["s’ " "s' "]))
-    )
-)
+                                      ["‘tis" "'tis"]
+                                      ["’s" "'s"]
+                                      ["’d" "'d"]
+                                      ["n’t" "n't"]
+                                      ["’ve" "'ve"]
+                                      ["’ll" "'ll"]
+                                      ["’m" "'m"]
+                                      ["’re" "'re"]
+                                      ["s’ " "s' "]))))
 
 (defun xah-replace-profanity ()
   "Replace fuck shit scumbag … in current line or text selection.
@@ -359,39 +343,13 @@ Example: 「it’s」 ⇒ 「it's」."
                                   ["motherfucker" "momf��ker"]
                                   ))))
 
-(defun xah-remove-vowel-old (&optional ξstring ξfrom ξto)
+(defun xah-remove-vowel (ξstring &optional ξbegin-end)
   "Remove the following letters: {a e i o u}.
 
 When called interactively, work on current text block or text selection. (a “text block” is text between empty lines)
 
-When called in lisp code, if ξstring is non-nil, returns a changed string.  If ξstring nil, change the text in the region between positions ξfrom ξto."
-  (interactive
-   (if (region-active-p)
-       (list nil (region-beginning) (region-end))
-     (let ((ξboundary (bounds-of-thing-at-point 'paragraph)))
-       (list nil (car ξboundary) (cdr ξboundary)))))
-
-  (let (ξwork-on-string-p ξinput-str ξoutput-str)
-    (setq ξwork-on-string-p (if ξstring t nil))
-    (setq ξinput-str (if ξwork-on-string-p ξstring (buffer-substring-no-properties ξfrom ξto)))
-    (setq ξoutput-str
-          (let ((case-fold-search t))
-            (replace-regexp-in-string "a\\|e\\|i\\|o\\|u\\|" "" ξinput-str)))
-
-    (if ξwork-on-string-p
-        ξoutput-str
-      (save-excursion
-        (delete-region ξfrom ξto)
-        (goto-char ξfrom)
-        (insert ξoutput-str)))))
-
-(defun xah-remove-vowel (ξstring &optional ξfrom-to-pair)
-  "Remove the following letters: {a e i o u}.
-
-When called interactively, work on current text block or text selection. (a “text block” is text between empty lines)
-
-When called in lisp code, if ξfrom-to-pair is non-nil, change the text
-in the region between positions [from to]. ξfrom-to-pair should be a
+When called in lisp code, if ξbegin-end is non-nil, change the text
+in the region between positions [begin end]. ξbegin-end should be a
 list or vector pair.  Else, returns a changed string."
   (interactive
    (if (region-active-p)
@@ -399,13 +357,13 @@ list or vector pair.  Else, returns a changed string."
      (let ((ξboundary (bounds-of-thing-at-point 'paragraph)))
        (list nil (vector (car ξboundary) (cdr ξboundary))))))
 
-  (let (ξwork-on-string-p ξinput-str ξoutput-str ξfrom ξto )
-    (when ξfrom-to-pair
-      (setq ξfrom (elt ξfrom-to-pair 0))
-      (setq ξto (elt ξfrom-to-pair 1)))
+  (let (ξwork-on-string-p ξinput-str ξoutput-str ξbegin ξend )
+    (when ξbegin-end
+      (setq ξbegin (elt ξbegin-end 0))
+      (setq ξend (elt ξbegin-end 1)))
 
-    (setq ξwork-on-string-p (if ξfrom-to-pair nil t))
-    (setq ξinput-str (if ξwork-on-string-p ξstring (buffer-substring-no-properties ξfrom ξto)))
+    (setq ξwork-on-string-p (if ξbegin-end nil t))
+    (setq ξinput-str (if ξwork-on-string-p ξstring (buffer-substring-no-properties ξbegin ξend)))
     (setq ξoutput-str
           (let ((case-fold-search t))
             (replace-regexp-in-string "a\\|e\\|i\\|o\\|u\\|" "" ξinput-str)))
@@ -413,30 +371,30 @@ list or vector pair.  Else, returns a changed string."
     (if ξwork-on-string-p
         ξoutput-str
       (save-excursion
-        (delete-region ξfrom ξto)
-        (goto-char ξfrom)
+        (delete-region ξbegin ξend)
+        (goto-char ξbegin)
         (insert ξoutput-str)))))
 
 
 
-(defun xah-compact-region (p1 p2)
+(defun xah-compact-region (φbegin φend)
   "Replace any sequence of whitespace chars to a single space on region.
 Whitespace here is considered any of {newline char, tab, space}."
   (interactive "r")
-  (xah-replace-regexp-pairs-region p1 p2
+  (xah-replace-regexp-pairs-region φbegin φend
                                '( ["[\n\t]+" " "]
                                   ["  +" " "])
                                t))
 
-(defun xah-format-c-lang-region (p1 p2)
+(defun xah-format-c-lang-region (φbegin φend)
   "Expand region of C style syntax languages so that it is nicely formated.
 Experimental code.
 WARNING: If region has comment or string, the code'd be fucked up."
   (interactive "r")
   (save-excursion
     (save-restriction
-      (narrow-to-region p1 p2)
-      (xah-replace-regexp-pairs-region p1 p2
+      (narrow-to-region φbegin φend)
+      (xah-replace-regexp-pairs-region φbegin φend
                                    '(
                                      ["{" "{\n"]
                                      [";" ";\n"]
@@ -444,9 +402,9 @@ WARNING: If region has comment or string, the code'd be fucked up."
                                      [";[\t\n]*}" "; }"]
                                      )
                                    t)
-      (indent-region p1 p2))))
+      (indent-region φbegin φend))))
 
-(defun xah-clean-whitespace-and-save (p1 p2)
+(defun xah-clean-whitespace-and-save (φbegin φend)
   "Delete trailing whitespace, and replace repeated blank lines into just 2.
 Works on whole buffer or text selection, respects `narrow-to-region'.
 
@@ -458,7 +416,7 @@ Version 2015-03-03"
      (list 1 (point-max))))
   (save-excursion
     (save-restriction
-      (narrow-to-region p1 p2)
+      (narrow-to-region φbegin φend)
       (progn
         (goto-char (point-min))
         (while (search-forward-regexp "[ \t]+\n" nil "noerror")

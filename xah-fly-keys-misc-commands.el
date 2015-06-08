@@ -702,6 +702,7 @@ Version 2015-05-14"
                ξtwitterfy-map
              (mapcar (lambda (ξpair) (vector (elt ξpair 1) (elt ξpair 0))) ξtwitterfy-map))))))))
 
+(require 'xah-get-thing)
 (defun xah-replace-straight-quotes (φbegin φend)
   "Replace straight double quotes to curly ones, and others.
 Works on current text selection, else the current text block between empty lines.
@@ -725,9 +726,12 @@ Version 2015-05-07"
   ;; said "can’t have it, can’t, just can’t"
   ;; ‘I’ve can’t’
   (interactive
-   (if (use-region-p)
-       (list (region-beginning) (region-end))
-     (list (line-beginning-position) (line-end-position))))
+   (let ((ξbds (xah-get-thing-or-selection 'block)))
+     (list (elt ξbds 1) (elt ξbds 2)))
+   ;; (if (use-region-p)
+   ;;     (list (region-beginning) (region-end))
+   ;;   (list (line-beginning-position) (line-end-position)))
+   )
 
   (let ( (case-fold-search nil))
     ;; Note: order is important since this is huristic.

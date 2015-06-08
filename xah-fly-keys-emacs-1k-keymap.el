@@ -243,8 +243,8 @@
   (define-key xah-harmless-keymap (kbd "m") 'global-linum-mode)
   (define-key xah-harmless-keymap (kbd "n") 'narrow-to-region)
   (define-key xah-harmless-keymap (kbd "o") nil)
-  (define-key xah-harmless-keymap (kbd "p") nil)
-  (define-key xah-harmless-keymap (kbd "q") 'read-only-mode) ; toggle-read-only
+  (define-key xah-harmless-keymap (kbd "p") 'read-only-mode) ; toggle-read-only
+  (define-key xah-harmless-keymap (kbd "q") nil)
   (define-key xah-harmless-keymap (kbd "r") nil)
   (define-key xah-harmless-keymap (kbd "s") 'flyspell-buffer)
   (define-key xah-harmless-keymap (kbd "t") 'narrow-to-defun)
