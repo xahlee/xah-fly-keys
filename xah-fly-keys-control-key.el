@@ -13,8 +13,8 @@
   (global-set-key (kbd "C-4") nil)
   (global-set-key (kbd "C-5") nil)
   (global-set-key (kbd "C-6") nil)
-  (global-set-key (kbd "C-7") nil)
-  (global-set-key (kbd "C-8") nil)
+  (global-set-key (kbd "C-7") 'scroll-down)
+  (global-set-key (kbd "C-8") 'scroll-up)
   (global-set-key (kbd "C-9") nil)
   (global-set-key (kbd "C-0") nil)
   )
@@ -36,12 +36,12 @@
   ;; C-m ; was newline
   (global-set-key (kbd "C-n") 'xah-new-empty-buffer) ; was next-line
   (global-set-key (kbd "C-S-n") 'make-frame-command) ; was nil
-  (global-set-key (kbd "C-o") nil)            ; was open-line
+  (global-set-key (kbd "C-o") 'ido-find-file)            ; was open-line
   (global-set-key (kbd "C-p") nil) ; was previous-line
   ;; C-q quoted-insert
   (global-set-key (kbd "C-r") nil)           ; was isearch-backward
-  (global-set-key (kbd "C-s") nil)  ; was isearch-forward
-  (global-set-key (kbd "C-S-s") nil) ; was nil
+  (global-set-key (kbd "C-s") 'save-buffer)  ; was isearch-forward
+  (global-set-key (kbd "C-S-s") 'write-file) ; was nil
   (global-set-key (kbd "C-S-t") 'xah-open-last-closed) ; was nil
   (global-set-key (kbd "C-t") nil) ; was transpose-chars
   (global-set-key (kbd "C-u") nil) ; was universal-argument

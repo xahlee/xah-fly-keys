@@ -99,11 +99,13 @@
 (global-set-key (kbd "<menu> [") nil)
 (global-set-key (kbd "<menu> \\") nil)
 (global-set-key (kbd "<menu> `") nil)
+
 (global-set-key (kbd "<menu> 1") nil)
 (global-set-key (kbd "<menu> 2") nil)
 (global-set-key (kbd "<menu> 3") 'delete-other-windows)
 (global-set-key (kbd "<menu> 4") 'split-window-vertically)
 (global-set-key (kbd "<menu> 5") 'split-window-horizontally)
+
 (global-set-key (kbd "<menu> 6") 'delete-window)
 (global-set-key (kbd "<menu> 7") 'dired-jump)
 (global-set-key (kbd "<menu> 8") 'xah-open-file-path-under-cursor)
@@ -337,7 +339,7 @@
   (define-key xah-menu-t-keymap (kbd "r") 'copy-rectangle-to-register)
   (define-key xah-menu-t-keymap (kbd "s") nil)
   (define-key xah-menu-t-keymap (kbd "t") 'repeat)
-  (define-key xah-menu-t-keymap (kbd "u") nil)
+  (define-key xah-menu-t-keymap (kbd "u") (if (fboundp 'avy-goto-char-2) 'avy-goto-char-2 nil ))
   (define-key xah-menu-t-keymap (kbd "v") nil)
   (define-key xah-menu-t-keymap (kbd "w") nil)
   (define-key xah-menu-t-keymap (kbd "x") nil)
@@ -391,7 +393,7 @@
 
   )
 
-(global-set-key (kbd "<menu> x") ctl-x-map) ; backup
+(global-set-key (kbd "<menu> x") nil)
 
 (global-set-key (kbd "<menu> y") nil)
 

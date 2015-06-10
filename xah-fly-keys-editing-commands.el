@@ -197,7 +197,7 @@ Version 2015-05-15"
   (interactive)
   ;; This command symbol has a property “'stateIsCompact-p”, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
   (let ( ξis-compact-p
-         ;; (deactivate-mark nil)
+         (deactivate-mark nil)
          (ξblanks-regex "\n[ \t]*\n")
          ξp1 ξp2
          )
@@ -240,33 +240,38 @@ This command does the inverse of `fill-region'."
   (let ((fill-column 90002000))
     (fill-region start end)))
 
-(defun xah-replace-newline-whitespaces-to-space (&optional φbegin φend)
-  "Replace newline with surrounding {tab, space} characters to 1 space, in current text block or selection.
-This is similar to `fill-paragraph' or `fill-region' for making a text block into a single line, except that fill command does many other things. For example, if you have
-
- > some
- > thing
-
-it'll remove the second >."
-  (interactive
-   (if (use-region-p)
-       (list (region-beginning) (region-end))
-     (save-excursion
-       (let (q1 q2)
-         (if (re-search-backward "\n[ \t]*\n" nil "NOERROR")
-             (progn (re-search-forward "\n[ \t]*\n")
-                    (setq q1 (point)))
-           (setq q1 (point)))
-         (if (re-search-forward "\n[ \t]*\n" nil "NOERROR")
-             (progn (re-search-backward "\n[ \t]*\n")
-                    (setq q2 (point)))
-           (setq q2 (point)))
-         (list q1 q2)))))
-  (save-excursion
-    (save-restriction
-      (narrow-to-region φbegin φend)
-      (goto-char (point-min))
-      (while (search-forward-regexp "[ \t]*\n[ \t]*" nil t) (replace-match " ")))))
+(defun xah-replace-newline-whitespaces-to-space (&optional φbegin φend φabsolute-p)
+  "Replace newline+tab char sequence to 1 just space, in current text block or selection.
+This is similar to `fill-region' but without being smart.
+Version 2015-06-09"
+  (interactive)
+  (let (ξbegin ξend)
+    (if (null φbegin)
+        (if (use-region-p)
+            (progn (setq ξbegin (region-beginning)) (setq ξend (region-end)))
+          (save-excursion
+            (if (re-search-backward "\n[ \t]*\n" nil "NOERROR")
+                (progn (re-search-forward "\n[ \t]*\n")
+                       (setq ξbegin (point)))
+              (setq ξbegin (point)))                   
+            (if (re-search-forward "\n[ \t]*\n" nil "NOERROR")
+                (progn (re-search-backward "\n[ \t]*\n")
+                       (setq ξend (point)))
+              (setq ξend (point)))))
+      (progn (setq ξbegin φbegin) (setq ξend φend)))
+    (save-excursion
+      (save-restriction
+        (narrow-to-region ξbegin ξend)
+        (goto-char (point-min))
+        (while (search-forward-regexp "\n[ \t]*\n" nil t) (replace-match "\n\n"))
+        (goto-char (point-min))
+        (while (search-forward-regexp "[ \t]*\n[ \t]*" nil t) (replace-match "\n"))
+        (goto-char (point-min))
+        (while (search-forward-regexp "\n\n+" nil t) (replace-match "hqnvdr9b35"))
+        (goto-char (point-min))
+        (while (search-forward-regexp "\n" nil t) (replace-match " "))
+        (goto-char (point-min))
+        (while (search-forward "hqnvdr9b35" nil t) (replace-match "\n\n"))))))
 
 (defun xah-cycle-hyphen-underscore-space (φbegin φend)
   "Cycle {underscore, space, hypen} chars of current word or text selection.
