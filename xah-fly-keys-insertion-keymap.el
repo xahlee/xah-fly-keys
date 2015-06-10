@@ -36,3 +36,15 @@
   (define-key xah-insertion-keymap (kbd "y") 'xah-insert-double-angle-quote«»)
   
   )
+
+(define-key key-translation-map (kbd "<menu> SPC <up>") (kbd "↑"))
+(define-key key-translation-map (kbd "<menu> SPC <down>") (kbd "↓"))
+(define-key key-translation-map (kbd "<menu> SPC <left>") (kbd "←"))
+(define-key key-translation-map (kbd "<menu> SPC <right>") (kbd "→"))
+(define-key key-translation-map (kbd "<menu> SPC 4") (kbd "◆"))
+(define-key key-translation-map (kbd "<menu> SPC 7") (kbd "＆"))
+(define-key key-translation-map (kbd "<menu> SPC 8") (kbd "•"))
+
+(define-key key-translation-map (kbd "<menu> SPC 3") (kbd "ξ"))
+(define-key key-translation-map (kbd "<menu> SPC 9") (kbd "φ"))
+

@@ -45,6 +45,8 @@
   (global-set-key (kbd "C-S-t") 'xah-open-last-closed) ; was nil
   (global-set-key (kbd "C-t") nil) ; was transpose-chars
   (global-set-key (kbd "C-u") nil) ; was universal-argument
+  (global-set-key (kbd "C-u") 'universal-argument) ; was universal-argument
+
   (global-set-key (kbd "C-v") 'yank) ; was scroll-up-command
   (global-set-key (kbd "C-w") 'xah-close-current-buffer) ; was kill-region
   (global-set-key (kbd "C-x") 'xah-cut-line-or-region) ; was ctl-x-map

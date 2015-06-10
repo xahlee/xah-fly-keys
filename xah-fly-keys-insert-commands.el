@@ -157,15 +157,3 @@ Note: this command is similar to `rectangle-number-lines', starting at 65 or 97,
     (setq gotThis
           (ido-completing-read "insert:" (mapcar (lambda (x) (concat (car x) (cdr x))) xah-unicode-list)))
     (insert (car (assoc (substring gotThis 0 1) xah-unicode-list)))))
-
-(define-key key-translation-map (kbd "<menu> SPC <up>") (kbd "↑"))
-(define-key key-translation-map (kbd "<menu> SPC <down>") (kbd "↓"))
-(define-key key-translation-map (kbd "<menu> SPC <left>") (kbd "←"))
-(define-key key-translation-map (kbd "<menu> SPC <right>") (kbd "→"))
-(define-key key-translation-map (kbd "<menu> SPC 4") (kbd "◆"))
-(define-key key-translation-map (kbd "<menu> SPC 7") (kbd "＆"))
-(define-key key-translation-map (kbd "<menu> SPC 8") (kbd "•"))
-
-(define-key key-translation-map (kbd "<menu> SPC h") (kbd "ξ"))
-(define-key key-translation-map (kbd "<menu> SPC t") (kbd "φ"))
-

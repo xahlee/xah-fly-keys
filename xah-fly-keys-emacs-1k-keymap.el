@@ -70,7 +70,7 @@
 
 (global-set-key (kbd "<menu> <backspace>") nil)
 (global-set-key (kbd "<menu> <delete>") nil)
-(global-set-key (kbd "<menu> SPC") nil)
+(global-set-key (kbd "<menu> SPC") xah-insertion-keymap)
 
 (global-set-key (kbd "<menu> <menu>") 'exchange-point-and-mark)
 
@@ -350,7 +350,7 @@
 
   )
 
-  (global-set-key (kbd "<menu> u") 'xah-insertion-keymap)
+  (global-set-key (kbd "<menu> u") nil)
 
 (progn
   (define-prefix-command 'xah-menu-v-keymap)
