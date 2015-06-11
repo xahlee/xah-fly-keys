@@ -33,18 +33,15 @@ Version 2015-05-06"
 When `universal-argument' is called first, cut whole buffer (respects `narrow-to-region').
 
 URL `http://ergoemacs.org/emacs/emacs_copy_cut_current_line.html'
-Version 2015-05-06"
+Version 2015-06-10"
   (interactive)
-  (let (ξp1 ξp2)
-    (if current-prefix-arg
-        (progn (setq ξp1 (point-min))
-               (setq ξp2 (point-max)))
-      (progn (if (use-region-p)
-                 (progn (setq ξp1 (region-beginning))
-                        (setq ξp2 (region-end)))
-               (progn (setq ξp1 (line-beginning-position))
-                      (setq ξp2 (line-beginning-position 2))))))
-    (kill-region ξp1 ξp2)))
+  (if current-prefix-arg
+      (progn ; not using kill-region because we don't want appending with previous kill
+        (kill-new (buffer-substring (point-min) (point-max)))
+        (delete-region (point-min) (point-max)))
+    (progn (if (use-region-p)
+               (kill-region (region-beginning) (region-end) t)
+             (kill-region (line-beginning-position) (line-beginning-position 2))))))
 
 (defun xah-copy-all ()
   "Put the whole buffer content into the `kill-ring'.
@@ -253,7 +250,7 @@ Version 2015-06-09"
             (if (re-search-backward "\n[ \t]*\n" nil "NOERROR")
                 (progn (re-search-forward "\n[ \t]*\n")
                        (setq ξbegin (point)))
-              (setq ξbegin (point)))                   
+              (setq ξbegin (point)))
             (if (re-search-forward "\n[ \t]*\n" nil "NOERROR")
                 (progn (re-search-backward "\n[ \t]*\n")
                        (setq ξend (point)))
