@@ -136,17 +136,17 @@ Prompt for a choice."
 (defun xah-list-recently-closed ()
   "List recently closed file."
   (interactive)
-  (let ((buf (generate-new-buffer "*recently closed*")))
-    (switch-to-buffer buf)
-    (mapc (lambda (f) (insert (cdr f) "\n"))
+  (let ((ξbuf (generate-new-buffer "*recently closed*")))
+    (switch-to-buffer ξbuf)
+    (mapc (lambda (ξf) (insert (cdr ξf) "\n"))
           xah-recently-closed-buffers)))
 
 (defun xah-open-in-external-app ()
   "Open the current file or dired marked files in external app.
 The app is chosen from your OS's preference.
 
-Version 2015-01-26
-URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
+URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
+Version 2015-01-26"
   (interactive)
   (let* (
          (ξfile-list
@@ -161,17 +161,19 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
       (cond
        ((string-equal system-type "windows-nt")
         (mapc
-         (lambda (fPath)
-           (w32-shell-execute "open" (replace-regexp-in-string "/" "\\" fPath t t))) ξfile-list))
+         (lambda (ξfpath)
+           (w32-shell-execute "open" (replace-regexp-in-string "/" "\\" ξfpath t t))) ξfile-list))
        ((string-equal system-type "darwin")
         (mapc
-         (lambda (fPath) (shell-command (format "open \"%s\"" fPath)))  ξfile-list))
+         (lambda (ξfpath) (shell-command (format "open \"%s\"" ξfpath)))  ξfile-list))
        ((string-equal system-type "gnu/linux")
         (mapc
-         (lambda (fPath) (let ((process-connection-type nil)) (start-process "" nil "xdg-open" fPath))) ξfile-list))))))
+         (lambda (ξfpath) (let ((process-connection-type nil)) (start-process "" nil "xdg-open" ξfpath))) ξfile-list))))))
 
 (defun xah-open-in-desktop ()
-  "Show current file in desktop (OS's file manager)."
+  "Show current file in desktop (OS's file manager).
+URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
+Version 2015-06-12"
   (interactive)
   (cond
    ((string-equal system-type "windows-nt")
@@ -183,12 +185,15 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
     )))
 
 (defun xah-new-empty-buffer ()
-  "Open a new empty buffer."
+  "Open a new empty buffer.
+URL `http://ergoemacs.org/emacs/emacs_new_empty_buffer.html'
+Version 2015-06-12"
   (interactive)
-  (let ((buf (generate-new-buffer "untitled")))
-    (switch-to-buffer buf)
+  (let ((ξbuf (generate-new-buffer "untitled")))
+    (switch-to-buffer ξbuf)
     (funcall (and initial-major-mode))
     (setq buffer-offer-save t)))
+
 ;; note: emacs won't offer to save a buffer that's
 ;; not associated with a file,
 ;; even if buffer-modified-p is true.
@@ -254,8 +259,7 @@ If path starts with “http://”, launch browser vistiting that URL, or open th
 
 Input path can be {relative, full path, URL}. See: `xahsite-web-path-to-filepath' for types of paths supported.
 
-Version 2015-03-20
-"
+Version 2015-06-12"
   (interactive)
   (let* (
          (ξinputStr1
@@ -274,7 +278,7 @@ Version 2015-03-20
                (goto-char ξp0)
                (buffer-substring-no-properties ξp1 ξp2)))))
          (ξinputStr2 (replace-regexp-in-string ":\\'" "" ξinputStr1))
-         fPath )
+          )
 
     (if (string-equal ξinputStr2 "")
         (progn (user-error "No path under cursor" ))
@@ -318,21 +322,21 @@ The clipboard should contain a file path or url to xah site. Open that file in e
          (with-temp-buffer
            (yank)
            (buffer-string)))
-        fpath
+        ξfpath
         )
 
     (if (string-match-p "\\`http://" ξinputStr)
         (progn
-          (setq fpath (xahsite-url-to-filepath ξinputStr "addFileName"))
-          (if (file-exists-p fpath)
-              (progn (find-file fpath))
-            (progn (error "file doesn't exist 「%s」" fpath))))
+          (setq ξfpath (xahsite-url-to-filepath ξinputStr "addFileName"))
+          (if (file-exists-p ξfpath)
+              (progn (find-file ξfpath))
+            (progn (error "file doesn't exist 「%s」" ξfpath))))
       (progn ; not starting “http://”
         (setq ξinputStr (xah-remove-uri-fragment ξinputStr))
-        (setq fpath (xahsite-web-path-to-filepath ξinputStr default-directory))
-        (if (file-exists-p fpath)
-            (progn (find-file fpath))
-          (progn (user-error "file doesn't exist 「%s」" fpath)))))))
+        (setq ξfpath (xahsite-web-path-to-filepath ξinputStr default-directory))
+        (if (file-exists-p ξfpath)
+            (progn (find-file ξfpath))
+          (progn (user-error "file doesn't exist 「%s」" ξfpath)))))))
 
 (defun xah-browse-url-at-point ()
   "Switch to web browser and load the URL at cursor position.
