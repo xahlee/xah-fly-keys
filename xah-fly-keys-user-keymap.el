@@ -16,7 +16,7 @@
 
     (define-key xah-user-keymap (kbd "1") 'xah-copy-to-register-1)
     (define-key xah-user-keymap (kbd "2") 'xah-paste-from-register-1)
-    (define-key xah-user-keymap (kbd "3") 'xah-asciify-region)
+    (define-key xah-user-keymap (kbd "3") 'xah-asciify-text)
     (define-key xah-user-keymap (kbd "4") 'xah-insert-word-3)
     (define-key xah-user-keymap (kbd "5") nil)
     (define-key xah-user-keymap (kbd "6") nil)

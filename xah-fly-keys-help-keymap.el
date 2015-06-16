@@ -3,15 +3,16 @@
 (progn
   (define-prefix-command 'xah-help-keymap)
 
-  (define-key xah-help-keymap (kbd "1") nil)
-  (define-key xah-help-keymap (kbd "2") nil)
   (define-key xah-help-keymap (kbd "3") 'man)
 
+  (define-key xah-help-keymap (kbd "8") nil)
+  (define-key xah-help-keymap (kbd "7") nil)
   (define-key xah-help-keymap (kbd "4") 'elisp-index-search)
   (define-key xah-help-keymap (kbd "5") 'apropos-variable)
   (define-key xah-help-keymap (kbd "6") 'apropos-value)
-  (define-key xah-help-keymap (kbd "7") 'xah-lookup-google)
-  (define-key xah-help-keymap (kbd "8") 'xah-lookup-wikipedia)
+
+  (define-key xah-help-keymap (kbd "2") 'xah-lookup-google)
+  (define-key xah-help-keymap (kbd "1") 'xah-lookup-wikipedia)
   (define-key xah-help-keymap (kbd "9") 'xah-lookup-word-definition)
   (define-key xah-help-keymap (kbd "0") 'xah-lookup-all-dictionaries)
 
