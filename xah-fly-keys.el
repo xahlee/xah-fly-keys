@@ -166,7 +166,7 @@ To solve this problem, when your code only knows the relative path of another fi
     ;; keys 1 and 8 are swapped
     ;; keys 2 and 7 are swapped
     (global-set-key (kbd "8") 'xfk-insert-mode-activate)
-    (global-set-key (kbd "7") 'delete-window)
+    (global-set-key (kbd "7") nil)
     (global-set-key (kbd "3") 'delete-other-windows)
     (global-set-key (kbd "4") 'split-window-vertically)
     (global-set-key (kbd "5") 'redo)
@@ -178,7 +178,7 @@ To solve this problem, when your code only knows the relative path of another fi
     (global-set-key (kbd "0") 'xah-backward-punct)
 
     (global-set-key (kbd "a") 'open-line)
-    (global-set-key (kbd "b") 'save-buffer)
+    (global-set-key (kbd "b") 'delete-window)
     (global-set-key (kbd "c") 'previous-line)
     (global-set-key (kbd "d") 'xah-beginning-of-line-or-block)
     (global-set-key (kbd "e") 'delete-backward-char)
@@ -191,7 +191,7 @@ To solve this problem, when your code only knows the relative path of another fi
     (global-set-key (kbd "l") 'xah-forward-punct)
     (global-set-key (kbd "m") 'xah-backward-left-bracket)
     (global-set-key (kbd "n") 'forward-char)
-    (global-set-key (kbd "o") 'other-window)
+    (global-set-key (kbd "o") nil)
     (global-set-key (kbd "p") 'kill-word)
     (global-set-key (kbd "q") 'xah-copy-line-or-region)
     (global-set-key (kbd "r") 'forward-word)
@@ -199,8 +199,8 @@ To solve this problem, when your code only knows the relative path of another fi
     (global-set-key (kbd "t") 'next-line)
     (global-set-key (kbd "u") 'delete-char)
     (global-set-key (kbd "v") 'xah-forward-right-bracket)
-    (global-set-key (kbd "w") 'xah-insert-space-after)
-    (global-set-key (kbd "x") nil)
+    (global-set-key (kbd "w") 'other-window)
+    (global-set-key (kbd "x") 'save-buffer)
     (global-set-key (kbd "y") 'set-mark-command)
     (global-set-key (kbd "z") 'comment-dwim)))
 
