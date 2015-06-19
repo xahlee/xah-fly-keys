@@ -170,6 +170,33 @@ Version 2015-01-26"
         (mapc
          (lambda (ξfpath) (let ((process-connection-type nil)) (start-process "" nil "xdg-open" ξfpath))) ξfile-list))))))
 
+(defun xah-open-in-gimp ()
+  "Open the current file or dired marked files in gimp.
+Guaranteed to work on linux. Not tested on Microsoft Windows or Mac OS X
+Version 2015-06-16"
+  (interactive)
+  (let* (
+         (ξfile-list
+          (if (string-equal major-mode "dired-mode")
+              (dired-get-marked-files)
+            (list (buffer-file-name))))
+         (ξdo-it-p (if (<= (length ξfile-list) 5)
+                       t
+                     (y-or-n-p "Open more than 5 files? "))))
+
+    (when ξdo-it-p
+      (cond
+       ((string-equal system-type "windows-nt")
+        (mapc
+         (lambda (ξfpath)
+           (w32-shell-execute "gimp" (replace-regexp-in-string "/" "\\" ξfpath t t))) ξfile-list))
+       ((string-equal system-type "darwin")
+        (mapc
+         (lambda (ξfpath) (shell-command (format "gimp \"%s\"" ξfpath)))  ξfile-list))
+       ((string-equal system-type "gnu/linux")
+        (mapc
+         (lambda (ξfpath) (let ((process-connection-type nil)) (start-process "" nil "gimp" ξfpath))) ξfile-list))))))
+
 (defun xah-open-in-desktop ()
   "Show current file in desktop (OS's file manager).
 URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'

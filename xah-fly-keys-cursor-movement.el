@@ -170,17 +170,19 @@ Version 2015-05-05"
 
 (defun xah-forward-equal-sign ()
   "Move cursor to the next occurrence of equal sign 「=」.
-URL `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
-Version 2015-05-12"
+URL `http://ergoemacs.org/emacs/emacs_jump_to_punctuations.html'
+Version 2015-06-15"
   (interactive)
-  (search-forward "=" nil t))
+  (search-forward-regexp "=+" nil t))
 
 (defun xah-backward-equal-sign ()
-  "Move cursor to the previous occurrence of equal sign 「=」.
-URL `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
-Version 2015-05-12"
+  "Move cursor to previous occurrence of equal sign 「=」.
+URL `http://ergoemacs.org/emacs/emacs_jump_to_punctuations.html'
+Version 2015-06-15"
   (interactive)
-  (search-backward "=" nil t))
+  (when (search-backward-regexp "=+" nil t)
+    (while (search-backward "=" (- (point) 1) t)
+      (left-char))))
 
 (defun xah-forward-quote ()
   "Move cursor to the next occurrence of ' or \".

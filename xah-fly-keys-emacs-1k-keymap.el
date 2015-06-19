@@ -219,14 +219,15 @@
   (define-key xah-harmless-keymap (kbd "'") 'frame-configuration-to-register)
   (define-key xah-harmless-keymap (kbd ";") 'window-configuration-to-register)
 
-  (define-key xah-harmless-keymap (kbd "1") 'set-input-method)
-  (define-key xah-harmless-keymap (kbd "2") 'global-hl-line-mode)
+  (define-key xah-harmless-keymap (kbd "8") 'set-input-method)
+  (define-key xah-harmless-keymap (kbd "7") 'global-hl-line-mode)
   (define-key xah-harmless-keymap (kbd "3") 'whitespace-mode)
   (define-key xah-harmless-keymap (kbd "4") 'linum-mode)
   (define-key xah-harmless-keymap (kbd "5") 'visual-line-mode)
+
   (define-key xah-harmless-keymap (kbd "6") 'calendar)
-  (define-key xah-harmless-keymap (kbd "7") 'calc)
-  (define-key xah-harmless-keymap (kbd "8") 'shell)
+  (define-key xah-harmless-keymap (kbd "2") 'calc)
+  (define-key xah-harmless-keymap (kbd "1") 'shell)
   (define-key xah-harmless-keymap (kbd "9") 'shell-command)
   (define-key xah-harmless-keymap (kbd "0") 'shell-command-on-region)
 
@@ -279,17 +280,19 @@
   (define-prefix-command 'xah-edit-cmds-keymap)
   (global-set-key (kbd "<menu> r") xah-edit-cmds-keymap)
 
-  (define-key xah-edit-cmds-keymap (kbd "1") 'kmacro-start-macro)
-  (define-key xah-edit-cmds-keymap (kbd "2") 'kmacro-end-macro)
+  (define-key xah-edit-cmds-keymap (kbd "8") nil)
+  (define-key xah-edit-cmds-keymap (kbd "7") nil)
   (define-key xah-edit-cmds-keymap (kbd "3") 'apply-macro-to-region-lines)
   (define-key xah-edit-cmds-keymap (kbd "4") 'sort-lines)
   (define-key xah-edit-cmds-keymap (kbd "5") 'sort-numeric-fields)
   (define-key xah-edit-cmds-keymap (kbd "6") 'reverse-region)
-  (define-key xah-edit-cmds-keymap (kbd "7") 'list-matching-lines)
-  (define-key xah-edit-cmds-keymap (kbd "8") 'delete-matching-lines)
+  (define-key xah-edit-cmds-keymap (kbd "2") 'list-matching-lines)
+  (define-key xah-edit-cmds-keymap (kbd "1") 'delete-matching-lines)
   (define-key xah-edit-cmds-keymap (kbd "9") 'delete-non-matching-lines)
   (define-key xah-edit-cmds-keymap (kbd "0") 'delete-duplicate-lines)
 
+  (define-key xah-edit-cmds-keymap (kbd ".") 'kmacro-start-macro)
+  (define-key xah-edit-cmds-keymap (kbd "p") 'kmacro-end-macro)
   (define-key xah-edit-cmds-keymap (kbd "e") 'call-last-kbd-macro)
 
   (define-key xah-edit-cmds-keymap (kbd "c") 'replace-rectangle)

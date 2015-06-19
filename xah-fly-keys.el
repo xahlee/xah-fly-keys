@@ -157,10 +157,10 @@ To solve this problem, when your code only knows the relative path of another fi
     (global-set-key (kbd "/") 'xah-backward-quote)
     (global-set-key (kbd "\\") nil)
     (global-set-key (kbd "=") 'xah-forward-quote)
-    (global-set-key (kbd "SPC") 'xfk-insert-mode-activate)
     (global-set-key (kbd "[") 'xah-backward-equal-sign)
     (global-set-key (kbd "]") 'xah-forward-equal-sign)
     (global-set-key (kbd "`") nil)
+    (global-set-key (kbd "SPC") 'xfk-insert-mode-activate)
 
     ;; note:
     ;; keys 1 and 8 are swapped
@@ -178,7 +178,7 @@ To solve this problem, when your code only knows the relative path of another fi
     (global-set-key (kbd "0") 'xah-backward-punct)
 
     (global-set-key (kbd "a") 'open-line)
-    (global-set-key (kbd "b") 'delete-window)
+    (global-set-key (kbd "b") 'save-buffer)
     (global-set-key (kbd "c") 'previous-line)
     (global-set-key (kbd "d") 'xah-beginning-of-line-or-block)
     (global-set-key (kbd "e") 'delete-backward-char)
@@ -200,7 +200,7 @@ To solve this problem, when your code only knows the relative path of another fi
     (global-set-key (kbd "u") 'delete-char)
     (global-set-key (kbd "v") 'xah-forward-right-bracket)
     (global-set-key (kbd "w") 'other-window)
-    (global-set-key (kbd "x") 'save-buffer)
+    (global-set-key (kbd "x") 'delete-window)
     (global-set-key (kbd "y") 'set-mark-command)
     (global-set-key (kbd "z") 'comment-dwim)))
 
@@ -241,5 +241,8 @@ To solve this problem, when your code only knows the relative path of another fi
 (add-hook 'shell-mode-hook 'xfk-insert-mode-activate)
 
 
+
+;; (setq xah-fly-timer-id (run-with-idle-timer 20 t 'xfk-command-mode-activate))
+;; (cancel-timer xah-fly-timer-id)
 
 (provide 'xah-fly-keys)
