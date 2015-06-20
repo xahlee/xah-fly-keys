@@ -191,7 +191,7 @@
   (define-key xah-menu-t-keymap (kbd "r") 'copy-rectangle-to-register)
   (define-key xah-menu-t-keymap (kbd "s") nil)
   (define-key xah-menu-t-keymap (kbd "t") 'repeat)
-  (define-key xah-menu-t-keymap (kbd "u") (if (fboundp 'avy-goto-char-2) 'avy-goto-char-2 nil ))
+  (define-key xah-menu-t-keymap (kbd "u") nil)
   (define-key xah-menu-t-keymap (kbd "v") nil)
   (define-key xah-menu-t-keymap (kbd "w") nil)
   (define-key xah-menu-t-keymap (kbd "x") nil)

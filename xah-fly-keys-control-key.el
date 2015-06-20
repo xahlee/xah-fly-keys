@@ -44,8 +44,7 @@
   (global-set-key (kbd "C-S-s") 'write-file) ; was nil
   (global-set-key (kbd "C-S-t") 'xah-open-last-closed) ; was nil
   (global-set-key (kbd "C-t") nil) ; was transpose-chars
-  (global-set-key (kbd "C-u") nil) ; was universal-argument
-  (global-set-key (kbd "C-u") 'universal-argument) ; was universal-argument
+  (global-set-key (kbd "C-u") 'universal-argument) ; was universal-argument 2015-06-19 possibly some command won't recognize universal-argument if it's not C-u
 
   (global-set-key (kbd "C-v") 'yank) ; was scroll-up-command
   (global-set-key (kbd "C-w") 'xah-close-current-buffer) ; was kill-region
