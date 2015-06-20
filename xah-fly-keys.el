@@ -79,6 +79,7 @@ To solve this problem, when your code only knows the relative path of another fi
 (load (xah-get-fullpath "xah-fly-keys-mode-specific"))
 (load (xah-get-fullpath "xah-fly-keys-user-keymap"))
 (load (xah-get-fullpath "xah-fly-keys-emacs-1k-keymap"))
+(load (xah-get-fullpath "xah-fly-keys-global-set-keys"))
 
 
 
@@ -98,11 +99,12 @@ To solve this problem, when your code only knows the relative path of another fi
     (global-set-key (kbd "/") 'self-insert-command)
     (global-set-key (kbd ";") 'self-insert-command)
     (global-set-key (kbd "=") 'self-insert-command)
-    (global-set-key (kbd "SPC") 'self-insert-command)
     (global-set-key (kbd "[") 'self-insert-command)
     (global-set-key (kbd "\\") 'self-insert-command)
     (global-set-key (kbd "]") 'self-insert-command)
     (global-set-key (kbd "`") 'self-insert-command)
+    (global-set-key (kbd "SPC") 'self-insert-command)
+    (global-set-key (kbd "RET") 'newline)
 
     (global-set-key (kbd "1") 'self-insert-command)
     (global-set-key (kbd "2") 'self-insert-command)
@@ -161,7 +163,7 @@ To solve this problem, when your code only knows the relative path of another fi
     (global-set-key (kbd "]") 'xah-forward-equal-sign)
     (global-set-key (kbd "`") nil)
     (global-set-key (kbd "SPC") 'xfk-insert-mode-activate)
-
+    (global-set-key (kbd "RET") 'xfk-insert-mode-activate)
     ;; note:
     ;; keys 1 and 8 are swapped
     ;; keys 2 and 7 are swapped
