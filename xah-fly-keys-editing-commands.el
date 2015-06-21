@@ -190,7 +190,7 @@ Version 2015-03-03"
 This is similar to a toggle for `fill-paragraph' and `unfill-paragraph'.
 
 When there is a text selection, act on the the selection, else, act on a text block separated by blank lines.
-Version 2015-05-15"
+Version 2015-06-20"
   (interactive)
   ;; This command symbol has a property “'stateIsCompact-p”, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
   (let ( ξis-compact-p
@@ -220,7 +220,7 @@ Version 2015-05-15"
                 (if (> (- (line-end-position) (line-beginning-position)) fill-column) t nil))))
       (if ξis-compact-p
           (fill-region ξp1 ξp2)
-        (xah-replace-newline-whitespaces-to-space ξp1 ξp2))
+        (let ((fill-column most-positive-fixnum)) (fill-paragraph)))
       (put this-command 'stateIsCompact-p (if ξis-compact-p nil t)))))
 
 (defun xah-unfill-paragraph ()
@@ -228,7 +228,7 @@ Version 2015-05-15"
 This command does the inverse of `fill-paragraph'."
   (interactive)
   (let ((fill-column 90002000)) ; 90002000 is just random. you can use `most-positive-fixnum'
-    (fill-paragraph nil)))
+    (fill-paragraph)))
 
 (defun xah-unfill-region (start end)
   "Replace newline chars in region by single spaces.
