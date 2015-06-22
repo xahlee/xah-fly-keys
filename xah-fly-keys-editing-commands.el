@@ -220,7 +220,7 @@ Version 2015-06-20"
                 (if (> (- (line-end-position) (line-beginning-position)) fill-column) t nil))))
       (if ξis-compact-p
           (fill-region ξp1 ξp2)
-        (let ((fill-column most-positive-fixnum)) (fill-paragraph)))
+        (let ((fill-column most-positive-fixnum)) (fill-region ξp1 ξp2)))
       (put this-command 'stateIsCompact-p (if ξis-compact-p nil t)))))
 
 (defun xah-unfill-paragraph ()
