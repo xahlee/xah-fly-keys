@@ -191,14 +191,12 @@
   (define-key xah-menu-t-keymap (kbd "r") 'copy-rectangle-to-register)
   (define-key xah-menu-t-keymap (kbd "s") nil)
   (define-key xah-menu-t-keymap (kbd "t") 'repeat)
-  (define-key xah-menu-t-keymap (kbd "u") nil)
+  (define-key xah-menu-t-keymap (kbd "u") 'insert-register)
   (define-key xah-menu-t-keymap (kbd "v") nil)
-  (define-key xah-menu-t-keymap (kbd "w") nil)
+  (define-key xah-menu-t-keymap (kbd "w") 'other-window)
   (define-key xah-menu-t-keymap (kbd "x") nil)
   (define-key xah-menu-t-keymap (kbd "y") nil)
-  (define-key xah-menu-t-keymap (kbd "z") nil)
-
-  (define-key xah-menu-t-keymap (kbd "u") 'insert-register))
+  (define-key xah-menu-t-keymap (kbd "z") nil))
 
 (progn
   (define-prefix-command 'xah-menu-v-keymap)
@@ -258,12 +256,12 @@
   (define-key xah-fly-leader-key-map (kbd "`") nil)
 
   (define-key xah-fly-leader-key-map (kbd "8") nil)
-  (define-key xah-fly-leader-key-map (kbd "7") nil)
+  (define-key xah-fly-leader-key-map (kbd "7") 'delete-window)
   (define-key xah-fly-leader-key-map (kbd "3") 'delete-other-windows)
-  (define-key xah-fly-leader-key-map (kbd "4") 'split-window-vertically)
-  (define-key xah-fly-leader-key-map (kbd "5") 'split-window-horizontally)
+  (define-key xah-fly-leader-key-map (kbd "4") 'split-window-below)
+  (define-key xah-fly-leader-key-map (kbd "5") 'split-window-right)
 
-  (define-key xah-fly-leader-key-map (kbd "6") 'delete-window)
+  (define-key xah-fly-leader-key-map (kbd "6") nil)
   (define-key xah-fly-leader-key-map (kbd "2") 'dired-jump)
   (define-key xah-fly-leader-key-map (kbd "1") 'xah-open-file-path-under-cursor)
   (define-key xah-fly-leader-key-map (kbd "9") 'ispell-word)

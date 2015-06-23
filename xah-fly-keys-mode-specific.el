@@ -24,12 +24,18 @@
   ;; (define-key dired-mode-map (kbd "M-g") 'backward-word)
   ;; (define-key dired-mode-map (kbd "M-c") 'previous-line)
   ;; (define-key dired-mode-map (kbd "C-o") 'ido-find-file)
-  (define-key dired-mode-map (kbd "o") 'other-window) ; was dired-find-file-other-window
-  (define-key dired-mode-map (kbd "1") 'xah-previous-user-buffer)
-  (define-key dired-mode-map (kbd "2") 'delete-window)
-  (define-key dired-mode-map (kbd "3") 'delete-other-windows)
-  (define-key dired-mode-map (kbd "4") 'split-window-vertically)
+  (define-key dired-mode-map (kbd "o") 'other-window)
+  (define-key dired-mode-map (kbd "o") nil)
+  (define-key dired-mode-map (kbd "1") nil)
+  (define-key dired-mode-map (kbd "2") nil)
+  (define-key dired-mode-map (kbd "3") nil)
+  (define-key dired-mode-map (kbd "4") nil)
+  (define-key dired-mode-map (kbd "5") nil)
   (define-key dired-mode-map (kbd "6") 'dired-up-directory)
+  (define-key dired-mode-map (kbd "7") nil)
+  (define-key dired-mode-map (kbd "8") nil)
+  (define-key dired-mode-map (kbd "9") nil)
+
   (define-key dired-mode-map (kbd "C-o") 'find-file) ; was dired-display-file
 
   (when (>= emacs-major-version 23)
@@ -115,12 +121,17 @@
 
 (defun xah-Man-mode-keys ()
   "keys for `Man-mode'."
+
   (local-set-key (kbd "1") nil)
   (local-set-key (kbd "2") nil)
   (local-set-key (kbd "3") nil)
   (local-set-key (kbd "4") nil)
+  (local-set-key (kbd "5") nil)
   (local-set-key (kbd "6") nil)
+  (local-set-key (kbd "7") nil)
   (local-set-key (kbd "8") nil)
+  (local-set-key (kbd "9") nil)
+  (local-set-key (kbd "0") nil)
   (local-set-key (kbd "s") nil)
   )
 (add-hook 'Man-mode-hook 'xah-Man-mode-keys)

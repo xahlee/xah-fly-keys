@@ -162,11 +162,12 @@ To solve this problem, when your code only knows the relative path of another fi
     (global-set-key (kbd "]") 'xah-forward-equal-sign)
     (global-set-key (kbd "`") nil)
     (global-set-key (kbd "SPC") 'xfk-insert-mode-activate)
+
     ;; note:
     ;; keys 1 and 8 are swapped
     ;; keys 2 and 7 are swapped
     (global-set-key (kbd "8") 'xfk-insert-mode-activate)
-    (global-set-key (kbd "7") nil)
+    (global-set-key (kbd "7") 'delete-window)
     (global-set-key (kbd "3") 'delete-other-windows)
     (global-set-key (kbd "4") 'split-window-vertically)
     (global-set-key (kbd "5") 'redo)
@@ -200,7 +201,7 @@ To solve this problem, when your code only knows the relative path of another fi
     (global-set-key (kbd "u") 'delete-char)
     (global-set-key (kbd "v") 'xah-forward-right-bracket)
     (global-set-key (kbd "w") 'other-window)
-    (global-set-key (kbd "x") 'delete-window)
+    (global-set-key (kbd "x") nil)
     (global-set-key (kbd "y") 'set-mark-command)
     (global-set-key (kbd "z") 'comment-dwim)))
 
