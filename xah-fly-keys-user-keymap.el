@@ -18,7 +18,7 @@
     (define-key xah-user-keymap (kbd "2") 'xah-paste-from-register-1)
     (define-key xah-user-keymap (kbd "3") 'xah-asciify-text)
     (define-key xah-user-keymap (kbd "4") 'xah-insert-word-3)
-    (define-key xah-user-keymap (kbd "5") nil)
+    (define-key xah-user-keymap (kbd "5") 'xah-set-mouse-wheel-mode)
     (define-key xah-user-keymap (kbd "6") nil)
     (define-key xah-user-keymap (kbd "7") nil)
     (define-key xah-user-keymap (kbd "8") 'xah-find-count)

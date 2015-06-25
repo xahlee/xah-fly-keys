@@ -95,7 +95,6 @@ WARNING: this command is currently unstable."
 
     (put 'xah-cycle-camel-style-case 'state next_state)))
 
-
 (defun xah-convert-chinese-numeral (φbegin φend &optional φto-chinese)
   "Replace convert Chinese numeral to Arabic numeral, or reverse.
 On current line or selection.

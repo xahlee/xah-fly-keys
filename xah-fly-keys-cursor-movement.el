@@ -24,6 +24,32 @@
   (interactive)
   (forward-line -10))
 
+(defvar xah-forward-n-words 4 "integer used by `xah-forward-n-words'")
+(setq xah-forward-n-words 4)
+
+(defun xah-forward-n-words ()
+  "`forward-word' `xah-forward-n-words' times."
+  (interactive)
+  (forward-word xah-forward-n-words))
+
+(defun xah-backward-n-words ()
+  "`backward-word' `xah-forward-n-words' times."
+  (interactive)
+  (backward-word xah-forward-n-words))
+
+(defvar xah-forward-n-chars 50 "a integer used by `xah-forward-n-chars'")
+(setq xah-forward-n-chars 50)
+
+(defun xah-forward-n-chars ()
+  "`forward-char' `xah-forward-n-chars' times."
+  (interactive)
+  (forward-char xah-forward-n-chars))
+
+(defun xah-backward-n-chars ()
+  "`backward-char' `xah-forward-n-chars' times."
+  (interactive)
+  (backward-char xah-forward-n-chars))
+
 (defun xah-forward-block (&optional φn)
   "Move cursor forward to the beginning of next text block.
 A text block is separated by blank lines.
