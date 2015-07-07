@@ -14,15 +14,17 @@
   (interactive)
   (scroll-up 10))
 
-(defun xah-cursor-down-10-lines ()
-  "Move cursor down 10 logical lines"
+(defun xah-cursor-down-50-lines ()
+  "Move cursor down 50 logical lines.
+Version 2015-07-06"
   (interactive)
-  (forward-line 10))
+  (forward-line 50))
 
-(defun xah-cursor-up-10-lines ()
-  "Move cursor up 10 logical lines"
+(defun xah-cursor-up-50-lines ()
+  "Move cursor up 50 logical lines.
+Version 2015-07-06"
   (interactive)
-  (forward-line -10))
+  (forward-line -50))
 
 (defvar xah-forward-n-words 4 "integer used by `xah-forward-n-words'")
 (setq xah-forward-n-words 4)
@@ -51,16 +53,18 @@
   (backward-char xah-forward-n-chars))
 
 (defun xah-forward-block (&optional φn)
-  "Move cursor forward to the beginning of next text block.
+  "Move cursor beginning of next text block.
 A text block is separated by blank lines.
-In most major modes, this is similar to `forward-paragraph', but this command's behavior is the same regardless of syntax table."
+This command similar to `forward-paragraph', but this command's behavior is the same regardless of syntax table.
+Version 2015-07-06"
   (interactive "p")
   (let ((φn (if (null φn) 1 φn)))
     (search-forward-regexp "\n[\t\n ]*\n+" nil "NOERROR" φn)))
 
 (defun xah-backward-block (&optional φn)
-  "Move cursor backward to previous text block.
-See: `xah-forward-block'"
+  "Move cursor to previous text block.
+See: `xah-forward-block'
+Version 2015-07-06"
   (interactive "p")
   (let ((φn (if (null φn) 1 φn))
         (ξi 1))
@@ -69,7 +73,8 @@ See: `xah-forward-block'"
           (progn (skip-chars-backward "\n\t "))
         (progn (goto-char (point-min))
                (setq ξi φn)))
-      (setq ξi (1+ ξi)))))
+      (setq ξi (1+ ξi)))
+    (right-char)))
 
 (defun xah-beginning-of-line-or-block (&optional φn)
   "Move cursor to beginning of line, or beginning of current or previous text block.
