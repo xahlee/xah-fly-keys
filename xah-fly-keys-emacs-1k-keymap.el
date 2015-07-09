@@ -243,10 +243,10 @@
   (define-key xah-fly-leader-key-map (kbd "<menu>") 'exchange-point-and-mark)
   (define-key xah-fly-leader-key-map (kbd "TAB") xah-menu-tab-keymap)
 
-  (define-key xah-fly-leader-key-map (kbd "<mouse-1>") 'xah-set-mouse-wheel-mode)
-  (define-key xah-fly-leader-key-map (kbd "<mouse-2>") 'xah-set-mouse-wheel-normal)
-  (define-key xah-fly-leader-key-map (kbd "<mouse-3>") 'xah-set-mouse-scroll-by-block)
-  (define-key xah-fly-leader-key-map (kbd "<mouse-4>") 'xah-set-mouse-scroll-by-50-line) ; wheel up
+  (define-key xah-fly-leader-key-map (kbd "<mouse-1>") 'xah-set-mouse-wheel-mode) ; left button
+  (define-key xah-fly-leader-key-map (kbd "<mouse-3>") 'xah-set-mouse-scroll-by-50-line) ; right button
+  (define-key xah-fly-leader-key-map (kbd "<mouse-4>") 'xah-set-mouse-wheel-normal) ; wheel up
+  (define-key xah-fly-leader-key-map (kbd "<mouse-5>") 'xah-set-mouse-scroll-by-block) ; wheel down
 
   (define-key xah-fly-leader-key-map (kbd ".") xah-highlight-keymap)
 

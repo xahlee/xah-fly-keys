@@ -100,9 +100,12 @@ Version 2015-03-10"
      (list myFileList)))
   (xah-process-image φfile-list "" "-2" ".png" ))
 
-(defun xah-dired-2drawing (φfile-list φgrayscale-p φbits-per-pixel)
+(defun xah-dired-2drawing (φfile-list φgrayscale-p φmax-colors-count)
   "Create a png version of (drawing type) images of marked files in dired.
-Requires ImageMagick shell command."
+Basically, make it grayscale, and reduce colors to any of {2, 4, 16, 256}.
+Requires ImageMagick shell command.
+
+2015-07-09"
   (interactive
    (let (
          (myFileList
@@ -112,16 +115,21 @@ Requires ImageMagick shell command."
            (t (list (read-from-minibuffer "file name:"))))))
      (list myFileList
            (setq φgrayscale-p (yes-or-no-p "Grayscale?"))
-           (read-string "Bits per pixel (1 2 4 8):" "4"))))
+           (ido-completing-read "Max number of colors:" '( "2" "4" "16" "256" )))))
   (xah-process-image φfile-list
                      (format "+dither %s -depth %s"
                              (if φgrayscale-p "-type grayscale" "")
                              ;; image magick “-colors” must be at least 8
-                             ;; (if (< (string-to-number φbits-per-pixel) 3)
+                             ;; (if (< (string-to-number φmax-colors-count) 3)
                              ;;     8
-                             ;;     (expt 2 (string-to-number φbits-per-pixel)))
-                             φbits-per-pixel)  "-2" ".png" )
-  )
+                             ;;     (expt 2 (string-to-number φmax-colors-count)))
+                             (cond
+                              ((equal φmax-colors-count "256") 8)
+                              ((equal φmax-colors-count "16") 4)
+                              ((equal φmax-colors-count "4") 2)
+                              ((equal φmax-colors-count "2") 1)
+                              (t (error "logic error 0444533051: impossible condition on φmax-colors-count: %s" φmax-colors-count)))
+                             φmax-colors-count)  "-2" ".png" ))
 
 (defun xah-dired-2jpg (φfile-list)
   "Create a JPG version of images of marked files in dired.

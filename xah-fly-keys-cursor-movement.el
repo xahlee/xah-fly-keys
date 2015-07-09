@@ -26,6 +26,18 @@ Version 2015-07-06"
   (interactive)
   (forward-line -50))
 
+(defun xah-cursor-down-25-lines ()
+  "Move cursor down 25 logical lines.
+Version 2015-07-06"
+  (interactive)
+  (forward-line 25))
+
+(defun xah-cursor-up-25-lines ()
+  "Move cursor up 25 logical lines.
+Version 2015-07-06"
+  (interactive)
+  (forward-line -25))
+
 (defvar xah-forward-n-words 4 "integer used by `xah-forward-n-words'")
 (setq xah-forward-n-words 4)
 
@@ -64,7 +76,7 @@ Version 2015-07-06"
 (defun xah-backward-block (&optional φn)
   "Move cursor to previous text block.
 See: `xah-forward-block'
-Version 2015-07-06"
+Version 2015-07-08"
   (interactive "p")
   (let ((φn (if (null φn) 1 φn))
         (ξi 1))
@@ -73,8 +85,7 @@ Version 2015-07-06"
           (progn (skip-chars-backward "\n\t "))
         (progn (goto-char (point-min))
                (setq ξi φn)))
-      (setq ξi (1+ ξi)))
-    (right-char)))
+      (setq ξi (1+ ξi)))))
 
 (defun xah-beginning-of-line-or-block (&optional φn)
   "Move cursor to beginning of line, or beginning of current or previous text block.

@@ -765,110 +765,114 @@ Version 2015-05-07"
    )
 
   (let ( (case-fold-search nil))
-    ;; Note: order is important since this is huristic.
-    (xah-replace-pairs-region
-     φbegin
-     φend
-     [
-      ;; dash and ellipsis etc
-      ["--" " — "]
-      ["—" " — "]
-      ["..." "…"]
-      [" :)" " ☺"]
-      [" :(" " ☹"]
-      [" ;)" " 😉"]
-      ["e.g. " "⁖ "]
-      ["~=" "≈"]
-      ["  —  " " — "] ; rid of extra space in em-dash
-      [" , " ", "]
-      ;; fix GNU style ASCII quotes
-      ["``" "“"]
-      ["''" "”"]
-      ;; "straight quote" ⇒ “double quotes”
-      ["\n\"" "\n“"]
-      [">\"" ">“"]
-      ["(\"" "(“"]
-      [" \"" " “"]
-      ["\" " "” "]
-      ["\"," "”,"]
-      ["\"." "”."]
-      ["\"?" "”?"]
-      ["\";" "”;"]
-      ["\":" "”:"]
-      ["\")" "”)"]
-      ["\"]" "”]"]
-      [".\"" ".”"]
-      [",\"" ",”"]
-      ["!\"" "!”"]
-      ["?\"" "?”"]
-      ["\"<" "”<"]
-      ["\"\n" "”\n"]
-      ] )
+    (save-excursion
+      ;; Note: order is important since this is huristic.
+      (xah-replace-pairs-region
+       φbegin
+       φend
+       [
+        ;; dash and ellipsis etc
+        ["--" " — "]
+        ["—" " — "]
+        ["..." "…"]
+        [" :)" " ☺"]
+        [" :(" " ☹"]
+        [" ;)" " 😉"]
+        ["e.g. " "⁖ "]
+        ["~=" "≈"]
+        ["  —  " " — "] ; rid of extra space in em-dash
+        [" , " ", "]
+        ;; fix GNU style ASCII quotes
+        ["``" "“"]
+        ["''" "”"]
+        ;; "straight quote" ⇒ “double quotes”
+        ["\n\"" "\n“"]
+        [">\"" ">“"]
+        ["(\"" "(“"]
+        [" \"" " “"]
+        ["\" " "” "]
+        ["\"," "”,"]
+        ["\"." "”."]
+        ["\"?" "”?"]
+        ["\";" "”;"]
+        ["\":" "”:"]
+        ["\")" "”)"]
+        ["\"]" "”]"]
+        [".\"" ".”"]
+        [",\"" ",”"]
+        ["!\"" "!”"]
+        ["?\"" "?”"]
+        ["\"<" "”<"]
+        ["\"\n" "”\n"]
+        ] )
 
-    ;; fix straight double quotes by regex
-    (xah-replace-regexp-pairs-region
-     φbegin φend
-     [
-      ["\\`\"" "“"]
-      ])
+      ;; fix straight double quotes by regex
+      (xah-replace-regexp-pairs-region
+       φbegin φend
+       [
+        ["\\`\"" "“"]
+        ])
 
-    ;; fix single quotes to curly
-    (xah-replace-pairs-region
-     φbegin φend
-     [
-      [">\'" ">‘"]
-      [" \'" " ‘"]
-      ["\' " "’ "]
-      ["\'," "’,"]
-      [".\'" ".’"]
-      ["!\'" "!’"]
-      ["?\'" "?’"]
-      ["(\'" "(‘"]
-      ["\')" "’)"]
-      ["\']" "’]"]
-      ])
+      ;; fix single quotes to curly
+      (xah-replace-pairs-region
+       φbegin φend
+       [
+        [">\'" ">‘"]
+        [" \'" " ‘"]
+        ["\' " "’ "]
+        ["\'," "’,"]
+        [".\'" ".’"]
+        ["!\'" "!’"]
+        ["?\'" "?’"]
+        ["(\'" "(‘"]
+        ["\')" "’)"]
+        ["\']" "’]"]
+        ])
 
-    (xah-replace-regexp-pairs-region
-     φbegin φend
-     [
-      ["\\bcan’t\\b" "can't"]
-      ["\\bdon’t\\b" "don't"]
-      ["\\bdoesn’t\\b" "doesn't"]
-      ["\\bain’t\\b" "ain't"]
-      ["\\bdidn’t\\b" "didn't"]
-      ["\\baren’t\\b" "aren't"]
-      ["\\bwasn’t\\b" "wasn't"]
-      ["\\bweren’t\\b" "weren't"]
-      ["\\bcouldn’t\\b" "couldn't"]
-      ["\\bshouldn’t\\b" "shouldn't"]
+      (xah-replace-regexp-pairs-region
+       φbegin φend
+       [
+        ["\\bcan’t\\b" "can't"]
+        ["\\bdon’t\\b" "don't"]
+        ["\\bdoesn’t\\b" "doesn't"]
+        ["\\bain’t\\b" "ain't"]
+        ["\\bdidn’t\\b" "didn't"]
+        ["\\baren’t\\b" "aren't"]
+        ["\\bwasn’t\\b" "wasn't"]
+        ["\\bweren’t\\b" "weren't"]
+        ["\\bcouldn’t\\b" "couldn't"]
+        ["\\bshouldn’t\\b" "shouldn't"]
 
-      ["\\b’ve\\b" "'ve"]
-      ["\\b’re\\b" "'re"]
-      ["\\b‘em\\b" "'em"]
-      ["\\b’ll\\b" "'ll"]
-      ["\\b’m\\b" "'m"]
-      ["\\b’d\\b" "'d"]
-      ["\\b’s\\b" "'s"]
-      ["s’ " "s' "]
-      ["s’\n" "s'\n"]
+        ["\\b’ve\\b" "'ve"]
+        ["\\b’re\\b" "'re"]
+        ["\\b‘em\\b" "'em"]
+        ["\\b’ll\\b" "'ll"]
+        ["\\b’m\\b" "'m"]
+        ["\\b’d\\b" "'d"]
+        ["\\b’s\\b" "'s"]
+        ["s’ " "s' "]
+        ["s’\n" "s'\n"]
 
-      ["\"$" "”"]
-      ])
+        ["\"$" "”"]
+        ])
 
-    ;; fix back escaped quotes in code
-    (xah-replace-pairs-region
-     φbegin φend
-     [
-      ["\\”" "\\\""]
-      ])
+      ;; fix back escaped quotes in code
+      (xah-replace-pairs-region
+       φbegin φend
+       [
+        ["\\”" "\\\""]
+        ])
 
-    ;; fix back. quotes in HTML code
-    (xah-replace-regexp-pairs-region
-     φbegin φend
-     [
-      ["” \\([-a-z]+\\)="       "\" \\1="] ; any 「” some-thing=」
-      ["=\”" "=\""]
-      ["/” " "/\" "]
-      ["\"\\([0-9]+\\)” "     "\"\\1\" "]
-      ]
-     )))
+      ;; fix back. quotes in HTML code
+      (xah-replace-regexp-pairs-region
+       φbegin φend
+       [
+        ["” \\([-a-z]+\\)="       "\" \\1="] ; any 「” some-thing=」
+        ["=\”" "=\""]
+        ["/” " "/\" "]
+        ["\"\\([0-9]+\\)” "     "\"\\1\" "]
+        ]
+       ))
+    )
+
+  )

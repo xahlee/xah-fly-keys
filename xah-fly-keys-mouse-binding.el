@@ -15,8 +15,8 @@
   (progn
     (global-set-key (kbd "<mouse-3>") 'xah-mouse-click-to-search) ; right button
 
-    (global-set-key (kbd "<S-mouse-4>") 'xah-cursor-up-50-lines)
-    (global-set-key (kbd "<S-mouse-5>") 'xah-cursor-down-50-lines)
+    (global-set-key (kbd "<S-mouse-4>") 'xah-cursor-up-25-lines)
+    (global-set-key (kbd "<S-mouse-5>") 'xah-cursor-down-25-lines)
 
     (global-set-key (kbd "<C-mouse-4>") 'xah-backward-block)
     (global-set-key (kbd "<C-mouse-5>") 'xah-forward-block)))

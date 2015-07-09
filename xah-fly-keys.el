@@ -221,7 +221,7 @@ To solve this problem, when your code only knows the relative path of another fi
     (global-set-key (kbd "l") 'xah-forward-punct)
     (global-set-key (kbd "m") 'xah-backward-left-bracket)
     (global-set-key (kbd "n") 'forward-char)
-    (global-set-key (kbd "o") nil)
+    (global-set-key (kbd "o") 'xah-insert-space-after)
     (global-set-key (kbd "p") 'kill-word)
     (global-set-key (kbd "q") 'xah-copy-line-or-region)
     (global-set-key (kbd "r") 'forward-word)

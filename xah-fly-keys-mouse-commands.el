@@ -25,8 +25,7 @@ Version 2015-04-22"
    ((string-equal system-type "gnu/linux")
     (progn
       (global-set-key (kbd "<mouse-4>") 'mwheel-scroll)
-      (global-set-key (kbd "<mouse-5>") 'mwheel-scroll)
-      ))
+      (global-set-key (kbd "<mouse-5>") 'mwheel-scroll)))
    ((string-equal system-type "windows-nt") ; Windows
     (progn
       (global-set-key (kbd "<wheel-up>") 'mwheel-scroll)
@@ -34,7 +33,8 @@ Version 2015-04-22"
    ((string-equal system-type "darwin") ; Mac
     (progn
       (global-set-key (kbd "<wheel-up>") 'mwheel-scroll)
-      (global-set-key (kbd "<wheel-down>") 'mwheel-scroll)))))
+      (global-set-key (kbd "<wheel-down>") 'mwheel-scroll))))
+  (message "Mouse wheel set to normal"))
 
 (defun xah-set-mouse-scroll-by-50-line ()
   "Set mouse wheel to move cursor by n lines.
@@ -52,10 +52,11 @@ Version 2015-07-06"
    ((string-equal system-type "darwin") ; Mac
     (progn
       (global-set-key (kbd "<wheel-up>") 'xah-cursor-up-50-lines)
-      (global-set-key (kbd "<wheel-down>") 'xah-cursor-down-50-lines)))))
+      (global-set-key (kbd "<wheel-down>") 'xah-cursor-down-50-lines))))
+  (message "Mouse wheel set to move by 50 lines."))
 
 (defun xah-set-mouse-scroll-by-block ()
-  "Set mouse wheel to scroll by paragraph.
+  "Set mouse wheel to scroll by text block.
 Version 2015-07-06"
   (interactive)
   (cond
@@ -70,7 +71,8 @@ Version 2015-07-06"
    ((string-equal system-type "darwin") ; Mac
     (progn
       (global-set-key (kbd "<wheel-up>") 'xah-backward-block)
-      (global-set-key (kbd "<wheel-down>") 'xah-forward-block)))))
+      (global-set-key (kbd "<wheel-down>") 'xah-forward-block))))
+  (message "Mouse wheel set to move by block."))
 
 (defun xah-set-mouse-wheel-mode ()
   "Set mouse wheel to move by line, block or other.
