@@ -22,6 +22,6 @@
     (global-set-key (kbd "<C-mouse-5>") 'xah-forward-block)))
  ((string-equal system-type "windows-nt") ; Windows
   (progn
-    ))
+    nil))
  ((string-equal system-type "darwin") ; Mac
-  (progn )))
+  (progn nil)))

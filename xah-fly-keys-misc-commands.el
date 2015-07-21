@@ -423,16 +423,20 @@ Version 2015-05-26"
 
 (defun xah-make-backup ()
   "Make a backup copy of current file.
-The backup file name has the form 「‹name›~‹timestamp›~」, in the same dir. If such a file already exist, it's overwritten.
+The backup file name is 
+ ‹name›~‹timestamp›~
+example:
+ file.html~20150721T014457~
+in the same dir. If such a file already exist, it's overwritten.
 If the current buffer is not associated with a file, nothing's done.
 URL `http://ergoemacs.org/emacs/elisp_make-backup.html'
-Version 2015-05-26"
+Version 2015-07-21"
   (interactive)
   (if (buffer-file-name)
-      (let* ((ξcurrentName (buffer-file-name))
-             (ξbackup-name (concat ξcurrentName "~" (format-time-string "%Y%m%dT%H%M%S") "~")))
-        (copy-file ξcurrentName ξbackup-name t)
-        (message (concat "Backup saved as: " (file-name-nondirectory ξbackup-name))))
+      (let* ((ξfname (buffer-file-name))
+             (ξbackup-name (concat ξfname "~" (format-time-string "%Y%m%dT%H%M%S") "~")))
+        (copy-file ξfname ξbackup-name t)
+        (message (concat "Backup saved at: " ξbackup-name)))
     (user-error "Buffer is not a file")))
 
 (defun xah-run-current-file ()
