@@ -59,6 +59,53 @@
   (define-key xah-menu-c-keymap (kbd "u") nil))
 
 (progn
+  (define-prefix-command 'xah-help-keymap)
+
+  (define-key xah-help-keymap (kbd ";") 'Info-goto-emacs-command-node)
+
+  (define-key xah-help-keymap (kbd "8") nil)
+  (define-key xah-help-keymap (kbd "7") nil)
+  (define-key xah-help-keymap (kbd "3") 'man)
+  (define-key xah-help-keymap (kbd "4") 'elisp-index-search)
+  (define-key xah-help-keymap (kbd "5") 'apropos-variable)
+  (define-key xah-help-keymap (kbd "6") 'apropos-value)
+
+  (define-key xah-help-keymap (kbd "2") 'xah-lookup-google)
+  (define-key xah-help-keymap (kbd "1") 'xah-lookup-wikipedia)
+  (define-key xah-help-keymap (kbd "9") 'xah-lookup-word-definition)
+  (define-key xah-help-keymap (kbd "0") 'xah-lookup-all-dictionaries)
+
+  (define-key xah-help-keymap (kbd "a") 'apropos-command)
+  (define-key xah-help-keymap (kbd "b") 'describe-bindings)
+  (define-key xah-help-keymap (kbd "c") 'describe-char)
+  (define-key xah-help-keymap (kbd "d") 'apropos-documentation)
+  (define-key xah-help-keymap (kbd "e") 'view-echo-area-messages)
+  (define-key xah-help-keymap (kbd "f") 'describe-function)
+  (define-key xah-help-keymap (kbd "g") nil)
+  (define-key xah-help-keymap (kbd "h") 'describe-face)
+  (define-key xah-help-keymap (kbd "i") 'info)
+  (define-key xah-help-keymap (kbd "j") nil)
+  (define-key xah-help-keymap (kbd "k") 'describe-key)
+  (define-key xah-help-keymap (kbd "K") 'Info-goto-emacs-key-command-node)
+  (define-key xah-help-keymap (kbd "l") 'view-lossage)
+  (define-key xah-help-keymap (kbd "m") 'xah-describe-major-mode)
+  (define-key xah-help-keymap (kbd "n") 'describe-input-method)
+  (define-key xah-help-keymap (kbd "o") 'describe-language-environment)
+  (define-key xah-help-keymap (kbd "p") 'finder-by-keyword)
+  (define-key xah-help-keymap (kbd "q") nil)
+  (define-key xah-help-keymap (kbd "r") nil)
+  (define-key xah-help-keymap (kbd "s") 'describe-syntax)
+  (define-key xah-help-keymap (kbd "t") 'info-lookup-symbol)
+  (define-key xah-help-keymap (kbd "u") nil)
+  (define-key xah-help-keymap (kbd "v") 'describe-variable)
+  (define-key xah-help-keymap (kbd "w") nil)
+  (define-key xah-help-keymap (kbd "x") nil)
+  (define-key xah-help-keymap (kbd "y") nil)
+  (define-key xah-help-keymap (kbd "z") 'describe-coding-system)
+
+  )
+
+(progn
   (define-prefix-command 'xah-menu-i-keymap) ; commands in goto-map
   (define-key xah-menu-i-keymap (kbd "TAB") 'move-to-column)
   (define-key xah-menu-i-keymap (kbd "c") 'goto-char)
@@ -164,12 +211,9 @@
   (define-prefix-command 'xah-menu-t-keymap)
 
   (define-key xah-menu-t-keymap (kbd "RET") 'pop-global-mark)
-  (define-key xah-menu-t-keymap (kbd ".") 'insert-char)
-
+  (define-key xah-menu-t-keymap (kbd "1") 'mark-defun)
   (define-key xah-menu-t-keymap (kbd "3") 'point-to-register)
   (define-key xah-menu-t-keymap (kbd "4") 'jump-to-register)
-  (define-key xah-menu-t-keymap (kbd "5") 'number-to-register)
-  (define-key xah-menu-t-keymap (kbd "6") 'increment-register)
 
   (define-key xah-menu-t-keymap (kbd "a") nil)
   (define-key xah-menu-t-keymap (kbd "b") nil)
@@ -178,11 +222,13 @@
   (define-key xah-menu-t-keymap (kbd "e") 'copy-to-register)
   (define-key xah-menu-t-keymap (kbd "f") nil)
   (define-key xah-menu-t-keymap (kbd "g") nil)
-  (define-key xah-menu-t-keymap (kbd "h") 'xah-close-current-buffer)
+  (define-key xah-menu-t-keymap (kbd "h") (if (fboundp 'xah-close-current-buffer)
+                                              (progn 'xah-close-current-buffer)
+                                            (progn 'kill-buffer)))
   (define-key xah-menu-t-keymap (kbd "i") nil)
   (define-key xah-menu-t-keymap (kbd "j") nil)
   (define-key xah-menu-t-keymap (kbd "k") nil)
-  (define-key xah-menu-t-keymap (kbd "l") nil)
+  (define-key xah-menu-t-keymap (kbd "l") 'increment-register)
   (define-key xah-menu-t-keymap (kbd "m") nil)
   (define-key xah-menu-t-keymap (kbd "n") 'repeat-complex-command)
   (define-key xah-menu-t-keymap (kbd "o") nil)
@@ -196,7 +242,7 @@
   (define-key xah-menu-t-keymap (kbd "w") 'other-window)
   (define-key xah-menu-t-keymap (kbd "x") nil)
   (define-key xah-menu-t-keymap (kbd "y") nil)
-  (define-key xah-menu-t-keymap (kbd "z") nil))
+  (define-key xah-menu-t-keymap (kbd "z") 'number-to-register))
 
 (progn
   (define-prefix-command 'xah-menu-v-keymap)

@@ -423,7 +423,7 @@ Version 2015-05-26"
 
 (defun xah-make-backup ()
   "Make a backup copy of current file.
-The backup file name is 
+The backup file name is
  ‹name›~‹timestamp›~
 example:
  file.html~20150721T014457~
@@ -754,7 +754,7 @@ When called in lisp code, φbegin and φend are region begin/end positions.
 WARNING: this command does not guarantee 100% correct conversion, because it's heuristics based. If you use it in code, such as HTML, watch out for bad change of straight quotes such as in 「class=\"…\"」.
 
 URL `http://ergoemacs.org/emacs/elisp_straight_curly_quotes.html'
-Version 2015-05-07"
+Version 2015-07-30"
   ;; some examples for debug
   ;; do "‘em all -- done..."
   ;; I’am not
@@ -770,113 +770,111 @@ Version 2015-05-07"
 
   (let ( (case-fold-search nil))
     (save-excursion
-      ;; Note: order is important since this is huristic.
-      (xah-replace-pairs-region
-       φbegin
-       φend
-       [
-        ;; dash and ellipsis etc
-        ["--" " — "]
-        ["—" " — "]
-        ["..." "…"]
-        [" :)" " ☺"]
-        [" :(" " ☹"]
-        [" ;)" " 😉"]
-        ["e.g. " "⁖ "]
-        ["~=" "≈"]
-        ["  —  " " — "] ; rid of extra space in em-dash
-        [" , " ", "]
-        ;; fix GNU style ASCII quotes
-        ["``" "“"]
-        ["''" "”"]
-        ;; "straight quote" ⇒ “double quotes”
-        ["\n\"" "\n“"]
-        [">\"" ">“"]
-        ["(\"" "(“"]
-        [" \"" " “"]
-        ["\" " "” "]
-        ["\"," "”,"]
-        ["\"." "”."]
-        ["\"?" "”?"]
-        ["\";" "”;"]
-        ["\":" "”:"]
-        ["\")" "”)"]
-        ["\"]" "”]"]
-        [".\"" ".”"]
-        [",\"" ",”"]
-        ["!\"" "!”"]
-        ["?\"" "?”"]
-        ["\"<" "”<"]
-        ["\"\n" "”\n"]
-        ] )
+      (save-restriction
+        (narrow-to-region φbegin φend )
+        ;; Note: order is important since this is huristic.
+        (xah-replace-pairs-region
+         (point-min) (point-max)
+         [
+          ;; dash and ellipsis etc
+          ["--" " — "]
+          ["—" " — "]
+          ["..." "…"]
+          [" :)" " ☺"]
+          [" :(" " ☹"]
+          [" ;)" " 😉"]
+          ["e.g. " "⁖ "]
+          ["~=" "≈"]
+          ["  —  " " — "] ; rid of extra space in em-dash
+          [" , " ", "]
+          ;; fix GNU style ASCII quotes
+          ["``" "“"]
+          ["''" "”"]
+          ;; "straight quote" ⇒ “double quotes”
+          ["\n\"" "\n“"]
+          [">\"" ">“"]
+          ["(\"" "(“"]
+          [" \"" " “"]
+          ["\" " "” "]
+          ["\"," "”,"]
+          ["\"." "”."]
+          ["\"?" "”?"]
+          ["\";" "”;"]
+          ["\":" "”:"]
+          ["\")" "”)"]
+          ["\"]" "”]"]
+          [".\"" ".”"]
+          [",\"" ",”"]
+          ["!\"" "!”"]
+          ["?\"" "?”"]
+          ["\"<" "”<"]
+          ["\"\n" "”\n"]
+          ] )
 
-      ;; fix straight double quotes by regex
-      (xah-replace-regexp-pairs-region
-       φbegin φend
-       [
-        ["\\`\"" "“"]
-        ])
+        ;; fix straight double quotes by regex
+        (xah-replace-regexp-pairs-region
+         (point-min) (point-max)
+         [
+          ["\\`\"" "“"]
+          ])
 
-      ;; fix single quotes to curly
-      (xah-replace-pairs-region
-       φbegin φend
-       [
-        [">\'" ">‘"]
-        [" \'" " ‘"]
-        ["\' " "’ "]
-        ["\'," "’,"]
-        [".\'" ".’"]
-        ["!\'" "!’"]
-        ["?\'" "?’"]
-        ["(\'" "(‘"]
-        ["\')" "’)"]
-        ["\']" "’]"]
-        ])
+        ;; fix single quotes to curly
+        (xah-replace-pairs-region
+         (point-min) (point-max)
+         [
+          [">\'" ">‘"]
+          [" \'" " ‘"]
+          ["\' " "’ "]
+          ["\'," "’,"]
+          [".\'" ".’"]
+          ["!\'" "!’"]
+          ["?\'" "?’"]
+          ["(\'" "(‘"]
+          ["\')" "’)"]
+          ["\']" "’]"]
+          ])
 
-      (xah-replace-regexp-pairs-region
-       φbegin φend
-       [
-        ["\\bcan’t\\b" "can't"]
-        ["\\bdon’t\\b" "don't"]
-        ["\\bdoesn’t\\b" "doesn't"]
-        ["\\bain’t\\b" "ain't"]
-        ["\\bdidn’t\\b" "didn't"]
-        ["\\baren’t\\b" "aren't"]
-        ["\\bwasn’t\\b" "wasn't"]
-        ["\\bweren’t\\b" "weren't"]
-        ["\\bcouldn’t\\b" "couldn't"]
-        ["\\bshouldn’t\\b" "shouldn't"]
+        (xah-replace-regexp-pairs-region
+         (point-min) (point-max)
+         [
+          ["\\bcan’t\\b" "can't"]
+          ["\\bdon’t\\b" "don't"]
+          ["\\bdoesn’t\\b" "doesn't"]
+          ["\\bain’t\\b" "ain't"]
+          ["\\bdidn’t\\b" "didn't"]
+          ["\\baren’t\\b" "aren't"]
+          ["\\bwasn’t\\b" "wasn't"]
+          ["\\bweren’t\\b" "weren't"]
+          ["\\bcouldn’t\\b" "couldn't"]
+          ["\\bshouldn’t\\b" "shouldn't"]
 
-        ["\\b’ve\\b" "'ve"]
-        ["\\b’re\\b" "'re"]
-        ["\\b‘em\\b" "'em"]
-        ["\\b’ll\\b" "'ll"]
-        ["\\b’m\\b" "'m"]
-        ["\\b’d\\b" "'d"]
-        ["\\b’s\\b" "'s"]
-        ["s’ " "s' "]
-        ["s’\n" "s'\n"]
+          ["\\b’ve\\b" "'ve"]
+          ["\\b’re\\b" "'re"]
+          ["\\b‘em\\b" "'em"]
+          ["\\b’ll\\b" "'ll"]
+          ["\\b’m\\b" "'m"]
+          ["\\b’d\\b" "'d"]
+          ["\\b’s\\b" "'s"]
+          ["s’ " "s' "]
+          ["s’\n" "s'\n"]
 
-        ["\"$" "”"]
-        ])
+          ["\"$" "”"]
+          ])
 
-      ;; fix back escaped quotes in code
-      (xah-replace-pairs-region
-       φbegin φend
-       [
-        ["\\”" "\\\""]
-        ])
+        ;; fix back escaped quotes in code
+        (xah-replace-pairs-region
+         (point-min) (point-max)
+         [
+          ["\\”" "\\\""]
+          ])
 
-      ;; fix back. quotes in HTML code
-      (xah-replace-regexp-pairs-region
-       φbegin φend
-       [
-        ["” \\([-a-z]+\\)="       "\" \\1="] ; any 「” some-thing=」
-        ["=\”" "=\""]
-        ["/” " "/\" "]
-        ["\"\\([0-9]+\\)” "     "\"\\1\" "]
-        ]
-       ))
-    )
-
-  )
+        ;; fix back. quotes in HTML code
+        (xah-replace-regexp-pairs-region
+         (point-min) (point-max)
+         [
+          ["” \\([-a-z]+\\)="       "\" \\1="] ; any 「” some-thing=」
+          ["=\”" "=\""]
+          ["/” " "/\" "]
+          ["\"\\([0-9]+\\)” "     "\"\\1\" "]
+          ]
+         )))))

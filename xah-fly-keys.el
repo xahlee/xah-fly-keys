@@ -72,7 +72,6 @@ To solve this problem, when your code only knows the relative path of another fi
 (load (xah-get-fullpath "xah-fly-keys-misc-commands"))
 (load (xah-get-fullpath "xah-fly-keys-misc-commands2"))
 (load (xah-get-fullpath "xah-fly-keys-mouse-commands"))
-(load (xah-get-fullpath "xah-fly-keys-help-keymap"))
 (load (xah-get-fullpath "xah-fly-keys-insertion-keymap"))
 
 (load (xah-get-fullpath "xah-fly-keys-control-key"))

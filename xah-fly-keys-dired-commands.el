@@ -208,3 +208,19 @@ Version 2015-03-10"
              (format "exiftool '%s'" (file-relative-name ξf))) ; relative paths used to get around Windows/Cygwin path remapping problem
        (shell-command cmdStr)))
    φfile-list ))
+
+(defun xah-dired-sort ()
+  "Sort dired dir listing in different ways.
+Prompt for a choice.
+URL `http://ergoemacs.org/emacs/dired_sort.html'
+Version 2015-07-30"
+  (interactive)
+  (let (ξsort-by ξarg)
+    (setq ξsort-by (ido-completing-read "Sort by:" '( "date" "size" "name" "dir")))
+    (cond
+     ((equal ξsort-by "name") (setq ξarg "-Al --si --time-style long-iso "))
+     ((equal ξsort-by "date") (setq ξarg "-Al --si --time-style long-iso -t"))
+     ((equal ξsort-by "size") (setq ξarg "-Al --si --time-style long-iso -S"))
+     ((equal ξsort-by "dir") (setq ξarg "-Al --si --time-style long-iso --group-directories-first"))
+     (t (error "logic error 09535" )))
+    (dired-sort-other ξarg )))

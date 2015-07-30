@@ -4,7 +4,7 @@
 
   (define-prefix-command 'xah-insertion-keymap)
 
-  (define-key xah-insertion-keymap (kbd "RET") 'ucs-insert)
+  (define-key xah-insertion-keymap (kbd "RET") 'insert-char)
 
   (define-key xah-insertion-keymap (kbd ".") 'xah-insert-greater-less)
   (define-key xah-insertion-keymap (kbd ",") nil)
@@ -47,4 +47,3 @@
 
 (define-key key-translation-map (kbd "<menu> SPC 3") (kbd "ξ"))
 (define-key key-translation-map (kbd "<menu> SPC 9") (kbd "φ"))
-
