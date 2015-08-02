@@ -6,7 +6,6 @@
 
   (define-key xah-insertion-keymap (kbd "RET") 'insert-char)
 
-  (define-key xah-insertion-keymap (kbd ".") 'xah-insert-greater-less)
   (define-key xah-insertion-keymap (kbd ",") nil)
 
   (define-key xah-insertion-keymap (kbd "a") nil)
@@ -28,7 +27,7 @@
   (define-key xah-insertion-keymap (kbd "r") 'xah-insert-tortoise-shell-bracket〔〕)
   (define-key xah-insertion-keymap (kbd "s") 'xah-insert-string-assignment)
   (define-key xah-insertion-keymap (kbd "t") 'xah-insert-paren)
-  (define-key xah-insertion-keymap (kbd "u") nil)
+  (define-key xah-insertion-keymap (kbd "u") 'xah-insert-greater-less)
   (define-key xah-insertion-keymap (kbd "v") nil)
   (define-key xah-insertion-keymap (kbd "w") 'xah-insert-double-angle-bracket《》)
   (define-key xah-insertion-keymap (kbd "W") 'xah-insert-angle-bracket〈〉)
@@ -45,5 +44,6 @@
 (define-key key-translation-map (kbd "<menu> SPC 2") (kbd "＆"))
 (define-key key-translation-map (kbd "<menu> SPC 1") (kbd "•"))
 
+(define-key key-translation-map (kbd "<menu> SPC .") (kbd "…"))
 (define-key key-translation-map (kbd "<menu> SPC 3") (kbd "ξ"))
 (define-key key-translation-map (kbd "<menu> SPC 9") (kbd "φ"))

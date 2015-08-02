@@ -1,16 +1,90 @@
 ;; -*- coding: utf-8 -*-
 
-(defun xah-dired-2zip ()
+(defun xah-open-in-desktop ()
+  "Show current file in desktop (OS's file manager).
+URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
+Version 2015-06-12"
+  (interactive)
+  (cond
+   ((string-equal system-type "windows-nt")
+    (w32-shell-execute "explore" (replace-regexp-in-string "/" "\\" default-directory t t)))
+   ((string-equal system-type "darwin") (shell-command "open ."))
+   ((string-equal system-type "gnu/linux")
+    (let ((process-connection-type nil)) (start-process "" nil "xdg-open" "."))
+    ;; (shell-command "xdg-open .") ;; 2013-02-10 this sometimes froze emacs till the folder is closed. ⁖ with nautilus
+    )))
+
+(defun xah-open-in-external-app ()
+  "Open the current file or dired marked files in external app.
+The app is chosen from your OS's preference.
+
+URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
+Version 2015-01-26"
+  (interactive)
+  (let* (
+         (ξfile-list
+          (if (string-equal major-mode "dired-mode")
+              (dired-get-marked-files)
+            (list (buffer-file-name))))
+         (ξdo-it-p (if (<= (length ξfile-list) 5)
+                       t
+                     (y-or-n-p "Open more than 5 files? "))))
+
+    (when ξdo-it-p
+      (cond
+       ((string-equal system-type "windows-nt")
+        (mapc
+         (lambda (ξfpath)
+           (w32-shell-execute "open" (replace-regexp-in-string "/" "\\" ξfpath t t))) ξfile-list))
+       ((string-equal system-type "darwin")
+        (mapc
+         (lambda (ξfpath) (shell-command (format "open \"%s\"" ξfpath)))  ξfile-list))
+       ((string-equal system-type "gnu/linux")
+        (mapc
+         (lambda (ξfpath) (let ((process-connection-type nil)) (start-process "" nil "xdg-open" ξfpath))) ξfile-list))))))
+
+(defun xah-open-in-gimp ()
+  "Open the current file or `dired' marked files in gimp.
+Guaranteed to work on linux. Not tested on Microsoft Windows or Mac OS X
+Version 2015-06-16"
+  (interactive)
+  (let* (
+         (ξfile-list
+          (if (string-equal major-mode "dired-mode")
+              (dired-get-marked-files)
+            (list (buffer-file-name))))
+         (ξdo-it-p (if (<= (length ξfile-list) 5)
+                       t
+                     (y-or-n-p "Open more than 5 files? "))))
+
+    (when ξdo-it-p
+      (cond
+       ((string-equal system-type "windows-nt")
+        (mapc
+         (lambda (ξfpath)
+           (w32-shell-execute "gimp" (replace-regexp-in-string "/" "\\" ξfpath t t))) ξfile-list))
+       ((string-equal system-type "darwin")
+        (mapc
+         (lambda (ξfpath) (shell-command (format "gimp \"%s\"" ξfpath)))  ξfile-list))
+       ((string-equal system-type "gnu/linux")
+        (mapc
+         (lambda (ξfpath) (let ((process-connection-type nil)) (start-process "" nil "gimp" ξfpath))) ξfile-list))))))
+
+(defun xah-dired-to-zip ()
   "Zip the current file in `dired'.
 If multiple files are marked, only zip the first one.
 Require unix zip command line tool.
 
 URL `http://ergoemacs.org/emacs/emacs_dired_convert_images.html'
-Version 2015-03-10"
+Version 2015-07-30"
   (interactive)
   (require 'dired)
   (let ( (fileName (elt (dired-get-marked-files) 0)))
-    (shell-command (format "zip -r '%s.zip' '%s'" (file-relative-name fileName) (file-relative-name fileName)))))
+    (shell-command
+     (format
+      "zip -r '%s.zip' '%s'"
+      (file-relative-name fileName)
+      (file-relative-name fileName)))))
 
 (defun xah-process-image (φfile-list φargs-str φnew-name-suffix φnew-name-file-suffix )
   "Create a new image.
