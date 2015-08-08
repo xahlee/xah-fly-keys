@@ -315,7 +315,6 @@ Version 2015-04-13"
 
 (defun xah-copy-file-path (&optional φdir-path-only-p)
   "Copy the current buffer's file path or dired path to `kill-ring'.
-If current buffer is not associated with file, copy value of `default-directory'.
 If `universal-argument' is called first, copy only the dir path.
 URL `http://ergoemacs.org/emacs/emacs_copy_file_path.html'
 Version 2015-08-08"
