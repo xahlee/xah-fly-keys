@@ -315,19 +315,26 @@ Version 2015-04-13"
 
 (defun xah-copy-file-path (&optional φdir-path-only-p)
   "Copy the current buffer's file path or dired path to `kill-ring'.
-If `universal-argument' is called, copy only the dir path.
-Version 2015-01-14
-URL `http://ergoemacs.org/emacs/emacs_copy_file_path.html'"
+If current buffer is not associated with file, copy value of `default-directory'.
+If `universal-argument' is called first, copy only the dir path.
+URL `http://ergoemacs.org/emacs/emacs_copy_file_path.html'
+Version 2015-08-08"
   (interactive "P")
-  (let ((fPath
+  (let ((ξfpath
          (if (equal major-mode 'dired-mode)
              default-directory
-           (buffer-file-name))))
+           (if (null (buffer-file-name))
+               (user-error "Current buffer is not associated with a file.")
+             (buffer-file-name)))))
     (kill-new
-     (if (equal φdir-path-only-p nil)
-         fPath
-       (file-name-directory fPath)))
-    (message "File path copied: 「%s」" fPath)))
+     (if (null φdir-path-only-p)
+         (progn
+           (message "File path copied: 「%s」" ξfpath)
+           ξfpath
+           )
+       (progn
+         (message "Directory path copied: 「%s」" (file-name-directory ξfpath))
+         (file-name-directory ξfpath))))))
 
 (defun xah-delete-text-block ()
   "delete the current text block (paragraph) and also put it to `kill-ring'.
