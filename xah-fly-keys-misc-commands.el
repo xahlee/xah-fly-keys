@@ -321,7 +321,7 @@ use FireFox to visit it as local file (construct the proper URL)."
 
     (browse-url myStr)))
 
-(defun xah-delete-current-file (&optional φno-backup-p)
+(defun xah-delete-current-file-make-backup (&optional φno-backup-p)
   "Delete the file associated with the current buffer (also closes the buffer).
 
 A backup file is created with filename appended “~‹date time stamp›~”. Existing file of the same name is overwritten. If the file is not associated with buffer, the backup file name starts with “xx_”.
@@ -349,6 +349,23 @@ Version 2015-05-26"
         (widen)
         (write-region (point-min) (point-max) (concat "xx" ξbackup-suffix))
         (message "Backup created at 「%s」." (concat "xx" ξbackup-suffix))))
+    (kill-buffer (current-buffer))))
+
+(defun xah-delete-current-file ()
+  "Delete the file associated with the current buffer and close the buffer.
+Also push file content to `kill-ring'.
+If buffer is not file, just close it, and push file content to `kill-ring'.
+
+URL `http://ergoemacs.org/emacs/elisp_delete-current-file.html'
+Version 2015-08-10"
+  (interactive)
+  (progn
+    (kill-new (buffer-string))
+    (when (buffer-file-name)
+      (when (file-exists-p (buffer-file-name))
+          (progn
+            (delete-file (buffer-file-name))
+            (message "Deleted: 「%s」." (buffer-file-name)))))
     (kill-buffer (current-buffer))))
 
 (defun xah-make-backup ()
