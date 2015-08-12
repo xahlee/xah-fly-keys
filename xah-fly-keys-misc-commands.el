@@ -626,7 +626,7 @@ If `universal-argument' is called, ask for conversion direction.
 When called in lisp code, φbegin φend are region begin/end positions. φto-direction must be one of the following values: 「\"auto\"」, 「\"twitterfy\"」, 「\"untwitterfy\"」.
 
 URL `http://ergoemacs.org/emacs/elisp_twitterfy.html'
-Version 2015-05-14"
+Version 2015-08-12"
   (interactive
    (list
     (if (use-region-p) (region-beginning) (line-beginning-position))
@@ -684,7 +684,15 @@ Version 2015-05-14"
                (replace-match (elt ξx 1) 'FIXEDCASE 'LITERAL)))
            (if (string= φto-direction "twitterfy")
                ξtwitterfy-map
-             (mapcar (lambda (ξpair) (vector (elt ξpair 1) (elt ξpair 0))) ξtwitterfy-map))))))))
+             (mapcar (lambda (ξpair) (vector (elt ξpair 1) (elt ξpair 0))) ξtwitterfy-map)))
+
+          (goto-char (point-min))
+          (while (search-forward "  " nil t)
+            (replace-match " " 'FIXEDCASE 'LITERAL))
+
+          (goto-char (point-min))
+          (while (search-forward "  " nil t)
+            (replace-match " " 'FIXEDCASE 'LITERAL)))))))
 
 (require 'xah-get-thing)
 (defun xah-replace-straight-quotes (φbegin φend)

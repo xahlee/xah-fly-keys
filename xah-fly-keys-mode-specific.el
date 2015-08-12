@@ -68,13 +68,13 @@
 
 (defun xah-eww-mode-setup ()
   "for `eww-mode'."
-  (local-set-key (kbd "1") nil)
+  (local-set-key (kbd "1") 'eww-browse-with-external-browser)
   (local-set-key (kbd "2") nil)
   (local-set-key (kbd "3") 'delete-other-windows)
   (local-set-key (kbd "4") 'split-window-vertically)
   (local-set-key (kbd "5") nil)
   (local-set-key (kbd "6") nil)
-  (local-set-key (kbd "7") 'eww-browse-with-external-browser)
+  (local-set-key (kbd "7") nil)
   (local-set-key (kbd "8") nil)
   (local-set-key (kbd "9") nil)
   (local-set-key (kbd "0") nil)
