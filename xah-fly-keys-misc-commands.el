@@ -357,16 +357,18 @@ Also push file content to `kill-ring'.
 If buffer is not file, just close it, and push file content to `kill-ring'.
 
 URL `http://ergoemacs.org/emacs/elisp_delete-current-file.html'
-Version 2015-08-10"
+Version 2015-08-12"
   (interactive)
   (progn
     (kill-new (buffer-string))
     (when (buffer-file-name)
       (when (file-exists-p (buffer-file-name))
-          (progn
-            (delete-file (buffer-file-name))
-            (message "Deleted: 「%s」." (buffer-file-name)))))
-    (kill-buffer (current-buffer))))
+        (progn
+          (delete-file (buffer-file-name))
+          (message "Deleted: 「%s」." (buffer-file-name)))))
+    (let ((buffer-offer-save nil))
+      (set-buffer-modified-p nil)
+      (kill-buffer (current-buffer)))))
 
 (defun xah-make-backup ()
   "Make a backup copy of current file.
