@@ -2,7 +2,7 @@
 
 ;; this is your personal keys. put whatever in this file.
 
-(when xfk-use-xah-keys-p
+(when xah-fly-use-xah-keys-p
 
   (progn
     ;; this should reserved for user-defined keys

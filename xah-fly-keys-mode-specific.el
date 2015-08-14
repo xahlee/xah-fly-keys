@@ -139,7 +139,7 @@
 ;; (when (fboundp 'cider-repl-mode)
 ;;   (defun xah-cider-repl-mode-keys ()
 ;;     "Modify keys for `cider-repl-mode'."
-;;     (local-set-key (kbd "<home>") 'xfk-command-mode-activate))
+;;     (local-set-key (kbd "<home>") 'xah-fly-command-mode-activate))
 ;;   (add-hook 'cider-repl-mode-hook 'xah-cider-repl-mode-keys))
 
 (defun xah-calc-mode-keys ()
