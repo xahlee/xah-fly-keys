@@ -34,8 +34,6 @@
 (defvar xah-fly-key-map nil "Keybinding for `xah-fly-keys' minor mode.")
  (setq xah-fly-key-map (make-sparse-keymap))
 
-(global-set-key (kbd "<home>") 'xah-fly-command-mode-activate)
-
 (defvar xah-fly-major-mode-lead-key nil "Lead key for all major mode's key sequence. By default, it's (kbd \"<menu> e\"). Only supported by xah's modes.")
 (setq xah-fly-major-mode-lead-key (kbd "<menu> e"))
 
@@ -308,7 +306,7 @@ To solve this problem, when your code only knows the relative path of another fi
 
 (define-minor-mode xah-fly-keys
 "A modal keybinding set, like vim, but based on ergonomic principles, like Dvorak layout."
-"INIT-VALUE" "LIGHTER" xah-fly-key-map
+nil "ξxfk⌨" xah-fly-key-map
 )
 
 (provide 'xah-fly-keys)

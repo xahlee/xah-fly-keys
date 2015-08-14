@@ -281,6 +281,7 @@
 (progn
   (define-prefix-command 'xah-fly-leader-key-map)
 
+  (define-key xah-fly-leader-key-map (kbd "<end>") 'xah-fly-keys)
   (define-key xah-fly-leader-key-map (kbd "RET") (if (fboundp 'smex) 'smex 'execute-extended-command ))
   (define-key xah-fly-leader-key-map (kbd "DEL") 'xah-delete-current-file-make-backup)
   (define-key xah-fly-leader-key-map (kbd "<delete>") nil)
