@@ -269,21 +269,20 @@
   (define-prefix-command 'xah-danger-keymap)
 
   (define-key xah-danger-keymap (kbd "RET") 'xah-run-current-file)
-  (define-key xah-danger-keymap (kbd "DEL") 'xah-delete-current-file)
 
   (define-key xah-danger-keymap (kbd ".") 'eval-buffer)
   (define-key xah-danger-keymap (kbd "e") 'eval-defun)
   (define-key xah-danger-keymap (kbd "m") 'eval-last-sexp)
   (define-key xah-danger-keymap (kbd "p") 'eval-expression)
-  (define-key xah-danger-keymap (kbd "q") 'save-buffers-kill-terminal)
   (define-key xah-danger-keymap (kbd "u") 'eval-region)
+  (define-key xah-danger-keymap (kbd "q") 'save-buffers-kill-terminal)
   (define-key xah-danger-keymap (kbd "w") 'delete-frame))
 
 (progn
   (define-prefix-command 'xah-fly-leader-key-map)
 
   (define-key xah-fly-leader-key-map (kbd "RET") (if (fboundp 'smex) 'smex 'execute-extended-command ))
-  (define-key xah-fly-leader-key-map (kbd "<backspace>") nil)
+  (define-key xah-fly-leader-key-map (kbd "DEL") 'xah-delete-current-file-make-backup)
   (define-key xah-fly-leader-key-map (kbd "<delete>") nil)
   (define-key xah-fly-leader-key-map (kbd "SPC") xah-insertion-keymap)
   (define-key xah-fly-leader-key-map (kbd "<menu>") 'exchange-point-and-mark)

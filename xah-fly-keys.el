@@ -235,11 +235,11 @@ To solve this problem, when your code only knows the relative path of another fi
 
     (global-set-key (kbd "A") 'self-insert-command)
     (global-set-key (kbd "B") 'self-insert-command)
-    (global-set-key (kbd "C") 'self-insert-command)
+    (global-set-key (kbd "C") 'xah-cycle-hyphen-underscore-space)
     (global-set-key (kbd "D") 'self-insert-command)
     (global-set-key (kbd "E") 'self-insert-command)
     (global-set-key (kbd "F") 'self-insert-command)
-    (global-set-key (kbd "G") 'xah-backward-2-words)
+    (global-set-key (kbd "G") 'xah-cycle-camel-style-case)
     (global-set-key (kbd "H") 'self-insert-command)
     (global-set-key (kbd "I") 'self-insert-command)
     (global-set-key (kbd "J") 'self-insert-command)
@@ -250,9 +250,9 @@ To solve this problem, when your code only knows the relative path of another fi
     (global-set-key (kbd "O") 'self-insert-command)
     (global-set-key (kbd "P") 'self-insert-command)
     (global-set-key (kbd "Q") 'self-insert-command)
-    (global-set-key (kbd "R") 'xah-forward-2-words)
+    (global-set-key (kbd "R") 'hippie-expand)
     (global-set-key (kbd "S") 'self-insert-command)
-    (global-set-key (kbd "T") 'self-insert-command)
+    (global-set-key (kbd "T") 'xah-toggle-letter-case)
     (global-set-key (kbd "U") 'self-insert-command)
     (global-set-key (kbd "V") 'self-insert-command)
     (global-set-key (kbd "W") 'self-insert-command)
@@ -302,5 +302,9 @@ To solve this problem, when your code only knows the relative path of another fi
 
 ;; (setq xah-fly-timer-id (run-with-idle-timer 20 t 'xfk-command-mode-activate))
 ;; (cancel-timer xah-fly-timer-id)
+
+;; (define-minor-mode MODE▮ "DOC" &optional INIT-VALUE LIGHTER KEYMAP &rest
+;; BODY) 
+
 
 (provide 'xah-fly-keys)
