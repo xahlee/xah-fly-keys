@@ -306,7 +306,7 @@ To solve this problem, when your code only knows the relative path of another fi
 
 (define-minor-mode xah-fly-keys
 "A modal keybinding set, like vim, but based on ergonomic principles, like Dvorak layout."
-nil "ξxfk⌨" xah-fly-key-map
+1 "ξxfk" xah-fly-key-map
 )
 
 (provide 'xah-fly-keys)
