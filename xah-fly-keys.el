@@ -32,7 +32,45 @@
 
 
 (defvar xah-fly-key-map nil "Keybinding for `xah-fly-keys' minor mode.")
- (setq xah-fly-key-map (make-sparse-keymap))
+(progn
+  (setq xah-fly-key-map (make-sparse-keymap))
+
+  (define-key xah-fly-key-map (kbd "'") 'self-insert-command)
+
+  (define-key xah-fly-key-map (kbd "M-[") 'xah-cycle-font-previous)
+  (define-key xah-fly-key-map (kbd "M-]") 'xah-cycle-font-next)
+
+  (define-key xah-fly-key-map (kbd "M-8") 'xah-cycle-font-2)
+  (define-key xah-fly-key-map (kbd "M-7") nil)
+  (define-key xah-fly-key-map (kbd "M-3") 'other-frame)
+  (define-key xah-fly-key-map (kbd "M-4") nil)
+  (define-key xah-fly-key-map (kbd "M-5") nil)
+  (define-key xah-fly-key-map (kbd "M-6") 'yank-pop)
+  (define-key xah-fly-key-map (kbd "M-2") 'xah-previous-user-buffer)
+  (define-key xah-fly-key-map (kbd "M-1") 'xah-next-user-buffer)
+  (define-key xah-fly-key-map (kbd "M-9") 'xah-previous-emacs-buffer)
+  (define-key xah-fly-key-map (kbd "M-0") 'xah-next-emacs-buffer)
+
+  (define-key xah-fly-key-map (kbd "M-t") nil)
+  (define-key xah-fly-key-map (kbd "M-c") nil)
+
+  (progn
+    ;; haven't decided what goes here
+
+    (define-key xah-fly-key-map (kbd "C-1") nil)
+    (define-key xah-fly-key-map (kbd "C-2") nil)
+    (define-key xah-fly-key-map (kbd "C-3") nil)
+    (define-key xah-fly-key-map (kbd "C-4") nil)
+    (define-key xah-fly-key-map (kbd "C-5") nil)
+    (define-key xah-fly-key-map (kbd "C-6") nil)
+    (define-key xah-fly-key-map (kbd "C-7") 'scroll-down)
+    (define-key xah-fly-key-map (kbd "C-8") 'scroll-up)
+    (define-key xah-fly-key-map (kbd "C-9") nil)
+    (define-key xah-fly-key-map (kbd "C-0") nil)
+
+    (define-key xah-fly-key-map (kbd "C-w") 'xah-close-current-buffer) ; was kill-region
+    (define-key xah-fly-key-map (kbd "<C-next>") 'xah-next-user-buffer)
+    (define-key xah-fly-key-map (kbd "<C-prior>") 'xah-previous-user-buffer)))
 
 (defvar xah-fly-major-mode-lead-key nil "Lead key for all major mode's key sequence. By default, it's (kbd \"<menu> e\"). Only supported by xah's modes.")
 (setq xah-fly-major-mode-lead-key (kbd "<menu> e"))
@@ -75,8 +113,6 @@ To solve this problem, when your code only knows the relative path of another fi
 (load (xah-fly--get-fullpath "xah-fly-keys-mouse-commands"))
 (load (xah-fly--get-fullpath "xah-fly-keys-insertion-keymap"))
 
-(load (xah-fly--get-fullpath "xah-fly-keys-control-key"))
-(load (xah-fly--get-fullpath "xah-fly-keys-meta-key"))
 (load (xah-fly--get-fullpath "xah-fly-keys-special-keys"))
 (load (xah-fly--get-fullpath "xah-fly-keys-mode-specific"))
 (load (xah-fly--get-fullpath "xah-fly-keys-user-keymap"))
