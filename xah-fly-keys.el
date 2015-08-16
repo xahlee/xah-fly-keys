@@ -341,8 +341,8 @@ To solve this problem, when your code only knows the relative path of another fi
 ;; (cancel-timer xah-fly-timer-id)
 
 (define-minor-mode xah-fly-keys
-"A modal keybinding set, like vim, but based on ergonomic principles, like Dvorak layout."
-1 "ξxfk" xah-fly-key-map
-)
+  "A modal keybinding set, like vim, but based on ergonomic principles, like Dvorak layout."
+  1 "ξxfk" xah-fly-key-map
+  (xah-fly-command-mode-activate))
 
 (provide 'xah-fly-keys)
