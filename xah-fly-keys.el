@@ -51,7 +51,7 @@
   (define-key xah-fly-key-map (kbd "M-9") 'xah-previous-emacs-buffer)
   (define-key xah-fly-key-map (kbd "M-0") 'xah-next-emacs-buffer)
 
-  (define-key xah-fly-key-map (kbd "M-t") nil)
+  (define-key xah-fly-key-map (kbd "M-t") 'hippie-expand)
   (define-key xah-fly-key-map (kbd "M-c") nil)
 
   (progn

@@ -371,7 +371,8 @@ Version 2015-08-12"
       (kill-buffer (current-buffer)))))
 
 (defun xah-make-backup ()
-  "Make a backup copy of current file.
+  "Make a backup copy of current file or dired marked files.
+If in dired, backup current file or marked files.
 The backup file name is
  ‹name›~‹timestamp›~
 example:
@@ -379,14 +380,19 @@ example:
 in the same dir. If such a file already exist, it's overwritten.
 If the current buffer is not associated with a file, nothing's done.
 URL `http://ergoemacs.org/emacs/elisp_make-backup.html'
-Version 2015-07-21"
+Version 2015-08-17"
   (interactive)
-  (if (buffer-file-name)
-      (let* ((ξfname (buffer-file-name))
-             (ξbackup-name (concat ξfname "~" (format-time-string "%Y%m%dT%H%M%S") "~")))
-        (copy-file ξfname ξbackup-name t)
-        (message (concat "Backup saved at: " ξbackup-name)))
-    (user-error "Buffer is not a file")))
+  (let (
+        (ξfile-list
+         (if (string-equal major-mode "dired-mode")
+             (dired-get-marked-files)
+           (list (buffer-file-name)))))
+    (mapc (lambda (ξfname)
+            (let ((ξbackup-name
+                   (concat ξfname "~" (format-time-string "%Y%m%dT%H%M%S") "~")))
+              (copy-file ξfname ξbackup-name t)
+              (message (concat "Backup saved at: " ξbackup-name))))
+          ξfile-list)))
 
 (defun xah-run-current-file ()
   "Execute the current file.
