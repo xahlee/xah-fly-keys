@@ -270,46 +270,64 @@ Version 2015-06-09"
         (goto-char (point-min))
         (while (search-forward "hqnvdr9b35" nil t) (replace-match "\n\n"))))))
 
-(defun xah-cycle-hyphen-underscore-space (φbegin φend)
+(defun xah-cycle-hyphen-underscore-space ()
   "Cycle {underscore, space, hypen} chars of current word or text selection.
 When called repeatedly, this command cycles the {“_”, “-”, “ ”} characters, in that order.
 
-When called in elisp code, φbegin φend are region begin/end positions.
 URL `http://ergoemacs.org/emacs/elisp_change_space-hyphen_underscore.html'
-Version 2015-04-13"
-  (interactive
-   (if (use-region-p)
-       (list (region-beginning) (region-end))
-     (let ((ξbounds (bounds-of-thing-at-point 'symbol)))
-       (list (car ξbounds) (cdr ξbounds)))))
+Version 2015-08-17"
+  (interactive)
   ;; this function sets a property 「'state」. Possible values are 0 to length of ξcharArray.
-  (let* ((ξinputText (buffer-substring-no-properties φbegin φend))
-         (ξcharArray ["_" "-" " "])
-         (ξlength (length ξcharArray))
-         (ξregionWasActive-p (region-active-p))
-         (ξnowState
-          (if (equal last-command this-command )
-              (get 'xah-cycle-hyphen-underscore-space 'state)
-            0 ))
-         (ξchangeTo (elt ξcharArray ξnowState)))
-    (save-excursion
-      (save-restriction
-        (narrow-to-region φbegin φend)
-        (goto-char (point-min))
-        (while
-            (search-forward-regexp
-             (concat
-              (elt ξcharArray (% (+ ξnowState 1) ξlength))
-              "\\|"
-              (elt ξcharArray (% (+ ξnowState 2) ξlength)))
-             (point-max)
-             'NOERROR)
-          (replace-match ξchangeTo 'FIXEDCASE 'LITERAL))))
-    (when (or (string= ξchangeTo " ") ξregionWasActive-p)
-      (goto-char φend)
-      (set-mark φbegin)
-      (setq deactivate-mark nil))
-    (put 'xah-cycle-hyphen-underscore-space 'state (% (+ ξnowState 1) ξlength))))
+  (let (ξp1 ξp2)
+    (if (use-region-p)
+        (progn 
+          (setq ξp1 (region-beginning))
+          (setq ξp2 (region-end)))
+      (let ((ξbounds (bounds-of-thing-at-point 'symbol)))
+        (progn
+          (setq ξp1 (car ξbounds))
+          (setq ξp2 (cdr ξbounds)))))
+
+    (let* ((ξinputText (buffer-substring-no-properties ξp1 ξp2))
+           (ξcharArray ["_" "-" " "])
+           (ξlength (length ξcharArray))
+           (ξregionWasActive-p (region-active-p))
+           (ξnowState
+            (if (equal last-command this-command )
+                (get 'xah-cycle-hyphen-underscore-space 'state)
+              0 ))
+           (ξchangeTo (elt ξcharArray ξnowState)))
+      (save-excursion
+        (save-restriction
+          (narrow-to-region ξp1 ξp2)
+          (goto-char (point-min))
+          (while
+              (search-forward-regexp
+               (concat
+                (elt ξcharArray (% (+ ξnowState 1) ξlength))
+                "\\|"
+                (elt ξcharArray (% (+ ξnowState 2) ξlength)))
+               (point-max)
+               'NOERROR)
+            (replace-match ξchangeTo 'FIXEDCASE 'LITERAL))))
+      (when (or (string= ξchangeTo " ") ξregionWasActive-p)
+        (goto-char ξp2)
+        (set-mark ξp1)
+        (setq deactivate-mark nil))
+      (put 'xah-cycle-hyphen-underscore-space 'state (% (+ ξnowState 1) ξlength)))))
+
+(defun xah-underscore-to-space-region (φbegin φend)
+  "Change  underscore char to space.
+URL `http://ergoemacs.org/emacs/elisp_change_space-hyphen_underscore.html'
+Version 2015-08-18"
+  (interactive "r")
+  (save-excursion
+    (save-restriction
+      (narrow-to-region φbegin φend)
+      (goto-char (point-min))
+      (while
+          (search-forward-regexp "_" (point-max) 'NOERROR)
+        (replace-match " " 'FIXEDCASE 'LITERAL)))))
 
 
 

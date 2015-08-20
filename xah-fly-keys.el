@@ -51,8 +51,10 @@
   (define-key xah-fly-key-map (kbd "M-9") 'xah-previous-emacs-buffer)
   (define-key xah-fly-key-map (kbd "M-0") 'xah-next-emacs-buffer)
 
-  (define-key xah-fly-key-map (kbd "M-t") 'hippie-expand)
-  (define-key xah-fly-key-map (kbd "M-c") nil)
+  (define-key xah-fly-key-map (kbd "M-t") 'xah-toggle-letter-case)
+  (define-key xah-fly-key-map (kbd "M-c") 'xah-cycle-hyphen-underscore-space)
+  (define-key xah-fly-key-map (kbd "M-r") 'hippie-expand)
+
 
   (progn
     ;; haven't decided what goes here
@@ -234,7 +236,7 @@ To solve this problem, when your code only knows the relative path of another fi
     (define-key xah-fly-key-map (kbd "8") 'xah-fly-insert-mode-activate)
     (define-key xah-fly-key-map (kbd "7") 'delete-window)
     (define-key xah-fly-key-map (kbd "3") 'delete-other-windows)
-    (define-key xah-fly-key-map (kbd "4") 'split-window-vertically)
+    (define-key xah-fly-key-map (kbd "4") 'split-window-below)
     (define-key xah-fly-key-map (kbd "5") 'redo)
 
     (define-key xah-fly-key-map (kbd "6") 'xah-select-current-block)
@@ -272,7 +274,7 @@ To solve this problem, when your code only knows the relative path of another fi
 
     (define-key xah-fly-key-map (kbd "A") nil)
     (define-key xah-fly-key-map (kbd "B") nil)
-    (define-key xah-fly-key-map (kbd "C") 'xah-cycle-hyphen-underscore-space)
+    (define-key xah-fly-key-map (kbd "C") nil)
     (define-key xah-fly-key-map (kbd "D") nil)
     (define-key xah-fly-key-map (kbd "E") nil)
     (define-key xah-fly-key-map (kbd "F") nil)
@@ -287,9 +289,9 @@ To solve this problem, when your code only knows the relative path of another fi
     (define-key xah-fly-key-map (kbd "O") nil)
     (define-key xah-fly-key-map (kbd "P") nil)
     (define-key xah-fly-key-map (kbd "Q") nil)
-    (define-key xah-fly-key-map (kbd "R") 'hippie-expand)
+    (define-key xah-fly-key-map (kbd "R") nil)
     (define-key xah-fly-key-map (kbd "S") nil)
-    (define-key xah-fly-key-map (kbd "T") 'xah-toggle-letter-case)
+    (define-key xah-fly-key-map (kbd "T") nil)
     (define-key xah-fly-key-map (kbd "U") nil)
     (define-key xah-fly-key-map (kbd "V") nil)
     (define-key xah-fly-key-map (kbd "W") nil)

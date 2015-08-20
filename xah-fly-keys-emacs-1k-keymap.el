@@ -307,10 +307,10 @@
   (define-key xah-fly-leader-key-map (kbd "`") nil)
 
   (define-key xah-fly-leader-key-map (kbd "8") nil)
-  (define-key xah-fly-leader-key-map (kbd "7") 'delete-window)
-  (define-key xah-fly-leader-key-map (kbd "3") 'delete-other-windows)
-  (define-key xah-fly-leader-key-map (kbd "4") 'split-window-below)
-  (define-key xah-fly-leader-key-map (kbd "5") 'split-window-right)
+  (define-key xah-fly-leader-key-map (kbd "7") nil)
+  (define-key xah-fly-leader-key-map (kbd "3") nil)
+  (define-key xah-fly-leader-key-map (kbd "4") 'split-window-right)
+  (define-key xah-fly-leader-key-map (kbd "5") nil)
 
   (define-key xah-fly-leader-key-map (kbd "6") nil)
   (define-key xah-fly-leader-key-map (kbd "2") 'dired-jump)
