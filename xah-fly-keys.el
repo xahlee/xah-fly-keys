@@ -274,7 +274,7 @@ To solve this problem, when your code only knows the relative path of another fi
     (define-key xah-fly-key-map (kbd "D") nil)
     (define-key xah-fly-key-map (kbd "E") nil)
     (define-key xah-fly-key-map (kbd "F") nil)
-    (define-key xah-fly-key-map (kbd "G") 'xah-cycle-camel-style-case)
+    (define-key xah-fly-key-map (kbd "G") nil)
     (define-key xah-fly-key-map (kbd "H") nil)
     (define-key xah-fly-key-map (kbd "I") nil)
     (define-key xah-fly-key-map (kbd "J") nil)
