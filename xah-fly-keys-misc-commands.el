@@ -403,7 +403,7 @@ File suffix is used to determine what program to run.
 If the file is modified, ask if you want to save first.
 
 URL `http://ergoemacs.org/emacs/elisp_run_current_file.html'
-version 2014-10-28"
+version 2015-08-21"
   (interactive)
   (let* (
          (ξsuffix-map
@@ -419,6 +419,7 @@ version 2014-10-28"
             ("clj" . "java -cp /home/xah/apps/clojure-1.6.0/clojure-1.6.0.jar clojure.main")
             ("ml" . "ocaml")
             ("vbs" . "cscript")
+            ("tex" . "pdflatex")
             ;; ("pov" . "/usr/local/bin/povray +R2 +A0.1 +J1.2 +Am2 +Q9 +H480 +W640")
             ))
          (ξfname (buffer-file-name))

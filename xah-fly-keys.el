@@ -20,7 +20,6 @@
 ;; buy my tutorial http://ergoemacs.org/emacs/buy_xah_emacs_tutorial.html
 
 ;;; TODO
-;; • make it a proper minor mode.
 ;; • make it support diff Keyboard layouts
 ;; • fine-tune keys in command mode. (introduce key sequence there. Consider whether {open, close, save} should be there. and some other commands such as {dired-jump, query-replace-regexp, xah-toggle-letter-case}.)
 
@@ -55,7 +54,6 @@
   (define-key xah-fly-key-map (kbd "M-c") 'xah-cycle-hyphen-underscore-space)
   (define-key xah-fly-key-map (kbd "M-r") 'hippie-expand)
 
-
   (progn
     ;; haven't decided what goes here
 
@@ -65,12 +63,11 @@
     (define-key xah-fly-key-map (kbd "C-4") nil)
     (define-key xah-fly-key-map (kbd "C-5") nil)
     (define-key xah-fly-key-map (kbd "C-6") nil)
-    (define-key xah-fly-key-map (kbd "C-7") 'scroll-down)
-    (define-key xah-fly-key-map (kbd "C-8") 'scroll-up)
+    (define-key xah-fly-key-map (kbd "C-7") nil)
+    (define-key xah-fly-key-map (kbd "C-8") nil)
     (define-key xah-fly-key-map (kbd "C-9") nil)
     (define-key xah-fly-key-map (kbd "C-0") nil)
 
-    (define-key xah-fly-key-map (kbd "C-w") 'xah-close-current-buffer) ; was kill-region
     (define-key xah-fly-key-map (kbd "<C-next>") 'xah-next-user-buffer)
     (define-key xah-fly-key-map (kbd "<C-prior>") 'xah-previous-user-buffer)))
 
@@ -130,7 +127,6 @@ To solve this problem, when your code only knows the relative path of another fi
 (defun xah-fly-insert-mode-init ()
   "set insertion mode keys"
   (interactive)
-  ;; TODO use a proper keymap
   (progn
 
     (define-key xah-fly-key-map (kbd "'") 'self-insert-command)
@@ -268,7 +264,7 @@ To solve this problem, when your code only knows the relative path of another fi
     (define-key xah-fly-key-map (kbd "u") 'delete-char)
     (define-key xah-fly-key-map (kbd "v") 'xah-forward-right-bracket)
     (define-key xah-fly-key-map (kbd "w") 'other-window)
-    (define-key xah-fly-key-map (kbd "x") nil)
+    (define-key xah-fly-key-map (kbd "x") 'xah-fly-leader-key-map)
     (define-key xah-fly-key-map (kbd "y") 'set-mark-command)
     (define-key xah-fly-key-map (kbd "z") 'comment-dwim)
 
