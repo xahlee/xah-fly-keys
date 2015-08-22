@@ -330,11 +330,12 @@ To solve this problem, when your code only knows the relative path of another fi
 (add-hook 'minibuffer-setup-hook 'xah-fly-insert-mode-activate)
 (add-hook 'minibuffer-exit-hook 'xah-fly-command-mode-activate)
 
-;; TODO when in shell mode, switch to insertion mode.
+;; when in shell mode, switch to insertion mode.
 (add-hook 'shell-mode-hook 'xah-fly-insert-mode-activate)
 
 
 
+;; experimental. auto switch back to command mode after some sec of idle time
 ;; (setq xah-fly-timer-id (run-with-idle-timer 20 t 'xah-fly-command-mode-activate))
 ;; (cancel-timer xah-fly-timer-id)
 

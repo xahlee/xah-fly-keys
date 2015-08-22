@@ -43,6 +43,34 @@ Version 2015-06-10"
                (kill-region (region-beginning) (region-end) t)
              (kill-region (line-beginning-position) (line-beginning-position 2))))))
 
+(defun xah-copy-all-or-region ()
+  "Put the whole buffer content to `kill-ring', or text selection if there's one.
+Respects `narrow-to-region'.
+URL `http://ergoemacs.org/emacs/emacs_copy_cut_all_or_region.html'
+Version 2015-08-22"
+  (interactive)
+  (if (use-region-p)
+      (progn
+        (kill-new (buffer-substring (region-beginning) (region-end)))
+        (message "Text selection copied."))
+    (progn
+      (kill-new (buffer-string))
+      (message "Buffer content copied."))))
+
+(defun xah-cut-all-or-region ()
+  "Cut the whole buffer content to `kill-ring', or text selection if there's one.
+Respects `narrow-to-region'.
+URL `http://ergoemacs.org/emacs/emacs_copy_cut_all_or_region.html'
+Version 2015-08-22"
+  (interactive)
+  (if (use-region-p)
+      (progn
+        (kill-new (buffer-substring (region-beginning) (region-end)))
+        (delete-region (region-beginning) (region-end)))
+    (progn
+      (kill-new (buffer-string))
+      (delete-region (point-min) (point-max)))))
+
 (defun xah-copy-all ()
   "Put the whole buffer content into the `kill-ring'.
 (respects `narrow-to-region')
@@ -53,7 +81,8 @@ Version 2015-05-06"
   (message "Buffer content copied."))
 
 (defun xah-cut-all ()
-  "Cut the whole buffer content into the `kill-ring'. (respects `narrow-to-region')"
+  "Cut the whole buffer content into the `kill-ring'.
+Respects `narrow-to-region'."
   (interactive)
   (kill-new (buffer-string))
   (delete-region (point-min) (point-max)))
@@ -280,7 +309,7 @@ Version 2015-08-17"
   ;; this function sets a property 「'state」. Possible values are 0 to length of ξcharArray.
   (let (ξp1 ξp2)
     (if (use-region-p)
-        (progn 
+        (progn
           (setq ξp1 (region-beginning))
           (setq ξp2 (region-end)))
       (let ((ξbounds (bounds-of-thing-at-point 'symbol)))
