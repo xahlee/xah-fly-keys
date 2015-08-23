@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.0
+;; Version: 2.0.1
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -31,11 +31,11 @@
 
 ;; To manual install.
 
-;; put the file xah-fly-keys.el directory in ~/.emacs.d/lisp/
+;; put the file xah-fly-keys.el in ~/.emacs.d/lisp/
 
 ;; put the following in your emacs init at ~/.emacs.d/init.el
 
-;; (add-to-list 'load-path "~/.emacs.d/lisp/xah-fly-keys/")
+;; (add-to-list 'load-path "~/.emacs.d/lisp/xah-fly-keys.el")
 ;; (require 'xah-fly-keys)
 ;; (xah-fly-keys 1)
 
@@ -51,88 +51,7 @@
 (require 'dired-x) ; in emacs
 
 
-
-(defvar xah-fly-key-map nil "Keybinding for `xah-fly-keys' minor mode.")
-(progn
-  (setq xah-fly-key-map (make-sparse-keymap))
-
-  (define-key xah-fly-key-map (kbd "'") 'self-insert-command)
-
-  (define-key xah-fly-key-map (kbd "M-k") 'yank-pop)
-  (define-key xah-fly-key-map (kbd "M-t") 'xah-toggle-letter-case)
-  (define-key xah-fly-key-map (kbd "M-c") 'xah-cycle-hyphen-underscore-space)
-  (define-key xah-fly-key-map (kbd "M-r") 'hippie-expand)
-
-  (progn
-
-    (define-key xah-fly-key-map (kbd "<C-next>") 'xah-next-user-buffer)
-    (define-key xah-fly-key-map (kbd "<C-prior>") 'xah-previous-user-buffer)))
-
-(defvar xah-fly-major-mode-lead-key nil "Lead key for all major mode's key sequence. By default, it's (kbd \"<menu> e\"). Only supported by xah's modes.")
-(setq xah-fly-major-mode-lead-key (kbd "<menu> e"))
-
-
 ;; cursor movement
-
-(defun xah-scroll-down-10-lines ()
-  "scroll down 10 lines"
-  (interactive)
-  (scroll-down 10))
-
-(defun xah-scroll-up-10-lines ()
-  "scroll up 10 lines"
-  (interactive)
-  (scroll-up 10))
-
-(defun xah-cursor-down-50-lines ()
-  "Move cursor down 50 logical lines.
-Version 2015-07-06"
-  (interactive)
-  (forward-line 50))
-
-(defun xah-cursor-up-50-lines ()
-  "Move cursor up 50 logical lines.
-Version 2015-07-06"
-  (interactive)
-  (forward-line -50))
-
-(defun xah-cursor-down-25-lines ()
-  "Move cursor down 25 logical lines.
-Version 2015-07-06"
-  (interactive)
-  (forward-line 25))
-
-(defun xah-cursor-up-25-lines ()
-  "Move cursor up 25 logical lines.
-Version 2015-07-06"
-  (interactive)
-  (forward-line -25))
-
-(defvar xah-forward-n-words 4 "integer used by `xah-forward-n-words'")
-(setq xah-forward-n-words 4)
-
-(defun xah-forward-n-words ()
-  "`forward-word' `xah-forward-n-words' times."
-  (interactive)
-  (forward-word xah-forward-n-words))
-
-(defun xah-backward-n-words ()
-  "`backward-word' `xah-forward-n-words' times."
-  (interactive)
-  (backward-word xah-forward-n-words))
-
-(defvar xah-forward-n-chars 50 "a integer used by `xah-forward-n-chars'")
-(setq xah-forward-n-chars 50)
-
-(defun xah-forward-n-chars ()
-  "`forward-char' `xah-forward-n-chars' times."
-  (interactive)
-  (forward-char xah-forward-n-chars))
-
-(defun xah-backward-n-chars ()
-  "`backward-char' `xah-forward-n-chars' times."
-  (interactive)
-  (backward-char xah-forward-n-chars))
 
 (defun xah-forward-block (&optional φn)
   "Move cursor beginning of next text block.
@@ -1617,8 +1536,27 @@ Version 2015-01-26"
          (lambda (ξfpath) (let ((process-connection-type nil)) (start-process "" nil "xdg-open" ξfpath))) ξfile-list))))))
 
 
+;; keymaps
 
-;; -*- coding: utf-8 -*-
+(defvar xah-fly-key-map nil "Keybinding for `xah-fly-keys' minor mode.")
+(progn
+  (setq xah-fly-key-map (make-sparse-keymap))
+
+  (define-key xah-fly-key-map (kbd "'") 'self-insert-command)
+
+  (define-key xah-fly-key-map (kbd "M-k") 'yank-pop)
+  (define-key xah-fly-key-map (kbd "M-t") 'xah-toggle-letter-case)
+  (define-key xah-fly-key-map (kbd "M-c") 'xah-cycle-hyphen-underscore-space)
+  (define-key xah-fly-key-map (kbd "M-r") 'hippie-expand)
+
+  (progn
+
+    (define-key xah-fly-key-map (kbd "<C-next>") 'xah-next-user-buffer)
+    (define-key xah-fly-key-map (kbd "<C-prior>") 'xah-previous-user-buffer)))
+
+(defvar xah-fly-major-mode-lead-key nil "Lead key for all major mode's key sequence. By default, it's (kbd \"<menu> e\"). Only supported by xah's modes.")
+(setq xah-fly-major-mode-lead-key (kbd "<menu> e"))
+
 
 (progn
   (define-prefix-command 'xah-highlight-keymap) ; commands in search-map
@@ -1990,21 +1928,6 @@ Version 2015-01-26"
 
 ;;;; misc
 
-;; ~/web/ergoemacs_org/emacs/gnu_emacs_keybinding_C-x.txt
-
-;; some idea about command categories, in context to choosing keys for them
-
-;; • whether a command is frequently needed ⁖ few times a min, hour, day
-;; • whether a command has immediate effect, no prompt. ⁖ kill-word vs shell, delete-matching-lines
-;; • whether a command is safe to run by mistake. ⁖ whitespace-mode vs eval-buffer
-
-;; idea about key groups
-;; all should be sequence of single keys. 2 to 3 keys. All should start with F7. And all commands should be globally useful.
-;; • 2 keys vs 3 keys
-;; • whether the key ends in a digit key 0 to 9. These probably should be most frequently used, or immediate effect.
-
-
-
 ;; these commands have keys in emacs, but right now i decided not to give them a key
 
   ;; C-x 5 C-f  find-file-other-frame
@@ -2131,8 +2054,7 @@ Version 2015-01-26"
 ;; (setq guide-key/guide-key-sequence '("<menu> t" "TAB t" ))
 ;; (guide-key-mode 1)
 
-
-;; -*- coding: utf-8 -*-
+;; setting keys
 
 (when (string-equal system-type "windows-nt")
   (define-key key-translation-map (kbd "<apps>") (kbd "<menu>")))
