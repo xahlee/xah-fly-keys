@@ -347,7 +347,7 @@ Version 2015-08-12"
 (defun xah-run-current-file ()
   "Execute the current file.
 For example, if the current buffer is the file x.py, then it'll call 「python x.py」 in a shell.
-The file can be Emacs Lisp, PHP, Perl, Python, Ruby, JavaScript, Bash, Ocaml, Visual Basic, TeX, Java.
+The file can be Emacs Lisp, PHP, Perl, Python, Ruby, JavaScript, Bash, Ocaml, Visual Basic, TeX, Java, Clojure.
 File suffix is used to determine what program to run.
 
 If the file is modified, ask if you want to save first.
@@ -370,6 +370,7 @@ version 2015-08-23"
             ("ml" . "ocaml")
             ("vbs" . "cscript")
             ("tex" . "pdflatex")
+            ("latex" . "pdflatex")
             ("java" . "javac")
             ;; ("pov" . "/usr/local/bin/povray +R2 +A0.1 +J1.2 +Am2 +Q9 +H480 +W640")
             ))
