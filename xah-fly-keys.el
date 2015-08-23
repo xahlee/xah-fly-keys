@@ -74,11 +74,7 @@ To solve this problem, when your code only knows the relative path of another fi
   (concat (file-name-directory (or load-file-name buffer-file-name)) φfile-relative-path)
 )
 
-(load (xah-fly--get-fullpath "xah-fly-keys-cursor-movement"))
-(load (xah-fly--get-fullpath "xah-fly-keys-editing-commands"))
-(load (xah-fly--get-fullpath "xah-fly-keys-text-selection"))
-(load (xah-fly--get-fullpath "xah-fly-keys-insert-commands"))
-(load (xah-fly--get-fullpath "xah-fly-keys-misc-commands"))
+(load (xah-fly--get-fullpath "xah-fly-keys-function"))
 (load (xah-fly--get-fullpath "xah-fly-keys-insertion-keymap"))
 (load (xah-fly--get-fullpath "xah-fly-keys-mode-specific"))
 (load (xah-fly--get-fullpath "xah-fly-keys-user-keymap"))
