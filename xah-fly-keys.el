@@ -105,14 +105,10 @@ To solve this problem, when your code only knows the relative path of another fi
 (load (xah-fly--get-fullpath "xah-fly-keys-insert-commands"))
 (load (xah-fly--get-fullpath "xah-fly-keys-dired-commands"))
 (load (xah-fly--get-fullpath "xah-fly-keys-misc-commands"))
-(load (xah-fly--get-fullpath "xah-fly-keys-mouse-commands"))
 (load (xah-fly--get-fullpath "xah-fly-keys-insertion-keymap"))
-
-(load (xah-fly--get-fullpath "xah-fly-keys-special-keys"))
 (load (xah-fly--get-fullpath "xah-fly-keys-mode-specific"))
 (load (xah-fly--get-fullpath "xah-fly-keys-user-keymap"))
 (load (xah-fly--get-fullpath "xah-fly-keys-emacs-1k-keymap"))
-(load (xah-fly--get-fullpath "xah-fly-keys-mouse-binding"))
 (load (xah-fly--get-fullpath "xah-fly-keys-global-set-keys"))
 
 
@@ -292,12 +288,6 @@ To solve this problem, when your code only knows the relative path of another fi
     (define-key xah-fly-key-map (kbd "Z") nil)
 
 ))
-
-;; 67890
-;; fgcrl
-;; dhtns
-;; x z
-;;
 
 (defun xah-fly-mode-toggle ()
   "Switch between {insertion, command} modes."
