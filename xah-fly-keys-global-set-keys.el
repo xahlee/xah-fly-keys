@@ -4,8 +4,6 @@
   (define-key key-translation-map (kbd "<apps>") (kbd "<menu>")))
 
 (global-set-key (kbd "<menu>") 'xah-fly-leader-key-map)
-(global-set-key (kbd "<end>") 'xah-user-keymap)
-
 (global-set-key (kbd "<home>") 'xah-fly-command-mode-activate)
 
 

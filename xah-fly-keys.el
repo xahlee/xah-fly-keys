@@ -47,9 +47,6 @@
 (defvar xah-fly-major-mode-lead-key nil "Lead key for all major mode's key sequence. By default, it's (kbd \"<menu> e\"). Only supported by xah's modes.")
 (setq xah-fly-major-mode-lead-key (kbd "<menu> e"))
 
-(defvar xah-fly-use-xah-keys-p nil "If true, use xah lee's personal keys, that may not be suitable for other keyboard or workflow.")
-(setq xah-fly-use-xah-keys-p t)
-
 
 
 (defun xah-fly--get-fullpath (φfile-relative-path)
@@ -76,7 +73,6 @@ To solve this problem, when your code only knows the relative path of another fi
 (load (xah-fly--get-fullpath "xah-fly-keys-functions"))
 (load (xah-fly--get-fullpath "xah-fly-keys-insertion-keymap"))
 (load (xah-fly--get-fullpath "xah-fly-keys-mode-specific"))
-(load (xah-fly--get-fullpath "xah-fly-keys-user-keymap"))
 (load (xah-fly--get-fullpath "xah-fly-keys-emacs-1k-keymap"))
 (load (xah-fly--get-fullpath "xah-fly-keys-global-set-keys"))
 
