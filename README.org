@@ -1,0 +1,4 @@
+A modal keybinding for emacs (like vi), but based on command frequency and ergonomics.
+
+home page at
+http://ergoemacs.org/misc/ergoemacs_vi_mode.html
