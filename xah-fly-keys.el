@@ -103,7 +103,6 @@ To solve this problem, when your code only knows the relative path of another fi
 (load (xah-fly--get-fullpath "xah-fly-keys-editing-commands"))
 (load (xah-fly--get-fullpath "xah-fly-keys-text-selection"))
 (load (xah-fly--get-fullpath "xah-fly-keys-insert-commands"))
-(load (xah-fly--get-fullpath "xah-fly-keys-dired-commands"))
 (load (xah-fly--get-fullpath "xah-fly-keys-misc-commands"))
 (load (xah-fly--get-fullpath "xah-fly-keys-insertion-keymap"))
 (load (xah-fly--get-fullpath "xah-fly-keys-mode-specific"))
