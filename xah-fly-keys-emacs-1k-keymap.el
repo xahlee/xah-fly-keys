@@ -70,11 +70,6 @@
   (define-key xah-help-keymap (kbd "5") 'apropos-variable)
   (define-key xah-help-keymap (kbd "6") 'apropos-value)
 
-  (define-key xah-help-keymap (kbd "2") 'xah-lookup-google)
-  (define-key xah-help-keymap (kbd "1") 'xah-lookup-wikipedia)
-  (define-key xah-help-keymap (kbd "9") 'xah-lookup-word-definition)
-  (define-key xah-help-keymap (kbd "0") 'xah-lookup-all-dictionaries)
-
   (define-key xah-help-keymap (kbd "a") 'apropos-command)
   (define-key xah-help-keymap (kbd "b") 'describe-bindings)
   (define-key xah-help-keymap (kbd "c") 'describe-char)

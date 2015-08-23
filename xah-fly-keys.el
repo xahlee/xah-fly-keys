@@ -34,37 +34,12 @@
 
   (define-key xah-fly-key-map (kbd "'") 'self-insert-command)
 
-  (define-key xah-fly-key-map (kbd "M-[") 'xah-cycle-font-previous)
-  (define-key xah-fly-key-map (kbd "M-]") 'xah-cycle-font-next)
-
-  (define-key xah-fly-key-map (kbd "M-8") 'xah-cycle-font-2)
-  (define-key xah-fly-key-map (kbd "M-7") nil)
-  (define-key xah-fly-key-map (kbd "M-3") 'other-frame)
-  (define-key xah-fly-key-map (kbd "M-4") nil)
-  (define-key xah-fly-key-map (kbd "M-5") nil)
-  (define-key xah-fly-key-map (kbd "M-6") 'yank-pop)
-  (define-key xah-fly-key-map (kbd "M-2") 'xah-previous-user-buffer)
-  (define-key xah-fly-key-map (kbd "M-1") 'xah-next-user-buffer)
-  (define-key xah-fly-key-map (kbd "M-9") 'xah-previous-emacs-buffer)
-  (define-key xah-fly-key-map (kbd "M-0") 'xah-next-emacs-buffer)
-
+  (define-key xah-fly-key-map (kbd "M-k") 'yank-pop)
   (define-key xah-fly-key-map (kbd "M-t") 'xah-toggle-letter-case)
   (define-key xah-fly-key-map (kbd "M-c") 'xah-cycle-hyphen-underscore-space)
   (define-key xah-fly-key-map (kbd "M-r") 'hippie-expand)
 
   (progn
-    ;; haven't decided what goes here
-
-    (define-key xah-fly-key-map (kbd "C-1") nil)
-    (define-key xah-fly-key-map (kbd "C-2") nil)
-    (define-key xah-fly-key-map (kbd "C-3") nil)
-    (define-key xah-fly-key-map (kbd "C-4") nil)
-    (define-key xah-fly-key-map (kbd "C-5") nil)
-    (define-key xah-fly-key-map (kbd "C-6") nil)
-    (define-key xah-fly-key-map (kbd "C-7") nil)
-    (define-key xah-fly-key-map (kbd "C-8") nil)
-    (define-key xah-fly-key-map (kbd "C-9") nil)
-    (define-key xah-fly-key-map (kbd "C-0") nil)
 
     (define-key xah-fly-key-map (kbd "<C-next>") 'xah-next-user-buffer)
     (define-key xah-fly-key-map (kbd "<C-prior>") 'xah-previous-user-buffer)))
