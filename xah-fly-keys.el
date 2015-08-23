@@ -1,27 +1,51 @@
-;; -*- coding: utf-8 -*-
+;;; xah-fly-keys.el --- A efficient modal keybinding set minor mode based on ergonomics.
 
-;; a vi-like modal keybinding for emacs.
-;; created: 2013-09-10
-;; Xah Lee
+;; Copyright © 2013-2015, by Xah Lee
 
-;; home page
+;; Author: Xah Lee ( http://xahlee.org/ )
+;; Version: 2.0
+;; Created: 10 Sep 2013
+;; Keywords: convenience, emulations, vim, ergoemacs
+;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
+
+;; This file is not part of GNU Emacs.
+
+;;; License:
+
+;; You can redistribute this program and/or modify it under the terms of the GNU General Public License version 2.
+
+;;; Commentary:
+
+;; xah-fly-keys is an efficient keybiding system for remacs. (it is more efficient than vim)
+
+;; It is a modal mode, like vi, but keymaps are based on statistics of command call frequency key position easy-to-press score.
+
+;; xah-fly-keys does not bind any Control key, nor Meta keys (except 3, but you can turn off).  So, you can use emacs as is.
+
+;; for now, see home page for info
 ;; http://ergoemacs.org/misc/ergoemacs_vi_mode.html
+
+;; If you like this project, Buy Xah Emacs Tutorial http://ergoemacs.org/emacs/buy_xah_emacs_tutorial.html or make a donation. Thanks.
 
 ;;; INSTALL
 
-;; put the xah-fly-keys directory in ~/.emacs.d/lisp/
+;; To manual install.
+
+;; put the file xah-fly-keys.el directory in ~/.emacs.d/lisp/
 
 ;; put the following in your emacs init at ~/.emacs.d/init.el
 
 ;; (add-to-list 'load-path "~/.emacs.d/lisp/xah-fly-keys/")
 ;; (require 'xah-fly-keys)
-
-;;; LICENSE
-;; buy my tutorial http://ergoemacs.org/emacs/buy_xah_emacs_tutorial.html
+;; (xah-fly-keys 1)
 
 ;;; TODO
-;; • make it support diff Keyboard layouts
-;; • fine-tune keys in command mode. (introduce key sequence there. Consider whether {open, close, save} should be there. and some other commands such as {dired-jump, query-replace-regexp, xah-toggle-letter-case}.)
+;; • make it support qwerty Keyboard layout
+;; • add feature to allow support of standard open close save etc keys with Control
+;; • add feature to allow turn off any Control completely. Same for Meta. (as a way to stop habit)
+
+
+;;; Code:
 
 (require 'dired) ; in emacs
 (require 'dired-x) ; in emacs
@@ -1132,7 +1156,6 @@ Version 2015-05-16"
 
 ;; misc
 
-
 (defvar xah-switch-buffer-ignore-dired t "If t, ignore dired buffer when calling `xah-next-user-buffer' or `xah-previous-user-buffer'")
 (setq xah-switch-buffer-ignore-dired t)
 
@@ -1191,7 +1214,6 @@ If `xah-switch-buffer-ignore-dired' is true, also skip directory buffer.
   (let ((i 0))
     (while (and (not (string-equal "*" (substring (buffer-name) 0 1))) (< i 20))
       (setq i (1+ i)) (previous-buffer))))
-
 
 (defvar xah-recently-closed-buffers nil "alist of recently closed buffers. Each element is (buffer name, file path). The max number to track is controlled by the variable `xah-recently-closed-buffers-max'.")
 
@@ -2130,7 +2152,6 @@ Version 2015-01-26"
 (global-set-key (kbd "<C-prior>") 'xah-previous-user-buffer)
 (global-set-key (kbd "<C-next>") 'xah-next-user-buffer)
 
-
 (progn
   ;; set arrow keys in isearch. left/right is backward/forward, up/down is history. press Return to exit
   (define-key isearch-mode-map (kbd "<up>") 'isearch-ring-retreat )
@@ -2357,3 +2378,9 @@ Version 2015-01-26"
   (xah-fly-command-mode-activate))
 
 (provide 'xah-fly-keys)
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
+
+;;; xah-fly-keys ends here
