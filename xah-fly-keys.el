@@ -71,8 +71,6 @@ To solve this problem, when your code only knows the relative path of another fi
   (concat (file-name-directory (or load-file-name buffer-file-name)) φfile-relative-path))
 
 (load (xah-fly--get-fullpath "xah-fly-keys-functions"))
-(load (xah-fly--get-fullpath "xah-fly-keys-insertion-keymap"))
-(load (xah-fly--get-fullpath "xah-fly-keys-mode-specific"))
 (load (xah-fly--get-fullpath "xah-fly-keys-emacs-1k-keymap"))
 (load (xah-fly--get-fullpath "xah-fly-keys-global-set-keys"))
 
@@ -85,7 +83,6 @@ To solve this problem, when your code only knows the relative path of another fi
   "set insertion mode keys"
   (interactive)
   (progn
-
     (define-key xah-fly-key-map (kbd "'") 'self-insert-command)
     (define-key xah-fly-key-map (kbd ",") 'self-insert-command)
     (define-key xah-fly-key-map (kbd "-") 'self-insert-command)
