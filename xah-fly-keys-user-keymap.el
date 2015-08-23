@@ -16,7 +16,7 @@
 
     (define-key xah-user-keymap (kbd "1") 'xah-copy-to-register-1)
     (define-key xah-user-keymap (kbd "2") 'xah-paste-from-register-1)
-    (define-key xah-user-keymap (kbd "3") 'xah-asciify-text)
+    (define-key xah-user-keymap (kbd "3") nil)
     (define-key xah-user-keymap (kbd "4") 'xah-insert-word-3)
     (define-key xah-user-keymap (kbd "5") nil)
     (define-key xah-user-keymap (kbd "6") nil)
@@ -128,3 +128,8 @@
     (define-key xah-dump-keymap (kbd "x") nil)
     (define-key xah-dump-keymap (kbd "y") nil)
     (define-key xah-dump-keymap (kbd "z") nil)))
+
+;; 2015-08-22 add these somewhere
+;; 'xah-toggle-read-novel-mode
+;; 'xah-toggle-margin-right
+;; 'xah-toggle-line-spacing

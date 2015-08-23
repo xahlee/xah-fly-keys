@@ -88,7 +88,7 @@
   (define-key xah-help-keymap (kbd "k") 'describe-key)
   (define-key xah-help-keymap (kbd "K") 'Info-goto-emacs-key-command-node)
   (define-key xah-help-keymap (kbd "l") 'view-lossage)
-  (define-key xah-help-keymap (kbd "m") 'xah-describe-major-mode)
+  (define-key xah-help-keymap (kbd "m") 'describe-mode)
   (define-key xah-help-keymap (kbd "n") 'describe-input-method)
   (define-key xah-help-keymap (kbd "o") 'describe-language-environment)
   (define-key xah-help-keymap (kbd "p") 'finder-by-keyword)
@@ -171,12 +171,7 @@
   (define-key xah-harmless-keymap (kbd "x") 'nil)
   (define-key xah-harmless-keymap (kbd "y") 'nil)
   (define-key xah-harmless-keymap (kbd "z") 'abort-recursive-edit)
-
-  (progn
-    (define-key xah-harmless-keymap (kbd "SPC") nil)
-    (define-key xah-harmless-keymap (kbd "SPC h") 'xah-toggle-read-novel-mode)
-    (define-key xah-harmless-keymap (kbd "SPC t") 'xah-toggle-margin-right)
-    (define-key xah-harmless-keymap (kbd "SPC n") 'xah-toggle-line-spacing)))
+  )
 
 (progn
   ;; kinda replacement related

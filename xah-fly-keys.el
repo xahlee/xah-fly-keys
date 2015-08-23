@@ -25,8 +25,6 @@
 
 (require 'dired) ; in emacs
 (require 'dired-x) ; in emacs
-(provide 'xah-replace-pairs)
-(require 'xeu_elisp_util)
 
 
 
@@ -105,10 +103,8 @@ To solve this problem, when your code only knows the relative path of another fi
 (load (xah-fly--get-fullpath "xah-fly-keys-editing-commands"))
 (load (xah-fly--get-fullpath "xah-fly-keys-text-selection"))
 (load (xah-fly--get-fullpath "xah-fly-keys-insert-commands"))
-(load (xah-fly--get-fullpath "xah-fly-keys-replace-commands"))
 (load (xah-fly--get-fullpath "xah-fly-keys-dired-commands"))
 (load (xah-fly--get-fullpath "xah-fly-keys-misc-commands"))
-(load (xah-fly--get-fullpath "xah-fly-keys-misc-commands2"))
 (load (xah-fly--get-fullpath "xah-fly-keys-mouse-commands"))
 (load (xah-fly--get-fullpath "xah-fly-keys-insertion-keymap"))
 

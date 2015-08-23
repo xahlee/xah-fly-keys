@@ -266,39 +266,6 @@ This command does the inverse of `fill-region'."
   (let ((fill-column 90002000))
     (fill-region start end)))
 
-(defun xah-replace-newline-whitespaces-to-space (&optional φbegin φend φabsolute-p)
-  "Replace newline+tab char sequence to 1 just space, in current text block or selection.
-This is similar to `fill-region' but without being smart.
-Version 2015-06-09"
-  (interactive)
-  (let (ξbegin ξend)
-    (if (null φbegin)
-        (if (use-region-p)
-            (progn (setq ξbegin (region-beginning)) (setq ξend (region-end)))
-          (save-excursion
-            (if (re-search-backward "\n[ \t]*\n" nil "NOERROR")
-                (progn (re-search-forward "\n[ \t]*\n")
-                       (setq ξbegin (point)))
-              (setq ξbegin (point)))
-            (if (re-search-forward "\n[ \t]*\n" nil "NOERROR")
-                (progn (re-search-backward "\n[ \t]*\n")
-                       (setq ξend (point)))
-              (setq ξend (point)))))
-      (progn (setq ξbegin φbegin) (setq ξend φend)))
-    (save-excursion
-      (save-restriction
-        (narrow-to-region ξbegin ξend)
-        (goto-char (point-min))
-        (while (search-forward-regexp "\n[ \t]*\n" nil t) (replace-match "\n\n"))
-        (goto-char (point-min))
-        (while (search-forward-regexp "[ \t]*\n[ \t]*" nil t) (replace-match "\n"))
-        (goto-char (point-min))
-        (while (search-forward-regexp "\n\n+" nil t) (replace-match "hqnvdr9b35"))
-        (goto-char (point-min))
-        (while (search-forward-regexp "\n" nil t) (replace-match " "))
-        (goto-char (point-min))
-        (while (search-forward "hqnvdr9b35" nil t) (replace-match "\n\n"))))))
-
 (defun xah-cycle-hyphen-underscore-space ()
   "Cycle {underscore, space, hypen} chars of current word or text selection.
 When called repeatedly, this command cycles the {“_”, “-”, “ ”} characters, in that order.
