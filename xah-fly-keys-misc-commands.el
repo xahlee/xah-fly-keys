@@ -347,13 +347,13 @@ Version 2015-08-12"
 (defun xah-run-current-file ()
   "Execute the current file.
 For example, if the current buffer is the file x.py, then it'll call 「python x.py」 in a shell.
-The file can be emacs lisp, php, perl, python, ruby, javascript, bash, ocaml, Visual Basic.
+The file can be Emacs Lisp, PHP, Perl, Python, Ruby, JavaScript, Bash, Ocaml, Visual Basic, TeX, Java.
 File suffix is used to determine what program to run.
 
 If the file is modified, ask if you want to save first.
 
 URL `http://ergoemacs.org/emacs/elisp_run_current_file.html'
-version 2015-08-21"
+version 2015-08-23"
   (interactive)
   (let* (
          (ξsuffix-map
@@ -370,6 +370,7 @@ version 2015-08-21"
             ("ml" . "ocaml")
             ("vbs" . "cscript")
             ("tex" . "pdflatex")
+            ("java" . "javac")
             ;; ("pov" . "/usr/local/bin/povray +R2 +A0.1 +J1.2 +Am2 +Q9 +H480 +W640")
             ))
          (ξfname (buffer-file-name))
@@ -381,13 +382,18 @@ version 2015-08-21"
       (when (y-or-n-p "Buffer modified. Do you want to save first?")
         (save-buffer)))
 
-    (if (string-equal ξfSuffix "el") ; special case for emacs lisp
-        (load ξfname)
-      (if ξprog-name
-          (progn
-            (message "Running…")
-            (shell-command ξcmd-str "*xah-run-current-file output*" ))
-        (message "No recognized program file suffix for this file.")))))
+    (cond
+     ((string-equal ξfSuffix "el") (load ξfname))
+     ((string-equal ξfSuffix "java")
+      (progn
+        (shell-command ξcmd-str "*xah-run-current-file output*" )
+        (shell-command
+         (format "java %s" (file-name-sans-extension (file-name-nondirectory ξfname))))))
+     (t (if ξprog-name
+            (progn
+              (message "Running…")
+              (shell-command ξcmd-str "*xah-run-current-file output*" ))
+          (message "No recognized program file suffix for this file."))))))
 
 (defun xah-search-current-word ()
   "Call `isearch' on current word or text selection.

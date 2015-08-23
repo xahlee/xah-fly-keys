@@ -19,7 +19,3 @@
 
 (global-set-key (kbd "<C-prior>") 'xah-previous-user-buffer)
 (global-set-key (kbd "<C-next>") 'xah-next-user-buffer)
-
-
-
-(define-key key-translation-map (kbd "ESC") (kbd "C-g"))
