@@ -1282,92 +1282,6 @@ Version 2015-03-20"
                 (when (y-or-n-p (format "file doesn't exist: 「%s」. Create?" ξpath))
                   (find-file ξpath ))))))))))
 
-(defun xah-open-file-path-under-cursor ()
-  "Open the file path under cursor.
-If there is text selection, use the text selection for path.
-If path starts with “http://”, launch browser vistiting that URL, or open the corresponding file, if it's xah site.
-
-Input path can be {relative, full path, URL}. See: `xahsite-web-path-to-filepath' for types of paths supported.
-
-Version 2015-06-12"
-  (interactive)
-  (let* (
-         (ξinputStr1
-          (xah-remove-uri-fragment
-           (if (use-region-p)
-               (buffer-substring-no-properties (region-beginning) (region-end))
-             (let (ξp0 ξp1 ξp2
-                       (ξcharSkipRegex "^  \"\t\n`'|()[]{}<>〔〕“”〈〉《》【】〖〗«»‹›·。\\`"))
-               (setq ξp0 (point))
-               ;; chars that are likely to be delimiters of full path, e.g. space, tabs, brakets.
-               (skip-chars-backward ξcharSkipRegex)
-               (setq ξp1 (point))
-               (goto-char ξp0)
-               (skip-chars-forward ξcharSkipRegex)
-               (setq ξp2 (point))
-               (goto-char ξp0)
-               (buffer-substring-no-properties ξp1 ξp2)))))
-         (ξinputStr2 (replace-regexp-in-string ":\\'" "" ξinputStr1))
-          )
-
-    (if (string-equal ξinputStr2 "")
-        (progn (user-error "No path under cursor" ))
-      (progn
-
-        ;; convenience. if the input string start with a xah domain name, make it a url string
-        (setq ξp
-              (cond
-               ((string-match "\\`//" ξinputStr2 ) (concat "http:" ξinputStr2)) ; relative http protocol, used in css
-               ((string-match "\\`ergoemacs\\.org" ξinputStr2 ) (concat "http://" ξinputStr2))
-               ((string-match "\\`wordyenglish\\.com" ξinputStr2 ) (concat "http://" ξinputStr2))
-               ((string-match "\\`xaharts\\.org" ξinputStr2 ) (concat "http://" ξinputStr2))
-               ((string-match "\\`xahlee\\.info" ξinputStr2 ) (concat "http://" ξinputStr2))
-               ((string-match "\\`xahlee\\.org" ξinputStr2 ) (concat "http://" ξinputStr2))
-               ((string-match "\\`xahmusic\\.org" ξinputStr2 ) (concat "http://" ξinputStr2))
-               ((string-match "\\`xahporn\\.org" ξinputStr2 ) (concat "http://" ξinputStr2))
-               ((string-match "\\`xahsl\\.org" ξinputStr2 ) (concat "http://" ξinputStr2))
-               (t ξinputStr2)))
-
-        (if (string-match-p "\\`https?://" ξp)
-            (if (xahsite-url-is-xah-website-p ξp)
-                (let ((ξfp (xahsite-url-to-filepath ξp )))
-                  (if (file-exists-p ξfp)
-                      (find-file ξfp)
-                    (when (y-or-n-p (format "file doesn't exist: 「%s」. Create?" ξfp)) (find-file ξfp))))
-              (browse-url ξp))
-          (progn ; not starting “http://”
-            (let ((ξfff (xahsite-web-path-to-filepath ξp default-directory)))
-              (if (file-exists-p ξfff)
-                  (progn (find-file ξfff))
-                (if (file-exists-p (concat ξfff ".el"))
-                    (progn (find-file (concat ξfff ".el")))
-                  (when (y-or-n-p (format "file doesn't exist: 「%s」. Create?" ξfff)) (find-file ξfff )))))))))))
-
-(defun xah-open-file-from-clipboard ()
-  "Open the file path from OS's clipboard.
-The clipboard should contain a file path or url to xah site. Open that file in emacs."
-  (interactive)
-  (let (
-        (ξinputStr
-         (with-temp-buffer
-           (yank)
-           (buffer-string)))
-        ξfpath
-        )
-
-    (if (string-match-p "\\`http://" ξinputStr)
-        (progn
-          (setq ξfpath (xahsite-url-to-filepath ξinputStr "addFileName"))
-          (if (file-exists-p ξfpath)
-              (progn (find-file ξfpath))
-            (progn (error "file doesn't exist 「%s」" ξfpath))))
-      (progn ; not starting “http://”
-        (setq ξinputStr (xah-remove-uri-fragment ξinputStr))
-        (setq ξfpath (xahsite-web-path-to-filepath ξinputStr default-directory))
-        (if (file-exists-p ξfpath)
-            (progn (find-file ξfpath))
-          (progn (user-error "file doesn't exist 「%s」" ξfpath)))))))
-
 (defun xah-delete-current-file-make-backup (&optional φno-backup-p)
   "Delete the file associated with the current buffer (also closes the buffer).
 
@@ -1556,7 +1470,6 @@ Version 2015-01-26"
 
 (defvar xah-fly-major-mode-lead-key nil "Lead key for all major mode's key sequence. By default, it's (kbd \"<menu> e\"). Only supported by xah's modes.")
 (setq xah-fly-major-mode-lead-key (kbd "<menu> e"))
-
 
 (progn
   (define-prefix-command 'xah-highlight-keymap) ; commands in search-map
@@ -1895,7 +1808,8 @@ Version 2015-01-26"
 
   (define-key xah-fly-leader-key-map (kbd "6") nil)
   (define-key xah-fly-leader-key-map (kbd "2") 'dired-jump)
-  (define-key xah-fly-leader-key-map (kbd "1") 'xah-open-file-path-under-cursor)
+  (define-key xah-fly-leader-key-map (kbd "1") (if (fboundp 'xah-open-file-path-under-cursor) 'xah-open-file-path-under-cursor 'find-file-at-point )
+)
   (define-key xah-fly-leader-key-map (kbd "9") 'ispell-word)
   (define-key xah-fly-leader-key-map (kbd "0") nil)
 
