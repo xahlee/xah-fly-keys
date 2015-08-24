@@ -1232,56 +1232,6 @@ Version 2015-06-12"
 ;; status to offer save
 ;; This custome kill buffer is close-current-buffer.
 
-(defun xah-open-file-at-cursor ()
-  "Open the file path under cursor.
-If there is text selection, uses the text selection for path.
-If the path starts with “http://”, open the URL in browser.
-Input path can be {relative, full path, URL}.
-Path may have a trailing “:‹n›” that indicates line number. If so, jump to that line number.
-If path does not have a file extention, automatically try with “.el” for elisp files.
-This command is similar to `find-file-at-point' but without prompting for confirmation.
-
-URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'
-Version 2015-03-20"
-  (interactive)
-  (let* ((ξinputStr (if (use-region-p)
-                 (buffer-substring-no-properties (region-beginning) (region-end))
-               (let (ξp0 ξp1 ξp2
-                         (ξcharSkipRegex "^  \"\t\n`':|()[]{}<>〔〕“”〈〉《》【】〖〗«»‹›·。\\`"))
-                 (setq ξp0 (point))
-                 ;; chars that are likely to be delimiters of full path, e.g. space, tabs, brakets.
-                 (skip-chars-backward ξcharSkipRegex)
-                 (setq ξp1 (point))
-                 (goto-char ξp0)
-                 (skip-chars-forward ξcharSkipRegex)
-                 (setq ξp2 (point))
-                 (goto-char ξp0)
-                 (buffer-substring-no-properties ξp1 ξp2))))
-         (ξpath (replace-regexp-in-string ":\\'" "" ξinputStr)))
-    (if (string-match-p "\\`https?://" ξpath)
-        (browse-url ξpath)
-      (progn ; not starting “http://”
-        (if (string-match "^\\`\\(.+?\\):\\([0-9]+\\)\\'" ξpath)
-            (progn
-              (let (
-                    (ξfpath (match-string 1 ξpath))
-                    (ξline-num (string-to-number (match-string 2 ξpath))))
-                (if (file-exists-p ξfpath)
-                    (progn
-                      (find-file ξfpath)
-                      (goto-char 1)
-                      (forward-line (1- ξline-num)))
-                  (progn
-                    (when (y-or-n-p (format "file doesn't exist: 「%s」. Create?" ξfpath))
-                      (find-file ξfpath))))))
-          (progn
-            (if (file-exists-p ξpath)
-                (find-file ξpath)
-              (if (file-exists-p (concat ξpath ".el"))
-                  (find-file (concat ξpath ".el"))
-                (when (y-or-n-p (format "file doesn't exist: 「%s」. Create?" ξpath))
-                  (find-file ξpath ))))))))))
-
 (defun xah-delete-current-file-make-backup (&optional φno-backup-p)
   "Delete the file associated with the current buffer (also closes the buffer).
 
@@ -1808,8 +1758,7 @@ Version 2015-01-26"
 
   (define-key xah-fly-leader-key-map (kbd "6") nil)
   (define-key xah-fly-leader-key-map (kbd "2") 'dired-jump)
-  (define-key xah-fly-leader-key-map (kbd "1") (if (fboundp 'xah-open-file-path-under-cursor) 'xah-open-file-path-under-cursor 'find-file-at-point )
-)
+  (define-key xah-fly-leader-key-map (kbd "1") 'ffap)
   (define-key xah-fly-leader-key-map (kbd "9") 'ispell-word)
   (define-key xah-fly-leader-key-map (kbd "0") nil)
 
