@@ -1906,6 +1906,7 @@ Version 2015-01-26"
     (define-key xah-fly-key-map (kbd "]") 'self-insert-command)
     (define-key xah-fly-key-map (kbd "`") 'self-insert-command)
     (define-key xah-fly-key-map (kbd "SPC") 'self-insert-command)
+    (define-key xah-fly-key-map (kbd "RET") nil)
 
     (define-key xah-fly-key-map (kbd "1") 'self-insert-command)
     (define-key xah-fly-key-map (kbd "2") 'self-insert-command)
@@ -1990,6 +1991,7 @@ Version 2015-01-26"
     (define-key xah-fly-key-map (kbd "]") 'xah-forward-quote)
     (define-key xah-fly-key-map (kbd "`") nil)
     (define-key xah-fly-key-map (kbd "SPC") 'xah-fly-leader-key-map)
+    (define-key xah-fly-key-map (kbd "RET") 'xah-fly-insert-mode-activate)
 
     ;; note:
     ;; keys 1 and 8 are swapped
