@@ -1868,6 +1868,9 @@ Version 2015-01-26"
 
 
 
+(global-set-key (kbd "<f7>") 'xah-fly-command-mode-activate)
+(global-set-key (kbd "<f8>") 'xah-fly-insert-mode-activate)
+
 (global-set-key (kbd "<f11>") 'xah-previous-user-buffer)
 (global-set-key (kbd "<f12>") 'xah-next-user-buffer)
 (global-set-key (kbd "<C-f11>") 'xah-previous-emacs-buffer)
