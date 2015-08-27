@@ -1162,7 +1162,7 @@ Version 2015-06-12"
   (interactive)
   (let ((ξbuf (generate-new-buffer "untitled")))
     (switch-to-buffer ξbuf)
-    (funcall (intern initial-major-mode))
+    (funcall initial-major-mode)
     (setq buffer-offer-save t)))
 
 ;; note: emacs won't offer to save a buffer that's
@@ -1355,12 +1355,8 @@ Version 2015-01-26"
   (define-key xah-fly-key-map (kbd "M-r") 'hippie-expand)
 
   (progn
-
     (define-key xah-fly-key-map (kbd "<C-next>") 'xah-next-user-buffer)
     (define-key xah-fly-key-map (kbd "<C-prior>") 'xah-previous-user-buffer)))
-
-(defvar xah-fly-major-mode-lead-key nil "Lead key for all major mode's key sequence. By default, it's (kbd \"<menu> e\"). Only supported by xah's modes.")
-(setq xah-fly-major-mode-lead-key (kbd "<menu> e"))
 
 (progn
   (define-prefix-command 'xah-highlight-keymap) ; commands in search-map
@@ -1860,23 +1856,17 @@ Version 2015-01-26"
 
 ;; setting keys
 
-;; (when (string-equal system-type "windows-nt")
-;;   (define-key key-translation-map (kbd "<apps>") (kbd "<menu>")))
-
 (global-set-key (kbd "<menu>") 'xah-fly-leader-key-map)
 (global-set-key (kbd "<home>") 'xah-fly-command-mode-activate)
 
-
-
 (global-set-key (kbd "<f7>") 'xah-fly-command-mode-activate)
 (global-set-key (kbd "<f8>") 'xah-fly-insert-mode-activate)
+(global-set-key (kbd "<f9>") 'xah-fly-leader-key-map)
 
 (global-set-key (kbd "<f11>") 'xah-previous-user-buffer)
 (global-set-key (kbd "<f12>") 'xah-next-user-buffer)
 (global-set-key (kbd "<C-f11>") 'xah-previous-emacs-buffer)
 (global-set-key (kbd "<C-f12>") 'xah-next-emacs-buffer)
-
-
 
 (global-set-key (kbd "<C-prior>") 'xah-previous-user-buffer)
 (global-set-key (kbd "<C-next>") 'xah-next-user-buffer)
@@ -1885,9 +1875,8 @@ Version 2015-01-26"
   ;; set arrow keys in isearch. left/right is backward/forward, up/down is history. press Return to exit
   (define-key isearch-mode-map (kbd "<up>") 'isearch-ring-retreat )
   (define-key isearch-mode-map (kbd "<down>") 'isearch-ring-advance )
-  (define-key isearch-mode-map (kbd "<left>") 'isearch-repeat-backward) ; single key, useful
-  (define-key isearch-mode-map (kbd "<right>") 'isearch-repeat-forward) ; single key, useful
- )
+  (define-key isearch-mode-map (kbd "<left>") 'isearch-repeat-backward)
+  (define-key isearch-mode-map (kbd "<right>") 'isearch-repeat-forward))
 
 
 (defvar xah-fly-insert-state-q t "Boolean value. true means insertion mode is on.")
@@ -2009,7 +1998,7 @@ Version 2015-01-26"
     (define-key xah-fly-key-map (kbd "9") 'xah-select-text-in-quote)
     (define-key xah-fly-key-map (kbd "0") 'xah-backward-punct)
 
-    (define-key xah-fly-key-map (kbd "a") 'open-line)
+    (define-key xah-fly-key-map (kbd "a") 'xah-fly-insert-mode-activate-insert-return)
     (define-key xah-fly-key-map (kbd "b") 'save-buffer)
     (define-key xah-fly-key-map (kbd "c") 'previous-line)
     (define-key xah-fly-key-map (kbd "d") 'xah-beginning-of-line-or-block)
@@ -2085,6 +2074,12 @@ Version 2015-01-26"
   (modify-all-frames-parameters (list (cons 'cursor-type 'bar)))
   (setq xah-fly-insert-state-q t )
   (xah-fly-insert-mode-init))
+
+(defun xah-fly-insert-mode-activate-insert-return ()
+  "Activate insertion mode, and insert a newline."
+  (interactive)
+  (xah-fly-insert-mode-activate)
+  (open-line 1))
 
 
 
