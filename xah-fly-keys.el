@@ -1684,7 +1684,7 @@ Version 2015-01-26"
 
   (define-key xah-fly-leader-key-map (kbd "8") nil)
   (define-key xah-fly-leader-key-map (kbd "7") nil)
-  (define-key xah-fly-leader-key-map (kbd "3") nil)
+  (define-key xah-fly-leader-key-map (kbd "3") 'xah-fly-keys)
   (define-key xah-fly-leader-key-map (kbd "4") 'split-window-right)
   (define-key xah-fly-leader-key-map (kbd "5") nil)
 
