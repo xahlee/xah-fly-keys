@@ -1352,9 +1352,8 @@ Version 2015-01-26"
   (define-key xah-fly-key-map (kbd "M-c") 'xah-cycle-hyphen-underscore-space)
   (define-key xah-fly-key-map (kbd "M-r") 'hippie-expand)
 
-  (progn
-    (define-key xah-fly-key-map (kbd "<C-next>") 'xah-next-user-buffer)
-    (define-key xah-fly-key-map (kbd "<C-prior>") 'xah-previous-user-buffer)))
+  (define-key xah-fly-key-map (kbd "<C-next>") 'xah-next-user-buffer)
+  (define-key xah-fly-key-map (kbd "<C-prior>") 'xah-previous-user-buffer))
 
 (progn
   (define-prefix-command 'xah-highlight-keymap) ; commands in search-map
@@ -1513,13 +1512,13 @@ Version 2015-01-26"
   (define-key xah-harmless-keymap (kbd "o") nil)
   (define-key xah-harmless-keymap (kbd "p") 'read-only-mode) ; toggle-read-only
   (define-key xah-harmless-keymap (kbd "q") nil)
-  (define-key xah-harmless-keymap (kbd "r") nil)
+  (define-key xah-harmless-keymap (kbd "r") ctl-x-5-map)
   (define-key xah-harmless-keymap (kbd "s") 'flyspell-buffer)
   (define-key xah-harmless-keymap (kbd "t") 'narrow-to-defun)
   (define-key xah-harmless-keymap (kbd "u") 'toggle-input-method)
   (define-key xah-harmless-keymap (kbd "v") 'variable-pitch-mode)
   (define-key xah-harmless-keymap (kbd "w") 'eww)
-  (define-key xah-harmless-keymap (kbd "x") 'nil)
+  (define-key xah-harmless-keymap (kbd "x") 'save-some-buffers)
   (define-key xah-harmless-keymap (kbd "y") 'nil)
   (define-key xah-harmless-keymap (kbd "z") 'abort-recursive-edit)
   )
@@ -1659,8 +1658,6 @@ Version 2015-01-26"
 
 (progn
   (define-prefix-command 'xah-fly-leader-key-map)
-
-  (define-key xah-fly-leader-key-map (kbd "<end>") 'xah-fly-keys)
   (define-key xah-fly-leader-key-map (kbd "RET") (if (fboundp 'smex) 'smex 'execute-extended-command ))
   (define-key xah-fly-leader-key-map (kbd "DEL") 'xah-delete-current-file-make-backup)
   (define-key xah-fly-leader-key-map (kbd "<delete>") nil)
@@ -1728,16 +1725,6 @@ Version 2015-01-26"
 
 ;; these commands have keys in emacs, but right now i decided not to give them a key
 
-  ;; C-x 5 C-f  find-file-other-frame
-  ;; C-x 5 C-o  display-buffer-other-frame
-  ;; C-x 5 .    find-tag-other-frame
-  ;; C-x 5 1    delete-other-frames
-  ;; C-x 5 b    switch-to-buffer-other-frame
-  ;; C-x 5 d    dired-other-frame
-  ;; C-x 5 f    find-file-other-frame
-  ;; C-x 5 m    compose-mail-other-frame
-  ;; C-x 5 r    find-file-read-only-other-frame
-
 ;; C-x C-p	mark-page
 ;; C-x C-l	downcase-region
 ;; C-x C-u	upcase-region
@@ -1758,8 +1745,6 @@ Version 2015-01-26"
 ;; C-x {	shrink-window-horizontally
 ;; C-x }	enlarge-window-horizontally
 ;; C-x DEL	backward-kill-sentence
-
-;; C-x s	save-some-buffers
 
 ;; M-o ESC         Prefix Command
 ;; M-o b           facemenu-set-bold
@@ -1860,6 +1845,8 @@ Version 2015-01-26"
 (global-set-key (kbd "<f7>") 'xah-fly-command-mode-activate)
 (global-set-key (kbd "<f8>") 'xah-fly-insert-mode-activate)
 (global-set-key (kbd "<f9>") 'xah-fly-leader-key-map)
+
+(global-set-key (kbd "<end>") 'xah-fly-insert-mode-activate)
 
 (global-set-key (kbd "<f11>") 'xah-previous-user-buffer)
 (global-set-key (kbd "<f12>") 'xah-next-user-buffer)
