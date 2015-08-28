@@ -1326,7 +1326,6 @@ Version 2015-01-26"
          (ξdo-it-p (if (<= (length ξfile-list) 5)
                        t
                      (y-or-n-p "Open more than 5 files? "))))
-
     (when ξdo-it-p
       (cond
        ((string-equal system-type "windows-nt")
@@ -1348,8 +1347,7 @@ Version 2015-01-26"
   (setq xah-fly-key-map (make-sparse-keymap))
 
   (define-key xah-fly-key-map (kbd "'") 'self-insert-command)
-
-  (define-key xah-fly-key-map (kbd "M-k") 'yank-pop)
+  (define-key xah-fly-key-map (kbd "M-f") 'yank-pop)
   (define-key xah-fly-key-map (kbd "M-t") 'xah-toggle-letter-case)
   (define-key xah-fly-key-map (kbd "M-c") 'xah-cycle-hyphen-underscore-space)
   (define-key xah-fly-key-map (kbd "M-r") 'hippie-expand)
@@ -1879,6 +1877,9 @@ Version 2015-01-26"
   (define-key isearch-mode-map (kbd "<right>") 'isearch-repeat-forward))
 
 
+(defvar xah-fly-major-mode-lead-key nil "Lead key for all major mode's key sequence. By default, it's (kbd \"<menu> e\"). Only supported by xah's modes.")
+(setq xah-fly-major-mode-lead-key (kbd "<menu> e"))
+
 (defvar xah-fly-insert-state-q t "Boolean value. true means insertion mode is on.")
 (setq xah-fly-insert-state-q t)
 
@@ -1998,7 +1999,7 @@ Version 2015-01-26"
     (define-key xah-fly-key-map (kbd "9") 'xah-select-text-in-quote)
     (define-key xah-fly-key-map (kbd "0") 'xah-backward-punct)
 
-    (define-key xah-fly-key-map (kbd "a") 'xah-fly-insert-mode-activate-insert-return)
+    (define-key xah-fly-key-map (kbd "a") 'open-line)
     (define-key xah-fly-key-map (kbd "b") 'save-buffer)
     (define-key xah-fly-key-map (kbd "c") 'previous-line)
     (define-key xah-fly-key-map (kbd "d") 'xah-beginning-of-line-or-block)
@@ -2009,7 +2010,7 @@ Version 2015-01-26"
     (define-key xah-fly-key-map (kbd "i") 'kill-line)
     (define-key xah-fly-key-map (kbd "j") 'xah-cut-line-or-region)
     (define-key xah-fly-key-map (kbd "k") 'yank)
-    (define-key xah-fly-key-map (kbd "l") 'recenter-top-bottom)
+    (define-key xah-fly-key-map (kbd "l") 'xah-insert-space-after)
     (define-key xah-fly-key-map (kbd "m") 'xah-backward-left-bracket)
     (define-key xah-fly-key-map (kbd "n") 'forward-char)
     (define-key xah-fly-key-map (kbd "o") 'other-window)
