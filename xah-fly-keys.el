@@ -1871,8 +1871,13 @@ Version 2015-01-26"
 (global-set-key (kbd "<menu>") 'xah-fly-leader-key-map)
 (global-set-key (kbd "<home>") 'xah-fly-command-mode-activate)
 
-(global-set-key (kbd "<C-2>") 'xah-fly-command-mode-activate)
-(global-set-key (kbd "<C-1>") 'xah-fly-leader-key-map)
+(if xah-fly-swapped-1827-p
+    (progn
+      (global-set-key (kbd "C-2") 'xah-fly-keys)
+      (global-set-key (kbd "C-1") 'xah-fly-command-mode-activate))
+  (progn
+    (global-set-key (kbd "C-7") 'xah-fly-keys)
+    (global-set-key (kbd "C-8") 'xah-fly-command-mode-activate)))
 
 (global-set-key (kbd "<f11>") 'xah-previous-user-buffer)
 (global-set-key (kbd "<f12>") 'xah-next-user-buffer)
@@ -1913,11 +1918,6 @@ Version 2015-01-26"
     (define-key xah-fly-key-map (kbd "]") 'xah-forward-quote)
     (define-key xah-fly-key-map (kbd "`") nil)
     (define-key xah-fly-key-map (kbd "SPC") 'xah-fly-insert-mode-activate)
-    (define-key xah-fly-key-map (kbd "DEL") 'xah-fly-leader-key-map)
-
-    ;; note:
-    ;; keys 1 and 8 are swapped
-    ;; keys 2 and 7 are swapped
 
     (if xah-fly-swapped-1827-p
         (progn
@@ -1962,7 +1962,7 @@ Version 2015-01-26"
     (define-key xah-fly-key-map (kbd "u") 'delete-char)
     (define-key xah-fly-key-map (kbd "v") 'xah-forward-right-bracket)
     (define-key xah-fly-key-map (kbd "w") 'other-window)
-    (define-key xah-fly-key-map (kbd "x") (if (fboundp 'smex) 'smex 'execute-extended-command ))
+    (define-key xah-fly-key-map (kbd "x") 'xah-fly-leader-key-map)
     (define-key xah-fly-key-map (kbd "y") 'set-mark-command)
     (define-key xah-fly-key-map (kbd "z") 'comment-dwim)
 
@@ -2010,7 +2010,6 @@ Version 2015-01-26"
     (define-key xah-fly-key-map (kbd "]") 'self-insert-command)
     (define-key xah-fly-key-map (kbd "`") 'self-insert-command)
     (define-key xah-fly-key-map (kbd "SPC") 'self-insert-command)
-    (define-key xah-fly-key-map (kbd "DEL") nil)
 
     (define-key xah-fly-key-map (kbd "1") 'self-insert-command)
     (define-key xah-fly-key-map (kbd "2") 'self-insert-command)
