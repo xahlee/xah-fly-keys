@@ -1467,18 +1467,7 @@ Version 2015-01-26"
   ;; they turn on minor/major mode, change display, prompt, start shell, etc.
   (define-prefix-command 'xah-harmless-keymap)
 
-  (define-key xah-harmless-keymap (kbd "RET") nil)
-  (define-key xah-harmless-keymap (kbd "RET F") 'set-file-name-coding-system)
-  (define-key xah-harmless-keymap (kbd "RET X") 'set-next-selection-coding-system)
-  (define-key xah-harmless-keymap (kbd "RET c") 'universal-coding-system-argument)
-  (define-key xah-harmless-keymap (kbd "RET f") 'set-buffer-file-coding-system)
-  (define-key xah-harmless-keymap (kbd "RET k") 'set-keyboard-coding-system)
-  (define-key xah-harmless-keymap (kbd "RET l") 'set-language-environment)
-  (define-key xah-harmless-keymap (kbd "RET p") 'set-buffer-process-coding-system)
-  (define-key xah-harmless-keymap (kbd "RET r") 'revert-buffer-with-coding-system)
-  (define-key xah-harmless-keymap (kbd "RET t") 'set-terminal-coding-system)
-  (define-key xah-harmless-keymap (kbd "RET x") 'set-selection-coding-system)
-
+  (define-key xah-harmless-keymap (kbd "SPC") nil)
   (define-key xah-harmless-keymap (kbd "'") 'frame-configuration-to-register)
   (define-key xah-harmless-keymap (kbd ";") 'window-configuration-to-register)
 
@@ -1519,7 +1508,30 @@ Version 2015-01-26"
   (define-key xah-harmless-keymap (kbd "o") nil)
   (define-key xah-harmless-keymap (kbd "p") 'read-only-mode) ; toggle-read-only
   (define-key xah-harmless-keymap (kbd "q") nil)
+  (define-key xah-harmless-keymap (kbd "q n") 'set-file-name-coding-system)
+  (define-key xah-harmless-keymap (kbd "q s") 'set-next-selection-coding-system)
+  (define-key xah-harmless-keymap (kbd "q c") 'universal-coding-system-argument)
+  (define-key xah-harmless-keymap (kbd "q f") 'set-buffer-file-coding-system)
+  (define-key xah-harmless-keymap (kbd "q k") 'set-keyboard-coding-system)
+  (define-key xah-harmless-keymap (kbd "q l") 'set-language-environment)
+  (define-key xah-harmless-keymap (kbd "q p") 'set-buffer-process-coding-system)
+  (define-key xah-harmless-keymap (kbd "q r") 'revert-buffer-with-coding-system)
+  (define-key xah-harmless-keymap (kbd "q t") 'set-terminal-coding-system)
+  (define-key xah-harmless-keymap (kbd "q x") 'set-selection-coding-system)
   (define-key xah-harmless-keymap (kbd "r") ctl-x-5-map)
+
+;; <menu> n r C-o  display-buffer-other-frame
+;; <menu> n r .    find-tag-other-frame
+;; <menu> n r 0    delete-frame
+;; <menu> n r 1    delete-other-frames
+;; <menu> n r 2    make-frame-command
+;; <menu> n r b    switch-to-buffer-other-frame
+;; <menu> n r d    dired-other-frame
+;; <menu> n r f    find-file-other-frame
+;; <menu> n r m    compose-mail-other-frame
+;; <menu> n r o    other-frame
+;; <menu> n r r    find-file-read-only-other-frame
+
   (define-key xah-harmless-keymap (kbd "s") 'flyspell-buffer)
   (define-key xah-harmless-keymap (kbd "t") 'narrow-to-defun)
   (define-key xah-harmless-keymap (kbd "u") 'toggle-input-method)
@@ -1576,9 +1588,12 @@ Version 2015-01-26"
     (progn
         (define-key xah-leader-t-keymap (kbd "8") 'mark-defun)))
 
-  (define-key xah-leader-t-keymap (kbd "RET") 'pop-global-mark)
+  (define-key xah-leader-t-keymap (kbd "SPC") 'pop-global-mark)
   (define-key xah-leader-t-keymap (kbd "3") 'point-to-register)
   (define-key xah-leader-t-keymap (kbd "4") 'jump-to-register)
+
+  (define-key xah-leader-t-keymap (kbd ".") nil)
+  (define-key xah-leader-t-keymap (kbd ",") nil)
 
   (define-key xah-leader-t-keymap (kbd "a") nil)
   (define-key xah-leader-t-keymap (kbd "b") nil)
@@ -1610,25 +1625,25 @@ Version 2015-01-26"
   (define-key xah-leader-t-keymap (kbd "z") 'number-to-register))
 
 (progn
-  (define-prefix-command 'xah-leader-v-keymap)
+  (define-prefix-command 'xah-leader-vc-keymap)
 
-  (define-key xah-leader-v-keymap (kbd "+") 'vc-update)
-  (define-key xah-leader-v-keymap (kbd "=") 'vc-diff)
-  (define-key xah-leader-v-keymap (kbd "D") 'vc-root-diff)
-  (define-key xah-leader-v-keymap (kbd "L") 'vc-print-root-log)
-  (define-key xah-leader-v-keymap (kbd "a") 'vc-update-change-log)
-  (define-key xah-leader-v-keymap (kbd "b") 'vc-switch-backend)
-  (define-key xah-leader-v-keymap (kbd "c") 'vc-rollback)
-  (define-key xah-leader-v-keymap (kbd "d") 'vc-dir)
-  (define-key xah-leader-v-keymap (kbd "g") 'vc-annotate)
-  (define-key xah-leader-v-keymap (kbd "h") 'vc-insert-headers)
-  (define-key xah-leader-v-keymap (kbd "l") 'vc-print-log)
-  (define-key xah-leader-v-keymap (kbd "m") 'vc-merge)
-  (define-key xah-leader-v-keymap (kbd "r") 'vc-retrieve-tag)
-  (define-key xah-leader-v-keymap (kbd "s") 'vc-create-tag)
-  (define-key xah-leader-v-keymap (kbd "u") 'vc-revert)
-  (define-key xah-leader-v-keymap (kbd "v") 'vc-next-action)
-  (define-key xah-leader-v-keymap (kbd "~") 'vc-revision-other-window))
+  (define-key xah-leader-vc-keymap (kbd "+") 'vc-update)
+  (define-key xah-leader-vc-keymap (kbd "=") 'vc-diff)
+  (define-key xah-leader-vc-keymap (kbd "D") 'vc-root-diff)
+  (define-key xah-leader-vc-keymap (kbd "L") 'vc-print-root-log)
+  (define-key xah-leader-vc-keymap (kbd "a") 'vc-update-change-log)
+  (define-key xah-leader-vc-keymap (kbd "b") 'vc-switch-backend)
+  (define-key xah-leader-vc-keymap (kbd "c") 'vc-rollback)
+  (define-key xah-leader-vc-keymap (kbd "d") 'vc-dir)
+  (define-key xah-leader-vc-keymap (kbd "g") 'vc-annotate)
+  (define-key xah-leader-vc-keymap (kbd "h") 'vc-insert-headers)
+  (define-key xah-leader-vc-keymap (kbd "l") 'vc-print-log)
+  (define-key xah-leader-vc-keymap (kbd "m") 'vc-merge)
+  (define-key xah-leader-vc-keymap (kbd "r") 'vc-retrieve-tag)
+  (define-key xah-leader-vc-keymap (kbd "s") 'vc-create-tag)
+  (define-key xah-leader-vc-keymap (kbd "u") 'vc-revert)
+  (define-key xah-leader-vc-keymap (kbd "v") 'vc-next-action)
+  (define-key xah-leader-vc-keymap (kbd "~") 'vc-revision-other-window))
 
 (progn
   (define-prefix-command 'xah-danger-keymap)
@@ -1642,7 +1657,7 @@ Version 2015-01-26"
   (define-key xah-danger-keymap (kbd "u") 'eval-region)
   (define-key xah-danger-keymap (kbd "q") 'save-buffers-kill-terminal)
   (define-key xah-danger-keymap (kbd "w") 'delete-frame)
-  (define-key xah-danger-keymap (kbd "DEL") 'xah-delete-current-file-make-backup))
+  (define-key xah-danger-keymap (kbd "j") 'xah-delete-current-file-make-backup))
 
 (progn
   (define-prefix-command 'xah-insertion-keymap)
@@ -1680,11 +1695,10 @@ Version 2015-01-26"
 (progn
   (define-prefix-command 'xah-fly-leader-key-map)
   (define-key xah-fly-leader-key-map (kbd "RET") (if (fboundp 'smex) 'smex 'execute-extended-command ))
-  (define-key xah-fly-leader-key-map (kbd "DEL") 'xah-fly-keys)
-  (define-key xah-fly-leader-key-map (kbd "<delete>") nil)
   (define-key xah-fly-leader-key-map (kbd "SPC") xah-insertion-keymap)
-  (define-key xah-fly-leader-key-map (kbd "<menu>") 'exchange-point-and-mark)
   (define-key xah-fly-leader-key-map (kbd "TAB") xah-leader-tab-keymap)
+  (define-key xah-fly-leader-key-map (kbd "<end>") 'xah-fly-keys)
+  (define-key xah-fly-leader-key-map (kbd "<menu>") 'exchange-point-and-mark)
 
   (define-key xah-fly-leader-key-map (kbd "<mouse-1>") 'xah-set-mouse-wheel-mode) ; left button
   (define-key xah-fly-leader-key-map (kbd "<mouse-3>") 'xah-set-mouse-scroll-by-50-line) ; right button
@@ -1743,7 +1757,7 @@ Version 2015-01-26"
   (define-key xah-fly-leader-key-map (kbd "s") nil)
   (define-key xah-fly-leader-key-map (kbd "t") xah-leader-t-keymap)
   (define-key xah-fly-leader-key-map (kbd "u") nil)
-  (define-key xah-fly-leader-key-map (kbd "v") xah-leader-v-keymap)
+  (define-key xah-fly-leader-key-map (kbd "v") xah-leader-vc-keymap)
   (define-key xah-fly-leader-key-map (kbd "w") xah-danger-keymap)
   (define-key xah-fly-leader-key-map (kbd "x") nil)
   (define-key xah-fly-leader-key-map (kbd "y") nil)
@@ -1939,7 +1953,7 @@ Version 2015-01-26"
     (define-key xah-fly-key-map (kbd "9") 'xah-select-text-in-quote)
     (define-key xah-fly-key-map (kbd "0") 'xah-backward-punct)
 
-    (define-key xah-fly-key-map (kbd "a") 'open-line)
+    (define-key xah-fly-key-map (kbd "a") (if (fboundp 'smex) 'smex 'execute-extended-command ))
     (define-key xah-fly-key-map (kbd "b") 'save-buffer)
     (define-key xah-fly-key-map (kbd "c") 'previous-line)
     (define-key xah-fly-key-map (kbd "d") 'xah-beginning-of-line-or-block)
@@ -1953,7 +1967,7 @@ Version 2015-01-26"
     (define-key xah-fly-key-map (kbd "l") 'xah-insert-space-before)
     (define-key xah-fly-key-map (kbd "m") 'xah-backward-left-bracket)
     (define-key xah-fly-key-map (kbd "n") 'forward-char)
-    (define-key xah-fly-key-map (kbd "o") nil)
+    (define-key xah-fly-key-map (kbd "o") 'open-line)
     (define-key xah-fly-key-map (kbd "p") 'kill-word)
     (define-key xah-fly-key-map (kbd "q") 'xah-copy-line-or-region)
     (define-key xah-fly-key-map (kbd "r") 'forward-word)
