@@ -1648,8 +1648,6 @@ Version 2015-01-26"
 (progn
   (define-prefix-command 'xah-danger-keymap)
 
-  (define-key xah-danger-keymap (kbd "RET") 'xah-run-current-file)
-
   (define-key xah-danger-keymap (kbd ".") 'eval-buffer)
   (define-key xah-danger-keymap (kbd "e") 'eval-defun)
   (define-key xah-danger-keymap (kbd "m") 'eval-last-sexp)
@@ -1657,7 +1655,7 @@ Version 2015-01-26"
   (define-key xah-danger-keymap (kbd "u") 'eval-region)
   (define-key xah-danger-keymap (kbd "q") 'save-buffers-kill-terminal)
   (define-key xah-danger-keymap (kbd "w") 'delete-frame)
-  (define-key xah-danger-keymap (kbd "j") 'xah-delete-current-file-make-backup))
+  (define-key xah-danger-keymap (kbd "j") 'xah-run-current-file))
 
 (progn
   (define-prefix-command 'xah-insertion-keymap)
@@ -1699,6 +1697,7 @@ Version 2015-01-26"
   (define-key xah-fly-leader-key-map (kbd "TAB") xah-leader-tab-keymap)
   (define-key xah-fly-leader-key-map (kbd "<end>") 'xah-fly-keys)
   (define-key xah-fly-leader-key-map (kbd "<menu>") 'exchange-point-and-mark)
+  (define-key xah-fly-leader-key-map (kbd "DEL") 'xah-delete-current-file-make-backup)
 
   (define-key xah-fly-leader-key-map (kbd "<mouse-1>") 'xah-set-mouse-wheel-mode) ; left button
   (define-key xah-fly-leader-key-map (kbd "<mouse-3>") 'xah-set-mouse-scroll-by-50-line) ; right button
