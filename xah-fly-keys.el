@@ -1534,7 +1534,7 @@ Version 2015-01-26"
 
   (define-key xah-harmless-keymap (kbd "s") 'flyspell-buffer)
   (define-key xah-harmless-keymap (kbd "t") 'narrow-to-defun)
-  (define-key xah-harmless-keymap (kbd "u") 'toggle-input-method)
+  (define-key xah-harmless-keymap (kbd "u") nil)
   (define-key xah-harmless-keymap (kbd "v") 'variable-pitch-mode)
   (define-key xah-harmless-keymap (kbd "w") 'eww)
   (define-key xah-harmless-keymap (kbd "x") 'save-some-buffers)
@@ -1606,7 +1606,7 @@ Version 2015-01-26"
                                                 (progn 'xah-close-current-buffer)
                                               (progn 'kill-buffer)))
   (define-key xah-leader-t-keymap (kbd "i") nil)
-  (define-key xah-leader-t-keymap (kbd "j") nil)
+  (define-key xah-leader-t-keymap (kbd "j") 'toggle-input-method)
   (define-key xah-leader-t-keymap (kbd "k") nil)
   (define-key xah-leader-t-keymap (kbd "l") 'increment-register)
   (define-key xah-leader-t-keymap (kbd "m") nil)
