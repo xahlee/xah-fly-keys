@@ -1171,9 +1171,9 @@ Version 2015-06-12"
 ;; This custome kill buffer is close-current-buffer.
 
 (defun xah-delete-current-file-make-backup (&optional φno-backup-p)
-  "Delete the file associated with the current buffer (also closes the buffer).
+  "Delete current file, makes a backup~, closes the buffer.
 
-A backup file is created with filename appended “~‹date time stamp›~”. Existing file of the same name is overwritten. If the file is not associated with buffer, the backup file name starts with “xx_”.
+Backup filename is “‹name›~‹date time stamp›~”. Existing file of the same name is overwritten. If the file is not associated with buffer, the backup file name starts with “xx_”.
 
 When called with `universal-argument', don't create backup.
 
@@ -1200,16 +1200,14 @@ Version 2015-05-26"
         (message "Backup created at 「%s」." (concat "xx" ξbackup-suffix))))
     (kill-buffer (current-buffer))))
 
-(defun xah-delete-current-file ()
-  "Delete the file associated with the current buffer and close the buffer.
-Also push file content to `kill-ring'.
-If buffer is not file, just close it, and push file content to `kill-ring'.
-
+(defun xah-delete-current-file-copy-to-kill-ring ()
+  "Delete current buffer/file and close the buffer, push content to `kill-ring'.
 URL `http://ergoemacs.org/emacs/elisp_delete-current-file.html'
 Version 2015-08-12"
   (interactive)
   (progn
     (kill-new (buffer-string))
+    (message "Buffer content copied to kill-ring.")
     (when (buffer-file-name)
       (when (file-exists-p (buffer-file-name))
         (progn
@@ -1218,6 +1216,20 @@ Version 2015-08-12"
     (let ((buffer-offer-save nil))
       (set-buffer-modified-p nil)
       (kill-buffer (current-buffer)))))
+
+(defun xah-delete-current-file (&optional φno-backup-p)
+  "Delete current buffer/file and close the buffer.
+If buffer is a file, makes a backup~, else, push file content to `kill-ring'.
+
+The backup filename is “‹filename›~‹date time stamp›~”. Existing file of the same name is overwritten. If the file is not associated with buffer, the backup file name starts with “xx_”.
+
+URL `http://ergoemacs.org/emacs/elisp_delete-current-file.html'
+Version 2015-09-02"
+  (interactive "P")
+  (progn
+    (if (buffer-file-name)
+        (xah-delete-current-file-make-backup φno-backup-p)
+      (xah-delete-current-file-copy-to-kill-ring))))
 
 (defun xah-run-current-file ()
   "Execute the current file.
@@ -1697,7 +1709,7 @@ Version 2015-01-26"
   (define-key xah-fly-leader-key-map (kbd "TAB") xah-leader-tab-keymap)
   (define-key xah-fly-leader-key-map (kbd "<end>") 'xah-fly-keys)
   (define-key xah-fly-leader-key-map (kbd "<menu>") 'exchange-point-and-mark)
-  (define-key xah-fly-leader-key-map (kbd "DEL") 'xah-delete-current-file-make-backup)
+  (define-key xah-fly-leader-key-map (kbd "DEL") 'xah-delete-current-file)
 
   (define-key xah-fly-leader-key-map (kbd "<mouse-1>") 'xah-set-mouse-wheel-mode) ; left button
   (define-key xah-fly-leader-key-map (kbd "<mouse-3>") 'xah-set-mouse-scroll-by-50-line) ; right button
