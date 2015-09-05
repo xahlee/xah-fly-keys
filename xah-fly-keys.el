@@ -16,28 +16,63 @@
 
 ;;; Commentary:
 
-;; xah-fly-keys is an efficient keybiding system for remacs. (it is more efficient than vim)
+;; xah-fly-keys is a efficient keybiding system for emacs. (more efficient than vim)
 
 ;; It is a modal mode, like vi, but keymaps are based on statistics of command call frequency key position easy-to-press score.
 
 ;; xah-fly-keys does not bind any Control key, nor Meta keys (except 3, but you can turn off).  So, you can use emacs as is.
 
-;; for now, see home page for info
-;; http://ergoemacs.org/misc/ergoemacs_vi_mode.html
-
-;; If you like this project, Buy Xah Emacs Tutorial http://ergoemacs.org/emacs/buy_xah_emacs_tutorial.html or make a donation. Thanks.
-
-;;; INSTALL
-
-;; To manual install.
-
+;; --------------------------------------------------
+;; MANUAL INSTALL
 ;; put the file xah-fly-keys.el in ~/.emacs.d/lisp/
-
 ;; put the following in your emacs init at ~/.emacs.d/init.el
 
 ;; (add-to-list 'load-path "~/.emacs.d/lisp/xah-fly-keys.el")
 ;; (require 'xah-fly-keys)
 ;; (xah-fly-keys 1)
+
+;; --------------------------------------------------
+;; USE
+
+;; Important commands, and defaut keys
+
+;; xah-fly-command-mode-activate (key: 【home】, 【Ctrl+8】)
+;; xah-fly-insert-mode-activate (when in command mode, 【SPACE】)
+;; xah-fly-mode-toggle (toggle between command/insert modes)
+
+;; When in command mode:
+;; 【SPACE】 activates insertion mode
+;; 【x】 is a leader key, for emacs one thousands commands
+
+;; command: xah-fly-keys (key: 【Ctrl+7】, 【menu end】) to toggle the mode on/off.
+
+;; It is necessary and important to toggle xah-fly-keys mode. Because, it gives you access to special modes that use letter keys, such as dired
+
+;; When using xah-fly-keys, you don't need to ever press Control or Meta, with the following exceptions:
+
+;; C-g for cancel.
+;; C-c for major mode commands.
+
+;; Leader keys
+
+;; You NEVER need to press Ctrl+x
+
+;; All emacs C-x keys have a key sequence, starting with a leader key.
+
+;; globally, the leader key is the 【menu】 key. (on typical PC keyboard, it's usually at right side of space bar.) You should change this to a easy-key on YOUR keyboard. For example, map left Alt to menu.
+
+;; When in command mode, the 【x】 is a leader key.
+
+;; That is it. You should change the above mentioned critical keys to be ones easy to type on YOUR KEYBOARD.
+
+;; I recommend you make a copy, and modify it, and use your modified version. Don't worry about upgrade.
+
+;; If you have a bug, post on github. If you have question, post on xah-fly-keys home page.
+
+;; For detail and tutorial-like doc, see
+;; http://ergoemacs.org/misc/ergoemacs_vi_mode.html
+
+;; If you like this project, Buy Xah Emacs Tutorial http://ergoemacs.org/emacs/buy_xah_emacs_tutorial.html or make a donation. Thanks.
 
 ;;; TODO
 ;; • make it support qwerty Keyboard layout
