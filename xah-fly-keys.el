@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.0.1
+;; Version: 2.0.2
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -23,6 +23,8 @@
 ;; xah-fly-keys does not bind any Control key, nor Meta keys (except 3, but you can turn off).
 
 ;; To learn xah-fly-keys, is like learning vi for the first time. All is new. You'll need one month to adopt. (but you can use emacs as is, because no Control or Meta are used.)
+
+;; xah-fly-keys is currently optimized for Dvorak layout only. If you touch-type QWERTY or other, you will need to rebind keys. See home page for detail: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
 
 ;; --------------------------------------------------
 ;; MANUAL INSTALL
@@ -56,15 +58,15 @@
 
 ;; C-c for major mode commands.
 ;; C-g for cancel. (i recommend you set a easy-key outside of emacs to send C-g)
-;; C-q for quoted-insert
+;; C-q for quoted-insert. (because C-q is a efficient choice. Because the key after C-q needs Control held-down.)
 
 ;; Leader keys
 
-;; All emacs C-x keys have a key sequence, starting with a leader key. Most commands are 2 to 3 keys, counting the leader key.
+;; All emacs C-x keys have a key sequence, starting with a leader key. Most commands are 2 to 3 keys, counting the leader key. For example, isearch is 【‹leader key› g】 (in Dvorak layout), switch-buffer is 【‹leader key› c g】.
 
 ;; You NEVER need to press Ctrl+x
 
-;; globally, the leader key is the 【menu】 key. (on typical PC keyboard, it's usually at right side of space bar.) You should change this to a easy-key on YOUR keyboard. For example, map left Alt to menu.
+;; globally, the leader key is the 【menu】 key. (on typical PC keyboard, it's usually at right side of space bar.) You should change this to a easy-key on YOUR keyboard. For example, make left Alt to send menu key signal in your OS or keyboard firmware.
 
 ;; When in command mode, the 【x】 is a leader key.
 
@@ -74,7 +76,7 @@
 
 ;; If you have a bug, post on github. If you have question, post on xah-fly-keys home page.
 
-;; For detail and tutorial-like explanation, see
+;; For detail and tutorial-like explanation, and about how to remap keys such as capslock outside of emacs, see
 ;; http://ergoemacs.org/misc/ergoemacs_vi_mode.html
 
 ;; If you like this project, Buy Xah Emacs Tutorial http://ergoemacs.org/emacs/buy_xah_emacs_tutorial.html or make a donation. Thanks.
