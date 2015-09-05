@@ -16,11 +16,13 @@
 
 ;;; Commentary:
 
-;; xah-fly-keys is a efficient keybiding system for emacs. (more efficient than vim)
+;; xah-fly-keys is a efficient keybinding system for emacs. (more efficient than vim)
 
-;; It is a modal mode, like vi, but keymaps are based on statistics of command call frequency key position easy-to-press score.
+;; It is a modal mode, like vi, but key choices are based on statistics of command call frequency key position easy-to-press score.
 
-;; xah-fly-keys does not bind any Control key, nor Meta keys (except 3, but you can turn off).  So, you can use emacs as is.
+;; xah-fly-keys does not bind any Control key, nor Meta keys (except 3, but you can turn off).
+
+;; To learn xah-fly-keys, is like learning vi for the first time. All is new. You'll need one month to adopt. (but you can use emacs as is, because no Control or Meta are used.)
 
 ;; --------------------------------------------------
 ;; MANUAL INSTALL
@@ -36,28 +38,31 @@
 
 ;; Important commands, and defaut keys
 
+;; command: xah-fly-keys (key: 【Ctrl+7】, 【menu end】) to toggle the mode on/off.
+
+;; It is necessary and important to toggle xah-fly-keys mode. Because, it gives you access to special modes that use letter keys, such as dired
+
+;; Important command/insert mode switch keys:
+
 ;; xah-fly-command-mode-activate (key: 【home】, 【Ctrl+8】)
 ;; xah-fly-insert-mode-activate (when in command mode, 【SPACE】)
-;; xah-fly-mode-toggle (toggle between command/insert modes)
+;; xah-fly-mode-toggle (toggle between command/insert modes. No key by default.)
 
 ;; When in command mode:
 ;; 【SPACE】 activates insertion mode
 ;; 【x】 is a leader key, for emacs one thousands commands
 
-;; command: xah-fly-keys (key: 【Ctrl+7】, 【menu end】) to toggle the mode on/off.
-
-;; It is necessary and important to toggle xah-fly-keys mode. Because, it gives you access to special modes that use letter keys, such as dired
-
 ;; When using xah-fly-keys, you don't need to ever press Control or Meta, with the following exceptions:
 
-;; C-g for cancel.
 ;; C-c for major mode commands.
+;; C-g for cancel. (i recommend you set a easy-key outside of emacs to send C-g)
+;; C-q for quoted-insert
 
 ;; Leader keys
 
-;; You NEVER need to press Ctrl+x
+;; All emacs C-x keys have a key sequence, starting with a leader key. Most commands are 2 to 3 keys, counting the leader key.
 
-;; All emacs C-x keys have a key sequence, starting with a leader key.
+;; You NEVER need to press Ctrl+x
 
 ;; globally, the leader key is the 【menu】 key. (on typical PC keyboard, it's usually at right side of space bar.) You should change this to a easy-key on YOUR keyboard. For example, map left Alt to menu.
 
@@ -65,19 +70,19 @@
 
 ;; That is it. You should change the above mentioned critical keys to be ones easy to type on YOUR KEYBOARD.
 
-;; I recommend you make a copy, and modify it, and use your modified version. Don't worry about upgrade.
+;; I recommend you make a copy, and modify it, and use your modified version. Don't worry about upgrade. (I still make key tweaks every week, for the past 3 years.)
 
 ;; If you have a bug, post on github. If you have question, post on xah-fly-keys home page.
 
-;; For detail and tutorial-like doc, see
+;; For detail and tutorial-like explanation, see
 ;; http://ergoemacs.org/misc/ergoemacs_vi_mode.html
 
 ;; If you like this project, Buy Xah Emacs Tutorial http://ergoemacs.org/emacs/buy_xah_emacs_tutorial.html or make a donation. Thanks.
 
 ;;; TODO
-;; • make it support qwerty Keyboard layout
-;; • add feature to allow support of standard open close save etc keys with Control
-;; • add feature to allow turn off any Control completely. Same for Meta. (as a way to stop habit)
+;; • 2015-09-04 make it support qwerty Keyboard layout
+;; • 2015-09-04 add option to allow support of standard open close save etc keys with Control
+;; • 2015-09-04 add option to allow turn off any Control completely. Same for Meta. (as a way to stop habit)
 
 
 ;;; Code:
