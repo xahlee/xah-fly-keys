@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.0.2
+;; Version: 2.0.3
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -18,7 +18,7 @@
 
 ;; xah-fly-keys is a efficient keybinding system for emacs. (more efficient than vim)
 
-;; It is a modal mode, like vi, but key choices are based on statistics of command call frequency key position easy-to-press score.
+;; It is a modal mode, like vi, but key choices are based on statistics of command call frequency, and key position easy-to-press score.
 
 ;; xah-fly-keys does not bind any Control key, nor Meta keys (except 3, but you can turn off).
 
@@ -29,16 +29,17 @@
 ;; --------------------------------------------------
 ;; MANUAL INSTALL
 ;; put the file xah-fly-keys.el in ~/.emacs.d/lisp/
-;; put the following in your emacs init at ~/.emacs.d/init.el
 
-;; (add-to-list 'load-path "~/.emacs.d/lisp/xah-fly-keys.el")
+;; put the following in your emacs init file:
+
+;; (add-to-list 'load-path "~/.emacs.d/lisp/")
 ;; (require 'xah-fly-keys)
 ;; (xah-fly-keys 1)
 
 ;; --------------------------------------------------
 ;; USE
 
-;; Important commands, and defaut keys
+;; Important commands, and defeat keys
 
 ;; command: xah-fly-keys (key: 【Ctrl+7】, 【menu end】) to toggle the mode on/off.
 
