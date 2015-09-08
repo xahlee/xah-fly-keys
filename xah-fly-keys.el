@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.0.3
+;; Version: 2.0.4
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -192,7 +192,7 @@ The list of brackets to jump to is defined by `xah-left-brackets'.
 URL `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
 Version 2015-03-24"
   (interactive)
-  (search-backward-regexp (eval-when-compile (regexp-opt xah-left-brackets)) nil t))
+  (search-backward-regexp (regexp-opt xah-left-brackets) nil t))
 
 (defun xah-forward-right-bracket ()
   "Move cursor to the next occurrence of right bracket.
@@ -200,7 +200,7 @@ The list of brackets to jump to is defined by `xah-right-brackets'.
 URL `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
 Version 2015-03-24"
   (interactive)
-  (search-forward-regexp (eval-when-compile (regexp-opt xah-right-brackets)) nil t))
+  (search-forward-regexp (regexp-opt xah-right-brackets) nil t))
 
 (defun xah-forward-equal-quote ()
   "Move cursor to the next occurrence of 「='」 or 「=\"」, with or without space.
@@ -1130,7 +1130,7 @@ Similar to `kill-buffer', with the following addition:
 • If the buffer is a file, add the path to the list `xah-recently-closed-buffers'.
 • If it is the minibuffer, exit the minibuffer
 
-A emacs buffer is one who's name starts with *.
+A emacs buffer is one whose name starts with *.
 Else it is a user buffer."
   (interactive)
   (let (ξemacs-buff-p
