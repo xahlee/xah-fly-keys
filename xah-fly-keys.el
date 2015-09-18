@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.0.4
+;; Version: 2.0.5
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -295,26 +295,58 @@ Version 2015-03-24"
   (when (looking-at "\n")
     (delete-char 1)))
 
+;; (defun xah-copy-line-or-region ()
+;;   "Copy current line, or text selection.
+;; When `universal-argument' is called first, copy whole buffer (respects `narrow-to-region').
+
+;; URL `http://ergoemacs.org/emacs/emacs_copy_cut_current_line.html'
+;; Version 2015-05-06"
+;;   (interactive)
+;;   (let (ξp1 ξp2)
+;;     (if current-prefix-arg
+;;         (progn (setq ξp1 (point-min))
+;;                (setq ξp2 (point-max)))
+;;       (progn (if (use-region-p)
+;;                  (progn (setq ξp1 (region-beginning))
+;;                         (setq ξp2 (region-end)))
+;;                (progn (setq ξp1 (line-beginning-position))
+;;                       (setq ξp2 (line-end-position))))))
+;;     (kill-ring-save ξp1 ξp2)
+;;     (if current-prefix-arg
+;;         (message "buffer text copied")
+;;       (message "text copied"))))
+
 (defun xah-copy-line-or-region ()
   "Copy current line, or text selection.
+When called repeatedly, append copy subsequent lines.
 When `universal-argument' is called first, copy whole buffer (respects `narrow-to-region').
 
 URL `http://ergoemacs.org/emacs/emacs_copy_cut_current_line.html'
-Version 2015-05-06"
+Version 2015-09-18"
   (interactive)
   (let (ξp1 ξp2)
     (if current-prefix-arg
         (progn (setq ξp1 (point-min))
                (setq ξp2 (point-max)))
-      (progn (if (use-region-p)
-                 (progn (setq ξp1 (region-beginning))
-                        (setq ξp2 (region-end)))
-               (progn (setq ξp1 (line-beginning-position))
-                      (setq ξp2 (line-end-position))))))
-    (kill-ring-save ξp1 ξp2)
-    (if current-prefix-arg
-        (message "buffer text copied")
-      (message "text copied"))))
+      (progn
+        (if (use-region-p)
+            (progn (setq ξp1 (region-beginning))
+                   (setq ξp2 (region-end)))
+          (progn (setq ξp1 (line-beginning-position))
+                 (setq ξp2 (line-end-position))))))
+    (if (eq last-command this-command)
+        (progn
+          ;; (push-mark (point) "NOMSG" "ACTIVATE")
+          (kill-append "\n" nil)
+          (forward-line 1)
+          (end-of-line)
+          (kill-append (buffer-substring-no-properties (line-beginning-position) (line-end-position)) nil)
+          (message "Line copy appended"))
+      (progn
+        (kill-ring-save ξp1 ξp2)
+        (if current-prefix-arg
+            (message "Buffer text copied")
+          (message "Text copied"))))))
 
 (defun xah-cut-line-or-region ()
   "Cut current line, or text selection.
@@ -1401,10 +1433,6 @@ Version 2015-01-26"
   (setq xah-fly-key-map (make-sparse-keymap))
 
   (define-key xah-fly-key-map (kbd "'") 'self-insert-command)
-  (define-key xah-fly-key-map (kbd "M-f") 'yank-pop)
-  (define-key xah-fly-key-map (kbd "M-t") 'xah-toggle-letter-case)
-  (define-key xah-fly-key-map (kbd "M-c") 'xah-cycle-hyphen-underscore-space)
-  (define-key xah-fly-key-map (kbd "M-r") 'hippie-expand)
 
   (define-key xah-fly-key-map (kbd "<C-next>") 'xah-next-user-buffer)
   (define-key xah-fly-key-map (kbd "<C-prior>") 'xah-previous-user-buffer))
@@ -1654,15 +1682,15 @@ Version 2015-01-26"
   (define-key xah-leader-t-keymap (kbd "b") nil)
   (define-key xah-leader-t-keymap (kbd "c") nil)
   (define-key xah-leader-t-keymap (kbd "d") nil)
-  (define-key xah-leader-t-keymap (kbd "e") 'copy-to-register)
+  (define-key xah-leader-t-keymap (kbd "e") 'toggle-input-method)
   (define-key xah-leader-t-keymap (kbd "f") nil)
   (define-key xah-leader-t-keymap (kbd "g") nil)
   (define-key xah-leader-t-keymap (kbd "h") (if (fboundp 'xah-close-current-buffer)
                                                 (progn 'xah-close-current-buffer)
                                               (progn 'kill-buffer)))
   (define-key xah-leader-t-keymap (kbd "i") nil)
-  (define-key xah-leader-t-keymap (kbd "j") 'toggle-input-method)
-  (define-key xah-leader-t-keymap (kbd "k") nil)
+  (define-key xah-leader-t-keymap (kbd "j") 'copy-to-register)
+  (define-key xah-leader-t-keymap (kbd "k") 'insert-register)
   (define-key xah-leader-t-keymap (kbd "l") 'increment-register)
   (define-key xah-leader-t-keymap (kbd "m") nil)
   (define-key xah-leader-t-keymap (kbd "n") 'repeat-complex-command)
@@ -1672,7 +1700,7 @@ Version 2015-01-26"
   (define-key xah-leader-t-keymap (kbd "r") 'copy-rectangle-to-register)
   (define-key xah-leader-t-keymap (kbd "s") nil)
   (define-key xah-leader-t-keymap (kbd "t") 'repeat)
-  (define-key xah-leader-t-keymap (kbd "u") 'insert-register)
+  (define-key xah-leader-t-keymap (kbd "u") nil)
   (define-key xah-leader-t-keymap (kbd "v") nil)
   (define-key xah-leader-t-keymap (kbd "w") 'other-window)
   (define-key xah-leader-t-keymap (kbd "x") nil)
