@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.0.5
+;; Version: 2.0.6
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -1438,17 +1438,27 @@ Version 2015-01-26"
   (define-key xah-fly-key-map (kbd "<C-prior>") 'xah-previous-user-buffer))
 
 (progn
-  (define-prefix-command 'xah-highlight-keymap) ; commands in search-map
+  (define-prefix-command 'xah-highlight-keymap) ; commands in search-map and facemenu-keymap
   (define-key xah-highlight-keymap (kbd ".") 'isearch-forward-symbol-at-point)
-  (define-key xah-highlight-keymap (kbd "s") 'isearch-forward-symbol)
-  (define-key xah-highlight-keymap (kbd "w") 'isearch-forward-word)
+  (define-key xah-highlight-keymap (kbd "b") 'facemenu-set-bold)
+  (define-key xah-highlight-keymap (kbd "f") 'font-lock-fontify-block)
+  (define-key xah-highlight-keymap (kbd "c") 'center-line)
+  (define-key xah-highlight-keymap (kbd "d") 'facemenu-set-default)
   (define-key xah-highlight-keymap (kbd "h .") 'highlight-symbol-at-point)
   (define-key xah-highlight-keymap (kbd "h f") 'hi-lock-find-patterns)
   (define-key xah-highlight-keymap (kbd "h l") 'highlight-lines-matching-regexp)
   (define-key xah-highlight-keymap (kbd "h p") 'highlight-phrase)
   (define-key xah-highlight-keymap (kbd "h r") 'highlight-regexp)
   (define-key xah-highlight-keymap (kbd "h u") 'unhighlight-regexp)
-  (define-key xah-highlight-keymap (kbd "h w") 'hi-lock-write-interactive-patterns))
+  (define-key xah-highlight-keymap (kbd "h w") 'hi-lock-write-interactive-patterns)
+  (define-key xah-highlight-keymap (kbd "i") 'facemenu-set-italic)
+  (define-key xah-highlight-keymap (kbd "l") 'facemenu-set-bold-italic)
+  (define-key xah-highlight-keymap (kbd "o") 'facemenu-set-face)
+  (define-key xah-highlight-keymap (kbd "p") 'center-paragraph)
+  (define-key xah-highlight-keymap (kbd "s") 'isearch-forward-symbol)
+  (define-key xah-highlight-keymap (kbd "u") 'facemenu-set-underline)
+  (define-key xah-highlight-keymap (kbd "w") 'isearch-forward-word)
+  )
 
 (progn
   (define-prefix-command 'xah-leader-tab-keymap)
@@ -1870,17 +1880,6 @@ Version 2015-01-26"
 ;; C-x {	shrink-window-horizontally
 ;; C-x }	enlarge-window-horizontally
 ;; C-x DEL	backward-kill-sentence
-
-;; M-o ESC         Prefix Command
-;; M-o b           facemenu-set-bold
-;; M-o d           facemenu-set-default
-;; M-o i           facemenu-set-italic
-;; M-o l           facemenu-set-bold-italic
-;; M-o o           facemenu-set-face
-;; M-o u           facemenu-set-underline
-;; M-o M-S         center-paragraph
-;; M-o M-o         font-lock-fontify-block
-;; M-o M-s         center-line
 
 ;; C-x C-z	suspend-frame
 ;; C-x +	balance-windows
