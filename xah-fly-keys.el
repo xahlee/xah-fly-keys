@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.0.6
+;; Version: 2.0.7
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -1789,7 +1789,6 @@ Version 2015-01-26"
   (define-key xah-fly-leader-key-map (kbd "SPC") xah-insertion-keymap)
   (define-key xah-fly-leader-key-map (kbd "TAB") xah-leader-tab-keymap)
   (define-key xah-fly-leader-key-map (kbd "<end>") 'xah-fly-keys)
-  (define-key xah-fly-leader-key-map (kbd "<menu>") 'exchange-point-and-mark)
   (define-key xah-fly-leader-key-map (kbd "DEL") 'xah-delete-current-file)
 
   (define-key xah-fly-leader-key-map (kbd "<mouse-1>") 'xah-set-mouse-wheel-mode) ; left button
@@ -1851,7 +1850,7 @@ Version 2015-01-26"
   (define-key xah-fly-leader-key-map (kbd "u") nil)
   (define-key xah-fly-leader-key-map (kbd "v") xah-leader-vc-keymap)
   (define-key xah-fly-leader-key-map (kbd "w") xah-danger-keymap)
-  (define-key xah-fly-leader-key-map (kbd "x") nil)
+  (define-key xah-fly-leader-key-map (kbd "x") 'exchange-point-and-mark)
   (define-key xah-fly-leader-key-map (kbd "y") nil)
   (define-key xah-fly-leader-key-map (kbd "z") 'comment-dwim))
 
