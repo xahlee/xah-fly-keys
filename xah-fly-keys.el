@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.0.7
+;; Version: 2.0.8
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -190,7 +190,7 @@ See `xah-forward-punct'"
   "Move cursor to the previous occurrence of left bracket.
 The list of brackets to jump to is defined by `xah-left-brackets'.
 URL `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
-Version 2015-03-24"
+Version 2015-10-01"
   (interactive)
   (search-backward-regexp (regexp-opt xah-left-brackets) nil t))
 
@@ -198,7 +198,7 @@ Version 2015-03-24"
   "Move cursor to the next occurrence of right bracket.
 The list of brackets to jump to is defined by `xah-right-brackets'.
 URL `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
-Version 2015-03-24"
+Version 2015-10-01"
   (interactive)
   (search-forward-regexp (regexp-opt xah-right-brackets) nil t))
 
@@ -1312,12 +1312,12 @@ For example, if the current buffer is the file x.py, then it'll call 「python x
 The file can be Emacs Lisp, PHP, Perl, Python, Ruby, JavaScript, Bash, Ocaml, Visual Basic, TeX, Java, Clojure.
 File suffix is used to determine what program to run.
 
-If the file is modified, ask if you want to save first.
+If the file is not saved, ask if you want to save first.
 
 URL `http://ergoemacs.org/emacs/elisp_run_current_file.html'
-version 2015-08-23"
+version 2015-10-02"
   (interactive)
-  (let* (
+  (let (
          (ξsuffix-map
           ;; (‹extension› . ‹shell program name›)
           `(
@@ -1336,14 +1336,25 @@ version 2015-08-23"
             ("java" . "javac")
             ;; ("pov" . "/usr/local/bin/povray +R2 +A0.1 +J1.2 +Am2 +Q9 +H480 +W640")
             ))
-         (ξfname (buffer-file-name))
-         (ξfSuffix (file-name-extension ξfname))
-         (ξprog-name (cdr (assoc ξfSuffix ξsuffix-map)))
-         (ξcmd-str (concat ξprog-name " \""   ξfname "\"")))
+
+         ξfname
+         ξfSuffix
+         ξprog-name
+         ξcmd-str)
+
+    (when (null (buffer-file-name))
+      (if (y-or-n-p "Buffer not file. Do you want to save first?")
+          (save-buffer)
+        (user-error "command canceled. Buffer not saved file.")))
 
     (when (buffer-modified-p)
       (when (y-or-n-p "Buffer modified. Do you want to save first?")
         (save-buffer)))
+
+    (setq ξfname (buffer-file-name))
+    (setq ξfSuffix (file-name-extension ξfname))
+    (setq ξprog-name (cdr (assoc ξfSuffix ξsuffix-map)))
+    (setq ξcmd-str (concat ξprog-name " \""   ξfname "\""))
 
     (cond
      ((string-equal ξfSuffix "el") (load ξfname))
