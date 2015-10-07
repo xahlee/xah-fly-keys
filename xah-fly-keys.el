@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.0.8
+;; Version: 2.1.8
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -1312,10 +1312,10 @@ For example, if the current buffer is the file x.py, then it'll call 「python x
 The file can be Emacs Lisp, PHP, Perl, Python, Ruby, JavaScript, Bash, Ocaml, Visual Basic, TeX, Java, Clojure.
 File suffix is used to determine what program to run.
 
-If the file is not saved, ask if you want to save first.
+If the file is modified or not saved, save it automatically before run.
 
 URL `http://ergoemacs.org/emacs/elisp_run_current_file.html'
-version 2015-10-02"
+version 2015-10-07"
   (interactive)
   (let (
          (ξsuffix-map
@@ -1342,14 +1342,8 @@ version 2015-10-02"
          ξprog-name
          ξcmd-str)
 
-    (when (null (buffer-file-name))
-      (if (y-or-n-p "Buffer not file. Do you want to save first?")
-          (save-buffer)
-        (user-error "command canceled. Buffer not saved file.")))
-
-    (when (buffer-modified-p)
-      (when (y-or-n-p "Buffer modified. Do you want to save first?")
-        (save-buffer)))
+    (when (null (buffer-file-name)) (save-buffer))
+    (when (buffer-modified-p) (save-buffer))
 
     (setq ξfname (buffer-file-name))
     (setq ξfSuffix (file-name-extension ξfname))
