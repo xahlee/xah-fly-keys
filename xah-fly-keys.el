@@ -20,11 +20,11 @@
 
 ;; It is a modal mode, like vi, but key choices are based on statistics of command call frequency, and key position easy-to-press score.
 
-;; xah-fly-keys does not bind any Control key, nor Meta keys (except 3, but you can turn off).
+;; xah-fly-keys does not bind any Control key, nor Meta keys (except 3, but you can turn off). use emacs as is, because no Control or Meta are used. Just leave xah-fly-keys in insertion mode.
 
-;; To learn xah-fly-keys, is like learning vi for the first time. All is new. You'll need one month to adopt. (but you can use emacs as is, because no Control or Meta are used.)
+;; To learn xah-fly-keys, is like learning vi for the first time. You'll need one month to adopt.
 
-;; xah-fly-keys is currently optimized for Dvorak layout only. If you touch-type QWERTY or other, you will need to rebind keys. See home page for detail: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
+;; xah-fly-keys is currently optimized for Dvorak layout only. If you touch-type QWERTY or other, you will need to rebind keys. I recommend you fork it and modify the keys for your own use. See home page for detail: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
 
 ;; --------------------------------------------------
 ;; MANUAL INSTALL
@@ -39,11 +39,11 @@
 ;; --------------------------------------------------
 ;; USE
 
-;; Important commands, and defeat keys
+;; Important commands and default keys
 
-;; command: xah-fly-keys (key: 【Ctrl+7】, 【menu end】) to toggle the mode on/off.
+;; command: xah-fly-keys (【Ctrl+7】) to toggle the mode on/off.
 
-;; It is necessary and important to toggle xah-fly-keys mode. Because, it gives you access to special modes that use letter keys, such as dired
+;; It is necessary to toggle xah-fly-keys mode. Because, it gives you access to special modes that use letter keys, such as dired
 
 ;; Important command/insert mode switch keys:
 
