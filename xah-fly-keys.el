@@ -2280,4 +2280,4 @@ Version 2015-01-26"
 ;; coding: utf-8
 ;; End:
 
-;;; xah-fly-keys ends here
+;;; xah-fly-keys.el ends here
