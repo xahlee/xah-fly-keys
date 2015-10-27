@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.1.8
+;; Version: 2.2.0
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -119,6 +119,25 @@ Version 2015-07-08"
                (setq ξi φn)))
       (setq ξi (1+ ξi)))))
 
+(defun xah-beginning-of-line-or-block-region (&optional φn)
+  "Move cursor to beginning of line, or beginning of current or previous text block.
+ (a text block is separated by blank lines)"
+  (interactive "p")
+  (if (use-region-p)
+      (let* ((deactivate-mark nil)
+             (ξp1 (region-beginning))
+             (ξp2 (region-end))
+             (ξtext (buffer-substring ξp1 ξp2))
+             ξp3
+             )
+        (delete-region ξp1 ξp2)
+        (setq mark-active nil)
+        (xah-beginning-of-line-or-block-raw)
+        (setq ξp3 (point))
+        (insert ξtext)
+        (set-mark ξp3))
+    (xah-beginning-of-line-or-block-raw)))
+
 (defun xah-beginning-of-line-or-block (&optional φn)
   "Move cursor to beginning of line, or beginning of current or previous text block.
  (a text block is separated by blank lines)"
@@ -226,21 +245,42 @@ Version 2015-06-15"
       (left-char))))
 
 (defun xah-forward-quote ()
-  "Move cursor to the next occurrence of ' or \".
+  "Move cursor to the next occurrence of ' or \" or `.
+If there are consecutive quotes of the same char, keep moving until none.
+Returns `t' if found, else `nil'.
 URL `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
-Version 2015-03-24"
+Version 2015-10-26"
   (interactive)
-  (search-forward-regexp "'+\\|\\\"+" nil t))
+  (if (search-forward-regexp "'+\\|`+\\|\\\"+" nil t)
+      t
+    (progn
+      (message "No more quotes after.")
+      nil)))
+
+(defun xah-forward-quote-twice ()
+  "Call `xah-forward-quote' twice.
+Returns `t' if found, else `nil'.
+URL `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
+Version 2015-10-26"
+  (interactive)
+  (when (xah-forward-quote)
+    (xah-forward-quote)))
 
 (defun xah-backward-quote ()
-  "Move cursor to the previous occurrence of ' or \".
+  "Move cursor to the previous occurrence of '' or \" or `.
+If there are consecutive quotes of the same char, keep moving until none.
+Returns `t' if found, else `nil'.
 URL `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
-Version 2015-03-24"
+Version 2015-10-26"
   (interactive)
-  (search-backward-regexp "'+\\|\\\"+" nil t)
-  (let ( (thisChar (char-after)))
-    (while (char-equal (char-before) thisChar)
-      (left-char ))))
+  (if (search-backward-regexp "'+\\|`+\\|\\\"+" nil t)
+      (when (char-before) ; isn't nil, at beginning of buffer
+        (while (char-equal (char-before) (char-after))
+          (left-char)
+          t))
+    (progn
+      (message "No more quotes before.")
+      nil)))
 
 (defun xah-forward-dot-comma ()
   "Move cursor to the next occurrence of 「.」 「,」 「;」.
@@ -1315,7 +1355,7 @@ File suffix is used to determine what program to run.
 If the file is modified or not saved, save it automatically before run.
 
 URL `http://ergoemacs.org/emacs/elisp_run_current_file.html'
-version 2015-10-07"
+version 2015-10-08"
   (interactive)
   (let (
          (ξsuffix-map
@@ -1329,6 +1369,7 @@ version 2015-10-07"
             ("js" . "node") ; node.js
             ("sh" . "bash")
             ("clj" . "java -cp /home/xah/apps/clojure-1.6.0/clojure-1.6.0.jar clojure.main")
+            ("rkt" . "racket")
             ("ml" . "ocaml")
             ("vbs" . "cscript")
             ("tex" . "pdflatex")
@@ -1818,12 +1859,12 @@ Version 2015-01-26"
         (define-key xah-fly-leader-key-map (kbd "8") nil)
         (define-key xah-fly-leader-key-map (kbd "7") nil)
         (define-key xah-fly-leader-key-map (kbd "2") 'dired-jump)
-        (define-key xah-fly-leader-key-map (kbd "1") 'ffap))
+        (define-key xah-fly-leader-key-map (kbd "1") 'find-file-at-point))
     (progn
       (define-key xah-fly-leader-key-map (kbd "1") nil)
       (define-key xah-fly-leader-key-map (kbd "2") nil)
       (define-key xah-fly-leader-key-map (kbd "7") 'dired-jump)
-      (define-key xah-fly-leader-key-map (kbd "8") 'ffap)))
+      (define-key xah-fly-leader-key-map (kbd "8") 'find-file-at-point)))
 
   (define-key xah-fly-leader-key-map (kbd "3") nil)
   (define-key xah-fly-leader-key-map (kbd "4") 'split-window-right)
@@ -2010,11 +2051,12 @@ Version 2015-01-26"
     (define-key xah-fly-key-map (kbd "-") nil)
     (define-key xah-fly-key-map (kbd ".") 'backward-kill-word)
     (define-key xah-fly-key-map (kbd ";") nil)
+    (define-key xah-fly-key-map (kbd ":") nil)
     (define-key xah-fly-key-map (kbd "/") 'xah-backward-equal-sign)
     (define-key xah-fly-key-map (kbd "\\") nil)
     (define-key xah-fly-key-map (kbd "=") 'xah-forward-equal-sign)
     (define-key xah-fly-key-map (kbd "[") 'xah-backward-quote )
-    (define-key xah-fly-key-map (kbd "]") 'xah-forward-quote)
+    (define-key xah-fly-key-map (kbd "]") 'xah-forward-quote-twice)
     (define-key xah-fly-key-map (kbd "`") nil)
     (define-key xah-fly-key-map (kbd "SPC") 'xah-fly-insert-mode-activate)
 
@@ -2032,7 +2074,7 @@ Version 2015-01-26"
 
     (define-key xah-fly-key-map (kbd "3") 'delete-other-windows)
     (define-key xah-fly-key-map (kbd "4") 'split-window-below)
-    (define-key xah-fly-key-map (kbd "5") 'redo)
+    (define-key xah-fly-key-map (kbd "5") nil)
 
     (define-key xah-fly-key-map (kbd "6") 'xah-select-current-block)
     (define-key xah-fly-key-map (kbd "9") 'xah-select-text-in-quote)
@@ -2067,10 +2109,10 @@ Version 2015-01-26"
 
     (define-key xah-fly-key-map (kbd "A") nil)
     (define-key xah-fly-key-map (kbd "B") nil)
-    (define-key xah-fly-key-map (kbd "C") nil)
+    (define-key xah-fly-key-map (kbd "C") 'xah-cycle-hyphen-underscore-space)
     (define-key xah-fly-key-map (kbd "D") nil)
     (define-key xah-fly-key-map (kbd "E") nil)
-    (define-key xah-fly-key-map (kbd "F") nil)
+    (define-key xah-fly-key-map (kbd "F") 'redo)
     (define-key xah-fly-key-map (kbd "G") nil)
     (define-key xah-fly-key-map (kbd "H") nil)
     (define-key xah-fly-key-map (kbd "I") nil)
@@ -2078,13 +2120,14 @@ Version 2015-01-26"
     (define-key xah-fly-key-map (kbd "K") nil)
     (define-key xah-fly-key-map (kbd "L") nil)
     (define-key xah-fly-key-map (kbd "M") nil)
+
     (define-key xah-fly-key-map (kbd "N") nil)
     (define-key xah-fly-key-map (kbd "O") nil)
     (define-key xah-fly-key-map (kbd "P") nil)
     (define-key xah-fly-key-map (kbd "Q") nil)
-    (define-key xah-fly-key-map (kbd "R") nil)
+    (define-key xah-fly-key-map (kbd "R") 'hippie-expand)
     (define-key xah-fly-key-map (kbd "S") nil)
-    (define-key xah-fly-key-map (kbd "T") nil)
+    (define-key xah-fly-key-map (kbd "T") 'xah-toggle-letter-case)
     (define-key xah-fly-key-map (kbd "U") nil)
     (define-key xah-fly-key-map (kbd "V") nil)
     (define-key xah-fly-key-map (kbd "W") nil)
@@ -2094,7 +2137,7 @@ Version 2015-01-26"
     ))
 
 (defun xah-fly-insert-mode-init ()
-  "set insertion mode keys"
+  "Set insertion mode keys"
   (interactive)
   (progn
     (define-key xah-fly-key-map (kbd "'") 'self-insert-command)
@@ -2212,6 +2255,9 @@ Version 2015-01-26"
 ;; when in shell mode, switch to insertion mode.
 (add-hook 'shell-mode-hook 'xah-fly-insert-mode-activate)
 
+;; ;; when in shell mode, switch to insertion mode.
+;; (add-hook 'dired-mode-hook 'xah-fly-keys-off)
+
 
 
 ;; experimental. auto switch back to command mode after some sec of idle time
@@ -2222,6 +2268,11 @@ Version 2015-01-26"
   "A modal keybinding set, like vim, but based on ergonomic principles, like Dvorak layout."
   1 "ξflykeys" xah-fly-key-map
   (xah-fly-command-mode-activate))
+
+(defun xah-fly-keys-off ()
+  "Turn off xah-fly-keys minor mode."
+  (interactive)
+  (xah-fly-keys 0))
 
 (provide 'xah-fly-keys)
 
