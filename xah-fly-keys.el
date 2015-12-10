@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.3.0
+;; Version: 2.3.3
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -718,41 +718,45 @@ Version 2015-12-02"
          (file-name-directory ξfpath))))))
 
 (defun xah-delete-text-block ()
-  "delete the current text block (paragraph) and also put it to `kill-ring'.
-Version 2015-05-26"
+  "Delete the current text block and also put it to `kill-ring'.
+Version 2015-12-08"
   (interactive)
-  (let (p1 p2)
+  (let (ξp1 ξp2)
     (progn
       (if (re-search-backward "\n[ \t]*\n" nil "NOERROR")
           (progn (re-search-forward "\n[ \t]*\n")
-                 (setq p1 (point)))
-        (setq p1 (point)))
+                 (setq ξp1 (point)))
+        (setq ξp1 (point)))
       (if (re-search-forward "\n[ \t]*\n" nil "NOERROR")
           (progn (re-search-backward "\n[ \t]*\n")
-                 (setq p2 (point)))
-        (setq p2 (point))))
-    (kill-region p1 p2)))
+                 (setq ξp2 (point)))
+        (setq ξp2 (point))))
+    (kill-region ξp1 ξp2)))
 
 (defun xah-copy-to-register-1 ()
   "Copy current line or text selection to register 1.
-See also: `xah-paste-from-register-1', `copy-to-register'."
+See also: `xah-paste-from-register-1', `copy-to-register'.
+
+URL `http://ergoemacs.org/emacs/elisp_copy-paste_register_1.html'
+Version 2015-12-08"
   (interactive)
-  (let (p1 p2)
+  (let (ξp1 ξp2)
     (if (region-active-p)
-        (progn (setq p1 (region-beginning))
-               (setq p2 (region-end)))
-      (progn (setq p1 (line-beginning-position))
-             (setq p2 (line-end-position))))
-    (copy-to-register ?1 p1 p2)
-    (message "copied to register 1: 「%s」." (buffer-substring-no-properties p1 p2))))
+        (progn (setq ξp1 (region-beginning))
+               (setq ξp2 (region-end)))
+      (progn (setq ξp1 (line-beginning-position))
+             (setq ξp2 (line-end-position))))
+    (copy-to-register ?1 ξp1 ξp2)
+    (message "copied to register 1: 「%s」." (buffer-substring-no-properties ξp1 ξp2))))
 
 (defun xah-paste-from-register-1 ()
   "Paste text from register 1.
-See also: `xah-copy-to-register-1', `insert-register'."
+See also: `xah-copy-to-register-1', `insert-register'.
+URL `http://ergoemacs.org/emacs/elisp_copy-paste_register_1.html'
+Version 2015-12-08"
   (interactive)
   (when (use-region-p)
-    (delete-region (region-beginning) (region-end) )
-    )
+    (delete-region (region-beginning) (region-end)))
   (insert-register ?1 t))
 
 (defun xah-copy-rectangle-to-kill-ring (φbegin φend)
@@ -1470,7 +1474,6 @@ Version 2015-11-30"
 (defun xah-open-in-external-app ()
   "Open the current file or dired marked files in external app.
 The app is chosen from your OS's preference.
-
 URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
 Version 2015-01-26"
   (interactive)
@@ -1495,6 +1498,21 @@ Version 2015-01-26"
         (mapc
          (lambda (ξfpath) (let ((process-connection-type nil))
                             (start-process "" nil "xdg-open" ξfpath))) ξfile-list))))))
+
+(defun xah-open-in-terminal ()
+  "Open the current dir in a new terminal window.
+URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
+Version 2015-12-10"
+  (interactive)
+  (cond
+   ((string-equal system-type "windows-nt")
+    (message "Microsoft Windows not supported. File a bug report or pull request."))
+   ((string-equal system-type "darwin")
+    (message "Mac not supported. File a bug report or pull request."))
+   ((string-equal system-type "gnu/linux")
+    (let ((process-connection-type nil))
+      (start-process "" nil "x-terminal-emulator" 
+                     (concat "--working-directory=" default-directory) )))))
 
 (defun xah-next-window-or-frame ()
   "Switch to next window or frame.
@@ -2265,9 +2283,8 @@ If current frame has only one window, switch to next frame."
 (defun xah-fly-save-buffer-if-file ()
   "Save current buffer if it is a file."
   (interactive)
-  (let (VAR)
-    (when (buffer-file-name)
-      (save-buffer))))
+  (when (buffer-file-name)
+    (save-buffer)))
 
 (defun xah-fly-command-mode-activate ()
   "Activate command mode."
