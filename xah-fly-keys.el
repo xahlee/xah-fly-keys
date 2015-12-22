@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.3.3
+;; Version: 2.4.4
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -481,7 +481,9 @@ Version 2015-04-09"
       (put this-command 'state 0)))))
 
 (defun xah-toggle-previous-letter-case ()
-  "Toggle the letter case of the letter to the left of cursor."
+  "Toggle the letter case of the letter to the left of cursor.
+URL `http://ergoemacs.org/emacs/modernization_upcase-word.html'
+Version 2015-12-22"
   (interactive)
   (let ((case-fold-search nil))
     (left-char 1)
@@ -2072,6 +2074,9 @@ If current frame has only one window, switch to next frame."
     (global-set-key (kbd "C-7") 'xah-fly-keys)
     (global-set-key (kbd "C-8") 'xah-fly-command-mode-activate)))
 
+(global-set-key (kbd "C-9") 'xah-toggle-letter-case)
+(global-set-key (kbd "<C-end>") 'hippie-expand)
+
 (global-set-key (kbd "<f11>") 'xah-previous-user-buffer)
 (global-set-key (kbd "<f12>") 'xah-next-user-buffer)
 (global-set-key (kbd "<C-f11>") 'xah-previous-emacs-buffer)
@@ -2101,7 +2106,7 @@ If current frame has only one window, switch to next frame."
 
     (define-key xah-fly-key-map (kbd "'") 'xah-compact-uncompact-block)
     (define-key xah-fly-key-map (kbd ",") 'xah-shrink-whitespaces)
-    (define-key xah-fly-key-map (kbd "-") nil)
+    (define-key xah-fly-key-map (kbd "-") 'xah-cycle-hyphen-underscore-space)
     (define-key xah-fly-key-map (kbd ".") 'backward-kill-word)
     (define-key xah-fly-key-map (kbd ";") nil)
     (define-key xah-fly-key-map (kbd ":") nil)
@@ -2159,33 +2164,6 @@ If current frame has only one window, switch to next frame."
     (define-key xah-fly-key-map (kbd "x") 'xah-fly-leader-key-map)
     (define-key xah-fly-key-map (kbd "y") 'set-mark-command)
     (define-key xah-fly-key-map (kbd "z") 'comment-dwim)
-
-    (define-key xah-fly-key-map (kbd "A") nil)
-    (define-key xah-fly-key-map (kbd "B") nil)
-    (define-key xah-fly-key-map (kbd "C") nil)
-    (define-key xah-fly-key-map (kbd "D") nil)
-    (define-key xah-fly-key-map (kbd "E") 'xah-toggle-letter-case)
-    (define-key xah-fly-key-map (kbd "F") nil)
-    (define-key xah-fly-key-map (kbd "G") nil)
-    (define-key xah-fly-key-map (kbd "H") nil)
-    (define-key xah-fly-key-map (kbd "I") nil)
-    (define-key xah-fly-key-map (kbd "J") nil)
-    (define-key xah-fly-key-map (kbd "K") nil)
-    (define-key xah-fly-key-map (kbd "L") nil)
-    (define-key xah-fly-key-map (kbd "M") nil)
-    (define-key xah-fly-key-map (kbd "N") nil)
-    (define-key xah-fly-key-map (kbd "O") 'xah-insert-space-before)
-    (define-key xah-fly-key-map (kbd "P") 'hippie-expand)
-    (define-key xah-fly-key-map (kbd "Q") nil)
-    (define-key xah-fly-key-map (kbd "R") nil)
-    (define-key xah-fly-key-map (kbd "S") nil)
-    (define-key xah-fly-key-map (kbd "T") nil)
-    (define-key xah-fly-key-map (kbd "U") 'xah-cycle-hyphen-underscore-space)
-    (define-key xah-fly-key-map (kbd "V") nil)
-    (define-key xah-fly-key-map (kbd "W") nil)
-    (define-key xah-fly-key-map (kbd "X") nil)
-    (define-key xah-fly-key-map (kbd "Y") nil)
-    (define-key xah-fly-key-map (kbd "Z") nil)
     ))
 
 (defun xah-fly-insert-mode-init ()
@@ -2243,32 +2221,6 @@ If current frame has only one window, switch to next frame."
     (define-key xah-fly-key-map (kbd "y") 'self-insert-command)
     (define-key xah-fly-key-map (kbd "z") 'self-insert-command)
 
-    (define-key xah-fly-key-map (kbd "A") 'self-insert-command)
-    (define-key xah-fly-key-map (kbd "B") 'self-insert-command)
-    (define-key xah-fly-key-map (kbd "C") 'self-insert-command)
-    (define-key xah-fly-key-map (kbd "D") 'self-insert-command)
-    (define-key xah-fly-key-map (kbd "E") 'self-insert-command)
-    (define-key xah-fly-key-map (kbd "F") 'self-insert-command)
-    (define-key xah-fly-key-map (kbd "G") 'self-insert-command)
-    (define-key xah-fly-key-map (kbd "H") 'self-insert-command)
-    (define-key xah-fly-key-map (kbd "I") 'self-insert-command)
-    (define-key xah-fly-key-map (kbd "J") 'self-insert-command)
-    (define-key xah-fly-key-map (kbd "K") 'self-insert-command)
-    (define-key xah-fly-key-map (kbd "L") 'self-insert-command)
-    (define-key xah-fly-key-map (kbd "M") 'self-insert-command)
-    (define-key xah-fly-key-map (kbd "N") 'self-insert-command)
-    (define-key xah-fly-key-map (kbd "O") 'self-insert-command)
-    (define-key xah-fly-key-map (kbd "P") 'self-insert-command)
-    (define-key xah-fly-key-map (kbd "Q") 'self-insert-command)
-    (define-key xah-fly-key-map (kbd "R") 'self-insert-command)
-    (define-key xah-fly-key-map (kbd "S") 'self-insert-command)
-    (define-key xah-fly-key-map (kbd "T") 'self-insert-command)
-    (define-key xah-fly-key-map (kbd "U") 'self-insert-command)
-    (define-key xah-fly-key-map (kbd "V") 'self-insert-command)
-    (define-key xah-fly-key-map (kbd "W") 'self-insert-command)
-    (define-key xah-fly-key-map (kbd "X") 'self-insert-command)
-    (define-key xah-fly-key-map (kbd "Y") 'self-insert-command)
-    (define-key xah-fly-key-map (kbd "Z") 'self-insert-command)
 ))
 
 (defun xah-fly-mode-toggle ()
@@ -2278,7 +2230,9 @@ If current frame has only one window, switch to next frame."
       (xah-fly-command-mode-activate)
     (xah-fly-insert-mode-activate)))
 
+;; automatic save buffer when switching to command mode
 (add-hook 'xah-fly-command-mode-activate-hook 'xah-fly-save-buffer-if-file)
+;; remove it if you don't want
 
 (defun xah-fly-save-buffer-if-file ()
   "Save current buffer if it is a file."
