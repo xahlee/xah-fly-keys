@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.4.4
+;; Version: 2.4.5
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -454,31 +454,41 @@ Respects `narrow-to-region'."
 
 ;; editing commands
 
-(defun xah-toggle-letter-case (φbegin φend)
+(defun xah-toggle-letter-case ()
   "Toggle the letter case of current word or text selection.
 Always cycle in this order: Init Caps, ALL CAPS, all lower.
 
-In lisp code, φbegin φend are region boundary.
 URL `http://ergoemacs.org/emacs/modernization_upcase-word.html'
-Version 2015-04-09"
-  (interactive
-   (if (use-region-p)
-       (list (region-beginning) (region-end))
-     (let ((ξbds (bounds-of-thing-at-point 'word)))
-       (list (car ξbds) (cdr ξbds)))))
-  (let ((deactivate-mark nil))
+Version 2015-12-22"
+  (interactive)
+  (let (
+        (deactivate-mark nil)
+        ξp1 ξp2)
+    (if (use-region-p)
+        (setq ξp1 (region-beginning)
+              ξp2 (region-end))
+      (save-excursion
+        (skip-chars-backward "-_[:alnum:]")
+        (setq ξp1 (point))
+        (skip-chars-forward "-_[:alnum:]")
+        (setq ξp2 (point))))
     (when (not (eq last-command this-command))
       (put this-command 'state 0))
     (cond
      ((equal 0 (get this-command 'state))
-      (upcase-initials-region φbegin φend)
+      (upcase-initials-region ξp1 ξp2)
       (put this-command 'state 1))
      ((equal 1  (get this-command 'state))
-      (upcase-region φbegin φend)
+      (upcase-region ξp1 ξp2)
       (put this-command 'state 2))
      ((equal 2 (get this-command 'state))
-      (downcase-region φbegin φend)
+      (downcase-region ξp1 ξp2)
       (put this-command 'state 0)))))
+
+;; test case
+;; test_case some
+;; test-case
+;; tes▮t-case
 
 (defun xah-toggle-previous-letter-case ()
   "Toggle the letter case of the letter to the left of cursor.
@@ -1513,7 +1523,7 @@ Version 2015-12-10"
     (message "Mac not supported. File a bug report or pull request."))
    ((string-equal system-type "gnu/linux")
     (let ((process-connection-type nil))
-      (start-process "" nil "x-terminal-emulator" 
+      (start-process "" nil "x-terminal-emulator"
                      (concat "--working-directory=" default-directory) )))))
 
 (defun xah-next-window-or-frame ()
@@ -1879,8 +1889,8 @@ If current frame has only one window, switch to next frame."
   (define-key xah-insertion-keymap (kbd "t") 'xah-insert-paren)
   (define-key xah-insertion-keymap (kbd "u") 'xah-insert-greater-less)
   (define-key xah-insertion-keymap (kbd "v") nil)
-  (define-key xah-insertion-keymap (kbd "w") 'xah-insert-double-angle-bracket《》)
-  (define-key xah-insertion-keymap (kbd "W") 'xah-insert-angle-bracket〈〉)
+  (define-key xah-insertion-keymap (kbd "w") 'xah-insert-angle-bracket〈〉)
+  (define-key xah-insertion-keymap (kbd "W") 'xah-insert-double-angle-bracket《》)
   (define-key xah-insertion-keymap (kbd "x") nil)
   (define-key xah-insertion-keymap (kbd "y") 'xah-insert-double-angle-quote«»))
 
@@ -2074,9 +2084,6 @@ If current frame has only one window, switch to next frame."
     (global-set-key (kbd "C-7") 'xah-fly-keys)
     (global-set-key (kbd "C-8") 'xah-fly-command-mode-activate)))
 
-(global-set-key (kbd "C-9") 'xah-toggle-letter-case)
-(global-set-key (kbd "<C-end>") 'hippie-expand)
-
 (global-set-key (kbd "<f11>") 'xah-previous-user-buffer)
 (global-set-key (kbd "<f12>") 'xah-next-user-buffer)
 (global-set-key (kbd "<C-f11>") 'xah-previous-emacs-buffer)
@@ -2084,6 +2091,14 @@ If current frame has only one window, switch to next frame."
 
 (global-set-key (kbd "<C-prior>") 'xah-previous-user-buffer)
 (global-set-key (kbd "<C-next>") 'xah-next-user-buffer)
+
+(if xah-fly-swapped-1827-p
+    (progn
+      (global-set-key (kbd "M-2") 'hippie-expand)
+      (global-set-key (kbd "M-1") 'xah-toggle-letter-case))
+  (progn
+    (global-set-key (kbd "M-7") 'hippie-expand)
+    (global-set-key (kbd "M-8") 'xah-toggle-letter-case)))
 
 (progn
   ;; set arrow keys in isearch. left/right is backward/forward, up/down is history. press Return to exit
@@ -2106,7 +2121,7 @@ If current frame has only one window, switch to next frame."
 
     (define-key xah-fly-key-map (kbd "'") 'xah-compact-uncompact-block)
     (define-key xah-fly-key-map (kbd ",") 'xah-shrink-whitespaces)
-    (define-key xah-fly-key-map (kbd "-") 'xah-cycle-hyphen-underscore-space)
+    (define-key xah-fly-key-map (kbd "-") nil)
     (define-key xah-fly-key-map (kbd ".") 'backward-kill-word)
     (define-key xah-fly-key-map (kbd ";") nil)
     (define-key xah-fly-key-map (kbd ":") nil)
@@ -2132,7 +2147,7 @@ If current frame has only one window, switch to next frame."
 
     (define-key xah-fly-key-map (kbd "3") 'delete-other-windows)
     (define-key xah-fly-key-map (kbd "4") 'split-window-below)
-    (define-key xah-fly-key-map (kbd "5") nil)
+    (define-key xah-fly-key-map (kbd "5") 'xah-cycle-hyphen-underscore-space)
 
     (define-key xah-fly-key-map (kbd "6") 'xah-select-current-block)
     (define-key xah-fly-key-map (kbd "9") 'xah-select-text-in-quote)
