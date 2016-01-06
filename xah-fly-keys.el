@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.4.5
+;; Version: 2.5.5
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -366,18 +366,14 @@ When called repeatedly, append copy subsequent lines.
 When `universal-argument' is called first, copy whole buffer (respects `narrow-to-region').
 
 URL `http://ergoemacs.org/emacs/emacs_copy_cut_current_line.html'
-Version 2015-09-18"
+Version 2015-12-30"
   (interactive)
   (let (ξp1 ξp2)
     (if current-prefix-arg
-        (progn (setq ξp1 (point-min))
-               (setq ξp2 (point-max)))
-      (progn
-        (if (use-region-p)
-            (progn (setq ξp1 (region-beginning))
-                   (setq ξp2 (region-end)))
-          (progn (setq ξp1 (line-beginning-position))
-                 (setq ξp2 (line-end-position))))))
+        (setq ξp1 (point-min) ξp2 (point-max))
+      (if (use-region-p)
+          (setq ξp1 (region-beginning) ξp2 (region-end))
+        (setq ξp1 (line-beginning-position) ξp2 (line-end-position))))
     (if (eq last-command this-command)
         (progn
           ;; (push-mark (point) "NOMSG" "ACTIVATE")
@@ -459,7 +455,7 @@ Respects `narrow-to-region'."
 Always cycle in this order: Init Caps, ALL CAPS, all lower.
 
 URL `http://ergoemacs.org/emacs/modernization_upcase-word.html'
-Version 2015-12-22"
+Version 2016-01-02"
   (interactive)
   (let (
         (deactivate-mark nil)
@@ -468,9 +464,9 @@ Version 2015-12-22"
         (setq ξp1 (region-beginning)
               ξp2 (region-end))
       (save-excursion
-        (skip-chars-backward "-_[:alnum:]")
+        (skip-chars-backward "_[:alnum:]")
         (setq ξp1 (point))
-        (skip-chars-forward "-_[:alnum:]")
+        (skip-chars-forward "_[:alnum:]")
         (setq ξp2 (point))))
     (when (not (eq last-command this-command))
       (put this-command 'state 0))
@@ -1931,7 +1927,7 @@ If current frame has only one window, switch to next frame."
       (define-key xah-fly-leader-key-map (kbd "7") 'dired-jump)
       (define-key xah-fly-leader-key-map (kbd "8") 'find-file-at-point)))
 
-  (define-key xah-fly-leader-key-map (kbd "3") nil)
+  (define-key xah-fly-leader-key-map (kbd "3") 'delete-other-windows)
   (define-key xah-fly-leader-key-map (kbd "4") 'split-window-right)
   (define-key xah-fly-leader-key-map (kbd "5") nil)
 
