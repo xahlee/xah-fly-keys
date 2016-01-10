@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.5.6
+;; Version: 2.6.6
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -455,7 +455,7 @@ Respects `narrow-to-region'."
 Always cycle in this order: Init Caps, ALL CAPS, all lower.
 
 URL `http://ergoemacs.org/emacs/modernization_upcase-word.html'
-Version 2016-01-02"
+Version 2016-01-08"
   (interactive)
   (let (
         (deactivate-mark nil)
@@ -464,9 +464,9 @@ Version 2016-01-02"
         (setq ξp1 (region-beginning)
               ξp2 (region-end))
       (save-excursion
-        (skip-chars-backward "_[:alnum:]")
+        (skip-chars-backward "[:alnum:]")
         (setq ξp1 (point))
-        (skip-chars-forward "_[:alnum:]")
+        (skip-chars-forward "[:alnum:]")
         (setq ξp2 (point))))
     (when (not (eq last-command this-command))
       (put this-command 'state 0))
@@ -1524,11 +1524,14 @@ Version 2015-12-10"
 
 (defun xah-next-window-or-frame ()
   "Switch to next window or frame.
-If current frame has only one window, switch to next frame."
+If current frame has only one window, switch to next frame.
+If `universal-argument' is called first, do switch frame."
   (interactive)
-  (if (one-window-p)
-      (other-frame 1)
-    (other-window 1)))
+  (if (null current-prefix-arg)
+      (if (one-window-p)
+          (other-frame 1)
+        (other-window 1))
+    (other-frame 1)))
 
 
 ;; keymaps
