@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.6.6
+;; Version: 2.7.6
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -1661,9 +1661,9 @@ If `universal-argument' is called first, do switch frame."
   (define-prefix-command 'xah-leader-i-keymap) ; commands in goto-map
   (define-key xah-leader-i-keymap (kbd "TAB") 'move-to-column)
   (define-key xah-leader-i-keymap (kbd "c") 'goto-char)
-  (define-key xah-leader-i-keymap (kbd "g") 'goto-line)
+  (define-key xah-leader-i-keymap (kbd "t") 'goto-line)
   (define-key xah-leader-i-keymap (kbd "n") 'next-error)
-  (define-key xah-leader-i-keymap (kbd "p") 'previous-error))
+  (define-key xah-leader-i-keymap (kbd "d") 'previous-error))
 
 (progn
   ;; commands here are harmless (safe). They don't modify text.
@@ -1721,7 +1721,7 @@ If `universal-argument' is called first, do switch frame."
   (define-key xah-harmless-keymap (kbd "q r") 'revert-buffer-with-coding-system)
   (define-key xah-harmless-keymap (kbd "q t") 'set-terminal-coding-system)
   (define-key xah-harmless-keymap (kbd "q x") 'set-selection-coding-system)
-  (define-key xah-harmless-keymap (kbd "r") ctl-x-5-map)
+  (define-key xah-harmless-keymap (kbd "r") ctl-x-5-map) ; frames
 
 ;; <menu> n r C-o  display-buffer-other-frame
 ;; <menu> n r .    find-tag-other-frame
@@ -1942,6 +1942,7 @@ If `universal-argument' is called first, do switch frame."
   (define-key xah-fly-leader-key-map (kbd "b") 'end-of-buffer)
   (define-key xah-fly-leader-key-map (kbd "c") xah-leader-c-keymap)
   (define-key xah-fly-leader-key-map (kbd "d") 'beginning-of-buffer)
+  (define-key xah-fly-leader-key-map (kbd "e") nil)
   (define-key xah-fly-leader-key-map (kbd "f") 'xah-search-current-word)
   (define-key xah-fly-leader-key-map (kbd "g") nil)
   (define-key xah-fly-leader-key-map (kbd "h") 'xah-help-keymap)
@@ -1955,7 +1956,7 @@ If `universal-argument' is called first, do switch frame."
   (define-key xah-fly-leader-key-map (kbd "p") 'query-replace)
   (define-key xah-fly-leader-key-map (kbd "q") 'xah-copy-all-or-region)
   (define-key xah-fly-leader-key-map (kbd "r") xah-edit-cmds-keymap)
-  (define-key xah-fly-leader-key-map (kbd "s") nil)
+  (define-key xah-fly-leader-key-map (kbd "s") 'save-buffer)
   (define-key xah-fly-leader-key-map (kbd "t") xah-leader-t-keymap)
   (define-key xah-fly-leader-key-map (kbd "u") nil)
   (define-key xah-fly-leader-key-map (kbd "v") xah-leader-vc-keymap)
@@ -2083,11 +2084,14 @@ If `universal-argument' is called first, do switch frame."
     (global-set-key (kbd "C-7") 'xah-fly-keys)
     (global-set-key (kbd "C-8") 'xah-fly-command-mode-activate)))
 
+(global-set-key (kbd "C-6") 'other-frame)
+
 (global-set-key (kbd "<f11>") 'xah-previous-user-buffer)
 (global-set-key (kbd "<f12>") 'xah-next-user-buffer)
 (global-set-key (kbd "<C-f11>") 'xah-previous-emacs-buffer)
 (global-set-key (kbd "<C-f12>") 'xah-next-emacs-buffer)
 
+;; these are good for compatibilty. e.g. you set a mouse or other device to use this key for generic OS wide operation, and it should work in emacs too
 (global-set-key (kbd "<C-prior>") 'xah-previous-user-buffer)
 (global-set-key (kbd "<C-next>") 'xah-next-user-buffer)
 
@@ -2246,7 +2250,6 @@ If `universal-argument' is called first, do switch frame."
 
 ;; automatic save buffer when switching to command mode
 (add-hook 'xah-fly-command-mode-activate-hook 'xah-fly-save-buffer-if-file)
-;; remove it if you don't want
 
 (defun xah-fly-save-buffer-if-file ()
   "Save current buffer if it is a file."
