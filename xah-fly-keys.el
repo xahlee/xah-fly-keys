@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.7.6
+;; Version: 2.7.7
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -648,7 +648,7 @@ Version 2015-11-28"
 When called repeatedly, this command cycles the {“_”, “-”, “ ”} characters, in that order.
 
 URL `http://ergoemacs.org/emacs/elisp_change_space-hyphen_underscore.html'
-Version 2015-08-17"
+Version 2016-01-14"
   (interactive)
   ;; this function sets a property 「'state」. Possible values are 0 to length of ξcharArray.
   (let (ξp1 ξp2)
@@ -656,11 +656,12 @@ Version 2015-08-17"
         (progn
           (setq ξp1 (region-beginning))
           (setq ξp2 (region-end)))
-      (let ((ξbounds (bounds-of-thing-at-point 'symbol)))
-        (progn
-          (setq ξp1 (car ξbounds))
-          (setq ξp2 (cdr ξbounds)))))
-
+      (save-excursion
+        ;; 2016-01-14 not use (bounds-of-thing-at-point 'symbol), because if at end of buffer, it returns nil. also, it's syntax table dependent
+        (skip-chars-backward "-_[:alnum:]")
+        (setq ξp1 (point))
+        (skip-chars-forward "-_[:alnum:]")
+        (setq ξp2 (point))))
     (let* ((ξinputText (buffer-substring-no-properties ξp1 ξp2))
            (ξcharArray ["_" "-" " "])
            (ξlength (length ξcharArray))
