@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.7.7
+;; Version: 2.8.7
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -246,6 +246,20 @@ Version 2015-06-15"
   (interactive)
   (when (search-backward-regexp "=+" nil t)
     (while (search-backward "=" (- (point) 1) t)
+      (left-char))))
+
+(defun xah-forward-comma-sign ()
+  "Move cursor to the next occurrence of comma 「,」.
+Version 2016-01-19"
+  (interactive)
+  (search-forward-regexp ",+" nil t))
+
+(defun xah-backward-comma-sign ()
+  "Move cursor to previous occurrence of comma sign 「,」.
+Version 2016-01-19"
+  (interactive)
+  (when (search-backward-regexp ",+" nil t)
+    (while (search-backward "," (- (point) 1) t)
       (left-char))))
 
 (defun xah-forward-quote ()
@@ -2135,7 +2149,8 @@ If `universal-argument' is called first, do switch frame."
     (define-key xah-fly-key-map (kbd "=") 'xah-forward-equal-sign)
     (define-key xah-fly-key-map (kbd "[") 'xah-backward-quote )
     (define-key xah-fly-key-map (kbd "]") 'xah-forward-quote-twice)
-    (define-key xah-fly-key-map (kbd "`") nil)
+    (define-key xah-fly-key-map (kbd "`") 'xah-forward-comma-sign)
+
     (define-key xah-fly-key-map (kbd "SPC") 'xah-fly-insert-mode-activate)
 
     (if xah-fly-swapped-1827-p
