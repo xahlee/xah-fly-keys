@@ -2150,6 +2150,7 @@ If `universal-argument' is called first, do switch frame."
     (define-key xah-fly-key-map (kbd "[") 'xah-backward-quote )
     (define-key xah-fly-key-map (kbd "]") 'xah-forward-quote-twice)
     (define-key xah-fly-key-map (kbd "`") 'xah-forward-comma-sign)
+    (define-key xah-fly-key-map (kbd "~") 'xah-backward-comma-sign)
 
     (define-key xah-fly-key-map (kbd "SPC") 'xah-fly-insert-mode-activate)
 
@@ -2216,6 +2217,7 @@ If `universal-argument' is called first, do switch frame."
     (define-key xah-fly-key-map (kbd "\\") nil)
     (define-key xah-fly-key-map (kbd "]") nil)
     (define-key xah-fly-key-map (kbd "`") nil)
+    (define-key xah-fly-key-map (kbd "~") nil)
     (define-key xah-fly-key-map (kbd "SPC") nil)
 
     (define-key xah-fly-key-map (kbd "1") nil)
