@@ -1829,27 +1829,6 @@ If `universal-argument' is called first, do switch frame."
   (define-key xah-leader-t-keymap (kbd "z") 'number-to-register))
 
 (progn
-  (define-prefix-command 'xah-leader-vc-keymap)
-
-  (define-key xah-leader-vc-keymap (kbd "+") 'vc-update)
-  (define-key xah-leader-vc-keymap (kbd "=") 'vc-diff)
-  (define-key xah-leader-vc-keymap (kbd "D") 'vc-root-diff)
-  (define-key xah-leader-vc-keymap (kbd "L") 'vc-print-root-log)
-  (define-key xah-leader-vc-keymap (kbd "a") 'vc-update-change-log)
-  (define-key xah-leader-vc-keymap (kbd "b") 'vc-switch-backend)
-  (define-key xah-leader-vc-keymap (kbd "c") 'vc-rollback)
-  (define-key xah-leader-vc-keymap (kbd "d") 'vc-dir)
-  (define-key xah-leader-vc-keymap (kbd "g") 'vc-annotate)
-  (define-key xah-leader-vc-keymap (kbd "h") 'vc-insert-headers)
-  (define-key xah-leader-vc-keymap (kbd "l") 'vc-print-log)
-  (define-key xah-leader-vc-keymap (kbd "m") 'vc-merge)
-  (define-key xah-leader-vc-keymap (kbd "r") 'vc-retrieve-tag)
-  (define-key xah-leader-vc-keymap (kbd "s") 'vc-create-tag)
-  (define-key xah-leader-vc-keymap (kbd "u") 'vc-revert)
-  (define-key xah-leader-vc-keymap (kbd "v") 'vc-next-action)
-  (define-key xah-leader-vc-keymap (kbd "~") 'vc-revision-other-window))
-
-(progn
   (define-prefix-command 'xah-danger-keymap)
 
   (define-key xah-danger-keymap (kbd ".") 'eval-buffer)
@@ -1960,7 +1939,7 @@ If `universal-argument' is called first, do switch frame."
   (define-key xah-fly-leader-key-map (kbd "s") 'save-buffer)
   (define-key xah-fly-leader-key-map (kbd "t") xah-leader-t-keymap)
   (define-key xah-fly-leader-key-map (kbd "u") nil)
-  (define-key xah-fly-leader-key-map (kbd "v") xah-leader-vc-keymap)
+  (define-key xah-fly-leader-key-map (kbd "v") nil)
   (define-key xah-fly-leader-key-map (kbd "w") xah-danger-keymap)
   (define-key xah-fly-leader-key-map (kbd "x") 'exchange-point-and-mark)
   (define-key xah-fly-leader-key-map (kbd "y") nil)
@@ -2071,6 +2050,28 @@ If `universal-argument' is called first, do switch frame."
 ;; (require 'guide-key)
 ;; (setq guide-key/guide-key-sequence '("<menu> t" "TAB t" ))
 ;; (guide-key-mode 1)
+
+(progn
+  (define-prefix-command 'xah-leader-vc-keymap)
+
+  (define-key xah-leader-vc-keymap (kbd "+") 'vc-update)
+  (define-key xah-leader-vc-keymap (kbd "=") 'vc-diff)
+  (define-key xah-leader-vc-keymap (kbd "D") 'vc-root-diff)
+  (define-key xah-leader-vc-keymap (kbd "L") 'vc-print-root-log)
+  (define-key xah-leader-vc-keymap (kbd "a") 'vc-update-change-log)
+  (define-key xah-leader-vc-keymap (kbd "b") 'vc-switch-backend)
+  (define-key xah-leader-vc-keymap (kbd "c") 'vc-rollback)
+  (define-key xah-leader-vc-keymap (kbd "d") 'vc-dir)
+  (define-key xah-leader-vc-keymap (kbd "g") 'vc-annotate)
+  (define-key xah-leader-vc-keymap (kbd "h") 'vc-insert-headers)
+  (define-key xah-leader-vc-keymap (kbd "l") 'vc-print-log)
+  (define-key xah-leader-vc-keymap (kbd "m") 'vc-merge)
+  (define-key xah-leader-vc-keymap (kbd "r") 'vc-retrieve-tag)
+  (define-key xah-leader-vc-keymap (kbd "s") 'vc-create-tag)
+  (define-key xah-leader-vc-keymap (kbd "u") 'vc-revert)
+  (define-key xah-leader-vc-keymap (kbd "v") 'vc-next-action)
+  (define-key xah-leader-vc-keymap (kbd "~") 'vc-revision-other-window))
+
 
 ;; setting keys
 
