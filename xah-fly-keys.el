@@ -1403,7 +1403,7 @@ File suffix is used to determine what program to run.
 If the file is modified or not saved, save it automatically before run.
 
 URL `http://ergoemacs.org/emacs/elisp_run_current_file.html'
-version 2015-10-08"
+version 2016-01-28"
   (interactive)
   (let (
          (ξsuffix-map
@@ -1414,6 +1414,7 @@ version 2015-10-08"
             ("py" . "python")
             ("py3" . ,(if (string-equal system-type "windows-nt") "c:/Python32/python.exe" "python3"))
             ("rb" . "ruby")
+            ("go" . "go run")
             ("js" . "node") ; node.js
             ("sh" . "bash")
             ("clj" . "java -cp /home/xah/apps/clojure-1.6.0/clojure-1.6.0.jar clojure.main")
