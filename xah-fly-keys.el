@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.8.7
+;; Version: 2.8.8
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -122,25 +122,6 @@ Version 2015-07-08"
         (progn (goto-char (point-min))
                (setq ξi φn)))
       (setq ξi (1+ ξi)))))
-
-(defun xah-beginning-of-line-or-block-region (&optional φn)
-  "Move cursor to beginning of line, or beginning of current or previous text block.
- (a text block is separated by blank lines)"
-  (interactive "p")
-  (if (use-region-p)
-      (let* ((deactivate-mark nil)
-             (ξp1 (region-beginning))
-             (ξp2 (region-end))
-             (ξtext (buffer-substring ξp1 ξp2))
-             ξp3
-             )
-        (delete-region ξp1 ξp2)
-        (setq mark-active nil)
-        (xah-beginning-of-line-or-block-raw)
-        (setq ξp3 (point))
-        (insert ξtext)
-        (set-mark ξp3))
-    (xah-beginning-of-line-or-block-raw)))
 
 (defun xah-beginning-of-line-or-block (&optional φn)
   "Move cursor to beginning of line, or beginning of current or previous text block.
