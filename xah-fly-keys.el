@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.8.9
+;; Version: 2.10.9
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -20,7 +20,7 @@
 
 ;; It is a modal mode, like vi, but key choices are based on statistics of command call frequency, and key position easy-to-press score.
 
-;; xah-fly-keys does not bind any Control key, nor Meta keys (except a few, but you can turn off). 
+;; xah-fly-keys does not bind any Control key, nor Meta keys (except a few, but you can turn off).
 ;; This means, you can use emacs as is, because no Control or Meta are used. Just leave xah-fly-keys in insertion mode.
 
 ;; xah-fly-keys is optimized for Dvorak layout only. If you touch-type QWERTY or other, you will need to rebind keys. I recommend you fork it and modify the keys for your own use. See home page for detail: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -93,6 +93,9 @@
 
 (defvar xah-fly-command-mode-activate-hook nil "Hook for `xah-fly-command-mode-activate'")
 (defvar xah-fly-insert-mode-activate-hook nil "Hook for `xah-fly-insert-mode-activate'")
+
+(defvar xah-fly-use-control-key nil "if true, define standard keys for open, close, paste, etc.")
+(setq xah-fly-use-control-key t)
 
 
 ;; cursor movement
@@ -1526,6 +1529,11 @@ If `universal-argument' is called first, do switch frame."
         (other-window 1))
     (other-frame 1)))
 
+(defun xah-describe-major-mode ()
+  "Display inline doc for current `major-mode'."
+  (interactive)
+  (describe-function major-mode))
+
 
 ;; keymaps
 
@@ -1538,7 +1546,32 @@ If `universal-argument' is called first, do switch frame."
   (define-key xah-fly-key-map (kbd "'") 'self-insert-command)
 
   (define-key xah-fly-key-map (kbd "<C-next>") 'xah-next-user-buffer)
-  (define-key xah-fly-key-map (kbd "<C-prior>") 'xah-previous-user-buffer))
+  (define-key xah-fly-key-map (kbd "<C-prior>") 'xah-previous-user-buffer)
+
+  (when xah-fly-use-control-key
+    (progn
+      (define-key xah-fly-key-map (kbd "<C-tab>") 'xah-next-user-buffer)
+      (define-key xah-fly-key-map (kbd "<C-S-iso-lefttab>") 'xah-previous-user-buffer)
+      (define-key xah-fly-key-map (kbd "C-v") 'yank)
+      (define-key xah-fly-key-map (kbd "C-t") 'toggle-input-method)
+      (define-key xah-fly-key-map (kbd "C-w") 'xah-close-current-buffer)
+      (define-key xah-fly-key-map (kbd "C-z") 'undo)
+      (define-key xah-fly-key-map (kbd "C-n") 'xah-new-empty-buffer)
+      (define-key xah-fly-key-map (kbd "C-o") 'find-file)
+      (define-key xah-fly-key-map (kbd "C-s") 'save-buffer)
+      (define-key xah-fly-key-map (kbd "C-S-s") 'write-file)
+      (define-key xah-fly-key-map (kbd "C-S-t") 'xah-open-last-closed)
+
+      (define-key xah-fly-key-map (kbd "C-,") 'flyspell-goto-next-error)
+
+      (define-key xah-fly-key-map (kbd "C-+") 'text-scale-increase)
+      (define-key xah-fly-key-map (kbd "C--") 'text-scale-decrease)
+      (define-key xah-fly-key-map (kbd "C-0") (lambda () (interactive) (text-scale-set 0)))))
+
+  (define-key xah-fly-key-map (kbd "M-t") 'xah-toggle-letter-case)
+  (define-key xah-fly-key-map (kbd "M-h") 'hippie-expand)
+
+  )
 
 (progn
   (define-prefix-command 'xah-highlight-keymap) ; commands in search-map and facemenu-keymap
@@ -1633,7 +1666,7 @@ If `universal-argument' is called first, do switch frame."
   (define-key xah-help-keymap (kbd "k") 'describe-key)
   (define-key xah-help-keymap (kbd "K") 'Info-goto-emacs-key-command-node)
   (define-key xah-help-keymap (kbd "l") 'view-lossage)
-  (define-key xah-help-keymap (kbd "m") 'describe-mode)
+  (define-key xah-help-keymap (kbd "m") 'xah-describe-major-mode)
   (define-key xah-help-keymap (kbd "n") 'describe-input-method)
   (define-key xah-help-keymap (kbd "o") 'describe-language-environment)
   (define-key xah-help-keymap (kbd "p") 'finder-by-keyword)
@@ -1922,7 +1955,7 @@ If `universal-argument' is called first, do switch frame."
   (define-key xah-fly-leader-key-map (kbd "j") 'xah-cut-all-or-region)
   (define-key xah-fly-leader-key-map (kbd "k") 'yank)
   (define-key xah-fly-leader-key-map (kbd "l") 'recenter-top-bottom)
-  (define-key xah-fly-leader-key-map (kbd "m") 'universal-argument)
+  (define-key xah-fly-leader-key-map (kbd "m") nil)
   (define-key xah-fly-leader-key-map (kbd "n") xah-harmless-keymap)
   (define-key xah-fly-leader-key-map (kbd "o") nil)
   (define-key xah-fly-leader-key-map (kbd "p") 'query-replace)
