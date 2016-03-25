@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.11.1
+;; Version: 2.11.2
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -43,13 +43,12 @@
 
 ;; Important command/insert mode switch keys:
 
-;; xah-fly-command-mode-activate (key: 【esc】, 【home】, 【Ctrl+8】, 【F8】)
-;; xah-fly-insert-mode-activate  (when in command mode, 【SPACE】)
-;; xah-fly-mode-toggle           (toggle between command/insert modes. No key by default.)
+;; xah-fly-command-mode-activate (press 【home】 or 【Ctrl+8】 or 【F8】)
+;; xah-fly-insert-mode-activate  (when in command mode, press 【SPACE】)
 
 ;; When in command mode:
 ;; 【SPACE】 activates insertion mode
-;; 【x】 is a leader key, for emacs one thousands commands
+;; 【x】 is a leader key. For example, 【x p】 calls query-replace. The leader key sequence basically replace ALL emacs commands that start with C-x key.
 
 ;; When using xah-fly-keys, you don't need to press Control or Meta, with the following exceptions:
 
@@ -59,7 +58,7 @@
 
 ;; Leader key
 
-;; All emacs C-x keys have a key sequence, starting with a leader key. Most commands are 2 to 3 keys, counting the leader key. For example, isearch is 【‹leader key› g】 (in Dvorak layout), switch-buffer is 【‹leader key› c g】.
+;; All emacs C-x keys have a key sequence, starting with a leader key. Most commands are 2 to 3 keys, counting the leader key. For example, isearch is 【‹leader key› p】 (in Dvorak layout), switch-buffer is 【‹leader key› c g】.
 
 ;; You NEVER need to press Ctrl+x
 
