@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.11.0
+;; Version: 2.11.1
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -43,7 +43,7 @@
 
 ;; Important command/insert mode switch keys:
 
-;; xah-fly-command-mode-activate (key: 【home】, 【Ctrl+8】, 【F8】)
+;; xah-fly-command-mode-activate (key: 【esc】, 【home】, 【Ctrl+8】, 【F8】)
 ;; xah-fly-insert-mode-activate  (when in command mode, 【SPACE】)
 ;; xah-fly-mode-toggle           (toggle between command/insert modes. No key by default.)
 
@@ -2128,6 +2128,7 @@ If `universal-argument' is called first, do switch frame."
 (global-set-key (kbd "<menu>") 'xah-fly-leader-key-map)
 (global-set-key (kbd "<home>") 'xah-fly-command-mode-activate)
 (global-set-key (kbd "<f8>") 'xah-fly-command-mode-activate)
+(global-set-key (kbd "ESC") 'xah-fly-command-mode-activate)
 
 (if xah-fly-swapped-1827-p
     (progn
