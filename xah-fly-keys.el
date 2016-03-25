@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.10.9
+;; Version: 2.11.0
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -28,6 +28,7 @@
 ;; --------------------------------------------------
 ;; MANUAL INSTALL
 ;; put the file xah-fly-keys.el in ~/.emacs.d/lisp/
+;; create the dirs if doesn't exist.
 
 ;; put the following in your emacs init file:
 
@@ -38,27 +39,25 @@
 ;; --------------------------------------------------
 ;; USE
 
-;; Important commands and default keys
-
-;; command: xah-fly-keys to toggle the mode on/off.
+;; M-x xah-fly-keys to toggle the mode on/off.
 
 ;; Important command/insert mode switch keys:
 
-;; xah-fly-command-mode-activate (key: 【home】, 【Ctrl+8】)
-;; xah-fly-insert-mode-activate (when in command mode, 【SPACE】)
-;; xah-fly-mode-toggle (toggle between command/insert modes. No key by default.)
+;; xah-fly-command-mode-activate (key: 【home】, 【Ctrl+8】, 【F8】)
+;; xah-fly-insert-mode-activate  (when in command mode, 【SPACE】)
+;; xah-fly-mode-toggle           (toggle between command/insert modes. No key by default.)
 
 ;; When in command mode:
 ;; 【SPACE】 activates insertion mode
 ;; 【x】 is a leader key, for emacs one thousands commands
 
-;; When using xah-fly-keys, you don't need to ever press Control or Meta, with the following exceptions:
+;; When using xah-fly-keys, you don't need to press Control or Meta, with the following exceptions:
 
 ;; C-c for major mode commands.
-;; C-g for cancel. (i recommend you set a easy-key outside of emacs to send C-g)
-;; C-q for quoted-insert. (because C-q is a efficient choice. Because the key after C-q needs Control held-down.)
+;; C-g for cancel.
+;; C-q for quoted-insert.
 
-;; Leader keys
+;; Leader key
 
 ;; All emacs C-x keys have a key sequence, starting with a leader key. Most commands are 2 to 3 keys, counting the leader key. For example, isearch is 【‹leader key› g】 (in Dvorak layout), switch-buffer is 【‹leader key› c g】.
 
@@ -68,9 +67,35 @@
 
 ;; When in command mode, the 【x】 is a leader key.
 
-;; That is it. You should change the above mentioned critical keys to be ones easy to type on YOUR KEYBOARD.
+;; On the Mac, I also recommend using a app called Karabiner to set your cmd or opt keys to be Menu key, so that it becomes a leader key
 
-;; I recommend you make a copy, and modify it, and use your modified version. Don't worry about upgrade. (I still make key tweaks every week, for the past 3 years.)
+;; On the Mac, I highly recommend using a app called Sail to set your capslock to send Home. So that it acts as xah-fly-command-mode-activate
+
+;; see Mac Keyboard Software Guide http://xahlee.info/kbd/Mac_OS_X_keymapping_keybinding_tools.html
+
+;; the following stardard keys with Control are supported, when the variable xah-fly-use-control-key is t
+
+;; (when xah-fly-use-control-key
+;;     (progn
+;;       (define-key xah-fly-key-map (kbd "<C-tab>") 'xah-next-user-buffer)
+;;       (define-key xah-fly-key-map (kbd "<C-S-iso-lefttab>") 'xah-previous-user-buffer)
+;;       (define-key xah-fly-key-map (kbd "C-v") 'yank)
+;;       (define-key xah-fly-key-map (kbd "C-t") 'toggle-input-method)
+;;       (define-key xah-fly-key-map (kbd "C-w") 'xah-close-current-buffer)
+;;       (define-key xah-fly-key-map (kbd "C-z") 'undo)
+;;       (define-key xah-fly-key-map (kbd "C-n") 'xah-new-empty-buffer)
+;;       (define-key xah-fly-key-map (kbd "C-o") 'find-file)
+;;       (define-key xah-fly-key-map (kbd "C-s") 'save-buffer)
+;;       (define-key xah-fly-key-map (kbd "C-S-s") 'write-file)
+;;       (define-key xah-fly-key-map (kbd "C-S-t") 'xah-open-last-closed)
+;;       (define-key xah-fly-key-map (kbd "C-,") 'flyspell-goto-next-error)
+;;       (define-key xah-fly-key-map (kbd "C-+") 'text-scale-increase)
+;;       (define-key xah-fly-key-map (kbd "C--") 'text-scale-decrease)
+;;       (define-key xah-fly-key-map (kbd "C-0") (lambda () (interactive) (text-scale-set 0)))))
+
+;; That't it. You should change the above mentioned critical keys to be ones easy to type on YOUR KEYBOARD.
+
+;; I recommend you clone xah-fly-keys.el, and modify it, and use your modified version. Don't worry about upgrade. (I still make key tweaks every week, for the past 3 years.)
 
 ;; If you have a bug, post on github. If you have question, post on xah-fly-keys home page.
 
@@ -2102,6 +2127,7 @@ If `universal-argument' is called first, do switch frame."
 
 (global-set-key (kbd "<menu>") 'xah-fly-leader-key-map)
 (global-set-key (kbd "<home>") 'xah-fly-command-mode-activate)
+(global-set-key (kbd "<f8>") 'xah-fly-command-mode-activate)
 
 (if xah-fly-swapped-1827-p
     (progn
