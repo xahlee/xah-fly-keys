@@ -2130,10 +2130,8 @@ If `universal-argument' is called first, do switch frame."
 (global-set-key (kbd "<f8>") 'xah-fly-command-mode-activate)
 
 (if xah-fly-swapped-1827-p
-    (progn
-      (global-set-key (kbd "C-1") 'xah-fly-command-mode-activate))
-  (progn
-    (global-set-key (kbd "C-8") 'xah-fly-command-mode-activate)))
+    (global-set-key (kbd "C-1") 'xah-fly-command-mode-activate)
+  (global-set-key (kbd "C-8") 'xah-fly-command-mode-activate))
 
 (global-set-key (kbd "C-6") 'other-frame)
 
