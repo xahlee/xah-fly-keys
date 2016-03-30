@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.11.2
+;; Version: 2.12.2
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -1682,24 +1682,24 @@ If `universal-argument' is called first, do switch frame."
   (define-key xah-help-keymap (kbd "c") 'describe-char)
   (define-key xah-help-keymap (kbd "d") 'apropos-documentation)
   (define-key xah-help-keymap (kbd "e") 'view-echo-area-messages)
-  (define-key xah-help-keymap (kbd "f") 'describe-function)
-  (define-key xah-help-keymap (kbd "g") nil)
-  (define-key xah-help-keymap (kbd "h") 'describe-face)
+  (define-key xah-help-keymap (kbd "f") 'describe-face)
+  (define-key xah-help-keymap (kbd "g") 'info-lookup-symbol)
+  (define-key xah-help-keymap (kbd "h") 'describe-function)
   (define-key xah-help-keymap (kbd "i") 'info)
   (define-key xah-help-keymap (kbd "j") nil)
-  (define-key xah-help-keymap (kbd "k") 'describe-key)
+  (define-key xah-help-keymap (kbd "k") 'describe-input-method)
   (define-key xah-help-keymap (kbd "K") 'Info-goto-emacs-key-command-node)
   (define-key xah-help-keymap (kbd "l") 'view-lossage)
   (define-key xah-help-keymap (kbd "m") 'xah-describe-major-mode)
-  (define-key xah-help-keymap (kbd "n") 'describe-input-method)
+  (define-key xah-help-keymap (kbd "n") 'describe-key )
   (define-key xah-help-keymap (kbd "o") 'describe-language-environment)
   (define-key xah-help-keymap (kbd "p") 'finder-by-keyword)
   (define-key xah-help-keymap (kbd "q") nil)
   (define-key xah-help-keymap (kbd "r") nil)
   (define-key xah-help-keymap (kbd "s") 'describe-syntax)
-  (define-key xah-help-keymap (kbd "t") 'info-lookup-symbol)
+  (define-key xah-help-keymap (kbd "t") 'describe-variable)
   (define-key xah-help-keymap (kbd "u") nil)
-  (define-key xah-help-keymap (kbd "v") 'describe-variable)
+  (define-key xah-help-keymap (kbd "v") nil)
   (define-key xah-help-keymap (kbd "w") nil)
   (define-key xah-help-keymap (kbd "x") nil)
   (define-key xah-help-keymap (kbd "y") nil)
@@ -2221,7 +2221,7 @@ If `universal-argument' is called first, do switch frame."
     (define-key xah-fly-key-map (kbd "f") 'undo)
     (define-key xah-fly-key-map (kbd "g") 'backward-word)
     (define-key xah-fly-key-map (kbd "h") 'backward-char)
-    (define-key xah-fly-key-map (kbd "i") 'kill-line)
+    (define-key xah-fly-key-map (kbd "i") 'xah-fly-leader-key-map)
     (define-key xah-fly-key-map (kbd "j") 'xah-cut-line-or-region)
     (define-key xah-fly-key-map (kbd "k") 'yank)
     (define-key xah-fly-key-map (kbd "l") 'xah-insert-space-before)
@@ -2236,9 +2236,10 @@ If `universal-argument' is called first, do switch frame."
     (define-key xah-fly-key-map (kbd "u") 'delete-char)
     (define-key xah-fly-key-map (kbd "v") 'xah-forward-right-bracket)
     (define-key xah-fly-key-map (kbd "w") 'xah-next-window-or-frame)
-    (define-key xah-fly-key-map (kbd "x") 'xah-fly-leader-key-map)
+    (define-key xah-fly-key-map (kbd "x") nil)
     (define-key xah-fly-key-map (kbd "y") 'set-mark-command)
     (define-key xah-fly-key-map (kbd "z") 'comment-dwim)
+    (define-key xah-fly-key-map (kbd "I") 'kill-line)
     ))
 
 (defun xah-fly-insert-mode-init ()
@@ -2296,7 +2297,7 @@ If `universal-argument' is called first, do switch frame."
     (define-key xah-fly-key-map (kbd "x") nil)
     (define-key xah-fly-key-map (kbd "y") nil)
     (define-key xah-fly-key-map (kbd "z") nil)
-
+    (define-key xah-fly-key-map (kbd "I") nil)
 ))
 
 (defun xah-fly-mode-toggle ()
