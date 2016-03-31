@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.13.2
+;; Version: 2.13.3
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -37,18 +37,20 @@
 ;; (xah-fly-keys 1)
 
 ;; --------------------------------------------------
-;; USE
+;; HOW TO USE
 
 ;; M-x xah-fly-keys to toggle the mode on/off.
 
 ;; Important command/insert mode switch keys:
 
 ;; xah-fly-command-mode-activate (press 【home】 or 【Ctrl+8】 or 【F8】)
-;; xah-fly-insert-mode-activate  (when in command mode, press 【SPACE】)
+;; xah-fly-insert-mode-activate  (when in command mode, press letter 【i】 key)
 
 ;; When in command mode:
-;; 【SPACE】 activates insertion mode
-;; 【x】 is a leader key. For example, 【x p】 calls query-replace. The leader key sequence basically replace ALL emacs commands that start with C-x key.
+;; 【i】 activates insertion mode
+;; 【SPACE】 is a leader key. For example, 【SPACE p】 calls query-replace.
+
+;; The leader key sequence basically replace ALL emacs commands that starts with C-x key.
 
 ;; When using xah-fly-keys, you don't need to press Control or Meta, with the following exceptions:
 
@@ -58,15 +60,15 @@
 
 ;; Leader key
 
-;; All emacs C-x keys have a key sequence, starting with a leader key. Most commands are 2 to 3 keys, counting the leader key. For example, isearch is 【‹leader key› p】 (in Dvorak layout), switch-buffer is 【‹leader key› c g】.
+;; All emacs C-x keys have a key sequence, starting with a leader key. Most commands are 2 to 3 keys, counting the leader key.
 
 ;; You NEVER need to press Ctrl+x
 
-;; globally, the leader key is the 【menu】 key. (on typical PC keyboard, it's usually at right side of space bar.) You should change this to a easy-key on YOUR keyboard. For example, make left Alt to send menu key signal in your OS or keyboard firmware.
+;; globally, the leader key is the 【f9】 and 【menu】 key.
 
-;; When in command mode, the 【x】 is a leader key.
+ ;; (on typical PC keyboard, the menu key usually at right side of space bar.)
 
-;; On the Mac, I also recommend using a app called Karabiner to set your cmd or opt keys to be Menu key, so that it becomes a leader key
+;; When in command mode, the 【SPACE】 is a leader key.
 
 ;; On the Mac, I highly recommend using a app called Sail to set your capslock to send Home. So that it acts as xah-fly-command-mode-activate
 
@@ -92,13 +94,13 @@
 ;;       (define-key xah-fly-key-map (kbd "C--") 'text-scale-decrease)
 ;;       (define-key xah-fly-key-map (kbd "C-0") (lambda () (interactive) (text-scale-set 0)))))
 
-;; That't it. You should change the above mentioned critical keys to be ones easy to type on YOUR KEYBOARD.
+;; That't it.
 
 ;; I recommend you clone xah-fly-keys.el, and modify it, and use your modified version. Don't worry about upgrade. (I still make key tweaks every week, for the past 3 years.)
 
 ;; If you have a bug, post on github. If you have question, post on xah-fly-keys home page.
 
-;; For detail and tutorial-like explanation, and about how to remap keys such as capslock outside of emacs, see
+;; For detail about design and other info, see home page at
 ;; http://ergoemacs.org/misc/ergoemacs_vi_mode.html
 
 ;; If you like this project, Buy Xah Emacs Tutorial http://ergoemacs.org/emacs/buy_xah_emacs_tutorial.html or make a donation. Thanks.
@@ -2124,9 +2126,11 @@ If `universal-argument' is called first, do switch frame."
 
 ;; setting keys
 
-(global-set-key (kbd "<menu>") 'xah-fly-leader-key-map)
 (global-set-key (kbd "<home>") 'xah-fly-command-mode-activate)
-(global-set-key (kbd "<f8>") 'xah-fly-command-mode-activate)
+(global-set-key (kbd "<f8>") 'xah-fly-command-mode-activate) ; as backup
+
+(global-set-key (kbd "<menu>") 'xah-fly-leader-key-map)
+(global-set-key (kbd "<f9>") 'xah-fly-leader-key-map) ; as backup
 
 (if xah-fly-swapped-1827-p
     (global-set-key (kbd "C-1") 'xah-fly-command-mode-activate)
