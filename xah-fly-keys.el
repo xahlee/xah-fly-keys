@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.12.2
+;; Version: 2.13.2
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -2191,7 +2191,7 @@ If `universal-argument' is called first, do switch frame."
     (define-key xah-fly-key-map (kbd "`") 'xah-forward-comma-sign)
     (define-key xah-fly-key-map (kbd "~") 'xah-backward-comma-sign)
 
-    (define-key xah-fly-key-map (kbd "SPC") 'xah-fly-insert-mode-activate)
+    (define-key xah-fly-key-map (kbd "SPC") 'xah-fly-leader-key-map)
 
     (if xah-fly-swapped-1827-p
         (progn
@@ -2221,13 +2221,13 @@ If `universal-argument' is called first, do switch frame."
     (define-key xah-fly-key-map (kbd "f") 'undo)
     (define-key xah-fly-key-map (kbd "g") 'backward-word)
     (define-key xah-fly-key-map (kbd "h") 'backward-char)
-    (define-key xah-fly-key-map (kbd "i") 'xah-fly-leader-key-map)
+    (define-key xah-fly-key-map (kbd "i") 'xah-fly-insert-mode-activate)
     (define-key xah-fly-key-map (kbd "j") 'xah-cut-line-or-region)
     (define-key xah-fly-key-map (kbd "k") 'yank)
     (define-key xah-fly-key-map (kbd "l") 'xah-insert-space-before)
     (define-key xah-fly-key-map (kbd "m") 'xah-backward-left-bracket)
     (define-key xah-fly-key-map (kbd "n") 'forward-char)
-    (define-key xah-fly-key-map (kbd "o") 'open-line)
+    (define-key xah-fly-key-map (kbd "o") 'xah-fly-insert-mode-activate-insert-return)
     (define-key xah-fly-key-map (kbd "p") 'kill-word)
     (define-key xah-fly-key-map (kbd "q") 'xah-copy-line-or-region)
     (define-key xah-fly-key-map (kbd "r") 'forward-word)
@@ -2239,7 +2239,7 @@ If `universal-argument' is called first, do switch frame."
     (define-key xah-fly-key-map (kbd "x") nil)
     (define-key xah-fly-key-map (kbd "y") 'set-mark-command)
     (define-key xah-fly-key-map (kbd "z") 'comment-dwim)
-    (define-key xah-fly-key-map (kbd "I") 'kill-line)
+    (define-key xah-fly-key-map (kbd "U") 'kill-line)
     ))
 
 (defun xah-fly-insert-mode-init ()
@@ -2297,7 +2297,7 @@ If `universal-argument' is called first, do switch frame."
     (define-key xah-fly-key-map (kbd "x") nil)
     (define-key xah-fly-key-map (kbd "y") nil)
     (define-key xah-fly-key-map (kbd "z") nil)
-    (define-key xah-fly-key-map (kbd "I") nil)
+    (define-key xah-fly-key-map (kbd "U") nil)
 ))
 
 (defun xah-fly-mode-toggle ()
