@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.13.3
+;; Version: 2.14.0
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -1595,8 +1595,11 @@ If `universal-argument' is called first, do switch frame."
       (define-key xah-fly-key-map (kbd "C-0") (lambda () (interactive) (text-scale-set 0)))))
 
   (define-key xah-fly-key-map (kbd "M-t") 'xah-toggle-letter-case)
-  (define-key xah-fly-key-map (kbd "M-h") 'hippie-expand)
+  (define-key xah-fly-key-map (kbd "M-g") 'xah-insert-brace)
+  (define-key xah-fly-key-map (kbd "M-c") 'xah-insert-paren)
+  (define-key xah-fly-key-map (kbd "M-r") 'xah-insert-square-bracket)
 
+  (define-key xah-fly-key-map (kbd "M-6") 'hippie-expand)
   )
 
 (progn
@@ -2126,34 +2129,28 @@ If `universal-argument' is called first, do switch frame."
 
 ;; setting keys
 
-(global-set-key (kbd "<home>") 'xah-fly-command-mode-activate)
-(global-set-key (kbd "<f8>") 'xah-fly-command-mode-activate) ; as backup
+(define-key xah-fly-key-map (kbd "<home>") 'xah-fly-command-mode-activate)
+(define-key xah-fly-key-map (kbd "<f8>") 'xah-fly-command-mode-activate) ; as backup
 
-(global-set-key (kbd "<menu>") 'xah-fly-leader-key-map)
-(global-set-key (kbd "<f9>") 'xah-fly-leader-key-map) ; as backup
+(define-key xah-fly-key-map (kbd "<menu>") 'xah-fly-leader-key-map)
+(define-key xah-fly-key-map (kbd "<f9>") 'xah-fly-leader-key-map) ; as backup
 
 (if xah-fly-swapped-1827-p
-    (global-set-key (kbd "C-1") 'xah-fly-command-mode-activate)
-  (global-set-key (kbd "C-8") 'xah-fly-command-mode-activate))
+    (define-key xah-fly-key-map (kbd "C-1") 'xah-fly-command-mode-activate)
+  (define-key xah-fly-key-map (kbd "C-8") 'xah-fly-command-mode-activate))
 
-(global-set-key (kbd "C-6") 'other-frame)
+(define-key xah-fly-key-map (kbd "C-6") 'other-frame)
 
-(global-set-key (kbd "<f11>") 'xah-previous-user-buffer)
-(global-set-key (kbd "<f12>") 'xah-next-user-buffer)
-(global-set-key (kbd "<C-f11>") 'xah-previous-emacs-buffer)
-(global-set-key (kbd "<C-f12>") 'xah-next-emacs-buffer)
+(define-key xah-fly-key-map (kbd "<f11>") 'xah-previous-user-buffer)
+(define-key xah-fly-key-map (kbd "<f12>") 'xah-next-user-buffer)
+(define-key xah-fly-key-map (kbd "<C-f11>") 'xah-previous-emacs-buffer)
+(define-key xah-fly-key-map (kbd "<C-f12>") 'xah-next-emacs-buffer)
 
 ;; these are good for compatibilty. e.g. you set a mouse or other device to use this key for generic OS wide operation, and it should work in emacs too
-(global-set-key (kbd "<C-prior>") 'xah-previous-user-buffer)
-(global-set-key (kbd "<C-next>") 'xah-next-user-buffer)
+(define-key xah-fly-key-map (kbd "<C-prior>") 'xah-previous-user-buffer)
+(define-key xah-fly-key-map (kbd "<C-next>") 'xah-next-user-buffer)
 
-(if xah-fly-swapped-1827-p
-    (progn
-      (global-set-key (kbd "M-2") 'hippie-expand)
-      (global-set-key (kbd "M-1") 'xah-toggle-letter-case))
-  (progn
-    (global-set-key (kbd "M-7") 'hippie-expand)
-    (global-set-key (kbd "M-8") 'xah-toggle-letter-case)))
+
 
 (progn
   ;; set arrow keys in isearch. left/right is backward/forward, up/down is history. press Return to exit
@@ -2231,7 +2228,7 @@ If `universal-argument' is called first, do switch frame."
     (define-key xah-fly-key-map (kbd "l") 'xah-insert-space-before)
     (define-key xah-fly-key-map (kbd "m") 'xah-backward-left-bracket)
     (define-key xah-fly-key-map (kbd "n") 'forward-char)
-    (define-key xah-fly-key-map (kbd "o") 'xah-fly-insert-mode-activate-insert-return)
+    (define-key xah-fly-key-map (kbd "o") 'open-line)
     (define-key xah-fly-key-map (kbd "p") 'kill-word)
     (define-key xah-fly-key-map (kbd "q") 'xah-copy-line-or-region)
     (define-key xah-fly-key-map (kbd "r") 'forward-word)
