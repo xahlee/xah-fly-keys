@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.14.0
+;; Version: 2.15.0
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -1892,7 +1892,9 @@ If `universal-argument' is called first, do switch frame."
   (define-key xah-danger-keymap (kbd "u") 'eval-region)
   (define-key xah-danger-keymap (kbd "q") 'save-buffers-kill-terminal)
   (define-key xah-danger-keymap (kbd "w") 'delete-frame)
-  (define-key xah-danger-keymap (kbd "j") 'xah-run-current-file))
+  (define-key xah-danger-keymap (kbd "j") 'xah-run-current-file)
+  (define-key xah-danger-keymap (kbd "DEL") 'xah-delete-current-file)
+)
 
 (progn
   (define-prefix-command 'xah-insertion-keymap)
@@ -1930,10 +1932,10 @@ If `universal-argument' is called first, do switch frame."
 (progn
   (define-prefix-command 'xah-fly-leader-key-map)
   (define-key xah-fly-leader-key-map (kbd "RET") (if (fboundp 'smex) 'smex 'execute-extended-command ))
-  (define-key xah-fly-leader-key-map (kbd "SPC") xah-insertion-keymap)
+  (define-key xah-fly-leader-key-map (kbd "SPC") 'xah-fly-insert-mode-activate)
   (define-key xah-fly-leader-key-map (kbd "TAB") xah-leader-tab-keymap)
-  (define-key xah-fly-leader-key-map (kbd "<end>") 'xah-fly-keys)
-  (define-key xah-fly-leader-key-map (kbd "DEL") 'xah-delete-current-file)
+  (define-key xah-fly-leader-key-map (kbd "<end>") nil)
+  (define-key xah-fly-leader-key-map (kbd "DEL") nil)
 
   (define-key xah-fly-leader-key-map (kbd "<mouse-1>") 'xah-set-mouse-wheel-mode) ; left button
   (define-key xah-fly-leader-key-map (kbd "<mouse-3>") 'xah-set-mouse-scroll-by-50-line) ; right button
@@ -2132,8 +2134,8 @@ If `universal-argument' is called first, do switch frame."
 (define-key xah-fly-key-map (kbd "<home>") 'xah-fly-command-mode-activate)
 (define-key xah-fly-key-map (kbd "<f8>") 'xah-fly-command-mode-activate) ; as backup
 
-(define-key xah-fly-key-map (kbd "<menu>") 'xah-fly-leader-key-map)
-(define-key xah-fly-key-map (kbd "<f9>") 'xah-fly-leader-key-map) ; as backup
+(define-key xah-fly-key-map (kbd "<menu>") xah-fly-leader-key-map)
+(define-key xah-fly-key-map (kbd "<f9>") xah-fly-leader-key-map) ; as backup
 
 (if xah-fly-swapped-1827-p
     (define-key xah-fly-key-map (kbd "C-1") 'xah-fly-command-mode-activate)
@@ -2192,7 +2194,7 @@ If `universal-argument' is called first, do switch frame."
     (define-key xah-fly-key-map (kbd "`") 'xah-forward-comma-sign)
     (define-key xah-fly-key-map (kbd "~") 'xah-backward-comma-sign)
 
-    (define-key xah-fly-key-map (kbd "SPC") 'xah-fly-leader-key-map)
+    (define-key xah-fly-key-map (kbd "SPC") xah-fly-leader-key-map)
 
     (if xah-fly-swapped-1827-p
         (progn
@@ -2228,7 +2230,7 @@ If `universal-argument' is called first, do switch frame."
     (define-key xah-fly-key-map (kbd "l") 'xah-insert-space-before)
     (define-key xah-fly-key-map (kbd "m") 'xah-backward-left-bracket)
     (define-key xah-fly-key-map (kbd "n") 'forward-char)
-    (define-key xah-fly-key-map (kbd "o") 'open-line)
+    (define-key xah-fly-key-map (kbd "o") 'xah-fly-insert-mode-activate-newline)
     (define-key xah-fly-key-map (kbd "p") 'kill-word)
     (define-key xah-fly-key-map (kbd "q") 'xah-copy-line-or-region)
     (define-key xah-fly-key-map (kbd "r") 'forward-word)
@@ -2333,7 +2335,7 @@ If `universal-argument' is called first, do switch frame."
   (xah-fly-insert-mode-init)
   (run-hooks 'xah-fly-insert-mode-activate-hook))
 
-(defun xah-fly-insert-mode-activate-insert-return ()
+(defun xah-fly-insert-mode-activate-newline ()
   "Activate insertion mode, and insert a newline."
   (interactive)
   (xah-fly-insert-mode-activate)
