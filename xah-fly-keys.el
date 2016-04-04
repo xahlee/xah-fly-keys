@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.16.0
+;; Version: 2.17.0
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -1847,7 +1847,6 @@ If `universal-argument' is called first, do switch frame."
     (progn
         (define-key xah-leader-t-keymap (kbd "8") 'mark-defun)))
 
-  (define-key xah-leader-t-keymap (kbd "SPC") 'pop-global-mark)
   (define-key xah-leader-t-keymap (kbd "3") 'point-to-register)
   (define-key xah-leader-t-keymap (kbd "4") 'jump-to-register)
 
@@ -1998,7 +1997,7 @@ If `universal-argument' is called first, do switch frame."
   (define-key xah-fly-leader-key-map (kbd "u") nil)
   (define-key xah-fly-leader-key-map (kbd "v") nil)
   (define-key xah-fly-leader-key-map (kbd "w") xah-danger-keymap)
-  (define-key xah-fly-leader-key-map (kbd "x") 'exchange-point-and-mark)
+  (define-key xah-fly-leader-key-map (kbd "x") 'pop-global-mark)
   (define-key xah-fly-leader-key-map (kbd "y") 'ido-switch-buffer)
   (define-key xah-fly-leader-key-map (kbd "z") 'comment-dwim))
 
@@ -2153,8 +2152,6 @@ If `universal-argument' is called first, do switch frame."
 (define-key xah-fly-key-map (kbd "<C-prior>") 'xah-previous-user-buffer)
 (define-key xah-fly-key-map (kbd "<C-next>") 'xah-next-user-buffer)
 
-
-
 (progn
   ;; set arrow keys in isearch. left/right is backward/forward, up/down is history. press Return to exit
   (define-key isearch-mode-map (kbd "<up>") 'isearch-ring-retreat )
@@ -2169,9 +2166,6 @@ If `universal-argument' is called first, do switch frame."
 )
 
 
-
-(defvar xah-fly-major-mode-lead-key nil "Lead key for all major mode's key sequence. By default, it's (kbd \"<menu> e\"). Only supported by xah's modes.")
-(setq xah-fly-major-mode-lead-key (kbd "<menu> e"))
 
 (defvar xah-fly-insert-state-q t "Boolean value. true means insertion mode is on.")
 (setq xah-fly-insert-state-q t)
@@ -2240,7 +2234,7 @@ If `universal-argument' is called first, do switch frame."
     (define-key xah-fly-key-map (kbd "u") 'delete-char)
     (define-key xah-fly-key-map (kbd "v") 'xah-forward-right-bracket)
     (define-key xah-fly-key-map (kbd "w") 'xah-next-window-or-frame)
-    (define-key xah-fly-key-map (kbd "x") 'pop-global-mark)
+    (define-key xah-fly-key-map (kbd "x") 'exchange-point-and-mark)
     (define-key xah-fly-key-map (kbd "y") 'set-mark-command)
     (define-key xah-fly-key-map (kbd "z") 'comment-dwim)
     (define-key xah-fly-key-map (kbd "U") 'kill-line)
