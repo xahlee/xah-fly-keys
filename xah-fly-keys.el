@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.15.0
+;; Version: 2.16.0
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -115,6 +115,7 @@
 
 (require 'dired) ; in emacs
 (require 'dired-x) ; in emacs
+(require 'ido) ; in emacs
 
 
 (defvar xah-fly-command-mode-activate-hook nil "Hook for `xah-fly-command-mode-activate'")
@@ -1657,7 +1658,7 @@ If `universal-argument' is called first, do switch frame."
   (define-key xah-leader-c-keymap (kbd ".") 'find-file)
   (define-key xah-leader-c-keymap (kbd "c") 'bookmark-bmenu-list)
   (define-key xah-leader-c-keymap (kbd "e") nil)
-  (define-key xah-leader-c-keymap (kbd "g") 'ido-switch-buffer)
+  (define-key xah-leader-c-keymap (kbd "g") nil)
   (define-key xah-leader-c-keymap (kbd "h") 'recentf-open-files)
   (define-key xah-leader-c-keymap (kbd "l") 'bookmark-set)
   (define-key xah-leader-c-keymap (kbd "n") 'xah-new-empty-buffer)
@@ -1998,7 +1999,7 @@ If `universal-argument' is called first, do switch frame."
   (define-key xah-fly-leader-key-map (kbd "v") nil)
   (define-key xah-fly-leader-key-map (kbd "w") xah-danger-keymap)
   (define-key xah-fly-leader-key-map (kbd "x") 'exchange-point-and-mark)
-  (define-key xah-fly-leader-key-map (kbd "y") nil)
+  (define-key xah-fly-leader-key-map (kbd "y") 'ido-switch-buffer)
   (define-key xah-fly-leader-key-map (kbd "z") 'comment-dwim))
 
 
@@ -2239,7 +2240,7 @@ If `universal-argument' is called first, do switch frame."
     (define-key xah-fly-key-map (kbd "u") 'delete-char)
     (define-key xah-fly-key-map (kbd "v") 'xah-forward-right-bracket)
     (define-key xah-fly-key-map (kbd "w") 'xah-next-window-or-frame)
-    (define-key xah-fly-key-map (kbd "x") nil)
+    (define-key xah-fly-key-map (kbd "x") 'pop-global-mark)
     (define-key xah-fly-key-map (kbd "y") 'set-mark-command)
     (define-key xah-fly-key-map (kbd "z") 'comment-dwim)
     (define-key xah-fly-key-map (kbd "U") 'kill-line)
@@ -2336,10 +2337,10 @@ If `universal-argument' is called first, do switch frame."
   (run-hooks 'xah-fly-insert-mode-activate-hook))
 
 (defun xah-fly-insert-mode-activate-newline ()
-  "Activate insertion mode, and insert a newline."
+  "Activate insertion mode, inserting 2 newlines below."
   (interactive)
   (xah-fly-insert-mode-activate)
-  (open-line 1))
+  (open-line 2))
 
 
 
