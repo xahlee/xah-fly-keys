@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.17.0
+;; Version: 2.18.0
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -126,6 +126,13 @@
 
 
 ;; cursor movement
+
+(defun xah-jump-to-last-local-mark ()
+  "Move cursor to last mark position of current buffer.
+Call this repeatedly will cycle all positions in local buffer `mark-ring'.
+version 2016-04-04"
+  (interactive)
+  (set-mark-command t))
 
 (defun xah-forward-block (&optional φn)
   "Move cursor beginning of next text block.
@@ -1997,7 +2004,7 @@ If `universal-argument' is called first, do switch frame."
   (define-key xah-fly-leader-key-map (kbd "u") nil)
   (define-key xah-fly-leader-key-map (kbd "v") nil)
   (define-key xah-fly-leader-key-map (kbd "w") xah-danger-keymap)
-  (define-key xah-fly-leader-key-map (kbd "x") 'pop-global-mark)
+  (define-key xah-fly-leader-key-map (kbd "x") nil)
   (define-key xah-fly-leader-key-map (kbd "y") 'ido-switch-buffer)
   (define-key xah-fly-leader-key-map (kbd "z") 'comment-dwim))
 
@@ -2186,8 +2193,8 @@ If `universal-argument' is called first, do switch frame."
     (define-key xah-fly-key-map (kbd "=") 'xah-forward-equal-sign)
     (define-key xah-fly-key-map (kbd "[") 'xah-backward-quote )
     (define-key xah-fly-key-map (kbd "]") 'xah-forward-quote-twice)
-    (define-key xah-fly-key-map (kbd "`") 'xah-forward-comma-sign)
-    (define-key xah-fly-key-map (kbd "~") 'xah-backward-comma-sign)
+    (define-key xah-fly-key-map (kbd "`") 'xah-jump-to-last-local-mark)
+    (define-key xah-fly-key-map (kbd "~") 'xah-forward-comma-sign)
 
     (define-key xah-fly-key-map (kbd "SPC") xah-fly-leader-key-map)
 
@@ -2238,6 +2245,8 @@ If `universal-argument' is called first, do switch frame."
     (define-key xah-fly-key-map (kbd "y") 'set-mark-command)
     (define-key xah-fly-key-map (kbd "z") 'comment-dwim)
     (define-key xah-fly-key-map (kbd "U") 'kill-line)
+    (define-key xah-fly-key-map (kbd "C") 'pop-global-mark)
+    (define-key xah-fly-key-map (kbd "T") 'xah-jump-to-last-local-mark)
     ))
 
 (defun xah-fly-insert-mode-init ()
@@ -2296,6 +2305,8 @@ If `universal-argument' is called first, do switch frame."
     (define-key xah-fly-key-map (kbd "y") nil)
     (define-key xah-fly-key-map (kbd "z") nil)
     (define-key xah-fly-key-map (kbd "U") nil)
+    (define-key xah-fly-key-map (kbd "C") nil)
+    (define-key xah-fly-key-map (kbd "T") nil)
 ))
 
 (defun xah-fly-mode-toggle ()
