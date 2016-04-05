@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.18.0
+;; Version: 2.18.1
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -16,14 +16,9 @@
 
 ;;; Commentary:
 
-;; xah-fly-keys is a efficient keybinding system for emacs. (more efficient than vim)
+;; xah-fly-keys is a efficient keybinding for emacs. (more efficient than vim)
 
-;; It is a modal mode, like vi, but key choices are based on statistics of command call frequency, and key position easy-to-press score.
-
-;; xah-fly-keys does not bind any Control key, nor Meta keys (except a few, but you can turn off).
-;; This means, you can use emacs as is, because no Control or Meta are used. Just leave xah-fly-keys in insertion mode.
-
-;; xah-fly-keys is optimized for Dvorak layout only. If you touch-type QWERTY or other, you will need to rebind keys. I recommend you fork it and modify the keys for your own use. See home page for detail: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
+;; It is a modal mode like vi, but key choices are based on statistics of command call frequency.
 
 ;; --------------------------------------------------
 ;; MANUAL INSTALL
@@ -57,22 +52,17 @@
 ;; C-c for major mode commands.
 ;; C-g for cancel.
 ;; C-q for quoted-insert.
+;; C-h for getting a list of keys following a prefix/leader key.
 
 ;; Leader key
 
-;; All emacs C-x keys have a key sequence, starting with a leader key. Most commands are 2 to 3 keys, counting the leader key.
+;; All emacs C-x keys have a key sequence. Most commands are 2 to 3 keys. The first key we call it leader key.
 
 ;; You NEVER need to press Ctrl+x
 
-;; globally, the leader key is the 【f9】 and 【menu】 key.
-
- ;; (on typical PC keyboard, the menu key usually at right side of space bar.)
-
 ;; When in command mode, the 【SPACE】 is a leader key.
 
-;; On the Mac, I highly recommend using a app called Sail to set your capslock to send Home. So that it acts as xah-fly-command-mode-activate
-
-;; see Mac Keyboard Software Guide http://xahlee.info/kbd/Mac_OS_X_keymapping_keybinding_tools.html
+;; globally, the leader key is the 【f9】 and 【menu】 key. (on typical PC keyboard, the menu key usually at right side of space bar.)
 
 ;; the following stardard keys with Control are supported, when the variable xah-fly-use-control-key is t
 
@@ -96,6 +86,8 @@
 
 ;; That't it.
 
+;; On the Mac, I highly recommend using a app called Sail to set your capslock to send Home. So that it acts as xah-fly-command-mode-activate. see Mac Keyboard Software Guide http://xahlee.info/kbd/Mac_OS_X_keymapping_keybinding_tools.html
+
 ;; I recommend you clone xah-fly-keys.el, and modify it, and use your modified version. Don't worry about upgrade. (I still make key tweaks every week, for the past 3 years.)
 
 ;; If you have a bug, post on github. If you have question, post on xah-fly-keys home page.
@@ -107,8 +99,6 @@
 
 ;;; TODO
 ;; • 2015-09-04 make it support qwerty Keyboard layout
-;; • 2015-09-04 add option to allow support of standard open close save etc keys with Control
-;; • 2015-09-04 add option to allow turn off any Control completely. Same for Meta. (as a way to stop habit)
 
 
 ;;; Code:
@@ -527,48 +517,6 @@ Version 2015-12-22"
      ((looking-at "[[:upper:]]") (downcase-region (point) (1+ (point)))))
     (right-char)))
 
-(defun xah-shrink-whitespaces-old-2015-03-03 ()
-  "Remove whitespaces around cursor to just one or none.
-If current line does have visible characters: shrink whitespace around cursor to just one space.
-If current line does not have visible chars, then shrink all neighboring blank lines to just one.
-If current line is a single space, remove that space.
-URL `http://ergoemacs.org/emacs/emacs_shrink_whitespace.html'
-Version 2015-03-03"
-  (interactive)
-  (let ((pos0 (point))
-        ξline-has-char-p ; current line contains non-white space chars
-        ξhas-space-tab-neighbor-p
-        ξwhitespace-begin ξwhitespace-end
-        ξspace-or-tab-begin ξspace-or-tab-end
-        )
-    (save-excursion
-      (setq ξhas-space-tab-neighbor-p (if (or (looking-at " \\|\t") (looking-back " \\|\t")) t nil))
-      (beginning-of-line)
-      (setq ξline-has-char-p (search-forward-regexp "[[:graph:]]" (line-end-position) t))
-
-      (goto-char pos0)
-      (skip-chars-backward "\t ")
-      (setq ξspace-or-tab-begin (point))
-
-      (skip-chars-backward "\t \n")
-      (setq ξwhitespace-begin (point))
-
-      (goto-char pos0)
-      (skip-chars-forward "\t ")
-      (setq ξspace-or-tab-end (point))
-      (skip-chars-forward "\t \n")
-      (setq ξwhitespace-end (point)))
-
-    (if ξline-has-char-p
-        (let (ξdeleted-text)
-          (when ξhas-space-tab-neighbor-p
-            ;; remove all whitespaces in the range
-            (setq ξdeleted-text (delete-and-extract-region ξspace-or-tab-begin ξspace-or-tab-end))
-            ;; insert a whitespace only if we have removed something different than a simple whitespace
-            (if (not (string= ξdeleted-text " "))
-                (insert " "))))
-      (progn (delete-blank-lines)))))
-
 (defun xah-shrink-whitespaces ()
   "Remove whitespaces around cursor to just one or none.
 Call this command again to shrink more. 3 calls will remove all whitespaces.
@@ -582,7 +530,12 @@ Version 2015-11-04"
         ξspace-or-tab-begin ξspace-or-tab-end
         )
     (save-excursion
-      (setq ξhas-space-tab-neighbor-p (if (or (looking-at " \\|\t") (looking-back " \\|\t")) t nil))
+      (setq ξhas-space-tab-neighbor-p
+            (if (or
+                 (looking-at " \\|\t")
+                 (looking-back " \\|\t" 1))
+                t
+              nil))
       (beginning-of-line)
       (setq ξline-has-char-p (search-forward-regexp "[[:graph:]]" (line-end-position) t))
 
@@ -2195,7 +2148,6 @@ If `universal-argument' is called first, do switch frame."
     (define-key xah-fly-key-map (kbd "]") 'xah-forward-quote-twice)
     (define-key xah-fly-key-map (kbd "`") 'xah-jump-to-last-local-mark)
     (define-key xah-fly-key-map (kbd "~") 'xah-forward-comma-sign)
-
     (define-key xah-fly-key-map (kbd "SPC") xah-fly-leader-key-map)
 
     (if xah-fly-swapped-1827-p
@@ -2232,7 +2184,7 @@ If `universal-argument' is called first, do switch frame."
     (define-key xah-fly-key-map (kbd "l") 'xah-insert-space-before)
     (define-key xah-fly-key-map (kbd "m") 'xah-backward-left-bracket)
     (define-key xah-fly-key-map (kbd "n") 'forward-char)
-    (define-key xah-fly-key-map (kbd "o") 'xah-fly-insert-mode-activate-newline)
+    (define-key xah-fly-key-map (kbd "o") 'open-line)
     (define-key xah-fly-key-map (kbd "p") 'kill-word)
     (define-key xah-fly-key-map (kbd "q") 'xah-copy-line-or-region)
     (define-key xah-fly-key-map (kbd "r") 'forward-word)
@@ -2345,7 +2297,7 @@ If `universal-argument' is called first, do switch frame."
   "Activate insertion mode, inserting 2 newlines below."
   (interactive)
   (xah-fly-insert-mode-activate)
-  (open-line 2))
+  (open-line 1))
 
 
 
