@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.18.1
+;; Version: 3.0.0
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -1300,67 +1300,6 @@ Version 2015-06-12"
 ;; status to offer save
 ;; This custome kill buffer is close-current-buffer.
 
-(defun xah-delete-current-file-make-backup (&optional φno-backup-p)
-  "Delete current file, makes a backup~, closes the buffer.
-
-Backup filename is “‹name›~‹date time stamp›~”. Existing file of the same name is overwritten. If the file is not associated with buffer, the backup file name starts with “xx_”.
-
-When called with `universal-argument', don't create backup.
-
-URL `http://ergoemacs.org/emacs/elisp_delete-current-file.html'
-Version 2015-05-26"
-  (interactive "P")
-  (let* (
-         (ξfname (buffer-file-name))
-         (ξbuffer-is-file-p ξfname)
-         (ξbackup-suffix (concat "~" (format-time-string "%Y%m%dT%H%M%S") "~")))
-    (if ξbuffer-is-file-p
-        (progn
-          (save-buffer ξfname)
-          (when (not φno-backup-p)
-            (copy-file
-             ξfname
-             (concat ξfname ξbackup-suffix)
-             t))
-          (delete-file ξfname)
-          (message "Deleted. Backup created at 「%s」." (concat ξfname ξbackup-suffix)))
-      (when (not φno-backup-p)
-        (widen)
-        (write-region (point-min) (point-max) (concat "xx" ξbackup-suffix))
-        (message "Backup created at 「%s」." (concat "xx" ξbackup-suffix))))
-    (kill-buffer (current-buffer))))
-
-(defun xah-delete-current-file-copy-to-kill-ring ()
-  "Delete current buffer/file and close the buffer, push content to `kill-ring'.
-URL `http://ergoemacs.org/emacs/elisp_delete-current-file.html'
-Version 2015-08-12"
-  (interactive)
-  (progn
-    (kill-new (buffer-string))
-    (message "Buffer content copied to kill-ring.")
-    (when (buffer-file-name)
-      (when (file-exists-p (buffer-file-name))
-        (progn
-          (delete-file (buffer-file-name))
-          (message "Deleted: 「%s」." (buffer-file-name)))))
-    (let ((buffer-offer-save nil))
-      (set-buffer-modified-p nil)
-      (kill-buffer (current-buffer)))))
-
-(defun xah-delete-current-file (&optional φno-backup-p)
-  "Delete current buffer/file and close the buffer.
-If buffer is a file, makes a backup~, else, push file content to `kill-ring'.
-
-The backup filename is “‹filename›~‹date time stamp›~”. Existing file of the same name is overwritten. If the file is not associated with buffer, the backup file name starts with “xx_”.
-
-URL `http://ergoemacs.org/emacs/elisp_delete-current-file.html'
-Version 2015-09-02"
-  (interactive "P")
-  (progn
-    (if (buffer-file-name)
-        (xah-delete-current-file-make-backup φno-backup-p)
-      (xah-delete-current-file-copy-to-kill-ring))))
-
 (defun xah-run-current-file ()
   "Execute the current file.
 For example, if the current buffer is the file x.py, then it'll call 「python x.py」 in a shell.
@@ -1559,8 +1498,8 @@ If `universal-argument' is called first, do switch frame."
   (define-key xah-fly-key-map (kbd "M-g") 'xah-insert-brace)
   (define-key xah-fly-key-map (kbd "M-c") 'xah-insert-paren)
   (define-key xah-fly-key-map (kbd "M-r") 'xah-insert-square-bracket)
-
-  (define-key xah-fly-key-map (kbd "M-6") 'hippie-expand)
+  (define-key xah-fly-key-map (kbd "M-SPC") 'xah-cycle-hyphen-underscore-space)
+  (define-key xah-fly-key-map (kbd "M-h") 'hippie-expand)
   )
 
 (progn
@@ -1690,17 +1629,10 @@ If `universal-argument' is called first, do switch frame."
   (define-key xah-harmless-keymap (kbd "'") 'frame-configuration-to-register)
   (define-key xah-harmless-keymap (kbd ";") 'window-configuration-to-register)
 
-  (if xah-fly-swapped-1827-p
-      (progn
-        (define-key xah-harmless-keymap (kbd "8") 'set-input-method)
-        (define-key xah-harmless-keymap (kbd "7") 'global-hl-line-mode)
-        (define-key xah-harmless-keymap (kbd "2") 'calc)
-        (define-key xah-harmless-keymap (kbd "1") 'shell))
-    (progn
-      (define-key xah-harmless-keymap (kbd "1") 'set-input-method)
-      (define-key xah-harmless-keymap (kbd "2") 'global-hl-line-mode)
-      (define-key xah-harmless-keymap (kbd "7") 'calc)
-      (define-key xah-harmless-keymap (kbd "8") 'shell)))
+  (define-key xah-harmless-keymap (kbd "1") 'set-input-method)
+  (define-key xah-harmless-keymap (kbd "2") 'global-hl-line-mode)
+  (define-key xah-harmless-keymap (kbd "7") 'calc)
+  (define-key xah-harmless-keymap (kbd "8") 'shell)
 
   (define-key xah-harmless-keymap (kbd "3") 'whitespace-mode)
   (define-key xah-harmless-keymap (kbd "4") 'linum-mode)
@@ -1739,17 +1671,17 @@ If `universal-argument' is called first, do switch frame."
   (define-key xah-harmless-keymap (kbd "q x") 'set-selection-coding-system)
   (define-key xah-harmless-keymap (kbd "r") ctl-x-5-map) ; frames
 
-;; <menu> n r C-o  display-buffer-other-frame
-;; <menu> n r .    find-tag-other-frame
-;; <menu> n r 0    delete-frame
-;; <menu> n r 1    delete-other-frames
-;; <menu> n r 2    make-frame-command
-;; <menu> n r b    switch-to-buffer-other-frame
-;; <menu> n r d    dired-other-frame
-;; <menu> n r f    find-file-other-frame
-;; <menu> n r m    compose-mail-other-frame
-;; <menu> n r o    other-frame
-;; <menu> n r r    find-file-read-only-other-frame
+  ;; <menu> n r C-o  display-buffer-other-frame
+  ;; <menu> n r .    find-tag-other-frame
+  ;; <menu> n r 0    delete-frame
+  ;; <menu> n r 1    delete-other-frames
+  ;; <menu> n r 2    make-frame-command
+  ;; <menu> n r b    switch-to-buffer-other-frame
+  ;; <menu> n r d    dired-other-frame
+  ;; <menu> n r f    find-file-other-frame
+  ;; <menu> n r m    compose-mail-other-frame
+  ;; <menu> n r o    other-frame
+  ;; <menu> n r r    find-file-read-only-other-frame
 
   (define-key xah-harmless-keymap (kbd "s") 'flyspell-buffer)
   (define-key xah-harmless-keymap (kbd "t") 'narrow-to-defun)
@@ -1765,18 +1697,6 @@ If `universal-argument' is called first, do switch frame."
   ;; kinda replacement related
   (define-prefix-command 'xah-edit-cmds-keymap)
 
-  (if xah-fly-swapped-1827-p
-      (progn
-        (define-key xah-edit-cmds-keymap (kbd "8") nil)
-        (define-key xah-edit-cmds-keymap (kbd "7") nil)
-        (define-key xah-edit-cmds-keymap (kbd "2") 'list-matching-lines)
-        (define-key xah-edit-cmds-keymap (kbd "1") 'delete-matching-lines))
-    (progn
-      (define-key xah-edit-cmds-keymap (kbd "1") nil)
-      (define-key xah-edit-cmds-keymap (kbd "2") nil)
-      (define-key xah-edit-cmds-keymap (kbd "7") 'list-matching-lines)
-      (define-key xah-edit-cmds-keymap (kbd "8") 'delete-matching-lines)))
-
   (define-key xah-edit-cmds-keymap (kbd "3") 'apply-macro-to-region-lines)
   (define-key xah-edit-cmds-keymap (kbd "4") 'sort-lines)
   (define-key xah-edit-cmds-keymap (kbd "5") 'sort-numeric-fields)
@@ -1788,27 +1708,26 @@ If `universal-argument' is called first, do switch frame."
   (define-key xah-edit-cmds-keymap (kbd "p") 'kmacro-end-macro)
   (define-key xah-edit-cmds-keymap (kbd "e") 'call-last-kbd-macro)
 
+  (define-key xah-edit-cmds-keymap (kbd "SPC") 'rectangle-mark-mode)
   (define-key xah-edit-cmds-keymap (kbd "c") 'replace-rectangle)
   (define-key xah-edit-cmds-keymap (kbd "d") 'delete-rectangle)
   (define-key xah-edit-cmds-keymap (kbd "g") 'kill-rectangle)
+  (define-key xah-edit-cmds-keymap (kbd "h") 'list-matching-lines)
   (define-key xah-edit-cmds-keymap (kbd "l") 'clear-rectangle)
   (define-key xah-edit-cmds-keymap (kbd "n") 'rectangle-number-lines)
   (define-key xah-edit-cmds-keymap (kbd "o") 'open-rectangle)
   (define-key xah-edit-cmds-keymap (kbd "r") 'yank-rectangle)
-  (define-key xah-edit-cmds-keymap (kbd "t") 'rectangle-mark-mode)
-  (define-key xah-edit-cmds-keymap (kbd "y") 'delete-whitespace-rectangle))
+  (define-key xah-edit-cmds-keymap (kbd "t") 'delete-matching-lines)
+  (define-key xah-edit-cmds-keymap (kbd "y") 'delete-whitespace-rectangle)
+  ;;
+)
 
 (progn
   (define-prefix-command 'xah-leader-t-keymap)
 
-  (if xah-fly-swapped-1827-p
-      (progn
-        (define-key xah-leader-t-keymap (kbd "1") 'mark-defun))
-    (progn
-        (define-key xah-leader-t-keymap (kbd "8") 'mark-defun)))
-
   (define-key xah-leader-t-keymap (kbd "3") 'point-to-register)
   (define-key xah-leader-t-keymap (kbd "4") 'jump-to-register)
+  (define-key xah-leader-t-keymap (kbd "8") 'mark-defun)
 
   (define-key xah-leader-t-keymap (kbd ".") nil)
   (define-key xah-leader-t-keymap (kbd ",") nil)
@@ -1853,7 +1772,6 @@ If `universal-argument' is called first, do switch frame."
   (define-key xah-danger-keymap (kbd "q") 'save-buffers-kill-terminal)
   (define-key xah-danger-keymap (kbd "w") 'delete-frame)
   (define-key xah-danger-keymap (kbd "j") 'xah-run-current-file)
-  (define-key xah-danger-keymap (kbd "DEL") 'xah-delete-current-file)
 )
 
 (progn
@@ -1913,24 +1831,13 @@ If `universal-argument' is called first, do switch frame."
   (define-key xah-fly-leader-key-map (kbd "[") nil)
   (define-key xah-fly-leader-key-map (kbd "\\") nil)
   (define-key xah-fly-leader-key-map (kbd "`") nil)
-
-  (if xah-fly-swapped-1827-p
-      (progn
-        (define-key xah-fly-leader-key-map (kbd "8") nil)
-        (define-key xah-fly-leader-key-map (kbd "7") nil)
-        (define-key xah-fly-leader-key-map (kbd "2") 'dired-jump)
-        (define-key xah-fly-leader-key-map (kbd "1") 'find-file-at-point))
-    (progn
-      (define-key xah-fly-leader-key-map (kbd "1") nil)
-      (define-key xah-fly-leader-key-map (kbd "2") nil)
-      (define-key xah-fly-leader-key-map (kbd "7") 'dired-jump)
-      (define-key xah-fly-leader-key-map (kbd "8") 'find-file-at-point)))
-
+  
   (define-key xah-fly-leader-key-map (kbd "3") 'delete-other-windows)
   (define-key xah-fly-leader-key-map (kbd "4") 'split-window-right)
   (define-key xah-fly-leader-key-map (kbd "5") nil)
 
   (define-key xah-fly-leader-key-map (kbd "6") nil)
+  (define-key xah-fly-leader-key-map (kbd "8") 'find-file-at-point)
   (define-key xah-fly-leader-key-map (kbd "9") 'ispell-word)
   (define-key xah-fly-leader-key-map (kbd "0") nil)
 
@@ -1946,7 +1853,7 @@ If `universal-argument' is called first, do switch frame."
   (define-key xah-fly-leader-key-map (kbd "j") 'xah-cut-all-or-region)
   (define-key xah-fly-leader-key-map (kbd "k") 'yank)
   (define-key xah-fly-leader-key-map (kbd "l") 'recenter-top-bottom)
-  (define-key xah-fly-leader-key-map (kbd "m") nil)
+  (define-key xah-fly-leader-key-map (kbd "m") 'dired-jump)
   (define-key xah-fly-leader-key-map (kbd "n") xah-harmless-keymap)
   (define-key xah-fly-leader-key-map (kbd "o") nil)
   (define-key xah-fly-leader-key-map (kbd "p") 'query-replace)
@@ -2097,11 +2004,8 @@ If `universal-argument' is called first, do switch frame."
 (define-key xah-fly-key-map (kbd "<menu>") xah-fly-leader-key-map)
 (define-key xah-fly-key-map (kbd "<f9>") xah-fly-leader-key-map) ; as backup
 
-(if xah-fly-swapped-1827-p
-    (define-key xah-fly-key-map (kbd "C-1") 'xah-fly-command-mode-activate)
-  (define-key xah-fly-key-map (kbd "C-8") 'xah-fly-command-mode-activate))
-
 (define-key xah-fly-key-map (kbd "C-6") 'other-frame)
+(define-key xah-fly-key-map (kbd "C-8") 'xah-fly-command-mode-activate)
 
 (define-key xah-fly-key-map (kbd "<f11>") 'xah-previous-user-buffer)
 (define-key xah-fly-key-map (kbd "<f12>") 'xah-next-user-buffer)
@@ -2164,8 +2068,7 @@ If `universal-argument' is called first, do switch frame."
 
     (define-key xah-fly-key-map (kbd "3") 'delete-other-windows)
     (define-key xah-fly-key-map (kbd "4") 'split-window-below)
-    (define-key xah-fly-key-map (kbd "5") 'xah-cycle-hyphen-underscore-space)
-
+    (define-key xah-fly-key-map (kbd "5") nil)
     (define-key xah-fly-key-map (kbd "6") 'xah-select-current-block)
     (define-key xah-fly-key-map (kbd "9") 'xah-select-text-in-quote)
     (define-key xah-fly-key-map (kbd "0") 'xah-backward-punct)
@@ -2196,9 +2099,13 @@ If `universal-argument' is called first, do switch frame."
     (define-key xah-fly-key-map (kbd "x") 'exchange-point-and-mark)
     (define-key xah-fly-key-map (kbd "y") 'set-mark-command)
     (define-key xah-fly-key-map (kbd "z") 'comment-dwim)
-    (define-key xah-fly-key-map (kbd "U") 'kill-line)
+
     (define-key xah-fly-key-map (kbd "C") 'pop-global-mark)
+    (define-key xah-fly-key-map (kbd "E") nil)
     (define-key xah-fly-key-map (kbd "T") 'xah-jump-to-last-local-mark)
+    (define-key xah-fly-key-map (kbd "U") 'kill-line)
+
+    ;;
     ))
 
 (defun xah-fly-insert-mode-init ()
@@ -2256,9 +2163,13 @@ If `universal-argument' is called first, do switch frame."
     (define-key xah-fly-key-map (kbd "x") nil)
     (define-key xah-fly-key-map (kbd "y") nil)
     (define-key xah-fly-key-map (kbd "z") nil)
-    (define-key xah-fly-key-map (kbd "U") nil)
+
     (define-key xah-fly-key-map (kbd "C") nil)
+    (define-key xah-fly-key-map (kbd "E") nil)
     (define-key xah-fly-key-map (kbd "T") nil)
+    (define-key xah-fly-key-map (kbd "U") nil)
+
+    ;;
 ))
 
 (defun xah-fly-mode-toggle ()
