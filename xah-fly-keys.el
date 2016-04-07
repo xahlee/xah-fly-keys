@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 3.1.1
+;; Version: 3.1.2
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -1577,39 +1577,7 @@ If `universal-argument' is called first, do switch frame."
 (progn
   (setq xah-fly-key-map (make-sparse-keymap))
 
-  (define-key xah-fly-key-map (kbd "'") 'self-insert-command)
-
-  (define-key xah-fly-key-map (kbd "<C-next>") 'xah-next-user-buffer)
-  (define-key xah-fly-key-map (kbd "<C-prior>") 'xah-previous-user-buffer)
-
-  (when xah-fly-use-control-key
-    (progn
-      (define-key xah-fly-key-map (kbd "<C-tab>") 'xah-next-user-buffer)
-      (define-key xah-fly-key-map (kbd "<C-S-iso-lefttab>") 'xah-previous-user-buffer)
-      (define-key xah-fly-key-map (kbd "C-v") 'yank)
-      (define-key xah-fly-key-map (kbd "C-t") 'toggle-input-method)
-      (define-key xah-fly-key-map (kbd "C-w") 'xah-close-current-buffer)
-      (define-key xah-fly-key-map (kbd "C-z") 'undo)
-      (define-key xah-fly-key-map (kbd "C-n") 'xah-new-empty-buffer)
-      (define-key xah-fly-key-map (kbd "C-o") 'find-file)
-      (define-key xah-fly-key-map (kbd "C-s") 'save-buffer)
-      (define-key xah-fly-key-map (kbd "C-S-s") 'write-file)
-      (define-key xah-fly-key-map (kbd "C-S-t") 'xah-open-last-closed)
-
-      (define-key xah-fly-key-map (kbd "C-,") 'flyspell-goto-next-error)
-
-      (define-key xah-fly-key-map (kbd "C-+") 'text-scale-increase)
-      (define-key xah-fly-key-map (kbd "C--") 'text-scale-decrease)
-      (define-key xah-fly-key-map (kbd "C-0") (lambda () (interactive) (text-scale-set 0)))))
-
-  (define-key xah-fly-key-map (kbd "M-t") 'xah-toggle-letter-case)
-  (define-key xah-fly-key-map (kbd "M-g") 'xah-insert-brace)
-  (define-key xah-fly-key-map (kbd "M-c") 'xah-insert-paren)
-  (define-key xah-fly-key-map (kbd "M-r") 'xah-insert-square-bracket)
-  (define-key xah-fly-key-map (kbd "M-SPC") 'xah-cycle-hyphen-underscore-space)
-  (define-key xah-fly-key-map (kbd "M-h") 'hippie-expand)
-  (define-key xah-fly-key-map (kbd "M-m") xah-insertion-keymap)
-  ;;
+  ;; (define-key xah-fly-key-map (kbd "'") 'self-insert-command)
 
   )
 
@@ -2108,36 +2076,69 @@ If `universal-argument' is called first, do switch frame."
 
 ;; setting keys
 
-(define-key xah-fly-key-map (kbd "<home>") 'xah-fly-command-mode-activate)
-(define-key xah-fly-key-map (kbd "<f8>") 'xah-fly-command-mode-activate) ; as backup
-
-(define-key xah-fly-key-map (kbd "<menu>") xah-fly-leader-key-map)
-(define-key xah-fly-key-map (kbd "<f9>") xah-fly-leader-key-map) ; as backup
-
-(define-key xah-fly-key-map (kbd "C-6") 'other-frame)
-(define-key xah-fly-key-map (kbd "C-8") 'xah-fly-command-mode-activate)
-
-(define-key xah-fly-key-map (kbd "<f11>") 'xah-previous-user-buffer)
-(define-key xah-fly-key-map (kbd "<f12>") 'xah-next-user-buffer)
-(define-key xah-fly-key-map (kbd "<C-f11>") 'xah-previous-emacs-buffer)
-(define-key xah-fly-key-map (kbd "<C-f12>") 'xah-next-emacs-buffer)
-
-;; these are good for compatibilty. e.g. you set a mouse or other device to use this key for generic OS wide operation, and it should work in emacs too
-(define-key xah-fly-key-map (kbd "<C-prior>") 'xah-previous-user-buffer)
-(define-key xah-fly-key-map (kbd "<C-next>") 'xah-next-user-buffer)
-
 (progn
-  ;; set arrow keys in isearch. left/right is backward/forward, up/down is history. press Return to exit
-  (define-key isearch-mode-map (kbd "<up>") 'isearch-ring-retreat )
-  (define-key isearch-mode-map (kbd "<down>") 'isearch-ring-advance )
+  (when xah-fly-use-control-key
+    (progn
+      (define-key xah-fly-key-map (kbd "<C-next>") 'xah-next-user-buffer)
+      (define-key xah-fly-key-map (kbd "<C-prior>") 'xah-previous-user-buffer)
+      (define-key xah-fly-key-map (kbd "<C-tab>") 'xah-next-user-buffer)
+      (define-key xah-fly-key-map (kbd "<C-S-iso-lefttab>") 'xah-previous-user-buffer)
+      (define-key xah-fly-key-map (kbd "C-v") 'yank)
+      (define-key xah-fly-key-map (kbd "C-t") 'toggle-input-method)
+      (define-key xah-fly-key-map (kbd "C-w") 'xah-close-current-buffer)
+      (define-key xah-fly-key-map (kbd "C-z") 'undo)
+      (define-key xah-fly-key-map (kbd "C-n") 'xah-new-empty-buffer)
+      (define-key xah-fly-key-map (kbd "C-o") 'find-file)
+      (define-key xah-fly-key-map (kbd "C-s") 'save-buffer)
+      (define-key xah-fly-key-map (kbd "C-S-s") 'write-file)
+      (define-key xah-fly-key-map (kbd "C-S-t") 'xah-open-last-closed)
 
-  (define-key isearch-mode-map (kbd "<left>") 'isearch-repeat-backward)
-  (define-key isearch-mode-map (kbd "<right>") 'isearch-repeat-forward)
+      (define-key xah-fly-key-map (kbd "C-,") 'flyspell-goto-next-error)
 
-  (define-key minibuffer-local-isearch-map (kbd "<left>") 'isearch-reverse-exit-minibuffer)
-  (define-key minibuffer-local-isearch-map (kbd "<right>") 'isearch-forward-exit-minibuffer)
-;
-)
+      (define-key xah-fly-key-map (kbd "C-+") 'text-scale-increase)
+      (define-key xah-fly-key-map (kbd "C--") 'text-scale-decrease)
+      (define-key xah-fly-key-map (kbd "C-0") (lambda () (interactive) (text-scale-set 0)))))
+
+  (define-key xah-fly-key-map (kbd "M-t") 'xah-toggle-letter-case)
+  (define-key xah-fly-key-map (kbd "M-g") 'xah-insert-brace)
+  (define-key xah-fly-key-map (kbd "M-c") 'xah-insert-paren)
+  (define-key xah-fly-key-map (kbd "M-r") 'xah-insert-square-bracket)
+  (define-key xah-fly-key-map (kbd "M-SPC") 'xah-cycle-hyphen-underscore-space)
+  (define-key xah-fly-key-map (kbd "M-h") 'hippie-expand)
+  (define-key xah-fly-key-map (kbd "M-m") xah-insertion-keymap)
+
+  (define-key xah-fly-key-map (kbd "<home>") 'xah-fly-command-mode-activate)
+  (define-key xah-fly-key-map (kbd "<f8>") 'xah-fly-command-mode-activate) ; as backup
+
+  (define-key xah-fly-key-map (kbd "<menu>") xah-fly-leader-key-map)
+  (define-key xah-fly-key-map (kbd "<f9>") xah-fly-leader-key-map) ; as backup
+
+  (define-key xah-fly-key-map (kbd "C-6") 'other-frame)
+  (define-key xah-fly-key-map (kbd "C-8") 'xah-fly-command-mode-activate)
+
+  (define-key xah-fly-key-map (kbd "<f11>") 'xah-previous-user-buffer)
+  (define-key xah-fly-key-map (kbd "<f12>") 'xah-next-user-buffer)
+  (define-key xah-fly-key-map (kbd "<C-f11>") 'xah-previous-emacs-buffer)
+  (define-key xah-fly-key-map (kbd "<C-f12>") 'xah-next-emacs-buffer)
+
+  ;; these are good for compatibilty. e.g. you set a mouse or other device to use this key for generic OS wide operation, and it should work in emacs too
+  (define-key xah-fly-key-map (kbd "<C-prior>") 'xah-previous-user-buffer)
+  (define-key xah-fly-key-map (kbd "<C-next>") 'xah-next-user-buffer)
+
+  (progn
+    ;; set arrow keys in isearch. left/right is backward/forward, up/down is history. press Return to exit
+    (define-key isearch-mode-map (kbd "<up>") 'isearch-ring-retreat )
+    (define-key isearch-mode-map (kbd "<down>") 'isearch-ring-advance )
+
+    (define-key isearch-mode-map (kbd "<left>") 'isearch-repeat-backward)
+    (define-key isearch-mode-map (kbd "<right>") 'isearch-repeat-forward)
+
+    (define-key minibuffer-local-isearch-map (kbd "<left>") 'isearch-reverse-exit-minibuffer)
+    (define-key minibuffer-local-isearch-map (kbd "<right>") 'isearch-forward-exit-minibuffer)
+    ;;
+    )
+  ;;
+  )
 
 
 
