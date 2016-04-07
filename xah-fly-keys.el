@@ -1608,6 +1608,9 @@ If `universal-argument' is called first, do switch frame."
   (define-key xah-fly-key-map (kbd "M-r") 'xah-insert-square-bracket)
   (define-key xah-fly-key-map (kbd "M-SPC") 'xah-cycle-hyphen-underscore-space)
   (define-key xah-fly-key-map (kbd "M-h") 'hippie-expand)
+  (define-key xah-fly-key-map (kbd "M-m") xah-insertion-keymap)
+  ;;
+
   )
 
 (progn
@@ -1685,8 +1688,7 @@ If `universal-argument' is called first, do switch frame."
 
   (define-key xah-help-keymap (kbd "8") nil)
   (define-key xah-help-keymap (kbd "7") nil)
-  (define-key xah-help-keymap (kbd "3") 'man)
-  (define-key xah-help-keymap (kbd "4") 'elisp-index-search)
+  (define-key xah-help-keymap (kbd "4") nil)
   (define-key xah-help-keymap (kbd "5") 'apropos-variable)
   (define-key xah-help-keymap (kbd "6") 'apropos-value)
 
@@ -1699,7 +1701,7 @@ If `universal-argument' is called first, do switch frame."
   (define-key xah-help-keymap (kbd "g") 'info-lookup-symbol)
   (define-key xah-help-keymap (kbd "h") 'describe-function)
   (define-key xah-help-keymap (kbd "i") 'info)
-  (define-key xah-help-keymap (kbd "j") nil)
+  (define-key xah-help-keymap (kbd "j") 'man)
   (define-key xah-help-keymap (kbd "k") 'describe-input-method)
   (define-key xah-help-keymap (kbd "K") 'Info-goto-emacs-key-command-node)
   (define-key xah-help-keymap (kbd "l") 'view-lossage)
@@ -1711,7 +1713,7 @@ If `universal-argument' is called first, do switch frame."
   (define-key xah-help-keymap (kbd "r") nil)
   (define-key xah-help-keymap (kbd "s") 'describe-syntax)
   (define-key xah-help-keymap (kbd "t") 'describe-variable)
-  (define-key xah-help-keymap (kbd "u") nil)
+  (define-key xah-help-keymap (kbd "u") 'elisp-index-search)
   (define-key xah-help-keymap (kbd "v") nil)
   (define-key xah-help-keymap (kbd "w") nil)
   (define-key xah-help-keymap (kbd "x") nil)
@@ -1939,7 +1941,7 @@ If `universal-argument' is called first, do switch frame."
   (define-key xah-fly-leader-key-map (kbd "[") nil)
   (define-key xah-fly-leader-key-map (kbd "\\") nil)
   (define-key xah-fly-leader-key-map (kbd "`") nil)
-  
+
   (define-key xah-fly-leader-key-map (kbd "3") 'delete-other-windows)
   (define-key xah-fly-leader-key-map (kbd "4") 'split-window-right)
   (define-key xah-fly-leader-key-map (kbd "5") nil)
