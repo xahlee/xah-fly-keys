@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 3.1.0
+;; Version: 3.1.1
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -1685,7 +1685,7 @@ If `universal-argument' is called first, do switch frame."
 
   (define-key xah-help-keymap (kbd "8") nil)
   (define-key xah-help-keymap (kbd "7") nil)
-  (define-key xah-help-keymap (kbd "3") 'woman)
+  (define-key xah-help-keymap (kbd "3") 'man)
   (define-key xah-help-keymap (kbd "4") 'elisp-index-search)
   (define-key xah-help-keymap (kbd "5") 'apropos-variable)
   (define-key xah-help-keymap (kbd "6") 'apropos-value)
