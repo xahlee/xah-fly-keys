@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 3.0.0
+;; Version: 3.1.0
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -1300,6 +1300,8 @@ Version 2015-06-12"
 ;; status to offer save
 ;; This custome kill buffer is close-current-buffer.
 
+
+
 (defun xah-run-current-file ()
   "Execute the current file.
 For example, if the current buffer is the file x.py, then it'll call 「python x.py」 in a shell.
@@ -1358,6 +1360,112 @@ version 2016-01-28"
               (message "Running…")
               (shell-command ξcmd-str "*xah-run-current-file output*" ))
           (message "No recognized program file suffix for this file."))))))
+
+(defun xah-make-backup ()
+  "Make a backup copy of current file or dired marked files.
+If in dired, backup current file or marked files.
+The backup file name is
+ ‹name›~‹timestamp›~
+example:
+ file.html~20150721T014457~
+in the same dir. If such a file already exist, it's overwritten.
+If the current buffer is not associated with a file, nothing's done.
+URL `http://ergoemacs.org/emacs/elisp_make-backup.html'
+Version 2015-10-14"
+  (interactive)
+  (let ((ξfname (buffer-file-name)))
+    (if ξfname
+        (let ((ξbackup-name
+               (concat ξfname "~" (format-time-string "%Y%m%dT%H%M%S") "~")))
+          (copy-file ξfname ξbackup-name t)
+          (message (concat "Backup saved at: " ξbackup-name)))
+      (if (string-equal major-mode "dired-mode")
+          (progn
+            (mapc (lambda (ξx)
+                    (let ((ξbackup-name
+                           (concat ξx "~" (format-time-string "%Y%m%dT%H%M%S") "~")))
+                      (copy-file ξx ξbackup-name t)))
+                  (dired-get-marked-files))
+            (message "marked files backed up"))
+        (user-error "buffer not file nor dired")))))
+
+(defun xah-make-backup-and-save ()
+  "Backup of current file and save, or backup dired marked files.
+For detail, see `xah-make-backup'.
+If the current buffer is not associated with a file nor dired, nothing's done.
+URL `http://ergoemacs.org/emacs/elisp_make-backup.html'
+Version 2015-10-14"
+  (interactive)
+  (if (buffer-file-name)
+      (progn
+        (xah-make-backup)
+        (when (buffer-modified-p)
+          (save-buffer)))
+    (progn
+      (xah-make-backup))))
+
+(defun xah-delete-current-file-make-backup (&optional φno-backup-p)
+  "Delete current file, makes a backup~, closes the buffer.
+
+Backup filename is “‹name›~‹date time stamp›~”. Existing file of the same name is overwritten. If the file is not associated with buffer, the backup file name starts with “xx_”.
+
+When called with `universal-argument', don't create backup.
+
+URL `http://ergoemacs.org/emacs/elisp_delete-current-file.html'
+Version 2015-05-26"
+  (interactive "P")
+  (let* (
+         (ξfname (buffer-file-name))
+         (ξbuffer-is-file-p ξfname)
+         (ξbackup-suffix (concat "~" (format-time-string "%Y%m%dT%H%M%S") "~")))
+    (if ξbuffer-is-file-p
+        (progn
+          (save-buffer ξfname)
+          (when (not φno-backup-p)
+            (copy-file
+             ξfname
+             (concat ξfname ξbackup-suffix)
+             t))
+          (delete-file ξfname)
+          (message "Deleted. Backup created at 「%s」." (concat ξfname ξbackup-suffix)))
+      (when (not φno-backup-p)
+        (widen)
+        (write-region (point-min) (point-max) (concat "xx" ξbackup-suffix))
+        (message "Backup created at 「%s」." (concat "xx" ξbackup-suffix))))
+    (kill-buffer (current-buffer))))
+
+(defun xah-delete-current-file-copy-to-kill-ring ()
+  "Delete current buffer/file and close the buffer, push content to `kill-ring'.
+URL `http://ergoemacs.org/emacs/elisp_delete-current-file.html'
+Version 2015-08-12"
+  (interactive)
+  (progn
+    (kill-new (buffer-string))
+    (message "Buffer content copied to kill-ring.")
+    (when (buffer-file-name)
+      (when (file-exists-p (buffer-file-name))
+        (progn
+          (delete-file (buffer-file-name))
+          (message "Deleted: 「%s」." (buffer-file-name)))))
+    (let ((buffer-offer-save nil))
+      (set-buffer-modified-p nil)
+      (kill-buffer (current-buffer)))))
+
+(defun xah-delete-current-file (&optional φno-backup-p)
+  "Delete current buffer/file and close the buffer.
+If buffer is a file, makes a backup~, else, push file content to `kill-ring'.
+
+The backup filename is “‹filename›~‹date time stamp›~”. Existing file of the same name is overwritten. If the file is not associated with buffer, the backup file name starts with “xx_”.
+
+URL `http://ergoemacs.org/emacs/elisp_delete-current-file.html'
+Version 2015-09-02"
+  (interactive "P")
+  (progn
+    (if (buffer-file-name)
+        (xah-delete-current-file-make-backup φno-backup-p)
+      (xah-delete-current-file-copy-to-kill-ring))))
+
+
 
 (defun xah-search-current-word ()
   "Call `isearch' on current word or text selection.
@@ -1631,14 +1739,12 @@ If `universal-argument' is called first, do switch frame."
 
   (define-key xah-harmless-keymap (kbd "1") 'set-input-method)
   (define-key xah-harmless-keymap (kbd "2") 'global-hl-line-mode)
-  (define-key xah-harmless-keymap (kbd "7") 'calc)
-  (define-key xah-harmless-keymap (kbd "8") 'shell)
-
   (define-key xah-harmless-keymap (kbd "3") 'whitespace-mode)
   (define-key xah-harmless-keymap (kbd "4") 'linum-mode)
   (define-key xah-harmless-keymap (kbd "5") 'visual-line-mode)
-
   (define-key xah-harmless-keymap (kbd "6") 'calendar)
+  (define-key xah-harmless-keymap (kbd "7") 'calc)
+  (define-key xah-harmless-keymap (kbd "8") 'shell)
   (define-key xah-harmless-keymap (kbd "9") 'shell-command)
   (define-key xah-harmless-keymap (kbd "0") 'shell-command-on-region)
 
@@ -1758,11 +1864,13 @@ If `universal-argument' is called first, do switch frame."
   (define-key xah-leader-t-keymap (kbd "v") nil)
   (define-key xah-leader-t-keymap (kbd "w") 'xah-next-window-or-frame)
   (define-key xah-leader-t-keymap (kbd "x") nil)
-  (define-key xah-leader-t-keymap (kbd "y") nil)
+  (define-key xah-leader-t-keymap (kbd "y") 'xah-make-backup-and-save)
   (define-key xah-leader-t-keymap (kbd "z") 'number-to-register))
 
 (progn
   (define-prefix-command 'xah-danger-keymap)
+
+  (define-key xah-danger-keymap (kbd "DEL") 'xah-delete-current-file)
 
   (define-key xah-danger-keymap (kbd ".") 'eval-buffer)
   (define-key xah-danger-keymap (kbd "e") 'eval-defun)
