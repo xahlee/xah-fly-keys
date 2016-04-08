@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 3.2.2
+;; Version: 3.3.2
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -1654,12 +1654,6 @@ If `universal-argument' is called first, do switch frame."
 
   (define-key xah-help-keymap (kbd ";") 'Info-goto-emacs-command-node)
 
-  (define-key xah-help-keymap (kbd "8") nil)
-  (define-key xah-help-keymap (kbd "7") nil)
-  (define-key xah-help-keymap (kbd "4") nil)
-  (define-key xah-help-keymap (kbd "5") 'apropos-variable)
-  (define-key xah-help-keymap (kbd "6") 'apropos-value)
-
   (define-key xah-help-keymap (kbd "a") 'apropos-command)
   (define-key xah-help-keymap (kbd "b") 'describe-bindings)
   (define-key xah-help-keymap (kbd "c") 'describe-char)
@@ -1678,11 +1672,11 @@ If `universal-argument' is called first, do switch frame."
   (define-key xah-help-keymap (kbd "o") 'describe-language-environment)
   (define-key xah-help-keymap (kbd "p") 'finder-by-keyword)
   (define-key xah-help-keymap (kbd "q") nil)
-  (define-key xah-help-keymap (kbd "r") nil)
+  (define-key xah-help-keymap (kbd "r") 'apropos-variable)
   (define-key xah-help-keymap (kbd "s") 'describe-syntax)
   (define-key xah-help-keymap (kbd "t") 'describe-variable)
   (define-key xah-help-keymap (kbd "u") 'elisp-index-search)
-  (define-key xah-help-keymap (kbd "v") nil)
+  (define-key xah-help-keymap (kbd "v") 'apropos-value)
   (define-key xah-help-keymap (kbd "w") nil)
   (define-key xah-help-keymap (kbd "x") nil)
   (define-key xah-help-keymap (kbd "y") nil)
@@ -1773,12 +1767,9 @@ If `universal-argument' is called first, do switch frame."
   ;; kinda replacement related
   (define-prefix-command 'xah-edit-cmds-keymap)
 
-  (define-key xah-edit-cmds-keymap (kbd "3") 'apply-macro-to-region-lines)
-  (define-key xah-edit-cmds-keymap (kbd "4") 'sort-lines)
-  (define-key xah-edit-cmds-keymap (kbd "5") 'sort-numeric-fields)
-  (define-key xah-edit-cmds-keymap (kbd "6") 'reverse-region)
   (define-key xah-edit-cmds-keymap (kbd "9") 'delete-non-matching-lines)
   (define-key xah-edit-cmds-keymap (kbd "0") 'delete-duplicate-lines)
+  (define-key xah-edit-cmds-keymap (kbd ",") 'apply-macro-to-region-lines)
 
   (define-key xah-edit-cmds-keymap (kbd ".") 'kmacro-start-macro)
   (define-key xah-edit-cmds-keymap (kbd "p") 'kmacro-end-macro)
@@ -1803,15 +1794,15 @@ If `universal-argument' is called first, do switch frame."
 
   (define-key xah-leader-t-keymap (kbd "3") 'point-to-register)
   (define-key xah-leader-t-keymap (kbd "4") 'jump-to-register)
-  (define-key xah-leader-t-keymap (kbd "8") 'mark-defun)
 
-  (define-key xah-leader-t-keymap (kbd ".") nil)
-  (define-key xah-leader-t-keymap (kbd ",") nil)
+  (define-key xah-leader-t-keymap (kbd ".") 'sort-lines)
+  (define-key xah-leader-t-keymap (kbd ",") 'sort-numeric-fields)
+  (define-key xah-leader-t-keymap (kbd "'") 'reverse-region)
 
   (define-key xah-leader-t-keymap (kbd "a") nil)
   (define-key xah-leader-t-keymap (kbd "b") nil)
   (define-key xah-leader-t-keymap (kbd "c") nil)
-  (define-key xah-leader-t-keymap (kbd "d") nil)
+  (define-key xah-leader-t-keymap (kbd "d") 'mark-defun)
   (define-key xah-leader-t-keymap (kbd "e") 'toggle-input-method)
   (define-key xah-leader-t-keymap (kbd "f") nil)
   (define-key xah-leader-t-keymap (kbd "g") nil)
