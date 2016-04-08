@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 3.1.2
+;; Version: 3.2.2
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -1815,14 +1815,12 @@ If `universal-argument' is called first, do switch frame."
   (define-key xah-leader-t-keymap (kbd "e") 'toggle-input-method)
   (define-key xah-leader-t-keymap (kbd "f") nil)
   (define-key xah-leader-t-keymap (kbd "g") nil)
-  (define-key xah-leader-t-keymap (kbd "h") (if (fboundp 'xah-close-current-buffer)
-                                                (progn 'xah-close-current-buffer)
-                                              (progn 'kill-buffer)))
+  (define-key xah-leader-t-keymap (kbd "h") 'xah-close-current-buffer)
   (define-key xah-leader-t-keymap (kbd "i") nil)
   (define-key xah-leader-t-keymap (kbd "j") 'copy-to-register)
   (define-key xah-leader-t-keymap (kbd "k") 'insert-register)
   (define-key xah-leader-t-keymap (kbd "l") 'increment-register)
-  (define-key xah-leader-t-keymap (kbd "m") nil)
+  (define-key xah-leader-t-keymap (kbd "m") 'xah-make-backup-and-save)
   (define-key xah-leader-t-keymap (kbd "n") 'repeat-complex-command)
   (define-key xah-leader-t-keymap (kbd "o") nil)
   (define-key xah-leader-t-keymap (kbd "p") 'query-replace-regexp)
@@ -1834,7 +1832,7 @@ If `universal-argument' is called first, do switch frame."
   (define-key xah-leader-t-keymap (kbd "v") nil)
   (define-key xah-leader-t-keymap (kbd "w") 'xah-next-window-or-frame)
   (define-key xah-leader-t-keymap (kbd "x") nil)
-  (define-key xah-leader-t-keymap (kbd "y") 'xah-make-backup-and-save)
+  (define-key xah-leader-t-keymap (kbd "y") nil)
   (define-key xah-leader-t-keymap (kbd "z") 'number-to-register))
 
 (progn
@@ -1925,7 +1923,7 @@ If `universal-argument' is called first, do switch frame."
   (define-key xah-fly-leader-key-map (kbd "d") 'beginning-of-buffer)
   (define-key xah-fly-leader-key-map (kbd "e") nil)
   (define-key xah-fly-leader-key-map (kbd "f") 'xah-search-current-word)
-  (define-key xah-fly-leader-key-map (kbd "g") nil)
+  (define-key xah-fly-leader-key-map (kbd "g") 'isearch-forward)
   (define-key xah-fly-leader-key-map (kbd "h") 'xah-help-keymap)
   (define-key xah-fly-leader-key-map (kbd "i") xah-leader-i-keymap)
   (define-key xah-fly-leader-key-map (kbd "j") 'xah-cut-all-or-region)
@@ -2099,13 +2097,13 @@ If `universal-argument' is called first, do switch frame."
       (define-key xah-fly-key-map (kbd "C--") 'text-scale-decrease)
       (define-key xah-fly-key-map (kbd "C-0") (lambda () (interactive) (text-scale-set 0)))))
 
-  (define-key xah-fly-key-map (kbd "M-t") 'xah-toggle-letter-case)
-  (define-key xah-fly-key-map (kbd "M-g") 'xah-insert-brace)
-  (define-key xah-fly-key-map (kbd "M-c") 'xah-insert-paren)
-  (define-key xah-fly-key-map (kbd "M-r") 'xah-insert-square-bracket)
   (define-key xah-fly-key-map (kbd "M-SPC") 'xah-cycle-hyphen-underscore-space)
-  (define-key xah-fly-key-map (kbd "M-h") 'hippie-expand)
+  (define-key xah-fly-key-map (kbd "M-c") 'xah-toggle-letter-case )
+  (define-key xah-fly-key-map (kbd "M-g") 'hippie-expand )
+  (define-key xah-fly-key-map (kbd "M-h") 'xah-insert-brace )
   (define-key xah-fly-key-map (kbd "M-m") xah-insertion-keymap)
+  (define-key xah-fly-key-map (kbd "M-n") 'xah-insert-square-bracket)
+  (define-key xah-fly-key-map (kbd "M-t") 'xah-insert-paren)
 
   (define-key xah-fly-key-map (kbd "<home>") 'xah-fly-command-mode-activate)
   (define-key xah-fly-key-map (kbd "<f8>") 'xah-fly-command-mode-activate) ; as backup
