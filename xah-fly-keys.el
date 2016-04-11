@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 4.3.2
+;; Version: 4.3.3
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -86,7 +86,7 @@
 
 ;; That't it.
 
-;; On the Mac, I highly recommend using a app called Sail to set your capslock to send Home. So that it acts as xah-fly-command-mode-activate. see Mac Keyboard Software Guide http://xahlee.info/kbd/Mac_OS_X_keymapping_keybinding_tools.html
+;; On the Mac, I highly recommend using a app called Sail to set your capslock to send Home. So that it acts as xah-fly-command-mode-activate. You can set capslock or one of the cmd key to Home. See http://xahlee.info/kbd/Mac_OS_X_keymapping_keybinding_tools.html
 
 ;; I recommend you clone xah-fly-keys.el, and modify it, and use your modified version. Don't worry about upgrade. (I still make key tweaks every week, for the past 3 years.)
 
@@ -1857,6 +1857,7 @@ If `universal-argument' is called first, do switch frame."
    ("t" . repeat)
    ("s" . xah-clean-whitespace-and-save)
    ("w" . xah-next-window-or-frame)
+   ("y" . xah-copy-file-path)
    ("z" . number-to-register)))
 
 (xah-fly-map-keys
