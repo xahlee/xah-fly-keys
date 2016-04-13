@@ -890,6 +890,31 @@ Version 2015-05-07"
 
 ;; insertion commands
 
+(defun xah-insert-date (&optional φadd-time-stamp-p)
+  "Insert current date and or time.
+
+• In this format yyyy-mm-dd.
+• When called with `universal-argument', insert date and time, e.g. 2012-05-28T07:06:23-07:00
+• Replaces text selection.
+
+See also `xah-current-date-time-string'.
+version 2016-04-12"
+  (interactive "P")
+  (when (use-region-p) (delete-region (region-beginning) (region-end)))
+  (insert
+   (if φadd-time-stamp-p
+       (xah-current-date-time-string)
+     (format-time-string "%Y-%m-%d"))))
+
+(defun xah-current-date-time-string ()
+  "Returns current date-time string in full ISO 8601 format.
+Example: 「2012-04-05T21:08:24-07:00」.
+
+Note, for the time zone offset, both the formats 「hhmm」 and 「hh:mm」 are valid ISO 8601. However, Atom Webfeed spec seems to require 「hh:mm」."
+  (concat
+   (format-time-string "%Y-%m-%dT%T")
+   ((lambda (ξx) (format "%s:%s" (substring ξx 0 3) (substring ξx 3 5))) (format-time-string "%z"))))
+
 (defun xah-insert-bracket-pair (φleft-bracket φright-bracket)
   "Wrap or Insert a matching bracket and place cursor in between.
 
@@ -1847,6 +1872,7 @@ If `universal-argument' is called first, do switch frame."
    ("d" . mark-defun)
    ("e" . toggle-input-method)
    ("h" . xah-close-current-buffer)
+   ("i" . xah-clean-whitespace-and-save)
    ("j" . copy-to-register)
    ("k" . insert-register)
    ("l" . increment-register)
@@ -1855,9 +1881,8 @@ If `universal-argument' is called first, do switch frame."
    ("p" . query-replace-regexp)
    ("r" . copy-rectangle-to-register)
    ("t" . repeat)
-   ("s" . xah-clean-whitespace-and-save)
+   ("u" . xah-insert-date)
    ("w" . xah-next-window-or-frame)
-   ("y" . xah-copy-file-path)
    ("z" . number-to-register)))
 
 (xah-fly-map-keys
@@ -1944,11 +1969,11 @@ If `universal-argument' is called first, do switch frame."
   (define-key xah-fly-leader-key-map (kbd "r") xah-edit-cmds-keymap)
   (define-key xah-fly-leader-key-map (kbd "s") 'save-buffer)
   (define-key xah-fly-leader-key-map (kbd "t") xah-leader-t-keymap)
-  ;; (define-key xah-fly-leader-key-map (kbd "u") nil)
+  (define-key xah-fly-leader-key-map (kbd "u") 'switch-to-buffer)
   ;; (define-key xah-fly-leader-key-map (kbd "v") nil)
   (define-key xah-fly-leader-key-map (kbd "w") xah-danger-keymap)
   ;; (define-key xah-fly-leader-key-map (kbd "x") nil)
-  (define-key xah-fly-leader-key-map (kbd "y") 'ido-switch-buffer)
+  (define-key xah-fly-leader-key-map (kbd "y") 'xah-copy-file-path)
   (define-key xah-fly-leader-key-map (kbd "z") 'comment-dwim))
 
 
