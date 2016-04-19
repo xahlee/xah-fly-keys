@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 4.3.3
+;; Version: 4.3.4
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -1926,11 +1926,6 @@ If `universal-argument' is called first, do switch frame."
   (define-key xah-fly-leader-key-map (kbd "SPC") 'xah-fly-insert-mode-activate)
   (define-key xah-fly-leader-key-map (kbd "TAB") xah-leader-tab-keymap)
 
-  (define-key xah-fly-leader-key-map (kbd "<mouse-1>") 'xah-set-mouse-wheel-mode) ; left button
-  (define-key xah-fly-leader-key-map (kbd "<mouse-3>") 'xah-set-mouse-scroll-by-50-line) ; right button
-  (define-key xah-fly-leader-key-map (kbd "<mouse-4>") 'xah-set-mouse-wheel-normal) ; wheel up
-  (define-key xah-fly-leader-key-map (kbd "<mouse-5>") 'xah-set-mouse-scroll-by-block) ; wheel down
-
   (define-key xah-fly-leader-key-map (kbd ".") xah-highlight-keymap)
 
   (define-key xah-fly-leader-key-map (kbd "'") 'quoted-insert)
@@ -2143,7 +2138,7 @@ If `universal-argument' is called first, do switch frame."
       (define-key xah-fly-key-map (kbd "C--") 'text-scale-decrease)
       (define-key xah-fly-key-map (kbd "C-0") (lambda () (interactive) (text-scale-set 0)))))
 
-  (define-key xah-fly-key-map (kbd "M-SPC") 'xah-cycle-hyphen-underscore-space)
+  (define-key xah-fly-key-map (kbd "M-RET") 'xah-cycle-hyphen-underscore-space)
   (define-key xah-fly-key-map (kbd "M-c") 'xah-toggle-letter-case )
   (define-key xah-fly-key-map (kbd "M-g") 'hippie-expand )
   (define-key xah-fly-key-map (kbd "M-h") 'xah-insert-brace )
