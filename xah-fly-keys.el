@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 4.3.4
+;; Version: 4.3.5
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -1928,7 +1928,7 @@ If `universal-argument' is called first, do switch frame."
 
   (define-key xah-fly-leader-key-map (kbd ".") xah-highlight-keymap)
 
-  (define-key xah-fly-leader-key-map (kbd "'") 'quoted-insert)
+  (define-key xah-fly-leader-key-map (kbd "'") nil)
   (define-key xah-fly-leader-key-map (kbd ",") nil)
   (define-key xah-fly-leader-key-map (kbd "-") nil)
   (define-key xah-fly-leader-key-map (kbd "/") nil)
