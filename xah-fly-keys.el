@@ -2131,6 +2131,7 @@ If `universal-argument' is called first, do switch frame."
       (define-key xah-fly-key-map (kbd "C-s") 'save-buffer)
       (define-key xah-fly-key-map (kbd "C-S-s") 'write-file)
       (define-key xah-fly-key-map (kbd "C-S-t") 'xah-open-last-closed)
+      (define-key xah-fly-key-map (kbd "C-S-n") 'make-frame-command)
 
       (define-key xah-fly-key-map (kbd "C-,") 'flyspell-goto-next-error)
 
