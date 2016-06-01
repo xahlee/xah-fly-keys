@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 4.4.5
+;; Version: 4.5.5
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -1409,7 +1409,7 @@ Version 2016-03-02"
           (replace-match "\n\n")))
       (progn
         (goto-char (point-max))
-        (while (equal (char-before) 32) 
+        (while (equal (char-before) 32)
           (delete-char -1)))))
   (when (buffer-file-name)
     (save-buffer)))
@@ -2123,6 +2123,7 @@ If `universal-argument' is called first, do switch frame."
       (define-key xah-fly-key-map (kbd "<C-prior>") 'xah-previous-user-buffer)
       (define-key xah-fly-key-map (kbd "<C-tab>") 'xah-next-user-buffer)
       (define-key xah-fly-key-map (kbd "<C-S-iso-lefttab>") 'xah-previous-user-buffer)
+
       (define-key xah-fly-key-map (kbd "C-v") 'yank)
       (define-key xah-fly-key-map (kbd "C-t") 'toggle-input-method)
       (define-key xah-fly-key-map (kbd "C-w") 'xah-close-current-buffer)
@@ -2162,10 +2163,6 @@ If `universal-argument' is called first, do switch frame."
   (define-key xah-fly-key-map (kbd "<f12>") 'xah-next-user-buffer)
   (define-key xah-fly-key-map (kbd "<C-f11>") 'xah-previous-emacs-buffer)
   (define-key xah-fly-key-map (kbd "<C-f12>") 'xah-next-emacs-buffer)
-
-  ;; these are good for compatibilty. e.g. you set a mouse or other device to use this key for generic OS wide operation, and it should work in emacs too
-  (define-key xah-fly-key-map (kbd "<C-prior>") 'xah-previous-user-buffer)
-  (define-key xah-fly-key-map (kbd "<C-next>") 'xah-next-user-buffer)
 
   (progn
     ;; set arrow keys in isearch. left/right is backward/forward, up/down is history. press Return to exit
@@ -2234,13 +2231,13 @@ If `universal-argument' is called first, do switch frame."
     (define-key xah-fly-key-map (kbd "f") 'undo)
     (define-key xah-fly-key-map (kbd "g") 'backward-word)
     (define-key xah-fly-key-map (kbd "h") 'backward-char)
-    (define-key xah-fly-key-map (kbd "i") 'xah-fly-insert-mode-activate)
+    (define-key xah-fly-key-map (kbd "i") 'kill-line)
     (define-key xah-fly-key-map (kbd "j") 'xah-cut-line-or-region)
     (define-key xah-fly-key-map (kbd "k") 'yank)
-    (define-key xah-fly-key-map (kbd "l") 'xah-fly-insert-mode-activate-insert-space)
+    (define-key xah-fly-key-map (kbd "l") 'xah-fly-insert-mode-activate)
     (define-key xah-fly-key-map (kbd "m") 'xah-backward-left-bracket)
     (define-key xah-fly-key-map (kbd "n") 'forward-char)
-    (define-key xah-fly-key-map (kbd "o") 'xah-fly-insert-mode-activate-newline)
+    (define-key xah-fly-key-map (kbd "o") 'xah-fly-insert-mode-activate)
     (define-key xah-fly-key-map (kbd "p") 'kill-word)
     (define-key xah-fly-key-map (kbd "q") 'xah-copy-line-or-region)
     (define-key xah-fly-key-map (kbd "r") 'forward-word)
@@ -2254,9 +2251,7 @@ If `universal-argument' is called first, do switch frame."
     (define-key xah-fly-key-map (kbd "z") 'comment-dwim)
 
     (define-key xah-fly-key-map (kbd "C") 'pop-global-mark)
-    (define-key xah-fly-key-map (kbd "E") nil)
     (define-key xah-fly-key-map (kbd "T") 'xah-jump-to-last-local-mark)
-    (define-key xah-fly-key-map (kbd "U") 'kill-line)
 
     ;;
     ))
