@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 4.5.5
+;; Version: 4.6.5
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -66,23 +66,20 @@
 
 ;; the following stardard keys with Control are supported, when the variable xah-fly-use-control-key is t
 
-;; (when xah-fly-use-control-key
-;;     (progn
-;;       (define-key xah-fly-key-map (kbd "<C-tab>") 'xah-next-user-buffer)
-;;       (define-key xah-fly-key-map (kbd "<C-S-iso-lefttab>") 'xah-previous-user-buffer)
-;;       (define-key xah-fly-key-map (kbd "C-v") 'yank)
-;;       (define-key xah-fly-key-map (kbd "C-t") 'toggle-input-method)
-;;       (define-key xah-fly-key-map (kbd "C-w") 'xah-close-current-buffer)
-;;       (define-key xah-fly-key-map (kbd "C-z") 'undo)
-;;       (define-key xah-fly-key-map (kbd "C-n") 'xah-new-empty-buffer)
-;;       (define-key xah-fly-key-map (kbd "C-o") 'find-file)
-;;       (define-key xah-fly-key-map (kbd "C-s") 'save-buffer)
-;;       (define-key xah-fly-key-map (kbd "C-S-s") 'write-file)
-;;       (define-key xah-fly-key-map (kbd "C-S-t") 'xah-open-last-closed)
-;;       (define-key xah-fly-key-map (kbd "C-,") 'flyspell-goto-next-error)
-;;       (define-key xah-fly-key-map (kbd "C-+") 'text-scale-increase)
-;;       (define-key xah-fly-key-map (kbd "C--") 'text-scale-decrease)
-;;       (define-key xah-fly-key-map (kbd "C-0") (lambda () (interactive) (text-scale-set 0)))))
+ ;; (kbd "<C-tab>") 'xah-next-user-buffer
+ ;; (kbd "<C-S-iso-lefttab>") 'xah-previous-user-buffer
+ ;; (kbd "C-v") 'yank
+ ;; (kbd "C-t") 'toggle-input-method
+ ;; (kbd "C-w") 'xah-close-current-buffer
+ ;; (kbd "C-z") 'undo
+ ;; (kbd "C-n") 'xah-new-empty-buffer
+ ;; (kbd "C-o") 'find-file
+ ;; (kbd "C-s") 'save-buffer
+ ;; (kbd "C-S-s") 'write-file
+ ;; (kbd "C-S-t") 'xah-open-last-closed
+ ;; (kbd "C-+") 'text-scale-increase
+ ;; (kbd "C--") 'text-scale-decrease
+ ;; (kbd "C-0") (lambda () (interactive) (text-scale-set 0))))
 
 ;; That't it.
 
@@ -2135,8 +2132,6 @@ If `universal-argument' is called first, do switch frame."
       (define-key xah-fly-key-map (kbd "C-S-t") 'xah-open-last-closed)
       (define-key xah-fly-key-map (kbd "C-S-n") 'make-frame-command)
 
-      (define-key xah-fly-key-map (kbd "C-,") 'flyspell-goto-next-error)
-
       (define-key xah-fly-key-map (kbd "C-+") 'text-scale-increase)
       (define-key xah-fly-key-map (kbd "C--") 'text-scale-decrease)
       (define-key xah-fly-key-map (kbd "C-0") (lambda () (interactive) (text-scale-set 0)))))
@@ -2149,6 +2144,7 @@ If `universal-argument' is called first, do switch frame."
   (define-key xah-fly-key-map (kbd "M-n") 'xah-insert-square-bracket)
   (define-key xah-fly-key-map (kbd "M-t") 'xah-insert-paren)
   (define-key xah-fly-key-map (kbd "M-d") 'xah-insert-date)
+  (define-key xah-fly-key-map (kbd "M-k") 'yank-pop)
   (define-key xah-fly-key-map (kbd "M-l") 'left-char)
 
   (define-key xah-fly-key-map (kbd "<home>") 'xah-fly-command-mode-activate)
@@ -2231,10 +2227,10 @@ If `universal-argument' is called first, do switch frame."
     (define-key xah-fly-key-map (kbd "f") 'undo)
     (define-key xah-fly-key-map (kbd "g") 'backward-word)
     (define-key xah-fly-key-map (kbd "h") 'backward-char)
-    (define-key xah-fly-key-map (kbd "i") 'kill-line)
+    (define-key xah-fly-key-map (kbd "i") 'xah-fly-insert-mode-activate-newline)
     (define-key xah-fly-key-map (kbd "j") 'xah-cut-line-or-region)
     (define-key xah-fly-key-map (kbd "k") 'yank)
-    (define-key xah-fly-key-map (kbd "l") 'xah-fly-insert-mode-activate)
+    (define-key xah-fly-key-map (kbd "l") 'xah-fly-insert-mode-activate-space-before)
     (define-key xah-fly-key-map (kbd "m") 'xah-backward-left-bracket)
     (define-key xah-fly-key-map (kbd "n") 'forward-char)
     (define-key xah-fly-key-map (kbd "o") 'xah-fly-insert-mode-activate)
@@ -2353,16 +2349,23 @@ If `universal-argument' is called first, do switch frame."
   (run-hooks 'xah-fly-insert-mode-activate-hook))
 
 (defun xah-fly-insert-mode-activate-newline ()
-  "Activate insertion mode, inserting 2 newlines below."
+  "Activate insertion mode, insert newline below."
   (interactive)
   (xah-fly-insert-mode-activate)
   (open-line 1))
 
-(defun xah-fly-insert-mode-activate-insert-space ()
+(defun xah-fly-insert-mode-activate-space-before ()
   "Insert a space, then activate insertion mode."
   (interactive)
   (insert " ")
   (xah-fly-insert-mode-activate))
+
+(defun xah-fly-insert-mode-activate-space-after ()
+  "Insert a space, then activate insertion mode."
+  (interactive)
+  (insert " ")
+  (xah-fly-insert-mode-activate)
+  (left-char))
 
 
 
