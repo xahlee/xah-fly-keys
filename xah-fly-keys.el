@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 4.6.5
+;; Version: 4.6.6
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -2131,10 +2131,14 @@ If `universal-argument' is called first, do switch frame."
       (define-key xah-fly-key-map (kbd "C-S-s") 'write-file)
       (define-key xah-fly-key-map (kbd "C-S-t") 'xah-open-last-closed)
       (define-key xah-fly-key-map (kbd "C-S-n") 'make-frame-command)
+      (define-key xah-fly-key-map (kbd "C-8") 'xah-fly-command-mode-activate)
 
       (define-key xah-fly-key-map (kbd "C-+") 'text-scale-increase)
       (define-key xah-fly-key-map (kbd "C--") 'text-scale-decrease)
       (define-key xah-fly-key-map (kbd "C-0") (lambda () (interactive) (text-scale-set 0)))))
+
+  (define-key xah-fly-key-map (kbd "M-1") 'xah-jump-to-last-local-mark)
+  (define-key xah-fly-key-map (kbd "M-2") 'pop-global-mark)
 
   (define-key xah-fly-key-map (kbd "M-RET") 'xah-cycle-hyphen-underscore-space)
   (define-key xah-fly-key-map (kbd "M-c") 'xah-toggle-letter-case )
@@ -2152,8 +2156,6 @@ If `universal-argument' is called first, do switch frame."
 
   (define-key xah-fly-key-map (kbd "<menu>") xah-fly-leader-key-map)
   (define-key xah-fly-key-map (kbd "<f9>") xah-fly-leader-key-map) ; as backup
-
-  (define-key xah-fly-key-map (kbd "C-8") 'xah-fly-command-mode-activate)
 
   (define-key xah-fly-key-map (kbd "<f11>") 'xah-previous-user-buffer)
   (define-key xah-fly-key-map (kbd "<f12>") 'xah-next-user-buffer)
@@ -2246,9 +2248,6 @@ If `universal-argument' is called first, do switch frame."
     (define-key xah-fly-key-map (kbd "y") 'set-mark-command)
     (define-key xah-fly-key-map (kbd "z") 'comment-dwim)
 
-    (define-key xah-fly-key-map (kbd "C") 'pop-global-mark)
-    (define-key xah-fly-key-map (kbd "T") 'xah-jump-to-last-local-mark)
-
     ;;
     ))
 
@@ -2307,11 +2306,6 @@ If `universal-argument' is called first, do switch frame."
     (define-key xah-fly-key-map (kbd "x") nil)
     (define-key xah-fly-key-map (kbd "y") nil)
     (define-key xah-fly-key-map (kbd "z") nil)
-
-    (define-key xah-fly-key-map (kbd "C") nil)
-    (define-key xah-fly-key-map (kbd "E") nil)
-    (define-key xah-fly-key-map (kbd "T") nil)
-    (define-key xah-fly-key-map (kbd "U") nil)
 
     ;;
 ))
