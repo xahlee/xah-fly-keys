@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 4.6.6
+;; Version: 4.7.6
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -122,7 +122,8 @@ version 2016-04-04"
   "Move cursor beginning of next text block.
 A text block is separated by blank lines.
 This command similar to `forward-paragraph', but this command's behavior is the same regardless of syntax table.
-Version 2015-07-06"
+URL `http://ergoemacs.org/emacs/emacs_move_by_paragraph.html'
+Version 2016-06-15"
   (interactive "p")
   (let ((φn (if (null φn) 1 φn)))
     (search-forward-regexp "\n[\t\n ]*\n+" nil "NOERROR" φn)))
@@ -130,7 +131,8 @@ Version 2015-07-06"
 (defun xah-backward-block (&optional φn)
   "Move cursor to previous text block.
 See: `xah-forward-block'
-Version 2015-07-08"
+URL `http://ergoemacs.org/emacs/emacs_move_by_paragraph.html'
+Version 2016-06-15"
   (interactive "p")
   (let ((φn (if (null φn) 1 φn))
         (ξi 1))
@@ -143,7 +145,9 @@ Version 2015-07-08"
 
 (defun xah-beginning-of-line-or-block (&optional φn)
   "Move cursor to beginning of line, or beginning of current or previous text block.
- (a text block is separated by blank lines)"
+ (a text block is separated by blank lines)
+URL `http://ergoemacs.org/emacs/emacs_keybinding_design_beginning-of-line-or-block.html'
+version 2016-06-15"
   (interactive "p")
   (let ((φn (if (null φn) 1 φn)))
     (if (equal φn 1)
@@ -157,7 +161,9 @@ Version 2015-07-08"
 
 (defun xah-end-of-line-or-block (&optional φn)
   "Move cursor to end of line, or end of current or next text block.
- (a text block is separated by blank lines)"
+ (a text block is separated by blank lines)
+URL `http://ergoemacs.org/emacs/emacs_keybinding_design_beginning-of-line-or-block.html'
+version 2016-06-15"
   (interactive "p")
   (let ((φn (if (null φn) 1 φn)))
     (if (equal φn 1)
@@ -2229,19 +2235,19 @@ If `universal-argument' is called first, do switch frame."
     (define-key xah-fly-key-map (kbd "f") 'undo)
     (define-key xah-fly-key-map (kbd "g") 'backward-word)
     (define-key xah-fly-key-map (kbd "h") 'backward-char)
-    (define-key xah-fly-key-map (kbd "i") 'xah-fly-insert-mode-activate-newline)
+    (define-key xah-fly-key-map (kbd "i") 'kill-line)
     (define-key xah-fly-key-map (kbd "j") 'xah-cut-line-or-region)
     (define-key xah-fly-key-map (kbd "k") 'yank)
     (define-key xah-fly-key-map (kbd "l") 'xah-fly-insert-mode-activate-space-before)
     (define-key xah-fly-key-map (kbd "m") 'xah-backward-left-bracket)
     (define-key xah-fly-key-map (kbd "n") 'forward-char)
-    (define-key xah-fly-key-map (kbd "o") 'xah-fly-insert-mode-activate)
+    (define-key xah-fly-key-map (kbd "o") 'open-line)
     (define-key xah-fly-key-map (kbd "p") 'kill-word)
     (define-key xah-fly-key-map (kbd "q") 'xah-copy-line-or-region)
     (define-key xah-fly-key-map (kbd "r") 'forward-word)
     (define-key xah-fly-key-map (kbd "s") 'xah-end-of-line-or-block)
     (define-key xah-fly-key-map (kbd "t") 'next-line)
-    (define-key xah-fly-key-map (kbd "u") 'delete-char)
+    (define-key xah-fly-key-map (kbd "u") 'xah-fly-insert-mode-activate)
     (define-key xah-fly-key-map (kbd "v") 'xah-forward-right-bracket)
     (define-key xah-fly-key-map (kbd "w") 'xah-next-window-or-frame)
     (define-key xah-fly-key-map (kbd "x") 'exchange-point-and-mark)
