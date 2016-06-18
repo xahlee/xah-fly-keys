@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 4.7.6
+;; Version: 4.7.7
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -111,9 +111,10 @@
 
 ;; cursor movement
 
-(defun xah-jump-to-last-local-mark ()
+(defun xah-pop-local-mark-ring ()
   "Move cursor to last mark position of current buffer.
-Call this repeatedly will cycle all positions in local buffer `mark-ring'.
+Call this repeatedly will cycle all positions in `mark-ring'.
+URL `http://ergoemacs.org/emacs/emacs_jump_to_previous_position.html'
 version 2016-04-04"
   (interactive)
   (set-mark-command t))
@@ -385,7 +386,7 @@ When called repeatedly, append copy subsequent lines.
 When `universal-argument' is called first, copy whole buffer (respects `narrow-to-region').
 
 URL `http://ergoemacs.org/emacs/emacs_copy_cut_current_line.html'
-Version 2015-12-30"
+Version 2016-06-18"
   (interactive)
   (let (ξp1 ξp2)
     (if current-prefix-arg
@@ -395,17 +396,22 @@ Version 2015-12-30"
         (setq ξp1 (line-beginning-position) ξp2 (line-end-position))))
     (if (eq last-command this-command)
         (progn
+          (progn ; hack. exit if there's no more next line
+            (end-of-line)
+            (forward-char)
+            (backward-char))
           ;; (push-mark (point) "NOMSG" "ACTIVATE")
           (kill-append "\n" nil)
-          (forward-line 1)
-          (end-of-line)
           (kill-append (buffer-substring-no-properties (line-beginning-position) (line-end-position)) nil)
           (message "Line copy appended"))
       (progn
         (kill-ring-save ξp1 ξp2)
         (if current-prefix-arg
             (message "Buffer text copied")
-          (message "Text copied"))))))
+          (message "Text copied"))))
+    (end-of-line)
+    (forward-char)
+    ))
 
 (defun xah-cut-line-or-region ()
   "Cut current line, or text selection.
@@ -2143,7 +2149,7 @@ If `universal-argument' is called first, do switch frame."
       (define-key xah-fly-key-map (kbd "C--") 'text-scale-decrease)
       (define-key xah-fly-key-map (kbd "C-0") (lambda () (interactive) (text-scale-set 0)))))
 
-  (define-key xah-fly-key-map (kbd "M-1") 'xah-jump-to-last-local-mark)
+  (define-key xah-fly-key-map (kbd "M-1") 'xah-pop-local-mark-ring)
   (define-key xah-fly-key-map (kbd "M-2") 'pop-global-mark)
 
   (define-key xah-fly-key-map (kbd "M-RET") 'xah-cycle-hyphen-underscore-space)
