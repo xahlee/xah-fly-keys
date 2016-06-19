@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 4.7.7
+;; Version: 4.8.7
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -1178,60 +1178,70 @@ Version 2015-05-16"
 (defvar xah-switch-buffer-ignore-dired t "If t, ignore dired buffer when calling `xah-next-user-buffer' or `xah-previous-user-buffer'")
 (setq xah-switch-buffer-ignore-dired t)
 
+(defun xah-user-buffer-q ()
+  "Return t if current buffer is a user buffer, else nil.
+Typically, if buffer name starts with *, it's not considered a user buffer.
+In the case of dired buffer, it depends on `xah-switch-buffer-ignore-dired'
+This function is used by buffer switching command and close buffer command, so that next buffer shown is a user buffer.
+You can override this function to get your idea of “user buffer”.
+version 2016-06-18"
+  (interactive)
+  (if (string-equal "*" (substring (buffer-name) 0 1))
+      nil
+    (if (and (string-equal major-mode "dired-mode")
+             xah-switch-buffer-ignore-dired )
+        nil
+      t
+      )))
+
 (defun xah-next-user-buffer ()
   "Switch to the next user buffer.
- “user buffer” is a buffer whose name does not start with “*”.
-If `xah-switch-buffer-ignore-dired' is true, also skip directory buffer.
-2015-01-05 URL `http://ergoemacs.org/emacs/elisp_next_prev_user_buffer.html'"
+“user buffer” is determined by `xah-user-buffer-q'.
+URL `http://ergoemacs.org/emacs/elisp_next_prev_user_buffer.html'
+version 2016-06-18"
   (interactive)
   (next-buffer)
   (let ((i 0))
     (while (< i 20)
-      (if (or
-           (string-equal "*" (substring (buffer-name) 0 1))
-           (if (string-equal major-mode "dired-mode")
-               xah-switch-buffer-ignore-dired
-             nil
-             ))
+      (if (not (xah-user-buffer-q))
           (progn (next-buffer)
                  (setq i (1+ i)))
         (progn (setq i 100))))))
 
 (defun xah-previous-user-buffer ()
   "Switch to the previous user buffer.
- “user buffer” is a buffer whose name does not start with “*”.
-If `xah-switch-buffer-ignore-dired' is true, also skip directory buffer.
-2015-01-05 URL `http://ergoemacs.org/emacs/elisp_next_prev_user_buffer.html'"
+“user buffer” is determined by `xah-user-buffer-q'.
+URL `http://ergoemacs.org/emacs/elisp_next_prev_user_buffer.html'
+version 2016-06-18"
   (interactive)
   (previous-buffer)
   (let ((i 0))
     (while (< i 20)
-      (if (or
-           (string-equal "*" (substring (buffer-name) 0 1))
-           (if (string-equal major-mode "dired-mode")
-               xah-switch-buffer-ignore-dired
-             nil
-             ))
+      (if (not (xah-user-buffer-q))
           (progn (previous-buffer)
                  (setq i (1+ i)))
         (progn (setq i 100))))))
 
 (defun xah-next-emacs-buffer ()
   "Switch to the next emacs buffer.
- (buffer name that starts with “*”)"
+“user buffer” is determined by `xah-user-buffer-q'.
+URL `http://ergoemacs.org/emacs/elisp_next_prev_user_buffer.html'
+version 2016-06-18"
   (interactive)
   (next-buffer)
   (let ((i 0))
-    (while (and (not (string-equal "*" (substring (buffer-name) 0 1))) (< i 20))
+    (while (and (xah-user-buffer-q) (< i 20))
       (setq i (1+ i)) (next-buffer))))
 
 (defun xah-previous-emacs-buffer ()
   "Switch to the previous emacs buffer.
- (buffer name that starts with “*”)"
+“user buffer” is determined by `xah-user-buffer-q'.
+URL `http://ergoemacs.org/emacs/elisp_next_prev_user_buffer.html'
+version 2016-06-18"
   (interactive)
   (previous-buffer)
   (let ((i 0))
-    (while (and (not (string-equal "*" (substring (buffer-name) 0 1))) (< i 20))
+    (while (and (xah-user-buffer-q) (< i 20))
       (setq i (1+ i)) (previous-buffer))))
 
 (defvar xah-recently-closed-buffers nil "alist of recently closed buffers. Each element is (buffer name, file path). The max number to track is controlled by the variable `xah-recently-closed-buffers-max'.")
@@ -1287,10 +1297,10 @@ Else it is a user buffer."
         (kill-buffer (current-buffer))
 
         ;; if emacs buffer, switch to a user buffer
-        (when (string-match "^*" (buffer-name))
+        (when (not (xah-user-buffer-q))
           (next-buffer)
           (let ((i 0))
-            (while (and (string-equal "*" (substring (buffer-name) 0 1)) (< i 20))
+            (while (and (not (xah-user-buffer-q)) (< i 20))
               (setq i (1+ i)) (next-buffer))))))))
 
 (defun xah-open-last-closed ()
