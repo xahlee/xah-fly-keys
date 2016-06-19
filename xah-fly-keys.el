@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 4.8.7
+;; Version: 4.8.8
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -1175,21 +1175,16 @@ Version 2015-05-16"
 
 ;; misc
 
-(defvar xah-switch-buffer-ignore-dired t "If t, ignore dired buffer when calling `xah-next-user-buffer' or `xah-previous-user-buffer'")
-(setq xah-switch-buffer-ignore-dired t)
-
 (defun xah-user-buffer-q ()
   "Return t if current buffer is a user buffer, else nil.
 Typically, if buffer name starts with *, it's not considered a user buffer.
-In the case of dired buffer, it depends on `xah-switch-buffer-ignore-dired'
 This function is used by buffer switching command and close buffer command, so that next buffer shown is a user buffer.
 You can override this function to get your idea of “user buffer”.
 version 2016-06-18"
   (interactive)
   (if (string-equal "*" (substring (buffer-name) 0 1))
       nil
-    (if (and (string-equal major-mode "dired-mode")
-             xah-switch-buffer-ignore-dired )
+    (if (string-equal major-mode "dired-mode")
         nil
       t
       )))
@@ -1198,7 +1193,7 @@ version 2016-06-18"
   "Switch to the next user buffer.
 “user buffer” is determined by `xah-user-buffer-q'.
 URL `http://ergoemacs.org/emacs/elisp_next_prev_user_buffer.html'
-version 2016-06-18"
+Version 2016-06-19"
   (interactive)
   (next-buffer)
   (let ((i 0))
@@ -1212,7 +1207,7 @@ version 2016-06-18"
   "Switch to the previous user buffer.
 “user buffer” is determined by `xah-user-buffer-q'.
 URL `http://ergoemacs.org/emacs/elisp_next_prev_user_buffer.html'
-version 2016-06-18"
+Version 2016-06-19"
   (interactive)
   (previous-buffer)
   (let ((i 0))
@@ -1224,24 +1219,24 @@ version 2016-06-18"
 
 (defun xah-next-emacs-buffer ()
   "Switch to the next emacs buffer.
-“user buffer” is determined by `xah-user-buffer-q'.
+“emacs buffer” here is buffer whose name starts with *.
 URL `http://ergoemacs.org/emacs/elisp_next_prev_user_buffer.html'
-version 2016-06-18"
+Version 2016-06-19"
   (interactive)
   (next-buffer)
   (let ((i 0))
-    (while (and (xah-user-buffer-q) (< i 20))
+    (while (and (not (string-equal "*" (substring (buffer-name) 0 1))) (< i 20))
       (setq i (1+ i)) (next-buffer))))
 
 (defun xah-previous-emacs-buffer ()
   "Switch to the previous emacs buffer.
-“user buffer” is determined by `xah-user-buffer-q'.
+“emacs buffer” here is buffer whose name starts with *.
 URL `http://ergoemacs.org/emacs/elisp_next_prev_user_buffer.html'
-version 2016-06-18"
+Version 2016-06-19"
   (interactive)
   (previous-buffer)
   (let ((i 0))
-    (while (and (xah-user-buffer-q) (< i 20))
+    (while (and (not (string-equal "*" (substring (buffer-name) 0 1))) (< i 20))
       (setq i (1+ i)) (previous-buffer))))
 
 (defvar xah-recently-closed-buffers nil "alist of recently closed buffers. Each element is (buffer name, file path). The max number to track is controlled by the variable `xah-recently-closed-buffers-max'.")
@@ -1254,13 +1249,12 @@ version 2016-06-18"
 Similar to `kill-buffer', with the following addition:
 
 • Prompt user to save if the buffer has been modified even if the buffer is not associated with a file.
-• Make sure the buffer shown after closing is a user buffer.
 • If the buffer is editing a source file in an org-mode file, prompt the user to save before closing.
 • If the buffer is a file, add the path to the list `xah-recently-closed-buffers'.
 • If it is the minibuffer, exit the minibuffer
 
-A emacs buffer is one whose name starts with *.
-Else it is a user buffer."
+URL `http://ergoemacs.org/emacs/elisp_close_buffer_open_last_closed.html'
+Version 2016-06-19"
   (interactive)
   (let (ξemacs-buff-p
         (ξorg-p (string-match "^*Org Src" (buffer-name))))
@@ -1294,17 +1288,12 @@ Else it is a user buffer."
             (setq xah-recently-closed-buffers (butlast xah-recently-closed-buffers 1))))
 
         ;; close
-        (kill-buffer (current-buffer))
-
-        ;; if emacs buffer, switch to a user buffer
-        (when (not (xah-user-buffer-q))
-          (next-buffer)
-          (let ((i 0))
-            (while (and (not (xah-user-buffer-q)) (< i 20))
-              (setq i (1+ i)) (next-buffer))))))))
+        (kill-buffer (current-buffer))))))
 
 (defun xah-open-last-closed ()
-  "Open the last closed file."
+  "Open the last closed file.
+URL `http://ergoemacs.org/emacs/elisp_close_buffer_open_last_closed.html'
+Version 2016-06-19"
   (interactive)
   (if (> (length xah-recently-closed-buffers) 0)
       (find-file (cdr (pop xah-recently-closed-buffers)))
@@ -1312,12 +1301,16 @@ Else it is a user buffer."
 
 (defun xah-open-recently-closed ()
   "Open recently closed file.
-Prompt for a choice."
+Prompt for a choice.
+URL `http://ergoemacs.org/emacs/elisp_close_buffer_open_last_closed.html'
+Version 2016-06-19"
   (interactive)
   (find-file (ido-completing-read "open:" (mapcar (lambda (f) (cdr f)) xah-recently-closed-buffers))))
 
 (defun xah-list-recently-closed ()
-  "List recently closed file."
+  "List recently closed file.
+URL `http://ergoemacs.org/emacs/elisp_close_buffer_open_last_closed.html'
+Version 2016-06-19"
   (interactive)
   (let ((ξbuf (generate-new-buffer "*recently closed*")))
     (switch-to-buffer ξbuf)
