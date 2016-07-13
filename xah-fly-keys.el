@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 4.9.8
+;; Version: 4.9.9
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -22,8 +22,9 @@
 
 ;; --------------------------------------------------
 ;; MANUAL INSTALL
+
 ;; put the file xah-fly-keys.el in ~/.emacs.d/lisp/
-;; create the dirs if doesn't exist.
+;; create the dir if doesn't exist.
 
 ;; put the following in your emacs init file:
 
@@ -38,12 +39,13 @@
 
 ;; Important command/insert mode switch keys:
 
-;; xah-fly-command-mode-activate (press 【home】 or 【Ctrl+8】 or 【F8】)
+;; xah-fly-command-mode-activate (press 【<home>】 or 【C-8】 or 【f8】)
 ;; xah-fly-insert-mode-activate  (when in command mode, press letter 【i】 key)
 
 ;; When in command mode:
-;; 【i】 activates insertion mode
-;; 【SPACE】 is a leader key. For example, 【SPACE p】 calls query-replace.
+;; 【u】 activates insertion mode
+;; 【SPACE】 is a leader key. For example, 【SPACE p】 calls query-replace. Press 【SPACE C-h】 to see the full list.
+;; 【SPACE SPACE】 also activates insertion mode.
 
 ;; The leader key sequence basically replace ALL emacs commands that starts with C-x key.
 
@@ -573,50 +575,113 @@ Version 2015-11-04"
             (when (equal (char-after) 10) (delete-char 1))))
       (progn (delete-blank-lines)))))
 
-(defun xah-compact-uncompact-block ()
-  "Remove or insert newline characters on the current block of text.
-This is similar to a toggle for `fill-paragraph' and `unfill-paragraph'.
-
+(defun xah-fill-or-unfill ()
+  "Reformat current paragraph or region to `fill-column', like `fill-paragraph' or “unfill”.
 When there is a text selection, act on the the selection, else, act on a text block separated by blank lines.
-Version 2015-06-20"
+URL `http://ergoemacs.org/emacs/modernization_fill-paragraph.html'
+Version 2016-07-13"
   (interactive)
-  ;; This command symbol has a property “'stateIsCompact-p”, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
-  (let ( -is-compact-p
+  ;; This command symbol has a property “'compact-p”, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
+  (let ( (-compact-p
+          (if (eq last-command this-command)
+              (get this-command 'compact-p)
+            (> (- (line-end-position) (line-beginning-position)) fill-column)))
          (deactivate-mark nil)
          (-blanks-regex "\n[ \t]*\n")
          -p1 -p2
          )
-    (progn
-      (if (use-region-p)
-          (progn (setq -p1 (region-beginning))
-                 (setq -p2 (region-end)))
-        (save-excursion
-          (if (re-search-backward -blanks-regex nil "NOERROR")
-              (progn (re-search-forward -blanks-regex)
-                     (setq -p1 (point)))
-            (setq -p1 (point)))
-          (if (re-search-forward -blanks-regex nil "NOERROR")
-              (progn (re-search-backward -blanks-regex)
-                     (setq -p2 (point)))
-            (setq -p2 (point))))))
+    (if (use-region-p)
+        (progn (setq -p1 (region-beginning))
+               (setq -p2 (region-end)))
+      (save-excursion
+        (if (re-search-backward -blanks-regex nil "NOERROR")
+            (progn (re-search-forward -blanks-regex)
+                   (setq -p1 (point)))
+          (setq -p1 (point)))
+        (if (re-search-forward -blanks-regex nil "NOERROR")
+            (progn (re-search-backward -blanks-regex)
+                   (setq -p2 (point)))
+          (setq -p2 (point)))))
+    (if -compact-p
+        (fill-region -p1 -p2)
+      (let ((fill-column most-positive-fixnum ))
+        (fill-region -p1 -p2)))
+    (put this-command 'compact-p (not -compact-p))))
+
+(defun xah-reformat-lines ()
+  "Reformat current text block into 1 long line or multiple short lines.
+When there is a text selection, act on the the selection, else, act on a text block separated by blank lines.
+
+When the command is called for the first time, it checks the current line's length to decide to go into 1 line or multiple lines. If current line is short, it'll reformat to 1 long lines. And vice versa.
+
+Repeated call will toggle between formatting to 1 long line and multiple lines.
+URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
+Version 2016-07-13"
+  (interactive)
+  ;; This command symbol has a property “'compact-p”, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
+  (let (
+        (-compact-p
+         (if (eq last-command this-command)
+             (get this-command 'compact-p)
+           (> (- (line-end-position) (line-beginning-position)) fill-column)))
+        (deactivate-mark nil)
+        (-blanks-regex "\n[ \t]*\n")
+        -p1 -p2
+        )
+    (if (use-region-p)
+        (progn (setq -p1 (region-beginning))
+               (setq -p2 (region-end)))
+      (save-excursion
+        (if (re-search-backward -blanks-regex nil "NOERROR")
+            (progn (re-search-forward -blanks-regex)
+                   (setq -p1 (point)))
+          (setq -p1 (point)))
+        (if (re-search-forward -blanks-regex nil "NOERROR")
+            (progn (re-search-backward -blanks-regex)
+                   (setq -p2 (point)))
+          (setq -p2 (point)))))
     (save-excursion
-      (setq -is-compact-p
-            (if (eq last-command this-command)
-                (get this-command 'stateIsCompact-p)
-              (progn
-                (goto-char -p1)
-                (if (> (- (line-end-position) (line-beginning-position)) fill-column) t nil))))
-      (if -is-compact-p
-          (fill-region -p1 -p2)
-        (let ((fill-column most-positive-fixnum)) (fill-region -p1 -p2)))
-      (put this-command 'stateIsCompact-p (if -is-compact-p nil t)))))
+      (if -compact-p
+          (xah-reformat-to-multi-lines-region -p1 -p2)
+        (xah-reformat-to-single-line-region -p1 -p2))
+      (put this-command 'compact-p (not -compact-p)))))
+
+(defun xah-reformat-to-single-line-region (begin end)
+  "Replace whitespaces at end of each line by one space.
+URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
+Version 2016-07-12"
+  (interactive "r")
+  (save-excursion
+    (save-restriction
+      (narrow-to-region begin end)
+      (goto-char (point-min))
+      (while
+          (search-forward "\n" nil 'NOERROR)
+        (replace-match " ")
+        (while (looking-back " \\|\t" 1) (delete-char -1))
+        (insert " ")
+        (while (looking-at " \\|\t") (delete-char 1))))))
+
+(defun xah-reformat-to-multi-lines-region (begin end)
+  "replace space by a newline char at places so lines are not long.
+URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
+Version 2016-07-12"
+  (interactive "r")
+  (save-excursion
+    (save-restriction
+      (narrow-to-region begin end)
+      (goto-char (point-min))
+      (while
+          (search-forward " " nil 'NOERROR)
+        (when (> (- (point) (line-beginning-position)) fill-column)
+          (replace-match "\n" ))))))
 
 (defun xah-unfill-paragraph ()
   "Replace newline chars in current paragraph by single spaces.
 This command does the inverse of `fill-paragraph'.
 
 URL `http://ergoemacs.org/emacs/emacs_unfill-paragraph.html'
-Version 2015-11-28"
+Version 2016-07-13"
   (interactive)
   (let ((fill-column most-positive-fixnum))
     (fill-paragraph)))
@@ -626,7 +691,7 @@ Version 2015-11-28"
 This command does the inverse of `fill-region'.
 
 URL `http://ergoemacs.org/emacs/emacs_unfill-paragraph.html'
-Version 2015-11-28"
+Version 2016-07-13"
   (interactive "r")
   (let ((fill-column most-positive-fixnum))
     (fill-region start end)))
@@ -2202,7 +2267,7 @@ If `universal-argument' is called first, do switch frame."
   (interactive)
   (progn
 
-    (define-key xah-fly-key-map (kbd "'") 'xah-compact-uncompact-block)
+    (define-key xah-fly-key-map (kbd "'") 'xah-reformat-lines)
     (define-key xah-fly-key-map (kbd ",") 'xah-shrink-whitespaces)
     (define-key xah-fly-key-map (kbd "-") nil)
     (define-key xah-fly-key-map (kbd ".") 'backward-kill-word)
