@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 4.10.9
+;; Version: 4.10.10
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -701,7 +701,7 @@ Version 2016-07-13"
 When called repeatedly, this command cycles the {“_”, “-”, “ ”} characters, in that order.
 
 URL `http://ergoemacs.org/emacs/elisp_change_space-hyphen_underscore.html'
-Version 2016-01-14"
+Version 2016-07-17"
   (interactive)
   ;; this function sets a property 「'state」. Possible values are 0 to length of -charArray.
   (let (-p1 -p2)
@@ -730,10 +730,11 @@ Version 2016-01-14"
           (goto-char (point-min))
           (while
               (search-forward-regexp
-               (concat
-                (elt -charArray (% (+ -nowState 1) -length))
-                "\\|"
-                (elt -charArray (% (+ -nowState 2) -length)))
+               (elt -charArray (% (+ -nowState 2) -length))
+               ;; (concat
+               ;;  (elt -charArray (% (+ -nowState 1) -length))
+               ;;  "\\|"
+               ;;  (elt -charArray (% (+ -nowState 2) -length)))
                (point-max)
                'NOERROR)
             (replace-match -changeTo 'FIXEDCASE 'LITERAL))))
@@ -744,7 +745,7 @@ Version 2016-01-14"
       (put 'xah-cycle-hyphen-underscore-space 'state (% (+ -nowState 1) -length)))))
 
 (defun xah-underscore-to-space-region (begin end)
-  "Change  underscore char to space.
+  "Change underscore char to space.
 URL `http://ergoemacs.org/emacs/elisp_change_space-hyphen_underscore.html'
 Version 2015-08-18"
   (interactive "r")
@@ -756,12 +757,12 @@ Version 2015-08-18"
           (search-forward-regexp "_" (point-max) 'NOERROR)
         (replace-match " " 'FIXEDCASE 'LITERAL)))))
 
-(defun xah-copy-file-path (&optional dir-path-only-p)
+(defun xah-copy-file-path (&optional *dir-path-only-p)
   "Copy the current buffer's file path or dired path to `kill-ring'.
 Result is full path.
 If `universal-argument' is called first, copy only the dir path.
 URL `http://ergoemacs.org/emacs/emacs_copy_file_path.html'
-Version 2015-12-02"
+Version 2016-07-17"
   (interactive "P")
   (let ((-fpath
          (if (equal major-mode 'dired-mode)
@@ -770,7 +771,7 @@ Version 2015-12-02"
                (user-error "Current buffer is not associated with a file.")
              (buffer-file-name)))))
     (kill-new
-     (if (null dir-path-only-p)
+     (if (null *dir-path-only-p)
          (progn
            (message "File path copied: 「%s」" -fpath)
            -fpath
@@ -821,21 +822,15 @@ Version 2015-12-08"
     (delete-region (region-beginning) (region-end)))
   (insert-register ?1 t))
 
-(defun xah-copy-rectangle-to-kill-ring (begin end)
+(defun xah-copy-rectangle-to-kill-ring (*begin *end)
   "Copy region as column (rectangle region) to `kill-ring'
-
 See also: `kill-rectangle', `copy-to-register'.
 URL `http://ergoemacs.org/emacs/emacs_copy_rectangle_text_to_clipboard.html'
-version 2015-11-16"
+version 2016-07-17"
   ;; extract-rectangle suggested by YoungFrog, 2012-07-25
   (interactive "r")
   (require 'rect)
-  (kill-new
-   (with-temp-buffer
-     (mapc (lambda (-x) (insert -x "\n"))
-           (extract-rectangle begin end))
-     (delete-char -1)
-     (buffer-string))))
+  (kill-new (mapconcat 'identity (extract-rectangle *begin *end) "\n")))
 
 (defun xah-upcase-sentence ()
   "Upcase sentence.
@@ -871,43 +866,43 @@ nil
 
 )))))
 
-(defun xah-escape-quotes (begin end)
+(defun xah-escape-quotes (*begin *end)
   "Replace 「\"」 by 「\\\"」 in current line or text selection.
 See also: `xah-unescape-quotes'
 URL `http://ergoemacs.org/emacs/elisp_escape_quotes.html'
-Version 2015-05-04"
+Version 2016-07-17"
   (interactive
    (if (use-region-p)
        (list (region-beginning) (region-end))
      (list (line-beginning-position) (line-end-position))))
   (save-excursion
       (save-restriction
-        (narrow-to-region begin end)
+        (narrow-to-region *begin *end)
         (goto-char (point-min))
         (while (search-forward "\"" nil t)
           (replace-match "\\\"" 'FIXEDCASE 'LITERAL)))))
 
-(defun xah-unescape-quotes (begin end)
+(defun xah-unescape-quotes (*begin *end)
   "Replace  「\\\"」 by 「\"」 in current line or text selection.
 See also: `xah-escape-quotes'
 URL `http://ergoemacs.org/emacs/elisp_escape_quotes.html'
-Version 2015-05-04"
+Version 2016-07-17"
   (interactive
    (if (use-region-p)
        (list (region-beginning) (region-end))
      (list (line-beginning-position) (line-end-position))))
   (save-excursion
     (save-restriction
-      (narrow-to-region begin end)
+      (narrow-to-region *begin *end)
       (goto-char (point-min))
       (while (search-forward "\\\"" nil t)
         (replace-match "\"" 'FIXEDCASE 'LITERAL)))))
 
-(defun xah-title-case-region-or-line (begin end)
+(defun xah-title-case-region-or-line (*begin *end)
   "Title case text between nearest brackets, or current line, or text selection.
 Capitalize first letter of each word, except words like {to, of, the, a, in, or, and, …}. If a word already contains cap letters such as HTTP, URL, they are left as is.
 
-When called in a elisp program, begin end are region boundaries.
+When called in a elisp program, *begin *end are region boundaries.
 URL `http://ergoemacs.org/emacs/elisp_title_case_text.html'
 Version 2015-05-07"
   (interactive
@@ -950,7 +945,7 @@ Version 2015-05-07"
                      ]))
     (save-excursion
       (save-restriction
-        (narrow-to-region begin end)
+        (narrow-to-region *begin *end)
         (upcase-initials-region (point-min) (point-max))
         (let ((case-fold-search nil))
           (mapc
