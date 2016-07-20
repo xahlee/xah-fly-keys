@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 4.10.10
+;; Version: 4.10.11
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -1529,15 +1529,15 @@ Version 2015-10-14"
     (progn
       (xah-make-backup))))
 
-(defun xah-delete-current-file-make-backup (&optional no-backup-p)
+(defun xah-delete-current-file-make-backup (&optional *no-backup-p)
   "Delete current file, makes a backup~, closes the buffer.
 
 Backup filename is “‹name›~‹date time stamp›~”. Existing file of the same name is overwritten. If the file is not associated with buffer, the backup file name starts with “xx_”.
 
-When called with `universal-argument', don't create backup.
+When `universal-argument' is called first, don't create backup.
 
 URL `http://ergoemacs.org/emacs/elisp_delete-current-file.html'
-Version 2015-05-26"
+Version 2016-07-20"
   (interactive "P")
   (let* (
          (-fname (buffer-file-name))
@@ -1546,14 +1546,14 @@ Version 2015-05-26"
     (if -buffer-is-file-p
         (progn
           (save-buffer -fname)
-          (when (not no-backup-p)
+          (when (not *no-backup-p)
             (copy-file
              -fname
              (concat -fname -backup-suffix)
              t))
           (delete-file -fname)
           (message "Deleted. Backup created at 「%s」." (concat -fname -backup-suffix)))
-      (when (not no-backup-p)
+      (when (not *no-backup-p)
         (widen)
         (write-region (point-min) (point-max) (concat "xx" -backup-suffix))
         (message "Backup created at 「%s」." (concat "xx" -backup-suffix))))
@@ -1562,7 +1562,7 @@ Version 2015-05-26"
 (defun xah-delete-current-file-copy-to-kill-ring ()
   "Delete current buffer/file and close the buffer, push content to `kill-ring'.
 URL `http://ergoemacs.org/emacs/elisp_delete-current-file.html'
-Version 2015-08-12"
+Version 2016-07-20"
   (interactive)
   (progn
     (kill-new (buffer-string))
@@ -1571,24 +1571,28 @@ Version 2015-08-12"
       (when (file-exists-p (buffer-file-name))
         (progn
           (delete-file (buffer-file-name))
-          (message "Deleted: 「%s」." (buffer-file-name)))))
+          (message "Deleted file: 「%s」." (buffer-file-name)))))
     (let ((buffer-offer-save nil))
       (set-buffer-modified-p nil)
       (kill-buffer (current-buffer)))))
 
-(defun xah-delete-current-file (&optional no-backup-p)
-  "Delete current buffer/file and close the buffer.
+(defun xah-delete-current-file (&optional *no-backup-p)
+  "Delete current buffer/file.
 If buffer is a file, makes a backup~, else, push file content to `kill-ring'.
 
-The backup filename is “‹filename›~‹date time stamp›~”. Existing file of the same name is overwritten. If the file is not associated with buffer, the backup file name starts with “xx_”.
+This commands calls `xah-delete-current-file-make-backup' or
+ `xah-delete-current-file-copy-to-kill-ring'.
+
+If next buffer is dired, refresh it.
 
 URL `http://ergoemacs.org/emacs/elisp_delete-current-file.html'
-Version 2015-09-02"
+Version 2016-07-20"
   (interactive "P")
-  (progn
-    (if (buffer-file-name)
-        (xah-delete-current-file-make-backup no-backup-p)
-      (xah-delete-current-file-copy-to-kill-ring))))
+  (if (buffer-file-name)
+      (xah-delete-current-file-make-backup *no-backup-p)
+    (xah-delete-current-file-copy-to-kill-ring))
+  (when (eq major-mode 'dired-mode)
+    (revert-buffer)))
 
 
 
@@ -1960,7 +1964,6 @@ If `universal-argument' is called first, do switch frame."
 (xah-fly-map-keys
  (define-prefix-command 'xah-danger-keymap)
  '(
-   ("DEL" . xah-delete-current-file)
    ("." . eval-buffer)
    ("e" . eval-defun)
    ("m" . eval-last-sexp)
@@ -1997,8 +2000,10 @@ If `universal-argument' is called first, do switch frame."
 (progn
   (define-prefix-command 'xah-fly-leader-key-map)
   (define-key xah-fly-leader-key-map (kbd "SPC") 'xah-fly-insert-mode-activate)
+  (define-key xah-fly-leader-key-map (kbd "DEL") 'xah-delete-current-file)
   (define-key xah-fly-leader-key-map (kbd "RET") (if (fboundp 'smex) 'smex 'execute-extended-command ))
   (define-key xah-fly-leader-key-map (kbd "TAB") xah-leader-tab-keymap)
+
 
   (define-key xah-fly-leader-key-map (kbd ".") xah-highlight-keymap)
 
