@@ -646,14 +646,14 @@ Version 2016-07-13"
         (xah-reformat-to-single-line-region -p1 -p2))
       (put this-command 'compact-p (not -compact-p)))))
 
-(defun xah-reformat-to-single-line-region (begin end)
+(defun xah-reformat-to-single-line-region (*begin *end)
   "Replace whitespaces at end of each line by one space.
 URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
 Version 2016-07-12"
   (interactive "r")
   (save-excursion
     (save-restriction
-      (narrow-to-region begin end)
+      (narrow-to-region *begin *end)
       (goto-char (point-min))
       (while
           (search-forward "\n" nil 'NOERROR)
@@ -662,14 +662,14 @@ Version 2016-07-12"
         (insert " ")
         (while (looking-at " \\|\t") (delete-char 1))))))
 
-(defun xah-reformat-to-multi-lines-region (begin end)
+(defun xah-reformat-to-multi-lines-region (*begin *end)
   "replace space by a newline char at places so lines are not long.
 URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
 Version 2016-07-12"
   (interactive "r")
   (save-excursion
     (save-restriction
-      (narrow-to-region begin end)
+      (narrow-to-region *begin *end)
       (goto-char (point-min))
       (while
           (search-forward " " nil 'NOERROR)
@@ -686,7 +686,7 @@ Version 2016-07-13"
   (let ((fill-column most-positive-fixnum))
     (fill-paragraph)))
 
-(defun xah-unfill-region (start end)
+(defun xah-unfill-region (*begin *end)
   "Replace newline chars in region by single spaces.
 This command does the inverse of `fill-region'.
 
@@ -694,7 +694,7 @@ URL `http://ergoemacs.org/emacs/emacs_unfill-paragraph.html'
 Version 2016-07-13"
   (interactive "r")
   (let ((fill-column most-positive-fixnum))
-    (fill-region start end)))
+    (fill-region *begin *end)))
 
 (defun xah-cycle-hyphen-underscore-space ()
   "Cycle {underscore, space, hypen} chars of current word or text selection.
@@ -984,12 +984,12 @@ Note, for the time zone offset, both the formats 「hhmm」 and 「hh:mm」 are 
    (format-time-string "%Y-%m-%dT%T")
    ((lambda (-x) (format "%s:%s" (substring -x 0 3) (substring -x 3 5))) (format-time-string "%z"))))
 
-(defun xah-insert-bracket-pair (left-bracket right-bracket)
+(defun xah-insert-bracket-pair (*left-bracket *right-bracket)
   "Wrap or Insert a matching bracket and place cursor in between.
 
 If there's a text selection, wrap brackets around it. Else, smartly decide wrap or insert. (basically, if there's no char after cursor, just insert bracket pair.)
 
-left-bracket ＆ right-bracket are strings.
+*left-bracket ＆ *right-bracket are strings.
 
 URL `http://ergoemacs.org/emacs/elisp_insert_brackets_by_pair.html'
 Version 2015-04-19"
@@ -999,9 +999,9 @@ Version 2015-04-19"
               (-p1 (region-beginning))
               (-p2 (region-end)))
           (goto-char -p2)
-          (insert right-bracket)
+          (insert *right-bracket)
           (goto-char -p1)
-          (insert left-bracket)
+          (insert *left-bracket)
           (goto-char (+ -p2 2))))
     (progn ; no text selection
       (if
@@ -1009,8 +1009,8 @@ Version 2015-04-19"
            (looking-at "[^-_[:alnum:]]")
            (eq (point) (point-max)))
           (progn
-            (insert left-bracket right-bracket)
-            (search-backward right-bracket ))
+            (insert *left-bracket *right-bracket)
+            (search-backward *right-bracket ))
         (progn
           (let (-p1 -p2)
             ;; basically, want all alphanumeric, plus hyphen and underscore, but don't want space or punctuations. Also want chinese.
@@ -1020,10 +1020,10 @@ Version 2015-04-19"
             (skip-chars-forward "-_[:alnum:]")
             (setq -p2 (point))
             (goto-char -p2)
-            (insert right-bracket)
+            (insert *right-bracket)
             (goto-char -p1)
-            (insert left-bracket)
-            (goto-char (+ -p2 (length left-bracket)))))))))
+            (insert *left-bracket)
+            (goto-char (+ -p2 (length *left-bracket)))))))))
 
 ;; (insert-parentheses)
 
@@ -1069,7 +1069,7 @@ Version 2015-04-19"
   (interactive)
   (insert ""))
 
-(defun xah-insert-column-counter (n)
+(defun xah-insert-column-counter (*n)
   "Insert a sequence of numbers vertically.
 
  (this command is similar to emacs 24.x's `rectangle-number-lines'.)
@@ -1092,23 +1092,23 @@ when this function is called, it aborts at the last line.
 
 This command is conveniently used together with `kill-rectangle' and `string-rectangle'."
   (interactive "nEnter the max integer: ")
-  (let ((i 1) colpos )
-    (setq colpos (- (point) (line-beginning-position)))
-    (while (<= i n)
-      (insert (number-to-string i))
-      (forward-line) (beginning-of-line) (forward-char colpos)
-      (setq i (1+ i)))))
+  (let ((-i 1) -colpos )
+    (setq -colpos (- (point) (line-beginning-position)))
+    (while (<= -i *n)
+      (insert (number-to-string -i))
+      (forward-line) (beginning-of-line) (forward-char -colpos)
+      (setq -i (1+ -i)))))
 
-(defun xah-insert-alphabets-az (&optional use-uppercase-p)
+(defun xah-insert-alphabets-az (&optional *use-uppercase-p)
   "Insert letters a to z vertically.
 If `universal-argument' is called first, use CAPITAL letters.
 
 URL `http://ergoemacs.org/emacs/emacs_insert-alphabets.html'
 Version 2015-11-06"
   (interactive "P")
-  (let ((startChar (if use-uppercase-p 65 97 )))
+  (let ((-startChar (if *use-uppercase-p 65 97 )))
     (dotimes (-i 26)
-      (insert (format "%c\n" (+ startChar -i))))))
+      (insert (format "%c\n" (+ -startChar -i))))))
 
 (defvar xah-unicode-list nil "Associative list of Unicode symbols. First element is a Unicode character, second element is a string used as key shortcut in `ido-completing-read'")
 (setq xah-unicode-list
