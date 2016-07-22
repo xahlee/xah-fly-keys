@@ -781,8 +781,20 @@ Version 2016-07-17"
          (file-name-directory -fpath))))))
 
 (defun xah-delete-text-block ()
+  "Delete the current or next text block and also put it to `kill-ring'.
+Version 2016-07-22"
+  (interactive)
+  (let (-p1 -p2)
+    (progn
+      (beginning-of-line)
+      (if (search-forward-regexp "[[:graph:]]" (line-end-position) 'NOERROR )
+          (xah-delete-current-text-block)
+        (when (search-forward-regexp "[[:graph:]]" )
+          (xah-delete-current-text-block))))))
+
+(defun xah-delete-current-text-block ()
   "Delete the current text block and also put it to `kill-ring'.
-Version 2015-12-08"
+Version 2016-07-22"
   (interactive)
   (let (-p1 -p2)
     (progn
@@ -790,10 +802,8 @@ Version 2015-12-08"
           (progn (re-search-forward "\n[ \t]*\n")
                  (setq -p1 (point)))
         (setq -p1 (point)))
-      (if (re-search-forward "\n[ \t]*\n" nil "NOERROR")
-          (progn (re-search-backward "\n[ \t]*\n")
-                 (setq -p2 (point)))
-        (setq -p2 (point))))
+      (re-search-forward "\n[ \t]*\n" nil "NOERROR")
+      (setq -p2 (point)))
     (kill-region -p1 -p2)))
 
 (defun xah-copy-to-register-1 ()
@@ -2004,7 +2014,6 @@ If `universal-argument' is called first, do switch frame."
   (define-key xah-fly-leader-key-map (kbd "RET") (if (fboundp 'smex) 'smex 'execute-extended-command ))
   (define-key xah-fly-leader-key-map (kbd "TAB") xah-leader-tab-keymap)
 
-
   (define-key xah-fly-leader-key-map (kbd ".") xah-highlight-keymap)
 
   (define-key xah-fly-leader-key-map (kbd "'") 'xah-fill-or-unfill)
@@ -2310,7 +2319,7 @@ If `universal-argument' is called first, do switch frame."
     (define-key xah-fly-key-map (kbd "f") 'undo)
     (define-key xah-fly-key-map (kbd "g") 'backward-word)
     (define-key xah-fly-key-map (kbd "h") 'backward-char)
-    (define-key xah-fly-key-map (kbd "i") 'kill-line)
+    (define-key xah-fly-key-map (kbd "i") 'xah-delete-text-block)
     (define-key xah-fly-key-map (kbd "j") 'xah-cut-line-or-region)
     (define-key xah-fly-key-map (kbd "k") 'yank)
     (define-key xah-fly-key-map (kbd "l") 'xah-fly-insert-mode-activate-space-before)
