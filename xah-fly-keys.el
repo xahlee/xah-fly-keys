@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 4.10.11
+;; Version: 4.11.0
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -781,7 +781,8 @@ Version 2016-07-17"
          (file-name-directory -fpath))))))
 
 (defun xah-delete-text-block ()
-  "Delete the current or next text block and also put it to `kill-ring'.
+  "Delete the current or next text block and also copy to `kill-ring'.
+URL `http://ergoemacs.org/emacs/emacs_delete_block.html'
 Version 2016-07-22"
   (interactive)
   (let (-p1 -p2)
@@ -793,7 +794,8 @@ Version 2016-07-22"
           (xah-delete-current-text-block))))))
 
 (defun xah-delete-current-text-block ()
-  "Delete the current text block and also put it to `kill-ring'.
+  "Delete the current text block and also copy to `kill-ring'.
+URL `http://ergoemacs.org/emacs/emacs_delete_block.html'
 Version 2016-07-22"
   (interactive)
   (let (-p1 -p2)
