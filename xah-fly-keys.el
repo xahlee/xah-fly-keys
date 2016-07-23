@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 4.12.0
+;; Version: 4.13.0
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -1161,14 +1161,13 @@ Version 2015-11-06"
 URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
 Version 2016-07-22"
   (interactive)
-  (let (-p1 -p2)
+  (let (-p1)
     (progn
       (if (re-search-backward "\n[ \t]*\n" nil "move")
           (progn (re-search-forward "\n[ \t]*\n")
                  (setq -p1 (point)))
         (setq -p1 (point)))
-      (re-search-forward "\n[ \t]*\n" nil "move")
-      (setq -p2 (point)))
+      (re-search-forward "\n[ \t]*\n" nil "move"))
     (set-mark -p1)))
 
 (defun xah-select-block ()
@@ -1178,18 +1177,28 @@ When called repeatedly, keep extending downward.
 URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
 Version 2016-07-22"
   (interactive)
-  (let (-p1 -p2)
-    (if (region-active-p)
-        (re-search-forward "\n[ \t]*\n" nil "move")
-      (xah-select-current-block))))
+  (if (region-active-p)
+      (re-search-forward "\n[ \t]*\n" nil "move")
+    (xah-select-current-block)))
 
 (defun xah-select-current-line ()
   "Select current line.
 URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
-Version 2015-02-07"
+Version 2016-07-22"
   (interactive)
   (end-of-line)
   (set-mark (line-beginning-position)))
+
+(defun xah-select-line ()
+  "Select current line. If region is active, extend selection downward by line.
+URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
+Version 2016-07-22"
+  (interactive)
+  (if (region-active-p)
+      (progn
+        (forward-line 1)
+        (end-of-line))
+    (xah-select-current-line)))
 
 (defun xah-semnav-up (arg)
 "Called by `xah-extend-selection'.
@@ -2309,7 +2318,7 @@ If `universal-argument' is called first, do switch frame."
         (progn
           (define-key xah-fly-key-map (kbd "8") nil)
           (define-key xah-fly-key-map (kbd "7") nil)
-          (define-key xah-fly-key-map (kbd "2") 'xah-select-current-line)
+          (define-key xah-fly-key-map (kbd "2") 'xah-select-line)
           (define-key xah-fly-key-map (kbd "1") 'xah-extend-selection))
       (progn
         (define-key xah-fly-key-map (kbd "1") nil)
