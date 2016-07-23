@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 4.11.0
+;; Version: 4.12.0
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -1157,8 +1157,9 @@ Version 2015-11-06"
 
 (defun xah-select-current-block ()
   "Select the current block of text between blank lines.
+
 URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
-Version 2015-02-07"
+Version 2016-07-22"
   (interactive)
   (let (-p1 -p2)
     (progn
@@ -1166,11 +1167,21 @@ Version 2015-02-07"
           (progn (re-search-forward "\n[ \t]*\n")
                  (setq -p1 (point)))
         (setq -p1 (point)))
-      (if (re-search-forward "\n[ \t]*\n" nil "move")
-          (progn (re-search-backward "\n[ \t]*\n")
-                 (setq -p2 (point)))
-        (setq -p2 (point))))
+      (re-search-forward "\n[ \t]*\n" nil "move")
+      (setq -p2 (point)))
     (set-mark -p1)))
+
+(defun xah-select-block ()
+  "Select the current/next block of text between blank lines.
+When called repeatedly, keep extending downward.
+
+URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
+Version 2016-07-22"
+  (interactive)
+  (let (-p1 -p2)
+    (if (region-active-p)
+        (re-search-forward "\n[ \t]*\n" nil "move")
+      (xah-select-current-block))))
 
 (defun xah-select-current-line ()
   "Select current line.
@@ -2309,7 +2320,7 @@ If `universal-argument' is called first, do switch frame."
     (define-key xah-fly-key-map (kbd "3") 'delete-other-windows)
     (define-key xah-fly-key-map (kbd "4") 'split-window-below)
     (define-key xah-fly-key-map (kbd "5") 'delete-window)
-    (define-key xah-fly-key-map (kbd "6") 'xah-select-current-block)
+    (define-key xah-fly-key-map (kbd "6") 'xah-select-block)
     (define-key xah-fly-key-map (kbd "9") 'xah-select-text-in-quote)
     (define-key xah-fly-key-map (kbd "0") 'xah-backward-punct)
 
