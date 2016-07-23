@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 4.13.0
+;; Version: 5.0.0
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -39,13 +39,16 @@
 
 ;; Important command/insert mode switch keys:
 
-;; xah-fly-command-mode-activate (press 【<home>】 or 【C-8】 or 【f8】)
-;; xah-fly-insert-mode-activate  (when in command mode, press letter 【i】 key)
+;; xah-fly-command-mode-activate (press 【<home>】 or 【F8】 or 【Alt+Space】 or 【backspace】 or 【menu】)
+
+;; xah-fly-insert-mode-activate  (when in command mode, press letter 【u】 key)
 
 ;; When in command mode:
 ;; 【u】 activates insertion mode
-;; 【SPACE】 is a leader key. For example, 【SPACE p】 calls query-replace. Press 【SPACE C-h】 to see the full list.
-;; 【SPACE SPACE】 also activates insertion mode.
+;; 【Space】 is a leader key. For example, 【SPACE p】 calls query-replace. Press 【SPACE C-h】 to see the full list.
+;; 【Space Space】 also activates insertion mode.
+;; 【Space Enter】 calls execute-extended-command or smex (if smex is installed).
+;; 【a】 calls execute-extended-command or smex (if smex is installed).
 
 ;; The leader key sequence basically replace ALL emacs commands that starts with C-x key.
 
@@ -64,14 +67,13 @@
 
 ;; When in command mode, the 【SPACE】 is a leader key.
 
-;; globally, the leader key is the 【f9】 and 【menu】 key. (on typical PC keyboard, the menu key usually at right side of space bar.)
+;; globally, the leader key is the 【f9】 key.
 
 ;; the following stardard keys with Control are supported, when the variable xah-fly-use-control-key is t
 
  ;; (kbd "<C-tab>") 'xah-next-user-buffer
  ;; (kbd "<C-S-iso-lefttab>") 'xah-previous-user-buffer
  ;; (kbd "C-v") 'yank
- ;; (kbd "C-t") 'toggle-input-method
  ;; (kbd "C-w") 'xah-close-current-buffer
  ;; (kbd "C-z") 'undo
  ;; (kbd "C-n") 'xah-new-empty-buffer
@@ -1172,7 +1174,7 @@ Version 2016-07-22"
 
 (defun xah-select-block ()
   "Select the current/next block of text between blank lines.
-When called repeatedly, keep extending downward.
+If region is active, extend selection downward by block.
 
 URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
 Version 2016-07-22"
@@ -2234,7 +2236,6 @@ If `universal-argument' is called first, do switch frame."
       (define-key xah-fly-key-map (kbd "<C-S-iso-lefttab>") 'xah-previous-user-buffer)
 
       (define-key xah-fly-key-map (kbd "C-v") 'yank)
-      (define-key xah-fly-key-map (kbd "C-t") 'toggle-input-method)
       (define-key xah-fly-key-map (kbd "C-w") 'xah-close-current-buffer)
       (define-key xah-fly-key-map (kbd "C-z") 'undo)
       (define-key xah-fly-key-map (kbd "C-n") 'xah-new-empty-buffer)
@@ -2243,7 +2244,6 @@ If `universal-argument' is called first, do switch frame."
       (define-key xah-fly-key-map (kbd "C-S-s") 'write-file)
       (define-key xah-fly-key-map (kbd "C-S-t") 'xah-open-last-closed)
       (define-key xah-fly-key-map (kbd "C-S-n") 'make-frame-command)
-      (define-key xah-fly-key-map (kbd "C-8") 'xah-fly-command-mode-activate)
 
       (define-key xah-fly-key-map (kbd "C-+") 'text-scale-increase)
       (define-key xah-fly-key-map (kbd "C--") 'text-scale-decrease)
@@ -2263,11 +2263,13 @@ If `universal-argument' is called first, do switch frame."
   (define-key xah-fly-key-map (kbd "M-k") 'yank-pop)
   (define-key xah-fly-key-map (kbd "M-l") 'left-char)
 
+  (define-key xah-fly-key-map (kbd "M-SPC") 'xah-fly-command-mode-activate)
+  (define-key xah-fly-key-map (kbd "DEL") 'xah-fly-command-mode-activate)
   (define-key xah-fly-key-map (kbd "<home>") 'xah-fly-command-mode-activate)
-  (define-key xah-fly-key-map (kbd "<f8>") 'xah-fly-command-mode-activate) ; as backup
+  (define-key xah-fly-key-map (kbd "<menu>") 'xah-fly-command-mode-activate)
+  (define-key xah-fly-key-map (kbd "<f8>") 'xah-fly-command-mode-activate)
 
-  (define-key xah-fly-key-map (kbd "<menu>") xah-fly-leader-key-map)
-  (define-key xah-fly-key-map (kbd "<f9>") xah-fly-leader-key-map) ; as backup
+  (define-key xah-fly-key-map (kbd "<f9>") xah-fly-leader-key-map)
 
   (define-key xah-fly-key-map (kbd "<f11>") 'xah-previous-user-buffer)
   (define-key xah-fly-key-map (kbd "<f12>") 'xah-next-user-buffer)
