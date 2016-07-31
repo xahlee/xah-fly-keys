@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 5.0.0
+;; Version: 5.1.0
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -188,9 +188,9 @@ version 2016-06-15"
 (progn
 ;; make xah-left-brackets based on xah-brackets
   (setq xah-left-brackets '())
-  (dotimes (x (- (length xah-brackets) 1))
-    (when (= (% x 2) 0)
-      (push (char-to-string (elt xah-brackets x))
+  (dotimes (-x (- (length xah-brackets) 1))
+    (when (= (% -x 2) 0)
+      (push (char-to-string (elt xah-brackets -x))
             xah-left-brackets)))
   (setq xah-left-brackets (reverse xah-left-brackets)))
 
@@ -198,9 +198,9 @@ version 2016-06-15"
   "list of right bracket chars.")
 (progn
   (setq xah-right-brackets '())
-  (dotimes (x (- (length xah-brackets) 1))
-    (when (= (% x 2) 1)
-      (push (char-to-string (elt xah-brackets x))
+  (dotimes (-x (- (length xah-brackets) 1))
+    (when (= (% -x 2) 1)
+      (push (char-to-string (elt xah-brackets -x))
             xah-right-brackets)))
   (setq xah-right-brackets (reverse xah-right-brackets)))
 
@@ -273,41 +273,41 @@ Version 2016-01-19"
       (left-char))))
 
 (defun xah-forward-quote ()
-  "Move cursor to the next occurrence of ' or \" or `.
+  "Move cursor to the next occurrence of \".
 If there are consecutive quotes of the same char, keep moving until none.
 Returns `t' if found, else `nil'.
 URL `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
-Version 2015-10-26"
+Version 2016-07-23"
   (interactive)
-  (if (search-forward-regexp "'+\\|`+\\|\\\"+" nil t)
+  (if (search-forward-regexp "\\\"+" nil t)
       t
     (progn
-      (message "No more quotes after.")
+      (message "No more quotes after cursor..")
       nil)))
 
 (defun xah-forward-quote-twice ()
   "Call `xah-forward-quote' twice.
 Returns `t' if found, else `nil'.
 URL `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
-Version 2015-10-26"
+Version 2016-07-23"
   (interactive)
   (when (xah-forward-quote)
     (xah-forward-quote)))
 
 (defun xah-backward-quote ()
-  "Move cursor to the previous occurrence of '' or \" or `.
+  "Move cursor to the previous occurrence of \".
 If there are consecutive quotes of the same char, keep moving until none.
 Returns `t' if found, else `nil'.
 URL `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
-Version 2015-10-26"
+Version 2016-07-23"
   (interactive)
-  (if (search-backward-regexp "'+\\|`+\\|\\\"+" nil t)
+  (if (search-backward-regexp "\\\"+" nil t)
       (when (char-before) ; isn't nil, at beginning of buffer
         (while (char-equal (char-before) (char-after))
           (left-char)
           t))
     (progn
-      (message "No more quotes before.")
+      (message "No more quotes before cursor.")
       nil)))
 
 (defun xah-forward-dot-comma ()
@@ -746,14 +746,14 @@ Version 2016-07-17"
         (setq deactivate-mark nil))
       (put 'xah-cycle-hyphen-underscore-space 'state (% (+ -nowState 1) -length)))))
 
-(defun xah-underscore-to-space-region (begin end)
+(defun xah-underscore-to-space-region (*begin *end)
   "Change underscore char to space.
 URL `http://ergoemacs.org/emacs/elisp_change_space-hyphen_underscore.html'
 Version 2015-08-18"
   (interactive "r")
   (save-excursion
     (save-restriction
-      (narrow-to-region begin end)
+      (narrow-to-region *begin *end)
       (goto-char (point-min))
       (while
           (search-forward-regexp "_" (point-max) 'NOERROR)
@@ -851,27 +851,27 @@ version 2016-07-17"
 TODO 2014-09-30 command incomplete
 "
   (interactive)
-  (let (p1 p2)
+  (let (-p1 -p2)
 
     (if (region-active-p)
         (progn
-          (setq p1 (region-beginning))
-          (setq p2 (region-end)))
+          (setq -p1 (region-beginning))
+          (setq -p2 (region-end)))
       (progn
         (save-excursion
           (progn
             (if (re-search-backward "\n[ \t]*\n" nil "move")
                 (progn (re-search-forward "\n[ \t]*\n")
-                       (setq p1 (point)))
-              (setq p1 (point)))
+                       (setq -p1 (point)))
+              (setq -p1 (point)))
             (if (re-search-forward "\n[ \t]*\n" nil "move")
                 (progn (re-search-backward "\n[ \t]*\n")
-                       (setq p2 (point)))
-              (setq p2 (point)))))))
+                       (setq -p2 (point)))
+              (setq -p2 (point)))))))
 
     (save-excursion
       (save-restriction
-        (narrow-to-region p1 p2)
+        (narrow-to-region -p1 -p2)
 
         (goto-char (point-min))
         (while (search-forward "\. \{1,2\}\\([a-z]\\)" nil t)
@@ -1129,7 +1129,7 @@ Version 2015-11-06"
       '(
         ("_" . "underscore" )
         ("•" . ".bullet" )
-        ("→" . "an")
+        ("→" . "tn")
         ("◇" . "3" )
         ("◆" . "4" )
         ("¤" . "2" )
@@ -1140,9 +1140,9 @@ Version 2015-11-06"
         ("🎶" . "5" )
         ("—" . "-emdash" )
         ("＆" . "7" )
-        ("↓" . "at")
-        ("←" . "ah")
-        ("↑" . "ac")
+        ("↓" . "tt")
+        ("←" . "th")
+        ("↑" . "tc")
         ("👍" . "tu")
         ) )
 
@@ -1490,21 +1490,21 @@ version 2016-01-28"
               (shell-command -cmd-str "*xah-run-current-file output*" ))
           (message "No recognized program file suffix for this file."))))))
 
-(defun xah-clean-whitespace-and-save (begin end)
+(defun xah-clean-whitespace (*begin *end)
   "Delete trailing whitespace, and replace repeated blank lines into just 2.
 Only space and tab is considered whitespace here.
 Works on whole buffer or text selection, respects `narrow-to-region'.
 Saves the file if it is a file.
 
 URL `http://ergoemacs.org/emacs/elisp_compact_empty_lines.html'
-Version 2016-03-02"
+Version 2016-07-30"
   (interactive
    (if (region-active-p)
        (list (region-beginning) (region-end))
      (list (point-min) (point-max))))
   (save-excursion
     (save-restriction
-      (narrow-to-region begin end)
+      (narrow-to-region *begin *end)
       (progn
         (goto-char (point-min))
         (while (search-forward-regexp "[ \t]+\n" nil "noerror")
@@ -1516,9 +1516,7 @@ Version 2016-03-02"
       (progn
         (goto-char (point-max))
         (while (equal (char-before) 32)
-          (delete-char -1)))))
-  (when (buffer-file-name)
-    (save-buffer)))
+          (delete-char -1))))))
 
 (defun xah-make-backup ()
   "Make a backup copy of current file or dired marked files.
@@ -1976,7 +1974,7 @@ If `universal-argument' is called first, do switch frame."
 (xah-fly-map-keys
  (define-prefix-command 'xah-leader-t-keymap)
  '(
-   ("SPC" . xah-clean-whitespace-and-save)
+   ("SPC" . xah-clean-whitespace)
    ("3" . point-to-register)
    ("4" . jump-to-register)
    ("." . sort-lines)
@@ -2495,7 +2493,7 @@ If `universal-argument' is called first, do switch frame."
 
 (define-minor-mode xah-fly-keys
   "A modal keybinding set, like vim, but based on ergonomic principles, like Dvorak layout."
-  1 "ξflykeys" xah-fly-key-map
+  t "ξflykeys" xah-fly-key-map
   (xah-fly-command-mode-activate))
 
 (defun xah-fly-keys-off ()
