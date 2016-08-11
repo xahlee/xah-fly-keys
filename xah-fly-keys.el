@@ -39,7 +39,7 @@
 
 ;; Important command/insert mode switch keys:
 
-;; xah-fly-command-mode-activate (press 【<home>】 or 【F8】 or 【Alt+Space】 or 【backspace】 or 【menu】)
+;; xah-fly-command-mode-activate (press 【<home>】 or 【F8】 or 【Alt+Space】 or 【menu】)
 
 ;; xah-fly-insert-mode-activate  (when in command mode, press letter 【u】 key)
 
