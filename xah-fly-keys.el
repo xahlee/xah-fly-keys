@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 5.1.1
+;; Version: 5.1.2
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -783,11 +783,12 @@ Version 2016-07-17"
          (file-name-directory -fpath))))))
 
 (defun xah-delete-text-block ()
-  "Delete the current or next text block and also copy to `kill-ring'.
+  "Delete selection or current or next text block and also copy to `kill-ring'.
 URL `http://ergoemacs.org/emacs/emacs_delete_block.html'
-Version 2016-07-22"
+Version 2016-08-13"
   (interactive)
-  (let (-p1 -p2)
+  (if (use-region-p)
+      (kill-region (region-beginning) (region-end))
     (progn
       (beginning-of-line)
       (if (search-forward-regexp "[[:graph:]]" (line-end-position) 'NOERROR )
@@ -1414,7 +1415,7 @@ Version 2016-06-19"
 (defun xah-new-empty-buffer ()
   "Open a new empty buffer.
 URL `http://ergoemacs.org/emacs/emacs_new_empty_buffer.html'
-Version 2015-06-12"
+Version 2016-08-11"
   (interactive)
   (let ((-buf (generate-new-buffer "untitled")))
     (switch-to-buffer -buf)
@@ -2243,9 +2244,13 @@ If `universal-argument' is called first, do switch frame."
       (define-key xah-fly-key-map (kbd "C-S-t") 'xah-open-last-closed)
       (define-key xah-fly-key-map (kbd "C-S-n") 'make-frame-command)
 
+
       (define-key xah-fly-key-map (kbd "C-+") 'text-scale-increase)
       (define-key xah-fly-key-map (kbd "C--") 'text-scale-decrease)
-      (define-key xah-fly-key-map (kbd "C-0") (lambda () (interactive) (text-scale-set 0)))))
+      (define-key xah-fly-key-map (kbd "C-0") (lambda () (interactive) (text-scale-set 0)))
+      (define-key xah-fly-key-map (kbd "C-t") 'left-char) ; never do transpose-chars
+
+))
 
   (define-key xah-fly-key-map (kbd "M-1") 'xah-pop-local-mark-ring)
   (define-key xah-fly-key-map (kbd "M-2") 'pop-global-mark)
@@ -2259,7 +2264,7 @@ If `universal-argument' is called first, do switch frame."
   (define-key xah-fly-key-map (kbd "M-t") 'xah-insert-paren)
   (define-key xah-fly-key-map (kbd "M-d") 'xah-insert-date)
   (define-key xah-fly-key-map (kbd "M-k") 'yank-pop)
-  (define-key xah-fly-key-map (kbd "M-l") 'left-char)
+  (define-key xah-fly-key-map (kbd "M-l") 'left-char) ; rid of downcase-word
 
   (define-key xah-fly-key-map (kbd "M-SPC") 'xah-fly-command-mode-activate)
   (define-key xah-fly-key-map (kbd "<home>") 'xah-fly-command-mode-activate)
