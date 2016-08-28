@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 5.1.2
+;; Version: 5.2.0
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -702,6 +702,10 @@ Version 2016-07-13"
   "Cycle {underscore, space, hypen} chars of current word or text selection.
 When called repeatedly, this command cycles the {“_”, “-”, “ ”} characters, in that order.
 
+;; If there's a selection, work on selection. Else,
+;; if current word does contain dash or underline, work on the word.
+;; Else, work on the region of current word and next word.
+
 URL `http://ergoemacs.org/emacs/elisp_change_space-hyphen_underscore.html'
 Version 2016-07-17"
   (interactive)
@@ -713,6 +717,7 @@ Version 2016-07-17"
           (setq -p2 (region-end)))
       (save-excursion
         ;; 2016-01-14 not use (bounds-of-thing-at-point 'symbol), because if at end of buffer, it returns nil. also, it's syntax table dependent
+
         (skip-chars-backward "-_[:alnum:]")
         (setq -p1 (point))
         (skip-chars-forward "-_[:alnum:]")
@@ -1045,7 +1050,7 @@ Version 2015-04-19"
 (defun xah-insert-paren () (interactive) (xah-insert-bracket-pair "(" ")") )
 (defun xah-insert-square-bracket () (interactive) (xah-insert-bracket-pair "[" "]") )
 (defun xah-insert-brace () (interactive) (xah-insert-bracket-pair "{" "}") )
-(defun xah-insert-greater-less () (interactive) (xah-insert-bracket-pair "<" ">") )
+
 
 (defun xah-insert-double-curly-quote“” () (interactive) (xah-insert-bracket-pair "“" "”") )
 (defun xah-insert-curly-single-quote‘’ () (interactive) (xah-insert-bracket-pair "‘" "’") )
@@ -1854,6 +1859,7 @@ If `universal-argument' is called first, do switch frame."
    ("," . xah-open-in-external-app)
    ("." . find-file)
    ("c" . bookmark-bmenu-list)
+   ("e" . ibuffer)
    ("h" . recentf-open-files)
    ("l" . bookmark-set)
    ("n" . xah-new-empty-buffer)
@@ -1863,7 +1869,7 @@ If `universal-argument' is called first, do switch frame."
    ("y" . xah-list-recently-closed)
    ("r" . bookmark-jump)
    ("s" . write-file)
-   ("t" . ibuffer)))
+   ))
 
 (xah-fly-map-keys
  (define-prefix-command 'xah-help-keymap)
@@ -1982,7 +1988,6 @@ If `universal-argument' is called first, do switch frame."
    ("," . sort-numeric-fields)
    ("'" . reverse-region)
    ("d" . mark-defun)
-   ("h" . xah-close-current-buffer)
    ("j" . copy-to-register)
    ("k" . insert-register)
    ("l" . increment-register)
@@ -2003,7 +2008,8 @@ If `universal-argument' is called first, do switch frame."
    ("p" . eval-expression)
    ("u" . eval-region)
    ("q" . save-buffers-kill-terminal)
-   ("w" . delete-frame)
+   ("w" . xah-close-current-buffer)
+   ("v" . delete-frame)
    ("j" . xah-run-current-file)))
 
 (xah-fly-map-keys
@@ -2059,11 +2065,11 @@ If `universal-argument' is called first, do switch frame."
   (define-key xah-fly-leader-key-map (kbd "b") 'end-of-buffer)
   (define-key xah-fly-leader-key-map (kbd "c") xah-leader-c-keymap)
   (define-key xah-fly-leader-key-map (kbd "d") 'beginning-of-buffer)
-  ;; (define-key xah-fly-leader-key-map (kbd "e") nil)
+  (define-key xah-fly-leader-key-map (kbd "e") xah-insertion-keymap)
   (define-key xah-fly-leader-key-map (kbd "f") 'xah-search-current-word)
   (define-key xah-fly-leader-key-map (kbd "g") 'isearch-forward)
   (define-key xah-fly-leader-key-map (kbd "h") 'xah-help-keymap)
-  (define-key xah-fly-leader-key-map (kbd "i") xah-leader-i-keymap)
+  (define-key xah-fly-leader-key-map (kbd "i") 'xah-copy-file-path)
   (define-key xah-fly-leader-key-map (kbd "j") 'xah-cut-all-or-region)
   (define-key xah-fly-leader-key-map (kbd "k") 'yank)
   (define-key xah-fly-leader-key-map (kbd "l") 'recenter-top-bottom)
@@ -2079,7 +2085,7 @@ If `universal-argument' is called first, do switch frame."
   ;; (define-key xah-fly-leader-key-map (kbd "v") nil)
   (define-key xah-fly-leader-key-map (kbd "w") xah-danger-keymap)
   ;; (define-key xah-fly-leader-key-map (kbd "x") nil)
-  (define-key xah-fly-leader-key-map (kbd "y") 'xah-copy-file-path)
+  (define-key xah-fly-leader-key-map (kbd "y") xah-leader-i-keymap)
   (define-key xah-fly-leader-key-map (kbd "z") 'comment-dwim))
 
 
@@ -2244,11 +2250,10 @@ If `universal-argument' is called first, do switch frame."
       (define-key xah-fly-key-map (kbd "C-S-t") 'xah-open-last-closed)
       (define-key xah-fly-key-map (kbd "C-S-n") 'make-frame-command)
 
-
       (define-key xah-fly-key-map (kbd "C-+") 'text-scale-increase)
       (define-key xah-fly-key-map (kbd "C--") 'text-scale-decrease)
       (define-key xah-fly-key-map (kbd "C-0") (lambda () (interactive) (text-scale-set 0)))
-      (define-key xah-fly-key-map (kbd "C-t") 'left-char) ; never do transpose-chars
+      (define-key xah-fly-key-map (kbd "C-t") 'xah-toggle-letter-case) ; never do transpose-chars
 
 ))
 
@@ -2305,7 +2310,7 @@ If `universal-argument' is called first, do switch frame."
 
     (define-key xah-fly-key-map (kbd "'") 'xah-reformat-lines)
     (define-key xah-fly-key-map (kbd ",") 'xah-shrink-whitespaces)
-    (define-key xah-fly-key-map (kbd "-") nil)
+    (define-key xah-fly-key-map (kbd "-") 'xah-cycle-hyphen-underscore-space)
     (define-key xah-fly-key-map (kbd ".") 'backward-kill-word)
     (define-key xah-fly-key-map (kbd ";") nil)
     (define-key xah-fly-key-map (kbd ":") nil)
