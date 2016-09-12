@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 5.2.0
+;; Version: 5.3.0
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -234,6 +234,19 @@ URL `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
 Version 2015-10-01"
   (interactive)
   (search-forward-regexp (regexp-opt xah-right-brackets) nil t))
+
+(defun xah-goto-matching-bracket ()
+  "Move cursor to the matching bracket.
+If cursor is not on a bracket, call `backward-up-list'.
+The list of brackets to jump to is defined by `xah-left-brackets' and `xah-right-brackets'.
+URL `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
+Version 2016-09-11"
+  (interactive)
+  (cond
+   ((looking-at (regexp-opt xah-left-brackets)) (forward-sexp 1))
+   ((looking-back (regexp-opt xah-right-brackets) (max (- (point) 1) 1))
+    (backward-sexp))
+   (t (backward-up-list 1))))
 
 (defun xah-forward-equal-quote ()
   "Move cursor to the next occurrence of 「='」 or 「=\"」, with or without space.
@@ -1050,7 +1063,6 @@ Version 2015-04-19"
 (defun xah-insert-paren () (interactive) (xah-insert-bracket-pair "(" ")") )
 (defun xah-insert-square-bracket () (interactive) (xah-insert-bracket-pair "[" "]") )
 (defun xah-insert-brace () (interactive) (xah-insert-bracket-pair "{" "}") )
-
 
 (defun xah-insert-double-curly-quote“” () (interactive) (xah-insert-bracket-pair "“" "”") )
 (defun xah-insert-curly-single-quote‘’ () (interactive) (xah-insert-bracket-pair "‘" "’") )
@@ -1989,6 +2001,7 @@ If `universal-argument' is called first, do switch frame."
    ("," . sort-numeric-fields)
    ("'" . reverse-region)
    ("d" . mark-defun)
+   ("h" . xah-close-current-buffer)
    ("j" . copy-to-register)
    ("k" . insert-register)
    ("l" . increment-register)
@@ -2009,8 +2022,7 @@ If `universal-argument' is called first, do switch frame."
    ("p" . eval-expression)
    ("u" . eval-region)
    ("q" . save-buffers-kill-terminal)
-   ("w" . xah-close-current-buffer)
-   ("v" . delete-frame)
+   ("w" . delete-frame)
    ("j" . xah-run-current-file)))
 
 (xah-fly-map-keys
@@ -2085,7 +2097,7 @@ If `universal-argument' is called first, do switch frame."
   (define-key xah-fly-leader-key-map (kbd "u") 'switch-to-buffer)
   ;; (define-key xah-fly-leader-key-map (kbd "v") nil)
   (define-key xah-fly-leader-key-map (kbd "w") xah-danger-keymap)
-  ;; (define-key xah-fly-leader-key-map (kbd "x") nil)
+  ;; (define-key xah-fly-leader-key-map (kbd "x") xah-goto-matching-bracket)
   (define-key xah-fly-leader-key-map (kbd "y") xah-leader-i-keymap)
   (define-key xah-fly-leader-key-map (kbd "z") 'comment-dwim))
 
@@ -2314,7 +2326,7 @@ If `universal-argument' is called first, do switch frame."
     (define-key xah-fly-key-map (kbd ",") 'xah-shrink-whitespaces)
     (define-key xah-fly-key-map (kbd "-") 'xah-cycle-hyphen-underscore-space)
     (define-key xah-fly-key-map (kbd ".") 'backward-kill-word)
-    (define-key xah-fly-key-map (kbd ";") nil)
+    (define-key xah-fly-key-map (kbd ";") 'xah-goto-matching-bracket)
     (define-key xah-fly-key-map (kbd ":") nil)
     (define-key xah-fly-key-map (kbd "/") 'xah-backward-equal-sign)
     (define-key xah-fly-key-map (kbd "\\") nil)
