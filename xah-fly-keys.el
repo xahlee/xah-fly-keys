@@ -2,8 +2,8 @@
 
 ;; Copyright © 2013-2015, by Xah Lee
 
-;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 5.3.0
+;; Author: Xah Lee ( http://xahlee.info/ )
+;; Version: 5.4.0
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -61,35 +61,37 @@
 
 ;; Leader key
 
-;; All emacs C-x keys have a key sequence. Most commands are 2 to 3 keys. The first key we call it leader key.
-
 ;; You NEVER need to press Ctrl+x
+
+;; Any emacs commands that has a keybinding starting with C-x, has also a key sequence binding in xah-fly-keys. For example, 
+;; 【C-x b】 switch-to-buffer is 【SPACE u】
+;; 【C-x C-f】 find-file is 【SPACE c .】
+;; 【C-x n n】 narrow-to-region is 【SPACE n n】
+;; The first key we call it leader key. In the above examples, the SPACE is the leader key.
 
 ;; When in command mode, the 【SPACE】 is a leader key.
 
 ;; globally, the leader key is the 【f9】 key.
 
-;; the following stardard keys with Control are supported, when the variable xah-fly-use-control-key is t
+;; the following stardard keys with Control are supported:
 
- ;; (kbd "<C-tab>") 'xah-next-user-buffer
- ;; (kbd "<C-S-iso-lefttab>") 'xah-previous-user-buffer
- ;; (kbd "C-v") 'yank
- ;; (kbd "C-w") 'xah-close-current-buffer
- ;; (kbd "C-z") 'undo
- ;; (kbd "C-n") 'xah-new-empty-buffer
- ;; (kbd "C-o") 'find-file
- ;; (kbd "C-s") 'save-buffer
- ;; (kbd "C-S-s") 'write-file
- ;; (kbd "C-S-t") 'xah-open-last-closed
- ;; (kbd "C-+") 'text-scale-increase
- ;; (kbd "C--") 'text-scale-decrease
- ;; (kbd "C-0") (lambda () (interactive) (text-scale-set 0))))
-
-;; That't it.
+ ;; 【Ctrl+tab】 'xah-next-user-buffer
+ ;; 【Ctrl+shift+tab】 'xah-previous-user-buffer
+ ;; 【Ctrl+v】 'yank
+ ;; 【Ctrl+w】 'xah-close-current-buffer
+ ;; 【Ctrl+z】 'undo
+ ;; 【Ctrl+n】 'xah-new-empty-buffer
+ ;; 【Ctrl+o】 'find-file
+ ;; 【Ctrl+s】 'save-buffer
+ ;; 【Ctrl+shift+s】 'write-file
+ ;; 【Ctrl+shift+t】 'xah-open-last-closed
+ ;; 【Ctrl++】 'text-scale-increase
+ ;; 【Ctrl+-】 'text-scale-decrease
+ ;; 【Ctrl+0】 (lambda () (interactive) (text-scale-set 0))))
 
 ;; On the Mac, I highly recommend using a app called Sail to set your capslock to send Home. So that it acts as xah-fly-command-mode-activate. You can set capslock or one of the cmd key to Home. See http://xahlee.info/kbd/Mac_OS_X_keymapping_keybinding_tools.html
 
-;; I recommend you clone xah-fly-keys.el, and modify it, and use your modified version. Don't worry about upgrade. (I still make key tweaks every week, for the past 3 years.)
+;; I recommend you clone xah-fly-keys.el, and modify it, and use your modified version. Don't worry about upgrade. The main point is use it for your own good. (I still make key tweaks every week, for the past 3 years.)
 
 ;; If you have a bug, post on github. If you have question, post on xah-fly-keys home page.
 
@@ -1058,7 +1060,10 @@ Version 2015-04-19"
             (insert *left-bracket)
             (goto-char (+ -p2 (length *left-bracket)))))))))
 
-;; (insert-parentheses)
+(defun xah-insert-hyphen ()
+  "Insert a hyphen character."
+  (interactive)
+  (insert "-"))
 
 (defun xah-insert-paren () (interactive) (xah-insert-bracket-pair "(" ")") )
 (defun xah-insert-square-bracket () (interactive) (xah-insert-bracket-pair "[" "]") )
@@ -1898,7 +1903,7 @@ If `universal-argument' is called first, do switch frame."
    ("h" . describe-function)
    ("i" . info)
    ("j" . man)
-   ("k" . describe-input-method)
+   ("k" . describe-key)
    ("K" . Info-goto-emacs-key-command-node)
    ("l" . view-lossage)
    ("m" . xah-describe-major-mode)
@@ -1907,7 +1912,6 @@ If `universal-argument' is called first, do switch frame."
    ("p" . finder-by-keyword)
    ("r" . apropos-variable)
    ("s" . describe-syntax)
-   ("t" . describe-key)
    ("u" . elisp-index-search)
    ("v" . apropos-value)
    ("z" . describe-coding-system)))
@@ -2030,7 +2034,6 @@ If `universal-argument' is called first, do switch frame."
  '(
    ("RET" . insert-char)
    ("SPC" . xah-insert-unicode)
-;; xah-insert-date
    ("b" . xah-insert-black-lenticular-bracket【】)
    ("c" . xah-insert-ascii-single-quote)
    ("d" . xah-insert-double-curly-quote“”)
@@ -2044,7 +2047,7 @@ If `universal-argument' is called first, do switch frame."
    ("r" . xah-insert-tortoise-shell-bracket〔〕)
    ("s" . xah-insert-string-assignment)
    ("t" . xah-insert-paren)
-   ("u" . xah-insert-greater-less)
+   ("u" . xah-insert-date)
    ("w" . xah-insert-angle-bracket〈〉)
    ("W" . xah-insert-double-angle-bracket《》)
    ("y" . xah-insert-double-angle-quote«»)))
@@ -2068,11 +2071,17 @@ If `universal-argument' is called first, do switch frame."
   (define-key xah-fly-leader-key-map (kbd "\\") nil)
   (define-key xah-fly-leader-key-map (kbd "`") nil)
 
+
+  (define-key xah-fly-leader-key-map (kbd "1") nil)
+  (define-key xah-fly-leader-key-map (kbd "2") nil)
   (define-key xah-fly-leader-key-map (kbd "3") 'delete-other-windows)
   (define-key xah-fly-leader-key-map (kbd "4") 'split-window-right)
-
+  (define-key xah-fly-leader-key-map (kbd "5") 'delete-window)
+  (define-key xah-fly-leader-key-map (kbd "6") nil)
+  (define-key xah-fly-leader-key-map (kbd "7") nil)
   (define-key xah-fly-leader-key-map (kbd "8") 'find-file-at-point)
   (define-key xah-fly-leader-key-map (kbd "9") 'ispell-word)
+  (define-key xah-fly-leader-key-map (kbd "0") nil)
 
   (define-key xah-fly-leader-key-map (kbd "a") 'mark-whole-buffer)
   (define-key xah-fly-leader-key-map (kbd "b") 'end-of-buffer)
@@ -2095,9 +2104,9 @@ If `universal-argument' is called first, do switch frame."
   (define-key xah-fly-leader-key-map (kbd "s") 'save-buffer)
   (define-key xah-fly-leader-key-map (kbd "t") xah-leader-t-keymap)
   (define-key xah-fly-leader-key-map (kbd "u") 'switch-to-buffer)
-  ;; (define-key xah-fly-leader-key-map (kbd "v") nil)
+  (define-key xah-fly-leader-key-map (kbd "v") 'xah-goto-matching-bracket)
   (define-key xah-fly-leader-key-map (kbd "w") xah-danger-keymap)
-  ;; (define-key xah-fly-leader-key-map (kbd "x") xah-goto-matching-bracket)
+  (define-key xah-fly-leader-key-map (kbd "x") 'exchange-point-and-mark)
   (define-key xah-fly-leader-key-map (kbd "y") xah-leader-i-keymap)
   (define-key xah-fly-leader-key-map (kbd "z") 'comment-dwim))
 
@@ -2253,39 +2262,45 @@ If `universal-argument' is called first, do switch frame."
       (define-key xah-fly-key-map (kbd "<C-tab>") 'xah-next-user-buffer)
       (define-key xah-fly-key-map (kbd "<C-S-iso-lefttab>") 'xah-previous-user-buffer)
 
+      (define-key xah-fly-key-map (kbd "C-1") 'xah-pop-local-mark-ring)
+      (define-key xah-fly-key-map (kbd "C-2") 'pop-global-mark)
+
       (define-key xah-fly-key-map (kbd "C-a") 'mark-whole-buffer)
-      (define-key xah-fly-key-map (kbd "C-v") 'yank)
-      (define-key xah-fly-key-map (kbd "C-w") 'xah-close-current-buffer)
-      (define-key xah-fly-key-map (kbd "C-z") 'undo)
+      (define-key xah-fly-key-map (kbd "C-k") 'yank-pop)
       (define-key xah-fly-key-map (kbd "C-n") 'xah-new-empty-buffer)
+      (define-key xah-fly-key-map (kbd "C-S-n") 'make-frame-command)
       (define-key xah-fly-key-map (kbd "C-o") 'find-file)
       (define-key xah-fly-key-map (kbd "C-s") 'save-buffer)
       (define-key xah-fly-key-map (kbd "C-S-s") 'write-file)
       (define-key xah-fly-key-map (kbd "C-S-t") 'xah-open-last-closed)
-      (define-key xah-fly-key-map (kbd "C-S-n") 'make-frame-command)
+      (define-key xah-fly-key-map (kbd "C-v") 'yank)
+      (define-key xah-fly-key-map (kbd "C-w") 'xah-close-current-buffer)
+      (define-key xah-fly-key-map (kbd "C-z") 'undo)
 
       (define-key xah-fly-key-map (kbd "C-+") 'text-scale-increase)
       (define-key xah-fly-key-map (kbd "C--") 'text-scale-decrease)
       (define-key xah-fly-key-map (kbd "C-0") (lambda () (interactive) (text-scale-set 0)))
+
+      (define-key xah-fly-key-map (kbd "C-r") 'hippie-expand)
       (define-key xah-fly-key-map (kbd "C-t") 'xah-toggle-letter-case) ; never do transpose-chars
 
-))
+      ))
 
-  (define-key xah-fly-key-map (kbd "M-1") 'xah-pop-local-mark-ring)
-  (define-key xah-fly-key-map (kbd "M-2") 'pop-global-mark)
+  (progn ; rule: all commands with meta key defined here must have other shortcuts. that is, meta binding is considered a luxury
+    (define-key xah-fly-key-map (kbd "M-1") 'xah-pop-local-mark-ring)
+    (define-key xah-fly-key-map (kbd "M-2") 'pop-global-mark)
 
-  (define-key xah-fly-key-map (kbd "M-RET") 'xah-cycle-hyphen-underscore-space)
-  (define-key xah-fly-key-map (kbd "M-c") 'xah-toggle-letter-case )
-  (define-key xah-fly-key-map (kbd "M-g") 'hippie-expand )
-  (define-key xah-fly-key-map (kbd "M-h") 'xah-insert-brace )
-  (define-key xah-fly-key-map (kbd "M-m") xah-insertion-keymap)
-  (define-key xah-fly-key-map (kbd "M-n") 'xah-insert-square-bracket)
-  (define-key xah-fly-key-map (kbd "M-t") 'xah-insert-paren)
-  (define-key xah-fly-key-map (kbd "M-d") 'xah-insert-date)
-  (define-key xah-fly-key-map (kbd "M-k") 'yank-pop)
-  (define-key xah-fly-key-map (kbd "M-l") 'left-char) ; rid of downcase-word
+    (define-key xah-fly-key-map (kbd "M-RET") 'xah-cycle-hyphen-underscore-space)
+    (define-key xah-fly-key-map (kbd "M-c") 'xah-toggle-letter-case )
+    (define-key xah-fly-key-map (kbd "M-g") 'hippie-expand )
+    (define-key xah-fly-key-map (kbd "M-h") 'xah-insert-brace )
+    (define-key xah-fly-key-map (kbd "M-m") xah-insertion-keymap)
+    (define-key xah-fly-key-map (kbd "M-n") 'xah-insert-square-bracket)
+    (define-key xah-fly-key-map (kbd "M-t") 'xah-insert-paren)
+    (define-key xah-fly-key-map (kbd "M-l") 'left-char) ; rid of downcase-word
 
-  (define-key xah-fly-key-map (kbd "M-SPC") 'xah-fly-command-mode-activate)
+    (define-key xah-fly-key-map (kbd "M-SPC") 'xah-fly-command-mode-activate))
+
   (define-key xah-fly-key-map (kbd "<home>") 'xah-fly-command-mode-activate)
   (define-key xah-fly-key-map (kbd "<menu>") 'xah-fly-command-mode-activate)
   (define-key xah-fly-key-map (kbd "<f8>") 'xah-fly-command-mode-activate)
@@ -2322,20 +2337,24 @@ If `universal-argument' is called first, do switch frame."
   (interactive)
   (progn
 
-    (define-key xah-fly-key-map (kbd "'") 'xah-reformat-lines)
-    (define-key xah-fly-key-map (kbd ",") 'xah-shrink-whitespaces)
-    (define-key xah-fly-key-map (kbd "-") 'xah-cycle-hyphen-underscore-space)
-    (define-key xah-fly-key-map (kbd ".") 'backward-kill-word)
-    (define-key xah-fly-key-map (kbd ";") 'xah-goto-matching-bracket)
-    (define-key xah-fly-key-map (kbd ":") nil)
-    (define-key xah-fly-key-map (kbd "/") 'xah-backward-equal-sign)
-    (define-key xah-fly-key-map (kbd "\\") nil)
-    (define-key xah-fly-key-map (kbd "=") 'xah-forward-equal-sign)
-    (define-key xah-fly-key-map (kbd "[") 'xah-backward-quote )
-    (define-key xah-fly-key-map (kbd "]") 'xah-forward-quote-twice)
-    (define-key xah-fly-key-map (kbd "`") 'other-frame)
-    (define-key xah-fly-key-map (kbd "~") nil)
-    (define-key xah-fly-key-map (kbd "SPC") xah-fly-leader-key-map)
+    (progn ; cap
+      (define-key xah-fly-key-map (kbd "~") nil)
+      (define-key xah-fly-key-map (kbd ":") nil) ; 
+      )
+
+    (progn ; special
+      (define-key xah-fly-key-map (kbd "'") 'xah-reformat-lines)
+      (define-key xah-fly-key-map (kbd ",") 'xah-shrink-whitespaces)
+      (define-key xah-fly-key-map (kbd "-") 'xah-cycle-hyphen-underscore-space)
+      (define-key xah-fly-key-map (kbd ".") 'backward-kill-word)
+      (define-key xah-fly-key-map (kbd ";") 'comment-dwim)
+      (define-key xah-fly-key-map (kbd "/") 'xah-backward-equal-sign)
+      (define-key xah-fly-key-map (kbd "\\") nil)
+      (define-key xah-fly-key-map (kbd "=") 'xah-forward-equal-sign)
+      (define-key xah-fly-key-map (kbd "[") 'xah-backward-quote )
+      (define-key xah-fly-key-map (kbd "]") 'xah-forward-quote-twice)
+      (define-key xah-fly-key-map (kbd "`") 'other-frame)
+      (define-key xah-fly-key-map (kbd "SPC") xah-fly-leader-key-map))
 
     (if xah-fly-swapped-1827-p
         (progn
@@ -2351,7 +2370,6 @@ If `universal-argument' is called first, do switch frame."
 
     (define-key xah-fly-key-map (kbd "3") 'delete-other-windows)
     (define-key xah-fly-key-map (kbd "4") 'split-window-below)
-    (define-key xah-fly-key-map (kbd "5") 'delete-window)
     (define-key xah-fly-key-map (kbd "6") 'xah-select-block)
     (define-key xah-fly-key-map (kbd "9") 'xah-select-text-in-quote)
     (define-key xah-fly-key-map (kbd "0") 'xah-backward-punct)
@@ -2379,9 +2397,9 @@ If `universal-argument' is called first, do switch frame."
     (define-key xah-fly-key-map (kbd "u") 'xah-fly-insert-mode-activate)
     (define-key xah-fly-key-map (kbd "v") 'xah-forward-right-bracket)
     (define-key xah-fly-key-map (kbd "w") 'xah-next-window-or-frame)
-    (define-key xah-fly-key-map (kbd "x") 'exchange-point-and-mark)
+    (define-key xah-fly-key-map (kbd "x") nil)
     (define-key xah-fly-key-map (kbd "y") 'set-mark-command)
-    (define-key xah-fly-key-map (kbd "z") 'comment-dwim)
+    (define-key xah-fly-key-map (kbd "z") nil)
 
     ;;
     ))
