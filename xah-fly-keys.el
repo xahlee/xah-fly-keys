@@ -674,10 +674,11 @@ Version 2016-07-12"
       (goto-char (point-min))
       (while
           (search-forward "\n" nil 'NOERROR)
-        (replace-match " ")
-        (while (looking-back " \\|\t" 1) (delete-char -1))
-        (insert " ")
-        (while (looking-at " \\|\t") (delete-char 1))))))
+        (replace-match " "))
+      (goto-char (point-min))
+      (while
+          (search-forward "  " nil 'NOERROR)
+        (replace-match " ")))))
 
 (defun xah-reformat-to-multi-lines-region (*begin *end)
   "replace space by a newline char at places so lines are not long.
@@ -692,10 +693,7 @@ Version 2016-09-28"
           (search-forward " " nil 'NOERROR)
         (when (> (- (point) (line-beginning-position)) fill-column)
           (replace-match "\n" )))
-      (while
-          (search-forward "  " nil 'NOERROR)
-        (when (not (nth 3 (syntax-ppss)))
-          (replace-match "\n" ))))))
+      )))
 
 (defun xah-unfill-paragraph ()
   "Replace newline chars in current paragraph by single spaces.
@@ -2069,7 +2067,7 @@ If `universal-argument' is called first, do switch frame."
   (define-key xah-fly-leader-key-map (kbd ",") nil)
   (define-key xah-fly-leader-key-map (kbd "-") nil)
   (define-key xah-fly-leader-key-map (kbd "/") nil)
-  (define-key xah-fly-leader-key-map (kbd ";") nil)
+  (define-key xah-fly-leader-key-map (kbd ";") 'comment-dwim)
   (define-key xah-fly-leader-key-map (kbd "=") nil)
   (define-key xah-fly-leader-key-map (kbd "[") nil)
   (define-key xah-fly-leader-key-map (kbd "\\") nil)
@@ -2112,7 +2110,7 @@ If `universal-argument' is called first, do switch frame."
   (define-key xah-fly-leader-key-map (kbd "w") xah-danger-keymap)
   (define-key xah-fly-leader-key-map (kbd "x") 'exchange-point-and-mark)
   (define-key xah-fly-leader-key-map (kbd "y") xah-leader-i-keymap)
-  (define-key xah-fly-leader-key-map (kbd "z") 'comment-dwim))
+  (define-key xah-fly-leader-key-map (kbd "z") nil))
 
 
 ;;;; misc
