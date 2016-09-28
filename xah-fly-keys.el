@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 5.4.0
+;; Version: 5.4.1
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -682,7 +682,7 @@ Version 2016-07-12"
 (defun xah-reformat-to-multi-lines-region (*begin *end)
   "replace space by a newline char at places so lines are not long.
 URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
-Version 2016-07-12"
+Version 2016-09-28"
   (interactive "r")
   (save-excursion
     (save-restriction
@@ -691,6 +691,10 @@ Version 2016-07-12"
       (while
           (search-forward " " nil 'NOERROR)
         (when (> (- (point) (line-beginning-position)) fill-column)
+          (replace-match "\n" )))
+      (while
+          (search-forward "  " nil 'NOERROR)
+        (when (not (nth 3 (syntax-ppss)))
           (replace-match "\n" ))))))
 
 (defun xah-unfill-paragraph ()
