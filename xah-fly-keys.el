@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 5.4.1
+;; Version: 5.4.2
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -63,7 +63,7 @@
 
 ;; You NEVER need to press Ctrl+x
 
-;; Any emacs commands that has a keybinding starting with C-x, has also a key sequence binding in xah-fly-keys. For example, 
+;; Any emacs commands that has a keybinding starting with C-x, has also a key sequence binding in xah-fly-keys. For example,
 ;; 【C-x b】 switch-to-buffer is 【SPACE u】
 ;; 【C-x C-f】 find-file is 【SPACE c .】
 ;; 【C-x n n】 narrow-to-region is 【SPACE n n】
@@ -715,58 +715,70 @@ Version 2016-07-13"
   (let ((fill-column most-positive-fixnum))
     (fill-region *begin *end)))
 
+(defun xah-dired-rename-space-to-underscore ()
+  "In dired, rename current or marked files by replacing space to underscore _.
+If not in `dired', do nothing.
+URL `http://ergoemacs.org/emacs/elisp_change_space-hyphen_underscore.html'
+Version 2016-10-03"
+  (interactive)
+  (if (equal major-mode 'dired-mode)
+      (progn
+        (mapc (lambda (x)
+                (rename-file x (replace-regexp-in-string " " "_" x)))
+              (dired-get-marked-files ))
+        (revert-buffer))
+    (user-error "Not in dired")))
+
 (defun xah-cycle-hyphen-underscore-space ()
   "Cycle {underscore, space, hypen} chars of current word or text selection.
 When called repeatedly, this command cycles the {“_”, “-”, “ ”} characters, in that order.
-
-;; If there's a selection, work on selection. Else,
-;; if current word does contain dash or underline, work on the word.
-;; Else, work on the region of current word and next word.
+If in `dired', it rename the current or marked file by replacing space to _.
 
 URL `http://ergoemacs.org/emacs/elisp_change_space-hyphen_underscore.html'
-Version 2016-07-17"
+Version 2016-10-03"
   (interactive)
   ;; this function sets a property 「'state」. Possible values are 0 to length of -charArray.
-  (let (-p1 -p2)
-    (if (use-region-p)
-        (progn
-          (setq -p1 (region-beginning))
-          (setq -p2 (region-end)))
-      (save-excursion
-        ;; 2016-01-14 not use (bounds-of-thing-at-point 'symbol), because if at end of buffer, it returns nil. also, it's syntax table dependent
-
-        (skip-chars-backward "-_[:alnum:]")
-        (setq -p1 (point))
-        (skip-chars-forward "-_[:alnum:]")
-        (setq -p2 (point))))
-    (let* ((-inputText (buffer-substring-no-properties -p1 -p2))
-           (-charArray ["_" "-" " "])
-           (-length (length -charArray))
-           (-regionWasActive-p (region-active-p))
-           (-nowState
-            (if (equal last-command this-command )
-                (get 'xah-cycle-hyphen-underscore-space 'state)
-              0 ))
-           (-changeTo (elt -charArray -nowState)))
-      (save-excursion
-        (save-restriction
-          (narrow-to-region -p1 -p2)
-          (goto-char (point-min))
-          (while
-              (search-forward-regexp
-               (elt -charArray (% (+ -nowState 2) -length))
-               ;; (concat
-               ;;  (elt -charArray (% (+ -nowState 1) -length))
-               ;;  "\\|"
-               ;;  (elt -charArray (% (+ -nowState 2) -length)))
-               (point-max)
-               'NOERROR)
-            (replace-match -changeTo 'FIXEDCASE 'LITERAL))))
-      (when (or (string= -changeTo " ") -regionWasActive-p)
-        (goto-char -p2)
-        (set-mark -p1)
-        (setq deactivate-mark nil))
-      (put 'xah-cycle-hyphen-underscore-space 'state (% (+ -nowState 1) -length)))))
+  (if (equal major-mode 'dired-mode)
+      (xah-dired-rename-space-to-underscore)
+    (let (-p1 -p2)
+      (if (use-region-p)
+          (progn
+            (setq -p1 (region-beginning))
+            (setq -p2 (region-end)))
+        (save-excursion
+          ;; 2016-01-14 not use (bounds-of-thing-at-point 'symbol), because if at end of buffer, it returns nil. also, it's syntax table dependent
+          (skip-chars-backward "-_[:alnum:]")
+          (setq -p1 (point))
+          (skip-chars-forward "-_[:alnum:]")
+          (setq -p2 (point))))
+      (let* ((-inputText (buffer-substring-no-properties -p1 -p2))
+             (-charArray ["_" "-" " "])
+             (-length (length -charArray))
+             (-regionWasActive-p (region-active-p))
+             (-nowState
+              (if (equal last-command this-command )
+                  (get 'xah-cycle-hyphen-underscore-space 'state)
+                0 ))
+             (-changeTo (elt -charArray -nowState)))
+        (save-excursion
+          (save-restriction
+            (narrow-to-region -p1 -p2)
+            (goto-char (point-min))
+            (while
+                (search-forward-regexp
+                 (elt -charArray (% (+ -nowState 2) -length))
+                 ;; (concat
+                 ;;  (elt -charArray (% (+ -nowState 1) -length))
+                 ;;  "\\|"
+                 ;;  (elt -charArray (% (+ -nowState 2) -length)))
+                 (point-max)
+                 'NOERROR)
+              (replace-match -changeTo 'FIXEDCASE 'LITERAL))))
+        (when (or (string= -changeTo " ") -regionWasActive-p)
+          (goto-char -p2)
+          (set-mark -p1)
+          (setq deactivate-mark nil))
+        (put 'xah-cycle-hyphen-underscore-space 'state (% (+ -nowState 1) -length))))))
 
 (defun xah-underscore-to-space-region (*begin *end)
   "Change underscore char to space.
@@ -2073,12 +2085,11 @@ If `universal-argument' is called first, do switch frame."
   (define-key xah-fly-leader-key-map (kbd "\\") nil)
   (define-key xah-fly-leader-key-map (kbd "`") nil)
 
-
   (define-key xah-fly-leader-key-map (kbd "1") nil)
   (define-key xah-fly-leader-key-map (kbd "2") nil)
-  (define-key xah-fly-leader-key-map (kbd "3") 'delete-other-windows)
+  (define-key xah-fly-leader-key-map (kbd "3") 'delete-window)
   (define-key xah-fly-leader-key-map (kbd "4") 'split-window-right)
-  (define-key xah-fly-leader-key-map (kbd "5") 'delete-window)
+  (define-key xah-fly-leader-key-map (kbd "5") nil)
   (define-key xah-fly-leader-key-map (kbd "6") nil)
   (define-key xah-fly-leader-key-map (kbd "7") nil)
   (define-key xah-fly-leader-key-map (kbd "8") 'find-file-at-point)
@@ -2099,7 +2110,7 @@ If `universal-argument' is called first, do switch frame."
   (define-key xah-fly-leader-key-map (kbd "l") 'recenter-top-bottom)
   (define-key xah-fly-leader-key-map (kbd "m") 'dired-jump)
   (define-key xah-fly-leader-key-map (kbd "n") xah-harmless-keymap)
-  ;; (define-key xah-fly-leader-key-map (kbd "o") nil)
+  (define-key xah-fly-leader-key-map (kbd "o") 'exchange-point-and-mark)
   (define-key xah-fly-leader-key-map (kbd "p") 'query-replace)
   (define-key xah-fly-leader-key-map (kbd "q") 'xah-copy-all-or-region)
   (define-key xah-fly-leader-key-map (kbd "r") xah-edit-cmds-keymap)
@@ -2108,7 +2119,7 @@ If `universal-argument' is called first, do switch frame."
   (define-key xah-fly-leader-key-map (kbd "u") 'switch-to-buffer)
   (define-key xah-fly-leader-key-map (kbd "v") 'xah-goto-matching-bracket)
   (define-key xah-fly-leader-key-map (kbd "w") xah-danger-keymap)
-  (define-key xah-fly-leader-key-map (kbd "x") 'exchange-point-and-mark)
+  (define-key xah-fly-leader-key-map (kbd "x") nil)
   (define-key xah-fly-leader-key-map (kbd "y") xah-leader-i-keymap)
   (define-key xah-fly-leader-key-map (kbd "z") nil))
 
@@ -2338,12 +2349,10 @@ If `universal-argument' is called first, do switch frame."
   "set command mode keys"
   (interactive)
   (progn
-
-    (progn ; cap
+    (progn ; need shift key
       (define-key xah-fly-key-map (kbd "~") nil)
-      (define-key xah-fly-key-map (kbd ":") nil) ; 
+      (define-key xah-fly-key-map (kbd ":") nil) ;
       )
-
     (progn ; special
       (define-key xah-fly-key-map (kbd "'") 'xah-reformat-lines)
       (define-key xah-fly-key-map (kbd ",") 'xah-shrink-whitespaces)
@@ -2356,8 +2365,9 @@ If `universal-argument' is called first, do switch frame."
       (define-key xah-fly-key-map (kbd "[") 'xah-backward-quote )
       (define-key xah-fly-key-map (kbd "]") 'xah-forward-quote-twice)
       (define-key xah-fly-key-map (kbd "`") 'other-frame)
-      (define-key xah-fly-key-map (kbd "SPC") xah-fly-leader-key-map))
-
+      (define-key xah-fly-key-map (kbd "SPC") xah-fly-leader-key-map)
+      (define-key xah-fly-key-map (kbd "DEL") xah-fly-leader-key-map) ; for kinesis
+      )
     (if xah-fly-swapped-1827-p
         (progn
           (define-key xah-fly-key-map (kbd "8") nil)
@@ -2372,6 +2382,7 @@ If `universal-argument' is called first, do switch frame."
 
     (define-key xah-fly-key-map (kbd "3") 'delete-other-windows)
     (define-key xah-fly-key-map (kbd "4") 'split-window-below)
+    (define-key xah-fly-key-map (kbd "5") 'other-frame)
     (define-key xah-fly-key-map (kbd "6") 'xah-select-block)
     (define-key xah-fly-key-map (kbd "9") 'xah-select-text-in-quote)
     (define-key xah-fly-key-map (kbd "0") 'xah-backward-punct)
@@ -2387,7 +2398,7 @@ If `universal-argument' is called first, do switch frame."
     (define-key xah-fly-key-map (kbd "i") 'xah-delete-text-block)
     (define-key xah-fly-key-map (kbd "j") 'xah-cut-line-or-region)
     (define-key xah-fly-key-map (kbd "k") 'yank)
-    (define-key xah-fly-key-map (kbd "l") 'xah-fly-insert-mode-activate-space-before)
+    (define-key xah-fly-key-map (kbd "l") 'xah-fly-insert-mode-activate-space-after)
     (define-key xah-fly-key-map (kbd "m") 'xah-backward-left-bracket)
     (define-key xah-fly-key-map (kbd "n") 'forward-char)
     (define-key xah-fly-key-map (kbd "o") 'open-line)
@@ -2423,6 +2434,7 @@ If `universal-argument' is called first, do switch frame."
     (define-key xah-fly-key-map (kbd "`") nil)
     (define-key xah-fly-key-map (kbd "~") nil)
     (define-key xah-fly-key-map (kbd "SPC") nil)
+    (define-key xah-fly-key-map (kbd "DEL") nil)
 
     (define-key xah-fly-key-map (kbd "1") nil)
     (define-key xah-fly-key-map (kbd "2") nil)
