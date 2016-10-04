@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 5.4.2
+;; Version: 5.4.3
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -1528,13 +1528,12 @@ version 2016-01-28"
           (message "No recognized program file suffix for this file."))))))
 
 (defun xah-clean-whitespace (*begin *end)
-  "Delete trailing whitespace, and replace repeated blank lines into just 2.
+  "Delete trailing whitespace, and replace repeated blank lines into just 1.
 Only space and tab is considered whitespace here.
 Works on whole buffer or text selection, respects `narrow-to-region'.
-Saves the file if it is a file.
 
 URL `http://ergoemacs.org/emacs/elisp_compact_empty_lines.html'
-Version 2016-07-30"
+Version 2016-10-04"
   (interactive
    (if (region-active-p)
        (list (region-beginning) (region-end))
@@ -1552,7 +1551,7 @@ Version 2016-07-30"
           (replace-match "\n\n")))
       (progn
         (goto-char (point-max))
-        (while (equal (char-before) 32)
+        (while (equal (char-before) 32) ; ascii 32 is space
           (delete-char -1))))))
 
 (defun xah-make-backup ()
@@ -1946,6 +1945,7 @@ If `universal-argument' is called first, do switch frame."
  (define-prefix-command 'xah-harmless-keymap)
  '(
    ("SPC" . whitespace-mode)
+   ("." . toggle-frame-fullscreen)
    ("'" . frame-configuration-to-register)
    (";" . window-configuration-to-register)
    ("1" . set-input-method)
@@ -1962,13 +1962,15 @@ If `universal-argument' is called first, do switch frame."
    ("c" . toggle-case-fold-search)
    ("d" . narrow-to-page)
    ("e" . eshell)
-   ("g" . toggle-frame-fullscreen)
+   ("f" . nil)
+   ("g" . nil)
    ("h" . widen)
    ("i" . make-frame-command)
    ("k" . menu-bar-open)
    ("l" . toggle-word-wrap)
    ("m" . global-linum-mode)
    ("n" . narrow-to-region)
+   ("o" . nil)
    ("p" . read-only-mode) ; toggle-read-only
    ("q n" . set-file-name-coding-system)
    ("q s" . set-next-selection-coding-system)
@@ -1980,11 +1982,14 @@ If `universal-argument' is called first, do switch frame."
    ("q r" . revert-buffer-with-coding-system)
    ("q t" . set-terminal-coding-system)
    ("q x" . set-selection-coding-system)
+   ("r" . nil)
    ("s" . flyspell-buffer)
    ("t" . narrow-to-defun)
+   ("u" . nil)
    ("v" . variable-pitch-mode)
    ("w" . eww)
    ("x" . save-some-buffers)
+   ("y" . nil)
    ("z" . abort-recursive-edit)))
 
 (xah-fly-map-keys
@@ -2019,7 +2024,6 @@ If `universal-argument' is called first, do switch frame."
    ("," . sort-numeric-fields)
    ("'" . reverse-region)
    ("d" . mark-defun)
-   ("h" . xah-close-current-buffer)
    ("j" . copy-to-register)
    ("k" . insert-register)
    ("l" . increment-register)
@@ -2034,6 +2038,7 @@ If `universal-argument' is called first, do switch frame."
 (xah-fly-map-keys
  (define-prefix-command 'xah-danger-keymap)
  '(
+   ("DEL" . xah-delete-current-file)
    ("." . eval-buffer)
    ("e" . eval-defun)
    ("m" . eval-last-sexp)
@@ -2069,7 +2074,7 @@ If `universal-argument' is called first, do switch frame."
 (progn
   (define-prefix-command 'xah-fly-leader-key-map)
   (define-key xah-fly-leader-key-map (kbd "SPC") 'xah-fly-insert-mode-activate)
-  (define-key xah-fly-leader-key-map (kbd "DEL") 'xah-delete-current-file)
+  (define-key xah-fly-leader-key-map (kbd "DEL") 'xah-close-current-buffer)
   (define-key xah-fly-leader-key-map (kbd "RET") (if (fboundp 'smex) 'smex 'execute-extended-command ))
   (define-key xah-fly-leader-key-map (kbd "TAB") xah-leader-tab-keymap)
 
