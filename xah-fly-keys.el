@@ -718,8 +718,9 @@ Version 2016-07-13"
 (defun xah-dired-rename-space-to-underscore ()
   "In dired, rename current or marked files by replacing space to underscore _.
 If not in `dired', do nothing.
-URL `http://ergoemacs.org/emacs/elisp_change_space-hyphen_underscore.html'
-Version 2016-10-03"
+
+URL `http://ergoemacs.org/emacs/elisp_dired_rename_space_to_underscore.html'
+Version 2016-10-04"
   (interactive)
   (if (equal major-mode 'dired-mode)
       (progn
@@ -729,56 +730,68 @@ Version 2016-10-03"
         (revert-buffer))
     (user-error "Not in dired")))
 
+(defun xah-dired-rename-space-to-hyphen ()
+  "In dired, rename current or marked files by replacing space to hyphen -.
+If not in `dired', do nothing.
+
+URL `http://ergoemacs.org/emacs/elisp_dired_rename_space_to_underscore.html'
+Version 2016-10-04"
+  (interactive)
+  (if (equal major-mode 'dired-mode)
+      (progn
+        (mapc (lambda (x)
+                (rename-file x (replace-regexp-in-string " " "-" x)))
+              (dired-get-marked-files ))
+        (revert-buffer))
+    (user-error "Not in dired")))
+
 (defun xah-cycle-hyphen-underscore-space ()
   "Cycle {underscore, space, hypen} chars of current word or text selection.
 When called repeatedly, this command cycles the {“_”, “-”, “ ”} characters, in that order.
-If in `dired', it rename the current or marked file by replacing space to _.
 
 URL `http://ergoemacs.org/emacs/elisp_change_space-hyphen_underscore.html'
-Version 2016-10-03"
+Version 2016-10-04"
   (interactive)
   ;; this function sets a property 「'state」. Possible values are 0 to length of -charArray.
-  (if (equal major-mode 'dired-mode)
-      (xah-dired-rename-space-to-underscore)
-    (let (-p1 -p2)
-      (if (use-region-p)
-          (progn
-            (setq -p1 (region-beginning))
-            (setq -p2 (region-end)))
-        (save-excursion
-          ;; 2016-01-14 not use (bounds-of-thing-at-point 'symbol), because if at end of buffer, it returns nil. also, it's syntax table dependent
-          (skip-chars-backward "-_[:alnum:]")
-          (setq -p1 (point))
-          (skip-chars-forward "-_[:alnum:]")
-          (setq -p2 (point))))
-      (let* ((-inputText (buffer-substring-no-properties -p1 -p2))
-             (-charArray ["_" "-" " "])
-             (-length (length -charArray))
-             (-regionWasActive-p (region-active-p))
-             (-nowState
-              (if (equal last-command this-command )
-                  (get 'xah-cycle-hyphen-underscore-space 'state)
-                0 ))
-             (-changeTo (elt -charArray -nowState)))
-        (save-excursion
-          (save-restriction
-            (narrow-to-region -p1 -p2)
-            (goto-char (point-min))
-            (while
-                (search-forward-regexp
-                 (elt -charArray (% (+ -nowState 2) -length))
-                 ;; (concat
-                 ;;  (elt -charArray (% (+ -nowState 1) -length))
-                 ;;  "\\|"
-                 ;;  (elt -charArray (% (+ -nowState 2) -length)))
-                 (point-max)
-                 'NOERROR)
-              (replace-match -changeTo 'FIXEDCASE 'LITERAL))))
-        (when (or (string= -changeTo " ") -regionWasActive-p)
-          (goto-char -p2)
-          (set-mark -p1)
-          (setq deactivate-mark nil))
-        (put 'xah-cycle-hyphen-underscore-space 'state (% (+ -nowState 1) -length))))))
+  (let (-p1 -p2)
+    (if (use-region-p)
+        (progn
+          (setq -p1 (region-beginning))
+          (setq -p2 (region-end)))
+      (save-excursion
+        ;; 2016-01-14 not use (bounds-of-thing-at-point 'symbol), because if at end of buffer, it returns nil. also, it's syntax table dependent
+        (skip-chars-backward "-_[:alnum:]")
+        (setq -p1 (point))
+        (skip-chars-forward "-_[:alnum:]")
+        (setq -p2 (point))))
+    (let* ((-inputText (buffer-substring-no-properties -p1 -p2))
+           (-charArray ["_" "-" " "])
+           (-length (length -charArray))
+           (-regionWasActive-p (region-active-p))
+           (-nowState
+            (if (equal last-command this-command )
+                (get 'xah-cycle-hyphen-underscore-space 'state)
+              0 ))
+           (-changeTo (elt -charArray -nowState)))
+      (save-excursion
+        (save-restriction
+          (narrow-to-region -p1 -p2)
+          (goto-char (point-min))
+          (while
+              (search-forward-regexp
+               (elt -charArray (% (+ -nowState 2) -length))
+               ;; (concat
+               ;;  (elt -charArray (% (+ -nowState 1) -length))
+               ;;  "\\|"
+               ;;  (elt -charArray (% (+ -nowState 2) -length)))
+               (point-max)
+               'NOERROR)
+            (replace-match -changeTo 'FIXEDCASE 'LITERAL))))
+      (when (or (string= -changeTo " ") -regionWasActive-p)
+        (goto-char -p2)
+        (set-mark -p1)
+        (setq deactivate-mark nil))
+      (put 'xah-cycle-hyphen-underscore-space 'state (% (+ -nowState 1) -length)))))
 
 (defun xah-underscore-to-space-region (*begin *end)
   "Change underscore char to space.
