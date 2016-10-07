@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 5.4.3
+;; Version: 5.4.4
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -77,14 +77,14 @@
 
  ;; 【Ctrl+tab】 'xah-next-user-buffer
  ;; 【Ctrl+shift+tab】 'xah-previous-user-buffer
- ;; 【Ctrl+v】 'yank
- ;; 【Ctrl+w】 'xah-close-current-buffer
- ;; 【Ctrl+z】 'undo
- ;; 【Ctrl+n】 'xah-new-empty-buffer
- ;; 【Ctrl+o】 'find-file
- ;; 【Ctrl+s】 'save-buffer
- ;; 【Ctrl+shift+s】 'write-file
- ;; 【Ctrl+shift+t】 'xah-open-last-closed
+ ;; 【Ctrl+v】 paste
+ ;; 【Ctrl+w】 close
+ ;; 【Ctrl+z】 undo
+ ;; 【Ctrl+n】 new
+ ;; 【Ctrl+o】 open
+ ;; 【Ctrl+s】 save
+ ;; 【Ctrl+shift+s】 save as
+ ;; 【Ctrl+shift+t】 open last clased
  ;; 【Ctrl++】 'text-scale-increase
  ;; 【Ctrl+-】 'text-scale-decrease
  ;; 【Ctrl+0】 (lambda () (interactive) (text-scale-set 0))))
@@ -478,8 +478,7 @@ Version 2015-08-22"
 (defun xah-copy-all ()
   "Put the whole buffer content into the `kill-ring'.
 (respects `narrow-to-region')
-URL `http://ergoemacs.org/emacs/elisp_cut_copy_yank_kill-ring.html'
-Version 2015-05-06"
+Version 2016-10-06"
   (interactive)
   (kill-new (buffer-string))
   (message "Buffer content copied."))
@@ -666,7 +665,7 @@ Version 2016-07-13"
 (defun xah-reformat-to-single-line-region (*begin *end)
   "Replace whitespaces at end of each line by one space.
 URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
-Version 2016-07-12"
+Version 2016-10-07"
   (interactive "r")
   (save-excursion
     (save-restriction
@@ -677,7 +676,7 @@ Version 2016-07-12"
         (replace-match " "))
       (goto-char (point-min))
       (while
-          (search-forward "  " nil 'NOERROR)
+          (search-forward-regexp "[ \t][ \t]+" nil 'NOERROR)
         (replace-match " ")))))
 
 (defun xah-reformat-to-multi-lines-region (*begin *end)
@@ -1047,16 +1046,25 @@ Note, for the time zone offset, both the formats 「hhmm」 and 「hh:mm」 are 
    ((lambda (-x) (format "%s:%s" (substring -x 0 3) (substring -x 3 5))) (format-time-string "%z"))))
 
 (defun xah-insert-bracket-pair (*left-bracket *right-bracket)
-  "Wrap or Insert a matching bracket and place cursor in between.
+  "Insert brackets around selection, word, at point, and maybe move cursor in between.
 
-If there's a text selection, wrap brackets around it. Else, smartly decide wrap or insert. (basically, if there's no char after cursor, just insert bracket pair.)
+If there's a text selection, wrap brackets around it.
 
-*left-bracket ＆ *right-bracket are strings.
+Else, if cursor is inside a word, wrap brackets around it
+
+ xy▮z → (xyz)
+
+If cursor is at end of a word, one of the following will happen:
+
+ xyz▮ → xyz()
+ xyz▮ → (xyz)       if in one of the lisp modes.
+
+*left-bracket and *right-bracket are strings.
 
 URL `http://ergoemacs.org/emacs/elisp_insert_brackets_by_pair.html'
-Version 2015-04-19"
+Version 2016-10-07"
   (if (use-region-p)
-      (progn
+      (progn ; there's active region
         (let (
               (-p1 (region-beginning))
               (-p2 (region-end)))
@@ -1067,9 +1075,19 @@ Version 2015-04-19"
           (goto-char (+ -p2 2))))
     (progn ; no text selection
       (if
-          (or
-           (looking-at "[^-_[:alnum:]]")
-           (eq (point) (point-max)))
+          (and
+           (or ; cursor is at end of word or buffer. i.e. xyz▮
+            (looking-at "[^-_[:alnum:]]")
+            (eq (point) (point-max)))
+           (not (or
+                 (eq major-mode 'xah-elisp-mode)
+                 (eq major-mode 'emacs-lisp-mode)
+                 (eq major-mode 'lisp-mode)
+                 (eq major-mode 'lisp-interaction-mode)
+                 (eq major-mode 'common-lisp-mode)
+                 (eq major-mode 'clojure-mode)
+                 (eq major-mode 'xah-clojure-mode)
+                 (eq major-mode 'scheme-mode))))
           (progn
             (insert *left-bracket *right-bracket)
             (search-backward *right-bracket ))
@@ -1540,31 +1558,55 @@ version 2016-01-28"
               (shell-command -cmd-str "*xah-run-current-file output*" ))
           (message "No recognized program file suffix for this file."))))))
 
-(defun xah-clean-whitespace (*begin *end)
-  "Delete trailing whitespace, and replace repeated blank lines into just 1.
+(defun xah-clean-empty-lines (&optional *begin *end *n)
+  "replace repeated blank lines to just 1.
 Only space and tab is considered whitespace here.
 Works on whole buffer or text selection, respects `narrow-to-region'.
 
+*N is the number of newline chars to use in replacement.
+If 0, it means lines will be joined.
+By befault, *N is 2. It means, 1 visible blank line.
+
 URL `http://ergoemacs.org/emacs/elisp_compact_empty_lines.html'
-Version 2016-10-04"
+Version 2016-10-07"
   (interactive
    (if (region-active-p)
        (list (region-beginning) (region-end))
      (list (point-min) (point-max))))
+  (when (null *begin)
+    (setq *begin (point-min) *end (point-max)))
   (save-excursion
     (save-restriction
       (narrow-to-region *begin *end)
       (progn
         (goto-char (point-min))
+        (while (search-forward-regexp "\n\n\n+" nil "noerror")
+          (replace-match (make-string (if (null *n) 2 *n ) 10)))))))
+
+(defun xah-clean-whitespace (&optional *begin *end)
+  "Delete trailing whitespace, and replace repeated blank lines to just 1.
+Only space and tab is considered whitespace here.
+Works on whole buffer or text selection, respects `narrow-to-region'.
+
+URL `http://ergoemacs.org/emacs/elisp_compact_empty_lines.html'
+Version 2016-10-07"
+  (interactive
+   (if (region-active-p)
+       (list (region-beginning) (region-end))
+     (list (point-min) (point-max))))
+  (when (null *begin)
+    (setq *begin (point-min)  *end (point-max)))
+  (save-excursion
+    (save-restriction
+      (narrow-to-region *begin *end)
+      (xah-clean-empty-lines (point-min) (point-max) )
+      (progn
+        (goto-char (point-min))
         (while (search-forward-regexp "[ \t]+\n" nil "noerror")
           (replace-match "\n")))
       (progn
-        (goto-char (point-min))
-        (while (search-forward-regexp "\n\n\n+" nil "noerror")
-          (replace-match "\n\n")))
-      (progn
         (goto-char (point-max))
-        (while (equal (char-before) 32) ; ascii 32 is space
+        (while (equal (char-before) 32) ; char 32 is space
           (delete-char -1))))))
 
 (defun xah-make-backup ()
@@ -2067,7 +2109,7 @@ If `universal-argument' is called first, do switch frame."
    ("RET" . insert-char)
    ("SPC" . xah-insert-unicode)
    ("b" . xah-insert-black-lenticular-bracket【】)
-   ("c" . xah-insert-ascii-single-quote)
+   ("c" . xah-insert-tortoise-shell-bracket〔〕)
    ("d" . xah-insert-double-curly-quote“”)
    ("f" . xah-insert-emacs-quote)
    ("g" . xah-insert-ascii-double-quote)
@@ -2076,7 +2118,7 @@ If `universal-argument' is called first, do switch frame."
    ("m" . xah-insert-corner-bracket「」)
    ("n" . xah-insert-square-bracket) ; []
    ("p" . xah-insert-single-angle-quote‹›)
-   ("r" . xah-insert-tortoise-shell-bracket〔〕)
+   ("r" . xah-insert-ascii-single-quote)
    ("s" . xah-insert-string-assignment)
    ("t" . xah-insert-paren)
    ("u" . xah-insert-date)
@@ -2135,7 +2177,7 @@ If `universal-argument' is called first, do switch frame."
   (define-key xah-fly-leader-key-map (kbd "s") 'save-buffer)
   (define-key xah-fly-leader-key-map (kbd "t") xah-leader-t-keymap)
   (define-key xah-fly-leader-key-map (kbd "u") 'switch-to-buffer)
-  (define-key xah-fly-leader-key-map (kbd "v") 'xah-goto-matching-bracket)
+  (define-key xah-fly-leader-key-map (kbd "v") nil)
   (define-key xah-fly-leader-key-map (kbd "w") xah-danger-keymap)
   (define-key xah-fly-leader-key-map (kbd "x") nil)
   (define-key xah-fly-leader-key-map (kbd "y") xah-leader-i-keymap)
@@ -2400,7 +2442,7 @@ If `universal-argument' is called first, do switch frame."
 
     (define-key xah-fly-key-map (kbd "3") 'delete-other-windows)
     (define-key xah-fly-key-map (kbd "4") 'split-window-below)
-    (define-key xah-fly-key-map (kbd "5") 'other-frame)
+    (define-key xah-fly-key-map (kbd "5") 'xah-goto-matching-bracket)
     (define-key xah-fly-key-map (kbd "6") 'xah-select-block)
     (define-key xah-fly-key-map (kbd "9") 'xah-select-text-in-quote)
     (define-key xah-fly-key-map (kbd "0") 'xah-backward-punct)
