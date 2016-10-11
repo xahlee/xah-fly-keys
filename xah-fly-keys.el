@@ -1043,53 +1043,58 @@ When called in lisp code, *ask-format-p should be a positive integer.
 If there's text selection, delete it first.
 
 URL `http://ergoemacs.org/emacs/elisp_insert-date-time.html'
-version 2016-10-10"
+version 2016-10-11"
   (interactive "p")
   (when (use-region-p) (delete-region (region-beginning) (region-end)))
   (let ((-style
          (if (equal *format-style 1)
-             "1"
-           (substring (ido-completing-read
-                       "Style:"
-                       '(
-                         "1 → 2016-10-10 Monday"
-                         "2 → 2016-10-10T19:39:47-07:00"
-                         "3 → 2016-10-10 19:39:58-07:00"
-                         "4 → Monday, October 10, 2016"
-                         "5 → Mon, Oct 10, 2016"
-                         "6 → October 10, 2016"
-                         "7 → Oct 10, 2016"
-                         )) 0 1))))
+             0
+           (string-to-number
+            (substring
+             (ido-completing-read
+              "Style:"
+              '(
+                "1 → 2016-10-10 Monday"
+                "2 → 2016-10-10T19:39:47-07:00"
+                "3 → 2016-10-10 19:39:58-07:00"
+                "4 → Monday, October 10, 2016"
+                "5 → Mon, Oct 10, 2016"
+                "6 → October 10, 2016"
+                "7 → Oct 10, 2016"
+                )) 0 1)))))
     (insert
      (cond
-      ((string-equal -style "1")
+      ((= -style 0)
+       (format-time-string "%Y-%m-%d") ; "2016-10-10"
+       )
+      ((= -style 1)
        (format-time-string "%Y-%m-%d %A") ; "2016-10-10 Monday"
        )
-      ((string-equal -style "2")
+      ((= -style 2)
        (concat
         (format-time-string "%Y-%m-%dT%T")
         ((lambda (-x) (format "%s:%s" (substring -x 0 3) (substring -x 3 5))) (format-time-string "%z")))
        ;; "2016-10-10T19:02:23-07:00"
        )
-      ((string-equal -style "3")
+      ((= -style 3)
        (concat
         (format-time-string "%Y-%m-%d %T")
         ((lambda (-x) (format "%s:%s" (substring -x 0 3) (substring -x 3 5))) (format-time-string "%z")))
        ;; "2016-10-10 19:10:09-07:00"
        )
-      ((string-equal -style "4")
+      ((= -style 4)
        (format-time-string "%A, %B %d, %Y")
        ;; "Monday, October 10, 2016"
        )
-      ((string-equal -style "5")
+      ((= -style 5)
        (format-time-string "%a, %b %d, %Y")
        ;; "Mon, Oct 10, 2016"
        )
-      ((string-equal -style "6")
+      ((= -style 6)
        (format-time-string "%B %d, %Y")
        ;; "October 10, 2016"
        )
-      ((string-equal -style "7")
+      ((= -style 7)
        (format-time-string "%b %d, %Y")
        ;; "Oct 10, 2016"
        )
