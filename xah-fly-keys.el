@@ -1032,36 +1032,35 @@ Version 2015-05-07"
 
 ;; insertion commands
 
-(defun xah-insert-date (&optional *format-style)
+(defun xah-insert-date ()
   "Insert current date and or time.
-Without argument, insert date in this format: yyyy-mm-dd.
-
-• When called with `universal-argument', prompt for a format to use.
-
-When called in lisp code, *ask-format-p should be a positive integer.
-
+Insert date in this format: yyyy-mm-dd.
+When called with `universal-argument', prompt for a format to use.
 If there's text selection, delete it first.
+
+Do not use this function lisp code. Use `format-time-string' directly.
 
 URL `http://ergoemacs.org/emacs/elisp_insert-date-time.html'
 version 2016-10-11"
-  (interactive "p")
+  (interactive)
   (when (use-region-p) (delete-region (region-beginning) (region-end)))
   (let ((-style
-         (if (equal *format-style 1)
-             0
-           (string-to-number
-            (substring
-             (ido-completing-read
-              "Style:"
-              '(
-                "1 → 2016-10-10 Monday"
-                "2 → 2016-10-10T19:39:47-07:00"
-                "3 → 2016-10-10 19:39:58-07:00"
-                "4 → Monday, October 10, 2016"
-                "5 → Mon, Oct 10, 2016"
-                "6 → October 10, 2016"
-                "7 → Oct 10, 2016"
-                )) 0 1)))))
+         (if current-prefix-arg
+             (string-to-number
+              (substring
+               (ido-completing-read
+                "Style:"
+                '(
+                  "1 → 2016-10-10 Monday"
+                  "2 → 2016-10-10T19:39:47-07:00"
+                  "3 → 2016-10-10 19:39:58-07:00"
+                  "4 → Monday, October 10, 2016"
+                  "5 → Mon, Oct 10, 2016"
+                  "6 → October 10, 2016"
+                  "7 → Oct 10, 2016"
+                  )) 0 1))
+           0
+           )))
     (insert
      (cond
       ((= -style 0)
