@@ -108,6 +108,16 @@
 (require 'ido) ; in emacs
 
 
+
+(defcustom
+  xah-fly-key-layout
+  nil
+  "The layout to use. Value is one of \"dvorak\" or \"qwerty\". If nil, dvorak is default."
+  :group 'xah-fly-keys
+  )
+
+(setq xah-fly-key-layout "dvorak")
+
 (defvar xah-fly-command-mode-activate-hook nil "Hook for `xah-fly-command-mode-activate'")
 (defvar xah-fly-insert-mode-activate-hook nil "Hook for `xah-fly-insert-mode-activate'")
 
@@ -719,12 +729,13 @@ Version 2016-07-13"
 If not in `dired', do nothing.
 
 URL `http://ergoemacs.org/emacs/elisp_dired_rename_space_to_underscore.html'
-Version 2016-10-04"
+Version 2016-10-12"
   (interactive)
   (if (equal major-mode 'dired-mode)
       (progn
-        (mapc (lambda (x)
-                (rename-file x (replace-regexp-in-string " " "_" x)))
+        (mapc (lambda (fname)
+                (when (string-match " " fname )
+                  (rename-file fname (replace-regexp-in-string " " "_" fname))))
               (dired-get-marked-files ))
         (revert-buffer))
     (user-error "Not in dired")))
@@ -734,22 +745,23 @@ Version 2016-10-04"
 If not in `dired', do nothing.
 
 URL `http://ergoemacs.org/emacs/elisp_dired_rename_space_to_underscore.html'
-Version 2016-10-04"
+Version 2016-10-12"
   (interactive)
   (if (equal major-mode 'dired-mode)
       (progn
-        (mapc (lambda (x)
-                (rename-file x (replace-regexp-in-string " " "-" x)))
+        (mapc (lambda (fname)
+                (when (string-match " " fname )
+                  (rename-file fname (replace-regexp-in-string " " "-" fname))))
               (dired-get-marked-files ))
         (revert-buffer))
     (user-error "Not in dired")))
 
 (defun xah-cycle-hyphen-underscore-space ()
-  "Cycle {underscore, space, hypen} chars of current word or text selection.
+  "Cycle {underscore, space, hypen} chars of current line or text selection.
 When called repeatedly, this command cycles the {“_”, “-”, “ ”} characters, in that order.
 
 URL `http://ergoemacs.org/emacs/elisp_change_space-hyphen_underscore.html'
-Version 2016-10-04"
+Version 2016-10-13"
   (interactive)
   ;; this function sets a property 「'state」. Possible values are 0 to length of -charArray.
   (let (-p1 -p2)
@@ -757,12 +769,9 @@ Version 2016-10-04"
         (progn
           (setq -p1 (region-beginning))
           (setq -p2 (region-end)))
-      (save-excursion
-        ;; 2016-01-14 not use (bounds-of-thing-at-point 'symbol), because if at end of buffer, it returns nil. also, it's syntax table dependent
-        (skip-chars-backward "-_[:alnum:]")
-        (setq -p1 (point))
-        (skip-chars-forward "-_[:alnum:]")
-        (setq -p2 (point))))
+      (progn
+        (setq -p1 (line-beginning-position))
+        (setq -p2 (line-end-position))))
     (let* ((-inputText (buffer-substring-no-properties -p1 -p2))
            (-charArray ["_" "-" " "])
            (-length (length -charArray))
@@ -1038,7 +1047,7 @@ Insert date in this format: yyyy-mm-dd.
 When called with `universal-argument', prompt for a format to use.
 If there's text selection, delete it first.
 
-Do not use this function lisp code. Use `format-time-string' directly.
+Do not use this function in lisp code. Call `format-time-string' directly.
 
 URL `http://ergoemacs.org/emacs/elisp_insert-date-time.html'
 version 2016-10-11"
@@ -1934,13 +1943,22 @@ If `universal-argument' is called first, do switch frame."
   (interactive)
   (car (rassoc charstr xah-dvorak-to-qwerty-kmap)))
 
-(defun xah-fly-map-keys (kmap-name key-cmd-alist)
+(defun xah-fly-map-keys (*kmap-name *key-cmd-alist)
   "similar to `define-key' but map over a alist."
   (interactive)
   (mapc
-   (lambda (pair)
-     (define-key kmap-name (kbd (car pair)) (cdr pair)))
-   key-cmd-alist))
+   (lambda (-pair)
+     (define-key *kmap-name (xah-fly-kbd (car -pair)) (cdr -pair)))
+   *key-cmd-alist))
+
+(defun xah-fly-kbd (*arg)
+  "similar to `kbd' but are translated to current `xah-fly-key-layout' first,
+*arg must be a single char."
+  (interactive)
+  (if (or (null xah-fly-key-layout)
+          (string-equal xah-fly-key-layout "dvorak"))
+      (kbd *arg)
+    (progn (kbd (xah-dvorak-to-qwerty *arg)))))
 
 
 ;; keymaps
@@ -1958,25 +1976,32 @@ If `universal-argument' is called first, do switch frame."
 ;; commands in search-map and facemenu-keymap
 (xah-fly-map-keys
  (define-prefix-command 'xah-highlight-keymap)
- '(("." . isearch-forward-symbol-at-point)
+ '(
+
    ("b" . facemenu-set-bold)
    ("f" . font-lock-fontify-block)
    ("c" . center-line)
    ("d" . facemenu-set-default)
-   ("h ." . highlight-symbol-at-point)
-   ("h f" . hi-lock-find-patterns)
-   ("h l" . highlight-lines-matching-regexp)
-   ("h p" . highlight-phrase)
-   ("h r" . highlight-regexp)
-   ("h u" . unhighlight-regexp)
-   ("h w" . hi-lock-write-interactive-patterns)
+
+   ("h" . highlight-symbol-at-point)
+   ;; temp
+   ("." . isearch-forward-symbol-at-point)
+   ("1" . hi-lock-find-patterns)
+   ("2" . highlight-lines-matching-regexp)
+   ("3" . highlight-phrase)
+   ("4" . highlight-regexp)
+   ("5" . unhighlight-regexp)
+   ("6" . hi-lock-write-interactive-patterns)
+   ("s" . isearch-forward-symbol)
+   ("w" . isearch-forward-word)
+
    ("i" . facemenu-set-italic)
    ("l" . facemenu-set-bold-italic)
    ("o" . facemenu-set-face)
    ("p" . center-paragraph)
-   ("s" . isearch-forward-symbol)
+   
    ("u" . facemenu-set-underline)
-   ("w" . isearch-forward-word)))
+   ))
 
 (xah-fly-map-keys
  (define-prefix-command 'xah-leader-tab-keymap)
@@ -1988,17 +2013,18 @@ If `universal-argument' is called first, do switch frame."
    ("r" . indent-region)
    ("s" . indent-sexp)
 
-   ("e '" . abbrev-prefix-mark)
-   ("e e" . edit-abbrevs)
-   ("e p" . expand-abbrev)
-   ("e r" . expand-region-abbrevs)
-   ("e u" . unexpand-abbrev)
-   ("e g" . add-global-abbrev)
-   ("e a" . add-mode-abbrev)
-   ("e v" . inverse-add-global-abbrev)
-   ("e l" . inverse-add-mode-abbrev)
-   ("e n" . expand-jump-to-next-slot)
-   ("e p" . expand-jump-to-previous-slot)))
+   ;; temp
+   ("1" . abbrev-prefix-mark)
+   ("2" . edit-abbrevs)
+   ("3" . expand-abbrev)
+   ("4" . expand-region-abbrevs)
+   ("5" . unexpand-abbrev)
+   ("6" . add-global-abbrev)
+   ("7" . add-mode-abbrev)
+   ("8" . inverse-add-global-abbrev)
+   ("9" . inverse-add-mode-abbrev)
+   ("0" . expand-jump-to-next-slot)
+   ("=" . expand-jump-to-previous-slot)))
 
 
 
@@ -2091,16 +2117,6 @@ If `universal-argument' is called first, do switch frame."
    ("n" . narrow-to-region)
    ("o" . nil)
    ("p" . read-only-mode) ; toggle-read-only
-   ("q n" . set-file-name-coding-system)
-   ("q s" . set-next-selection-coding-system)
-   ("q c" . universal-coding-system-argument)
-   ("q f" . set-buffer-file-coding-system)
-   ("q k" . set-keyboard-coding-system)
-   ("q l" . set-language-environment)
-   ("q p" . set-buffer-process-coding-system)
-   ("q r" . revert-buffer-with-coding-system)
-   ("q t" . set-terminal-coding-system)
-   ("q x" . set-selection-coding-system)
    ("r" . nil)
    ("s" . flyspell-buffer)
    ("t" . narrow-to-defun)
@@ -2137,6 +2153,7 @@ If `universal-argument' is called first, do switch frame."
  (define-prefix-command 'xah-leader-t-keymap)
  '(
    ("SPC" . xah-clean-whitespace)
+   ("TAB" . nil)
    ("3" . point-to-register)
    ("4" . jump-to-register)
    ("." . sort-lines)
@@ -2190,6 +2207,23 @@ If `universal-argument' is called first, do switch frame."
    ("W" . xah-insert-double-angle-bracket《》)
    ("y" . xah-insert-double-angle-quote«»)))
 
+(xah-fly-map-keys
+ (define-prefix-command 'xah-coding-system-keymap)
+ '(
+
+   ("n" . set-file-name-coding-system)
+   ("s" . set-next-selection-coding-system)
+   ("c" . universal-coding-system-argument)
+   ("f" . set-buffer-file-coding-system)
+   ("k" . set-keyboard-coding-system)
+   ("l" . set-language-environment)
+   ("p" . set-buffer-process-coding-system)
+   ("r" . revert-buffer-with-coding-system)
+   ("t" . set-terminal-coding-system)
+   ("x" . set-selection-coding-system)
+
+))
+
 (progn
   (define-prefix-command 'xah-fly-leader-key-map)
   (define-key xah-fly-leader-key-map (kbd "SPC") 'xah-fly-insert-mode-activate)
@@ -2220,7 +2254,7 @@ If `universal-argument' is called first, do switch frame."
   (define-key xah-fly-leader-key-map (kbd "9") 'ispell-word)
   (define-key xah-fly-leader-key-map (kbd "0") nil)
 
-  (define-key xah-fly-leader-key-map (kbd "a") 'mark-whole-buffer)
+  (define-key xah-fly-leader-key-map "a" 'mark-whole-buffer)
   (define-key xah-fly-leader-key-map (kbd "b") 'end-of-buffer)
   (define-key xah-fly-leader-key-map (kbd "c") xah-leader-c-keymap)
   (define-key xah-fly-leader-key-map (kbd "d") 'beginning-of-buffer)
@@ -2512,7 +2546,7 @@ If `universal-argument' is called first, do switch frame."
     (define-key xah-fly-key-map (kbd "0") 'xah-backward-punct)
 
     (define-key xah-fly-key-map (kbd "a") (if (fboundp 'smex) 'smex 'execute-extended-command ))
-    (define-key xah-fly-key-map (kbd "b") 'isearch-forward)
+    (define-key xah-fly-key-map "b" 'isearch-forward)
     (define-key xah-fly-key-map (kbd "c") 'previous-line)
     (define-key xah-fly-key-map (kbd "d") 'xah-beginning-of-line-or-block)
     (define-key xah-fly-key-map (kbd "e") 'delete-backward-char)
@@ -2522,7 +2556,7 @@ If `universal-argument' is called first, do switch frame."
     (define-key xah-fly-key-map (kbd "i") 'xah-delete-text-block)
     (define-key xah-fly-key-map (kbd "j") 'xah-cut-line-or-region)
     (define-key xah-fly-key-map (kbd "k") 'yank)
-    (define-key xah-fly-key-map (kbd "l") 'xah-fly-insert-mode-activate-space-after)
+    (define-key xah-fly-key-map (kbd "l") 'xah-fly-insert-mode-activate-space-before)
     (define-key xah-fly-key-map (kbd "m") 'xah-backward-left-bracket)
     (define-key xah-fly-key-map (kbd "n") 'forward-char)
     (define-key xah-fly-key-map (kbd "o") 'open-line)
