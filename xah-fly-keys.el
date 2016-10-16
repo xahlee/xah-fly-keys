@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 5.5.0
+;; Version: 5.6.0
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -724,6 +724,16 @@ Version 2016-07-13"
   (let ((fill-column most-positive-fixnum))
     (fill-region *begin *end)))
 
+(defun xah-comment-dwim ()
+  "Like `comment-dwim', but toggle comment if cursor is not at end of line.
+Version 2016-10-16"
+  (interactive)
+  (if (region-active-p)
+      (comment-dwim nil)
+    (if (eq (point) (line-end-position))
+        (comment-dwim nil)
+      (comment-region (line-beginning-position) (line-end-position)))))
+
 (defun xah-dired-rename-space-to-underscore ()
   "In dired, rename current or marked files by replacing space to underscore _.
 If not in `dired', do nothing.
@@ -1118,7 +1128,7 @@ version 2016-10-11"
 ;;    (format-time-string "%Y-%m-%dT%T")
 ;;    ((lambda (-x) (format "%s:%s" (substring -x 0 3) (substring -x 3 5))) (format-time-string "%z"))))
 
-(defun xah-insert-bracket-pair (*left-bracket *right-bracket)
+(defun xah-insert-bracket-pair (*left-bracket *right-bracket &optional *wrap-method)
   "Insert brackets around selection, word, at point, and maybe move cursor in between.
 
 If there's a text selection, wrap brackets around it.
@@ -1135,7 +1145,7 @@ If cursor is at end of a word, one of the following will happen:
 *left-bracket and *right-bracket are strings.
 
 URL `http://ergoemacs.org/emacs/elisp_insert_brackets_by_pair.html'
-Version 2016-10-07"
+Version 2016-10-13"
   (if (use-region-p)
       (progn ; there's active region
         (let (
@@ -1147,41 +1157,61 @@ Version 2016-10-07"
           (insert *left-bracket)
           (goto-char (+ -p2 2))))
     (progn ; no text selection
-      (if
-          (and
-           (or ; cursor is at end of word or buffer. i.e. xyz▮
-            (looking-at "[^-_[:alnum:]]")
-            (eq (point) (point-max)))
-           (not (or
-                 (eq major-mode 'xah-elisp-mode)
-                 (eq major-mode 'emacs-lisp-mode)
-                 (eq major-mode 'lisp-mode)
-                 (eq major-mode 'lisp-interaction-mode)
-                 (eq major-mode 'common-lisp-mode)
-                 (eq major-mode 'clojure-mode)
-                 (eq major-mode 'xah-clojure-mode)
-                 (eq major-mode 'scheme-mode))))
-          (progn
-            (insert *left-bracket *right-bracket)
-            (search-backward *right-bracket ))
-        (progn
-          (let (-p1 -p2)
-            ;; basically, want all alphanumeric, plus hyphen and underscore, but don't want space or punctuations. Also want chinese.
-            ;; 我有一帘幽梦，不知与谁能共。多少秘密在其中，欲诉无人能懂。
-            (skip-chars-backward "-_[:alnum:]")
-            (setq -p1 (point))
-            (skip-chars-forward "-_[:alnum:]")
-            (setq -p2 (point))
+      (let (-p1 -p2)
+        (cond
+         ((eq *wrap-method 'line)
+          (setq -p1 (line-beginning-position) -p2 (line-end-position))
+          (goto-char -p2)
+          (insert *right-bracket)
+          (goto-char -p1)
+          (insert *left-bracket)
+          (goto-char (+ -p2 (length *left-bracket))))
+         ((eq *wrap-method 'block)
+          (save-excursion
+            (progn
+              (if (re-search-backward "\n[ \t]*\n" nil 'move)
+                  (progn (re-search-forward "\n[ \t]*\n")
+                         (setq -p1 (point)))
+                (setq -p1 (point)))
+              (if (re-search-forward "\n[ \t]*\n" nil 'move)
+                  (progn (re-search-backward "\n[ \t]*\n")
+                         (setq -p2 (point)))
+                (setq -p2 (point))))
             (goto-char -p2)
             (insert *right-bracket)
             (goto-char -p1)
             (insert *left-bracket)
-            (goto-char (+ -p2 (length *left-bracket)))))))))
-
-(defun xah-insert-hyphen ()
-  "Insert a hyphen character."
-  (interactive)
-  (insert "-"))
+            (goto-char (+ -p2 (length *left-bracket)))))
+         (t (if
+                (and
+                 (or ; cursor is at end of word or buffer. i.e. xyz▮
+                  (looking-at "[^-_[:alnum:]]")
+                  (eq (point) (point-max)))
+                 (not (or
+                       (eq major-mode 'xah-elisp-mode)
+                       (eq major-mode 'emacs-lisp-mode)
+                       (eq major-mode 'lisp-mode)
+                       (eq major-mode 'lisp-interaction-mode)
+                       (eq major-mode 'common-lisp-mode)
+                       (eq major-mode 'clojure-mode)
+                       (eq major-mode 'xah-clojure-mode)
+                       (eq major-mode 'scheme-mode))))
+                (progn
+                  (setq -p1 (point) -p2 (point))
+                  (insert *left-bracket *right-bracket)
+                  (search-backward *right-bracket ))
+              (progn
+                ;; wrap around “word”. basically, want all alphanumeric, plus hyphen and underscore, but don't want space or punctuations. Also want chinese chars
+                ;; 我有一帘幽梦，不知与谁能共。多少秘密在其中，欲诉无人能懂。
+                (skip-chars-backward "-_[:alnum:]")
+                (setq -p1 (point))
+                (skip-chars-forward "-_[:alnum:]")
+                (setq -p2 (point))
+                (goto-char -p2)
+                (insert *right-bracket)
+                (goto-char -p1)
+                (insert *left-bracket)
+                (goto-char (+ -p2 (length *left-bracket)))))))))))
 
 (defun xah-insert-paren () (interactive) (xah-insert-bracket-pair "(" ")") )
 (defun xah-insert-square-bracket () (interactive) (xah-insert-bracket-pair "[" "]") )
@@ -1200,7 +1230,12 @@ Version 2016-10-07"
 (defun xah-insert-double-angle-bracket《》 () (interactive) (xah-insert-bracket-pair "《" "》") )
 (defun xah-insert-white-lenticular-bracket〖〗 () (interactive) (xah-insert-bracket-pair "〖" "〗") )
 (defun xah-insert-black-lenticular-bracket【】 () (interactive) (xah-insert-bracket-pair "【" "】") )
-(defun xah-insert-tortoise-shell-bracket〔〕 () (interactive) (xah-insert-bracket-pair "〔" "〕") )
+(defun xah-insert-tortoise-shell-bracket〔〕 () (interactive) (xah-insert-bracket-pair "〔" "〕" 'line) )
+
+(defun xah-insert-hyphen ()
+  "Insert a hyphen character."
+  (interactive)
+  (insert "-"))
 
 (defun xah-insert-string-assignment ()
   "Insert space before cursor"
@@ -1661,7 +1696,7 @@ Only space and tab is considered whitespace here.
 Works on whole buffer or text selection, respects `narrow-to-region'.
 
 URL `http://ergoemacs.org/emacs/elisp_compact_empty_lines.html'
-Version 2016-10-07"
+Version 2016-10-15"
   (interactive
    (if (region-active-p)
        (list (region-beginning) (region-end))
@@ -1671,11 +1706,11 @@ Version 2016-10-07"
   (save-excursion
     (save-restriction
       (narrow-to-region *begin *end)
-      (xah-clean-empty-lines (point-min) (point-max) )
       (progn
         (goto-char (point-min))
         (while (search-forward-regexp "[ \t]+\n" nil "noerror")
           (replace-match "\n")))
+      (xah-clean-empty-lines (point-min) (point-max))
       (progn
         (goto-char (point-max))
         (while (equal (char-before) 32) ; char 32 is space
@@ -1831,14 +1866,14 @@ Version 2015-11-30"
                                "/usr/bin/gvfs-open"
                              "/usr/bin/xdg-open")))
       (start-process "" nil openFileProgram "."))
-    ;; (shell-command "xdg-open .") ;; 2013-02-10 this sometimes froze emacs till the folder is closed. ⁖ with nautilus
+    ;; (shell-command "xdg-open .") ;; 2013-02-10 this sometimes froze emacs till the folder is closed. eg with nautilus
     )))
 
 (defun xah-open-in-external-app ()
   "Open the current file or dired marked files in external app.
 The app is chosen from your OS's preference.
 URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
-Version 2015-01-26"
+Version 2016-10-15"
   (interactive)
   (let* (
          (-file-list
@@ -1856,7 +1891,9 @@ Version 2015-01-26"
            (w32-shell-execute "open" (replace-regexp-in-string "/" "\\" -fpath t t))) -file-list))
        ((string-equal system-type "darwin")
         (mapc
-         (lambda (-fpath) (shell-command (format "open \"%s\"" -fpath)))  -file-list))
+         (lambda (-fpath)
+           (shell-command
+            (concat "open " (shell-quote-argument -fpath))))  -file-list))
        ((string-equal system-type "gnu/linux")
         (mapc
          (lambda (-fpath) (let ((process-connection-type nil))
@@ -1999,7 +2036,7 @@ If `universal-argument' is called first, do switch frame."
    ("l" . facemenu-set-bold-italic)
    ("o" . facemenu-set-face)
    ("p" . center-paragraph)
-   
+
    ("u" . facemenu-set-underline)
    ))
 
@@ -2141,7 +2178,6 @@ If `universal-argument' is called first, do switch frame."
    ("c" . replace-rectangle)
    ("d" . delete-rectangle)
    ("g" . kill-rectangle)
-   ("h" . list-matching-lines)
    ("l" . clear-rectangle)
    ("n" . rectangle-number-lines)
    ("o" . open-rectangle)
@@ -2160,6 +2196,7 @@ If `universal-argument' is called first, do switch frame."
    ("," . sort-numeric-fields)
    ("'" . reverse-region)
    ("d" . mark-defun)
+   ("e" . list-matching-lines)
    ("j" . copy-to-register)
    ("k" . insert-register)
    ("l" . increment-register)
@@ -2237,7 +2274,7 @@ If `universal-argument' is called first, do switch frame."
   (define-key xah-fly-leader-key-map (kbd ",") 'universal-argument)
   (define-key xah-fly-leader-key-map (kbd "-") nil)
   (define-key xah-fly-leader-key-map (kbd "/") nil)
-  (define-key xah-fly-leader-key-map (kbd ";") 'comment-dwim)
+  (define-key xah-fly-leader-key-map (kbd ";") 'xah-comment-dwim)
   (define-key xah-fly-leader-key-map (kbd "=") nil)
   (define-key xah-fly-leader-key-map (kbd "[") nil)
   (define-key xah-fly-leader-key-map (kbd "\\") nil)
@@ -2516,7 +2553,7 @@ If `universal-argument' is called first, do switch frame."
       (define-key xah-fly-key-map (kbd ",") 'xah-shrink-whitespaces)
       (define-key xah-fly-key-map (kbd "-") 'xah-cycle-hyphen-underscore-space)
       (define-key xah-fly-key-map (kbd ".") 'backward-kill-word)
-      (define-key xah-fly-key-map (kbd ";") 'comment-dwim)
+      (define-key xah-fly-key-map (kbd ";") 'xah-comment-dwim)
       (define-key xah-fly-key-map (kbd "/") 'xah-backward-equal-sign)
       (define-key xah-fly-key-map (kbd "\\") nil)
       (define-key xah-fly-key-map (kbd "=") 'xah-forward-equal-sign)
@@ -2540,7 +2577,7 @@ If `universal-argument' is called first, do switch frame."
 
     (define-key xah-fly-key-map (kbd "3") 'delete-other-windows)
     (define-key xah-fly-key-map (kbd "4") 'split-window-below)
-    (define-key xah-fly-key-map (kbd "5") 'xah-goto-matching-bracket)
+    (define-key xah-fly-key-map (kbd "5") 'delete-char)
     (define-key xah-fly-key-map (kbd "6") 'xah-select-block)
     (define-key xah-fly-key-map (kbd "9") 'xah-select-text-in-quote)
     (define-key xah-fly-key-map (kbd "0") 'xah-backward-punct)
@@ -2570,7 +2607,7 @@ If `universal-argument' is called first, do switch frame."
     (define-key xah-fly-key-map (kbd "w") 'xah-next-window-or-frame)
     (define-key xah-fly-key-map (kbd "x") nil)
     (define-key xah-fly-key-map (kbd "y") 'set-mark-command)
-    (define-key xah-fly-key-map (kbd "z") nil)
+    (define-key xah-fly-key-map (kbd "z") 'xah-goto-matching-bracket)
 
     ;;
     ))
