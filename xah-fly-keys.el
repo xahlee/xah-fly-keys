@@ -378,6 +378,18 @@ Version 2015-03-24"
 ;;   (posix-search-backward "[ \t\n]+" nil t)
 ;;   )
 
+(defun xah-display-page-break-as-line ()
+  "Display the formfeed ^L char as line.
+Version 2016-10-11"
+  (interactive)
+  ;; 2016-10-11 thanks to Steve Purcell's page-break-lines.el
+  (progn
+    (when (null buffer-display-table)
+      (setq buffer-display-table (make-display-table)))
+    (aset buffer-display-table ?\^L
+          (vconcat (make-list 70 (make-glyph-code ?─ 'font-lock-comment-face))))
+    (redraw-frame)))
+
 
 ;; text selection
 
@@ -557,7 +569,7 @@ Call this command again to shrink more. 3 calls will remove all whitespaces.
 URL `http://ergoemacs.org/emacs/emacs_shrink_whitespace.html'
 Version 2015-11-04"
   (interactive)
-  (let ((pos0 (point))
+  (let ((-p0 (point))
         -line-has-char-p ; current line contains non-white space chars
         -has-space-tab-neighbor-p
         -whitespace-begin -whitespace-end
@@ -573,14 +585,14 @@ Version 2015-11-04"
       (beginning-of-line)
       (setq -line-has-char-p (search-forward-regexp "[[:graph:]]" (line-end-position) t))
 
-      (goto-char pos0)
+      (goto-char -p0)
       (skip-chars-backward "\t ")
       (setq -space-or-tab-begin (point))
 
       (skip-chars-backward "\t \n")
       (setq -whitespace-begin (point))
 
-      (goto-char pos0)
+      (goto-char -p0)
       (skip-chars-forward "\t ")
       (setq -space-or-tab-end (point))
       (skip-chars-forward "\t \n")
@@ -642,7 +654,7 @@ When the command is called for the first time, it checks the current line's leng
 
 Repeated call toggles between formatting to 1 long line and multiple lines.
 URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
-Version 2016-07-13"
+Version 2016-10-19"
   (interactive)
   ;; This command symbol has a property “'compact-p”, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
   (let (
@@ -666,7 +678,7 @@ Version 2016-07-13"
             (progn (re-search-backward -blanks-regex)
                    (setq -p2 (point)))
           (setq -p2 (point)))))
-    (save-excursion
+    (progn
       (if -compact-p
           (xah-reformat-to-multi-lines-region -p1 -p2)
         (xah-reformat-to-single-line-region -p1 -p2))
@@ -675,34 +687,32 @@ Version 2016-07-13"
 (defun xah-reformat-to-single-line-region (*begin *end)
   "Replace whitespaces at end of each line by one space.
 URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
-Version 2016-10-07"
+Version 2016-10-19"
   (interactive "r")
   (save-excursion
     (save-restriction
       (narrow-to-region *begin *end)
       (goto-char (point-min))
       (while
-          (search-forward "\n" nil 'NOERROR)
+          (search-forward-regexp "\n\\|\t" nil 'NOERROR)
         (replace-match " "))
       (goto-char (point-min))
       (while
-          (search-forward-regexp "[ \t][ \t]+" nil 'NOERROR)
+          (search-forward-regexp "  +" nil 'NOERROR)
         (replace-match " ")))))
 
 (defun xah-reformat-to-multi-lines-region (*begin *end)
   "replace space by a newline char at places so lines are not long.
 URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
-Version 2016-09-28"
+Version 2016-10-19"
   (interactive "r")
-  (save-excursion
-    (save-restriction
-      (narrow-to-region *begin *end)
-      (goto-char (point-min))
-      (while
-          (search-forward " " nil 'NOERROR)
-        (when (> (- (point) (line-beginning-position)) fill-column)
-          (replace-match "\n" )))
-      )))
+  (save-restriction
+    (narrow-to-region *begin *end)
+    (goto-char (point-min))
+    (while
+        (search-forward " " nil 'NOERROR)
+      (when (> (- (point) (line-beginning-position)) fill-column)
+        (replace-match "\n" )))))
 
 (defun xah-unfill-paragraph ()
   "Replace newline chars in current paragraph by single spaces.
@@ -726,13 +736,23 @@ Version 2016-07-13"
 
 (defun xah-comment-dwim ()
   "Like `comment-dwim', but toggle comment if cursor is not at end of line.
-Version 2016-10-16"
+
+URL `http://ergoemacs.org/emacs/emacs_toggle_comment_by_line.html'
+Version 2016-10-25"
   (interactive)
   (if (region-active-p)
       (comment-dwim nil)
-    (if (eq (point) (line-end-position))
-        (comment-dwim nil)
-      (comment-region (line-beginning-position) (line-end-position)))))
+    (let ((-lbp (line-beginning-position))
+          (-lep (line-end-position)))
+      (if (eq -lbp -lep)
+          (progn
+            (comment-dwim nil))
+        (if (eq (point) -lep)
+            (progn
+              (comment-dwim nil))
+          (progn
+            (comment-or-uncomment-region -lbp -lep)
+            (forward-line )))))))
 
 (defun xah-dired-rename-space-to-underscore ()
   "In dired, rename current or marked files by replacing space to underscore _.
@@ -767,21 +787,36 @@ Version 2016-10-12"
     (user-error "Not in dired")))
 
 (defun xah-cycle-hyphen-underscore-space ()
-  "Cycle {underscore, space, hypen} chars of current line or text selection.
+  "Cycle {underscore, space, hypen} chars of text of selection or inside quote or line.
 When called repeatedly, this command cycles the {“_”, “-”, “ ”} characters, in that order.
 
+Works on:
+① region (text selection) if active.
+② inside string quote or brackets of current line, if exist.
+③ current line.
+
 URL `http://ergoemacs.org/emacs/elisp_change_space-hyphen_underscore.html'
-Version 2016-10-13"
+Version 2016-10-26"
   (interactive)
   ;; this function sets a property 「'state」. Possible values are 0 to length of -charArray.
   (let (-p1 -p2)
     (if (use-region-p)
+        (setq -p1 (region-beginning) -p2 (region-end))
+      (if (nth 3 (syntax-ppss))
+          (save-excursion
+            (let (
+                  (-skipChars
+                   (if (boundp 'xah-brackets)
+                       (concat "^\"" xah-brackets)
+                     "^\"<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕（）"))
+                  )
+              (skip-chars-backward -skipChars)
+              (setq -p1 (point))
+              (skip-chars-forward -skipChars)
+              (setq -p2 (point))))
         (progn
-          (setq -p1 (region-beginning))
-          (setq -p2 (region-end)))
-      (progn
-        (setq -p1 (line-beginning-position))
-        (setq -p2 (line-end-position))))
+          (setq -p1 (line-beginning-position))
+          (setq -p2 (line-end-position)))))
     (let* ((-inputText (buffer-substring-no-properties -p1 -p2))
            (-charArray ["_" "-" " "])
            (-length (length -charArray))
@@ -2127,6 +2162,10 @@ If `universal-argument' is called first, do switch frame."
  (define-prefix-command 'xah-harmless-keymap)
  '(
    ("SPC" . whitespace-mode)
+   ("RET" . nil)
+   ("TAB" . nil)
+   ("DEL" . nil)
+   ("," . abbrev-mode)
    ("." . toggle-frame-fullscreen)
    ("'" . frame-configuration-to-register)
    (";" . window-configuration-to-register)
@@ -2136,7 +2175,7 @@ If `universal-argument' is called first, do switch frame."
    ("5" . visual-line-mode)
    ("6" . calendar)
    ("7" . calc)
-   ("8" . shell)
+   ("8" . nil)
    ("9" . shell-command)
    ("0" . shell-command-on-region)
    ("a" . text-scale-adjust)
@@ -2148,16 +2187,18 @@ If `universal-argument' is called first, do switch frame."
    ("g" . nil)
    ("h" . widen)
    ("i" . make-frame-command)
+   ("j" . nil)
    ("k" . menu-bar-open)
    ("l" . toggle-word-wrap)
    ("m" . global-linum-mode)
    ("n" . narrow-to-region)
    ("o" . nil)
    ("p" . read-only-mode) ; toggle-read-only
+   ("q" . nil)
    ("r" . nil)
    ("s" . flyspell-buffer)
    ("t" . narrow-to-defun)
-   ("u" . nil)
+   ("u" . shell)
    ("v" . variable-pitch-mode)
    ("w" . eww)
    ("x" . save-some-buffers)
@@ -2268,55 +2309,55 @@ If `universal-argument' is called first, do switch frame."
   (define-key xah-fly-leader-key-map (kbd "RET") (if (fboundp 'smex) 'smex 'execute-extended-command ))
   (define-key xah-fly-leader-key-map (kbd "TAB") xah-leader-tab-keymap)
 
-  (define-key xah-fly-leader-key-map (kbd ".") xah-highlight-keymap)
+  (define-key xah-fly-leader-key-map "." xah-highlight-keymap)
 
-  (define-key xah-fly-leader-key-map (kbd "'") 'xah-fill-or-unfill)
-  (define-key xah-fly-leader-key-map (kbd ",") 'universal-argument)
-  (define-key xah-fly-leader-key-map (kbd "-") nil)
-  (define-key xah-fly-leader-key-map (kbd "/") nil)
-  (define-key xah-fly-leader-key-map (kbd ";") 'xah-comment-dwim)
-  (define-key xah-fly-leader-key-map (kbd "=") nil)
-  (define-key xah-fly-leader-key-map (kbd "[") nil)
+  (define-key xah-fly-leader-key-map "'" 'xah-fill-or-unfill)
+  (define-key xah-fly-leader-key-map "," 'universal-argument)
+  (define-key xah-fly-leader-key-map "-" 'xah-display-page-break-as-line)
+  (define-key xah-fly-leader-key-map "/" nil)
+  (define-key xah-fly-leader-key-map ";" nil)
+  (define-key xah-fly-leader-key-map "=" nil)
+  (define-key xah-fly-leader-key-map "[" nil)
   (define-key xah-fly-leader-key-map (kbd "\\") nil)
-  (define-key xah-fly-leader-key-map (kbd "`") nil)
+  (define-key xah-fly-leader-key-map "`" nil)
 
-  (define-key xah-fly-leader-key-map (kbd "1") nil)
-  (define-key xah-fly-leader-key-map (kbd "2") nil)
-  (define-key xah-fly-leader-key-map (kbd "3") 'delete-window)
-  (define-key xah-fly-leader-key-map (kbd "4") 'split-window-right)
-  (define-key xah-fly-leader-key-map (kbd "5") nil)
-  (define-key xah-fly-leader-key-map (kbd "6") nil)
-  (define-key xah-fly-leader-key-map (kbd "7") nil)
-  (define-key xah-fly-leader-key-map (kbd "8") nil)
-  (define-key xah-fly-leader-key-map (kbd "9") 'ispell-word)
-  (define-key xah-fly-leader-key-map (kbd "0") nil)
+  (define-key xah-fly-leader-key-map "1" nil)
+  (define-key xah-fly-leader-key-map "2" nil)
+  (define-key xah-fly-leader-key-map "3" 'delete-window)
+  (define-key xah-fly-leader-key-map "4" 'split-window-right)
+  (define-key xah-fly-leader-key-map "5" nil)
+  (define-key xah-fly-leader-key-map "6" nil)
+  (define-key xah-fly-leader-key-map "7" nil)
+  (define-key xah-fly-leader-key-map "8" nil)
+  (define-key xah-fly-leader-key-map "9" 'ispell-word)
+  (define-key xah-fly-leader-key-map "0" nil)
 
   (define-key xah-fly-leader-key-map "a" 'mark-whole-buffer)
-  (define-key xah-fly-leader-key-map (kbd "b") 'end-of-buffer)
-  (define-key xah-fly-leader-key-map (kbd "c") xah-leader-c-keymap)
-  (define-key xah-fly-leader-key-map (kbd "d") 'beginning-of-buffer)
-  (define-key xah-fly-leader-key-map (kbd "e") xah-insertion-keymap)
-  (define-key xah-fly-leader-key-map (kbd "f") 'xah-search-current-word)
-  (define-key xah-fly-leader-key-map (kbd "g") 'isearch-forward)
-  (define-key xah-fly-leader-key-map (kbd "h") 'xah-help-keymap)
-  (define-key xah-fly-leader-key-map (kbd "i") 'xah-copy-file-path)
-  (define-key xah-fly-leader-key-map (kbd "j") 'xah-cut-all-or-region)
-  (define-key xah-fly-leader-key-map (kbd "k") 'yank)
-  (define-key xah-fly-leader-key-map (kbd "l") 'recenter-top-bottom)
-  (define-key xah-fly-leader-key-map (kbd "m") 'dired-jump)
-  (define-key xah-fly-leader-key-map (kbd "n") xah-harmless-keymap)
-  (define-key xah-fly-leader-key-map (kbd "o") 'exchange-point-and-mark)
-  (define-key xah-fly-leader-key-map (kbd "p") 'query-replace)
-  (define-key xah-fly-leader-key-map (kbd "q") 'xah-copy-all-or-region)
-  (define-key xah-fly-leader-key-map (kbd "r") xah-edit-cmds-keymap)
-  (define-key xah-fly-leader-key-map (kbd "s") 'save-buffer)
-  (define-key xah-fly-leader-key-map (kbd "t") xah-leader-t-keymap)
-  (define-key xah-fly-leader-key-map (kbd "u") 'switch-to-buffer)
-  (define-key xah-fly-leader-key-map (kbd "v") nil)
-  (define-key xah-fly-leader-key-map (kbd "w") xah-danger-keymap)
-  (define-key xah-fly-leader-key-map (kbd "x") nil)
-  (define-key xah-fly-leader-key-map (kbd "y") xah-leader-i-keymap)
-  (define-key xah-fly-leader-key-map (kbd "z") nil))
+  (define-key xah-fly-leader-key-map "b" 'end-of-buffer)
+  (define-key xah-fly-leader-key-map "c" xah-leader-c-keymap)
+  (define-key xah-fly-leader-key-map "d" 'beginning-of-buffer)
+  (define-key xah-fly-leader-key-map "e" xah-insertion-keymap)
+  (define-key xah-fly-leader-key-map "f" 'xah-search-current-word)
+  (define-key xah-fly-leader-key-map "g" 'isearch-forward)
+  (define-key xah-fly-leader-key-map "h" 'xah-help-keymap)
+  (define-key xah-fly-leader-key-map "i" 'xah-copy-file-path)
+  (define-key xah-fly-leader-key-map "j" 'xah-cut-all-or-region)
+  (define-key xah-fly-leader-key-map "k" 'yank)
+  (define-key xah-fly-leader-key-map "l" 'recenter-top-bottom)
+  (define-key xah-fly-leader-key-map "m" 'dired-jump)
+  (define-key xah-fly-leader-key-map "n" xah-harmless-keymap)
+  (define-key xah-fly-leader-key-map "o" 'exchange-point-and-mark)
+  (define-key xah-fly-leader-key-map "p" 'query-replace)
+  (define-key xah-fly-leader-key-map "q" 'xah-copy-all-or-region)
+  (define-key xah-fly-leader-key-map "r" xah-edit-cmds-keymap)
+  (define-key xah-fly-leader-key-map "s" 'save-buffer)
+  (define-key xah-fly-leader-key-map "t" xah-leader-t-keymap)
+  (define-key xah-fly-leader-key-map "u" 'switch-to-buffer)
+  (define-key xah-fly-leader-key-map "v" nil)
+  (define-key xah-fly-leader-key-map "w" xah-danger-keymap)
+  (define-key xah-fly-leader-key-map "x" nil)
+  (define-key xah-fly-leader-key-map "y" xah-leader-i-keymap)
+  (define-key xah-fly-leader-key-map "z" nil))
 
 
 ;;;; misc
@@ -2472,6 +2513,7 @@ If `universal-argument' is called first, do switch frame."
 
       (define-key xah-fly-key-map (kbd "C-1") 'xah-pop-local-mark-ring)
       (define-key xah-fly-key-map (kbd "C-2") 'pop-global-mark)
+      (define-key xah-fly-key-map (kbd "C-SPC") 'xah-fly-leader-key-map)
 
       (define-key xah-fly-key-map (kbd "C-a") 'mark-whole-buffer)
       (define-key xah-fly-key-map (kbd "C-k") 'yank-pop)
@@ -2545,8 +2587,8 @@ If `universal-argument' is called first, do switch frame."
   (interactive)
   (progn
     (progn ; need shift key
-      (define-key xah-fly-key-map (kbd "~") nil)
-      (define-key xah-fly-key-map (kbd ":") nil) ;
+      (define-key xah-fly-key-map "~" nil)
+      (define-key xah-fly-key-map ":" nil) ;
       )
     (progn ; special
       (define-key xah-fly-key-map (kbd "'") 'xah-reformat-lines)
