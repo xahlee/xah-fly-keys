@@ -681,20 +681,54 @@ Version 2016-10-19"
     (progn
       (if -compact-p
           (xah-reformat-to-multi-lines-region -p1 -p2)
-        (xah-reformat-to-single-line-region -p1 -p2))
+        (xah-replace-whitespaces-to-1 -p1 -p2))
       (put this-command 'compact-p (not -compact-p)))))
 
 (defun xah-reformat-to-single-line-region (*begin *end)
-  "Replace whitespaces at end of each line by one space.
+  "Replace whitespaces at end line by one space or 1 return.
+Basically, collapse whitespaces. But 2 or more newline will collapse to 1.
 URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
-Version 2016-10-19"
+Version 2016-10-30"
   (interactive "r")
   (save-excursion
     (save-restriction
       (narrow-to-region *begin *end)
       (goto-char (point-min))
       (while
-          (search-forward-regexp "\n\\|\t" nil 'NOERROR)
+          (search-forward-regexp "\n\n+" nil 'NOERROR)
+        (replace-match ",,j0mxwz9jiv"))
+      (goto-char (point-min))
+      (while
+          (search-forward "\t" nil 'NOERROR)
+        (replace-match " "))
+      (goto-char (point-min))
+      (while
+          (search-forward-regexp "\n" nil 'NOERROR)
+        (replace-match " "))
+      (goto-char (point-min))
+      (while
+          (search-forward-regexp "  +" nil 'NOERROR)
+        (replace-match " "))
+      (goto-char (point-min))
+      (while
+          (search-forward ",,j0mxwz9jiv" nil 'NOERROR)
+        (replace-match "\n\n")))))
+
+(defun xah-replace-whitespaces-to-1 (*begin *end)
+  "Replace whitespaces by one space.
+URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
+Version 2016-11-01"
+  (interactive "r")
+  (save-excursion
+    (save-restriction
+      (narrow-to-region *begin *end)
+      (goto-char (point-min))
+      (while
+          (search-forward "\n" nil 'NOERROR)
+        (replace-match " "))
+      (goto-char (point-min))
+      (while
+          (search-forward "\t" nil 'NOERROR)
         (replace-match " "))
       (goto-char (point-min))
       (while
@@ -787,16 +821,16 @@ Version 2016-10-12"
     (user-error "Not in dired")))
 
 (defun xah-cycle-hyphen-underscore-space ()
-  "Cycle {underscore, space, hypen} chars of text of selection or inside quote or line.
+  "Cycle {underscore, space, hypen} chars in selection or inside quote or line.
 When called repeatedly, this command cycles the {“_”, “-”, “ ”} characters, in that order.
 
 Works on:
 ① region (text selection) if active.
-② inside string quote or brackets of current line, if exist.
+② text inside string quote, if is.
 ③ current line.
 
 URL `http://ergoemacs.org/emacs/elisp_change_space-hyphen_underscore.html'
-Version 2016-10-26"
+Version 2016-10-27"
   (interactive)
   ;; this function sets a property 「'state」. Possible values are 0 to length of -charArray.
   (let (-p1 -p2)
@@ -804,16 +838,10 @@ Version 2016-10-26"
         (setq -p1 (region-beginning) -p2 (region-end))
       (if (nth 3 (syntax-ppss))
           (save-excursion
-            (let (
-                  (-skipChars
-                   (if (boundp 'xah-brackets)
-                       (concat "^\"" xah-brackets)
-                     "^\"<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕（）"))
-                  )
-              (skip-chars-backward -skipChars)
-              (setq -p1 (point))
-              (skip-chars-forward -skipChars)
-              (setq -p2 (point))))
+            (skip-chars-backward "^\"")
+            (setq -p1 (point))
+            (skip-chars-forward "^\"")
+            (setq -p2 (point)))
         (progn
           (setq -p1 (line-beginning-position))
           (setq -p2 (line-end-position)))))
@@ -1168,7 +1196,14 @@ version 2016-10-11"
 
 If there's a text selection, wrap brackets around it.
 
-Else, if cursor is inside a word, wrap brackets around it
+If there's no text selection, and *wrap-method is non-nil,
+
+ *wrap-method must be either 'line or 'block.
+ 'block means between empty lines.
+
+ If *wrap-method is nil, then
+
+ if cursor is inside a word, wrap brackets around it
 
  xy▮z → (xyz)
 
@@ -1180,7 +1215,7 @@ If cursor is at end of a word, one of the following will happen:
 *left-bracket and *right-bracket are strings.
 
 URL `http://ergoemacs.org/emacs/elisp_insert_brackets_by_pair.html'
-Version 2016-10-13"
+Version 2016-10-28"
   (if (use-region-p)
       (progn ; there's active region
         (let (
@@ -1259,7 +1294,7 @@ Version 2016-10-13"
 (defun xah-insert-ascii-double-quote () (interactive) (xah-insert-bracket-pair "\"" "\"") )
 (defun xah-insert-ascii-single-quote () (interactive) (xah-insert-bracket-pair "'" "'") )
 (defun xah-insert-emacs-quote () (interactive) (xah-insert-bracket-pair "`" "'") )
-(defun xah-insert-corner-bracket「」 () (interactive) (xah-insert-bracket-pair "「" "」") )
+(defun xah-insert-corner-bracket「」 () (interactive) (xah-insert-bracket-pair "「" "」" ) )
 (defun xah-insert-white-corner-bracket『』 () (interactive) (xah-insert-bracket-pair "『" "』") )
 (defun xah-insert-angle-bracket〈〉 () (interactive) (xah-insert-bracket-pair "〈" "〉") )
 (defun xah-insert-double-angle-bracket《》 () (interactive) (xah-insert-bracket-pair "《" "》") )
