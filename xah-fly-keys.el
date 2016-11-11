@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 5.6.0
+;; Version: 5.6.1
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -793,7 +793,7 @@ Version 2016-10-25"
 If not in `dired', do nothing.
 
 URL `http://ergoemacs.org/emacs/elisp_dired_rename_space_to_underscore.html'
-Version 2016-10-12"
+Version 2016-11-09"
   (interactive)
   (if (equal major-mode 'dired-mode)
       (progn
@@ -801,7 +801,8 @@ Version 2016-10-12"
                 (when (string-match " " fname )
                   (rename-file fname (replace-regexp-in-string " " "_" fname))))
               (dired-get-marked-files ))
-        (revert-buffer))
+        (revert-buffer)
+        (forward-line ))
     (user-error "Not in dired")))
 
 (defun xah-dired-rename-space-to-hyphen ()
@@ -820,31 +821,40 @@ Version 2016-10-12"
         (revert-buffer))
     (user-error "Not in dired")))
 
-(defun xah-cycle-hyphen-underscore-space ()
-  "Cycle {underscore, space, hypen} chars in selection or inside quote or line.
+(defun xah-cycle-hyphen-underscore-space ( &optional *begin *end )
+  "Cycle {underscore, space, hypen} chars in selection or inside quote/bracket or line.
 When called repeatedly, this command cycles the {“_”, “-”, “ ”} characters, in that order.
 
-Works on:
-① region (text selection) if active.
-② text inside string quote, if is.
-③ current line.
+The region to work on is by this order:
+① if there's active region (text selection), use that.
+② If cursor is string quote or any type of bracket, and is within current line, work on that region.
+③ else, work on current line.
 
 URL `http://ergoemacs.org/emacs/elisp_change_space-hyphen_underscore.html'
-Version 2016-10-27"
+Version 2016-11-11"
   (interactive)
   ;; this function sets a property 「'state」. Possible values are 0 to length of -charArray.
   (let (-p1 -p2)
-    (if (use-region-p)
-        (setq -p1 (region-beginning) -p2 (region-end))
-      (if (nth 3 (syntax-ppss))
-          (save-excursion
-            (skip-chars-backward "^\"")
+    (if (and (not (null *begin)) (not (null *end)))
+        (progn (setq -p1 *begin -p2 *end))
+      (if (use-region-p)
+          (setq -p1 (region-beginning) -p2 (region-end))
+        (if (nth 3 (syntax-ppss))
+            (save-excursion
+              (skip-chars-backward "^\"")
+              (setq -p1 (point))
+              (skip-chars-forward "^\"")
+              (setq -p2 (point)))
+          (let (
+                (-skipChars
+                 (if (boundp 'xah-brackets)
+                     (concat "^\"" xah-brackets)
+                   "^\"<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕（）")))
+            (skip-chars-backward -skipChars (line-beginning-position))
             (setq -p1 (point))
-            (skip-chars-forward "^\"")
-            (setq -p2 (point)))
-        (progn
-          (setq -p1 (line-beginning-position))
-          (setq -p2 (line-end-position)))))
+            (skip-chars-forward -skipChars (line-end-position))
+            (setq -p2 (point))
+            (set-mark -p1)))))
     (let* ((-inputText (buffer-substring-no-properties -p1 -p2))
            (-charArray ["_" "-" " "])
            (-length (length -charArray))
