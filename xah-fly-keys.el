@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 5.6.1
+;; Version: 5.7.1
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -318,6 +318,27 @@ Version 2016-07-23"
   (interactive)
   (when (xah-forward-quote)
     (xah-forward-quote)))
+
+(defun xah-forward-quote-smart ()
+  "Move cursor to the current or next string quote.
+Place cursor at the position after the left quote.
+Repeated call will find the next string.
+URL `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
+Version 2016-11-17"
+  (interactive)
+  (let ((-pos (point)))
+    (if (eq this-command last-command)
+        (progn
+          (backward-up-list 1 'ESCAPE-STRINGS 'NO-SYNTAX-CROSSING)
+          (forward-sexp)
+          (search-forward-regexp "\\\"" nil t))
+      (if (nth 3 (syntax-ppss))
+          (progn
+            (backward-up-list 1 'ESCAPE-STRINGS 'NO-SYNTAX-CROSSING)
+            (right-char ))
+        (progn (search-forward-regexp "\\\"" nil t))))
+    (when (<= (point) -pos)
+      (progn (search-forward-regexp "\\\"" nil t)))))
 
 (defun xah-backward-quote ()
   "Move cursor to the previous occurrence of \".
@@ -1719,7 +1740,6 @@ version 2016-01-28"
             ("java" . "javac")
             ;; ("pov" . "/usr/local/bin/povray +R2 +A0.1 +J1.2 +Am2 +Q9 +H480 +W640")
             ))
-
          -fname
          -fSuffix
          -prog-name
@@ -2645,7 +2665,7 @@ If `universal-argument' is called first, do switch frame."
       (define-key xah-fly-key-map (kbd "\\") nil)
       (define-key xah-fly-key-map (kbd "=") 'xah-forward-equal-sign)
       (define-key xah-fly-key-map (kbd "[") 'xah-backward-quote )
-      (define-key xah-fly-key-map (kbd "]") 'xah-forward-quote-twice)
+      (define-key xah-fly-key-map (kbd "]") 'xah-forward-quote-smart)
       (define-key xah-fly-key-map (kbd "`") 'other-frame)
       (define-key xah-fly-key-map (kbd "SPC") xah-fly-leader-key-map)
       (define-key xah-fly-key-map (kbd "DEL") xah-fly-leader-key-map) ; for kinesis
