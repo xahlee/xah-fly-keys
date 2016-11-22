@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 5.7.1
+;; Version: 5.7.2
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -252,13 +252,18 @@ Version 2015-10-01"
 If cursor is not on a bracket, call `backward-up-list'.
 The list of brackets to jump to is defined by `xah-left-brackets' and `xah-right-brackets'.
 URL `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
-Version 2016-09-11"
+Version 2016-11-22"
   (interactive)
-  (cond
-   ((looking-at (regexp-opt xah-left-brackets)) (forward-sexp 1))
-   ((looking-back (regexp-opt xah-right-brackets) (max (- (point) 1) 1))
-    (backward-sexp))
-   (t (backward-up-list 1))))
+  (if (nth 3 (syntax-ppss))
+      (backward-up-list 1 'ESCAPE-STRINGS 'NO-SYNTAX-CROSSING)
+    (cond
+     ((eq (char-after) ?\") (forward-sexp))
+     ((eq (char-before) ?\") (backward-sexp ))
+     ((looking-at (regexp-opt xah-left-brackets))
+      (forward-sexp))
+     ((looking-back (regexp-opt xah-right-brackets) (max (- (point) 1) 1))
+      (backward-sexp))
+     (t (backward-up-list 1 'ESCAPE-STRINGS 'NO-SYNTAX-CROSSING)))))
 
 (defun xah-forward-equal-quote ()
   "Move cursor to the next occurrence of 「='」 or 「=\"」, with or without space.
@@ -324,19 +329,15 @@ Version 2016-07-23"
 Place cursor at the position after the left quote.
 Repeated call will find the next string.
 URL `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
-Version 2016-11-17"
+Version 2016-11-22"
   (interactive)
   (let ((-pos (point)))
-    (if (eq this-command last-command)
+    (if (nth 3 (syntax-ppss))
         (progn
           (backward-up-list 1 'ESCAPE-STRINGS 'NO-SYNTAX-CROSSING)
           (forward-sexp)
           (search-forward-regexp "\\\"" nil t))
-      (if (nth 3 (syntax-ppss))
-          (progn
-            (backward-up-list 1 'ESCAPE-STRINGS 'NO-SYNTAX-CROSSING)
-            (right-char ))
-        (progn (search-forward-regexp "\\\"" nil t))))
+      (progn (search-forward-regexp "\\\"" nil t)))
     (when (<= (point) -pos)
       (progn (search-forward-regexp "\\\"" nil t)))))
 
@@ -1246,7 +1247,7 @@ If cursor is at end of a word, one of the following will happen:
 *left-bracket and *right-bracket are strings.
 
 URL `http://ergoemacs.org/emacs/elisp_insert_brackets_by_pair.html'
-Version 2016-10-28"
+Version 2016-11-19"
   (if (use-region-p)
       (progn ; there's active region
         (let (
@@ -1283,36 +1284,39 @@ Version 2016-10-28"
             (goto-char -p1)
             (insert *left-bracket)
             (goto-char (+ -p2 (length *left-bracket)))))
-         (t (if
-                (and
-                 (or ; cursor is at end of word or buffer. i.e. xyz▮
-                  (looking-at "[^-_[:alnum:]]")
-                  (eq (point) (point-max)))
-                 (not (or
-                       (eq major-mode 'xah-elisp-mode)
-                       (eq major-mode 'emacs-lisp-mode)
-                       (eq major-mode 'lisp-mode)
-                       (eq major-mode 'lisp-interaction-mode)
-                       (eq major-mode 'common-lisp-mode)
-                       (eq major-mode 'clojure-mode)
-                       (eq major-mode 'xah-clojure-mode)
-                       (eq major-mode 'scheme-mode))))
-                (progn
-                  (setq -p1 (point) -p2 (point))
-                  (insert *left-bracket *right-bracket)
-                  (search-backward *right-bracket ))
-              (progn
-                ;; wrap around “word”. basically, want all alphanumeric, plus hyphen and underscore, but don't want space or punctuations. Also want chinese chars
-                ;; 我有一帘幽梦，不知与谁能共。多少秘密在其中，欲诉无人能懂。
-                (skip-chars-backward "-_[:alnum:]")
-                (setq -p1 (point))
-                (skip-chars-forward "-_[:alnum:]")
-                (setq -p2 (point))
-                (goto-char -p2)
-                (insert *right-bracket)
-                (goto-char -p1)
-                (insert *left-bracket)
-                (goto-char (+ -p2 (length *left-bracket)))))))))))
+         ((eq (point) (line-beginning-position))
+          (insert *left-bracket )
+          (end-of-line)
+          (insert  *right-bracket))
+         ((and
+           (or ; cursor is at end of word or buffer. i.e. xyz▮
+            (looking-at "[^-_[:alnum:]]")
+            (eq (point) (point-max)))
+           (not (or
+                 (eq major-mode 'xah-elisp-mode)
+                 (eq major-mode 'emacs-lisp-mode)
+                 (eq major-mode 'lisp-mode)
+                 (eq major-mode 'lisp-interaction-mode)
+                 (eq major-mode 'common-lisp-mode)
+                 (eq major-mode 'clojure-mode)
+                 (eq major-mode 'xah-clojure-mode)
+                 (eq major-mode 'scheme-mode))))
+          (progn
+            (setq -p1 (point) -p2 (point))
+            (insert *left-bracket *right-bracket)
+            (search-backward *right-bracket )))
+         (t (progn
+              ;; wrap around “word”. basically, want all alphanumeric, plus hyphen and underscore, but don't want space or punctuations. Also want chinese chars
+              ;; 我有一帘幽梦，不知与谁能共。多少秘密在其中，欲诉无人能懂。
+              (skip-chars-backward "-_[:alnum:]")
+              (setq -p1 (point))
+              (skip-chars-forward "-_[:alnum:]")
+              (setq -p2 (point))
+              (goto-char -p2)
+              (insert *right-bracket)
+              (goto-char -p1)
+              (insert *left-bracket)
+              (goto-char (+ -p2 (length *left-bracket))))))))))
 
 (defun xah-insert-paren () (interactive) (xah-insert-bracket-pair "(" ")") )
 (defun xah-insert-square-bracket () (interactive) (xah-insert-bracket-pair "[" "]") )
@@ -1331,7 +1335,7 @@ Version 2016-10-28"
 (defun xah-insert-double-angle-bracket《》 () (interactive) (xah-insert-bracket-pair "《" "》") )
 (defun xah-insert-white-lenticular-bracket〖〗 () (interactive) (xah-insert-bracket-pair "〖" "〗") )
 (defun xah-insert-black-lenticular-bracket【】 () (interactive) (xah-insert-bracket-pair "【" "】") )
-(defun xah-insert-tortoise-shell-bracket〔〕 () (interactive) (xah-insert-bracket-pair "〔" "〕" 'line) )
+(defun xah-insert-tortoise-shell-bracket〔〕 () (interactive) (xah-insert-bracket-pair "〔" "〕" ) )
 
 (defun xah-insert-hyphen ()
   "Insert a hyphen character."
