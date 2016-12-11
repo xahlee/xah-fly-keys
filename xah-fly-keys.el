@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 5.7.2
+;; Version: 5.7.3
 ;; Created: 10 Sep 2013
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -1226,28 +1226,19 @@ version 2016-10-11"
 (defun xah-insert-bracket-pair (*left-bracket *right-bracket &optional *wrap-method)
   "Insert brackets around selection, word, at point, and maybe move cursor in between.
 
-If there's a text selection, wrap brackets around it.
+ *left-bracket and *right-bracket are strings. *wrap-method must be either 'line or 'block. 'block means between empty lines.
 
-If there's no text selection, and *wrap-method is non-nil,
-
- *wrap-method must be either 'line or 'block.
- 'block means between empty lines.
-
- If *wrap-method is nil, then
-
- if cursor is inside a word, wrap brackets around it
-
- xy▮z → (xyz)
-
-If cursor is at end of a word, one of the following will happen:
-
- xyz▮ → xyz()
- xyz▮ → (xyz)       if in one of the lisp modes.
-
-*left-bracket and *right-bracket are strings.
+• if there's a region, add brackets around region.
+• If *wrap-method is 'line, wrap around line.
+• If *wrap-method is 'block, wrap around block.
+• if cursor is at beginning of line and its not empty line and contain at least 1 space, wrap around the line.
+• If cursor is at end of a word or buffer, one of the following will happen:
+ xyz▮ → xyz(▮)
+ xyz▮ → (xyz▮)       if in one of the lisp modes.
+• wrap brackets around word if any. e.g. xy▮z → (xyz▮). Or just (▮)
 
 URL `http://ergoemacs.org/emacs/elisp_insert_brackets_by_pair.html'
-Version 2016-11-19"
+Version 2016-12-04"
   (if (use-region-p)
       (progn ; there's active region
         (let (
@@ -1284,7 +1275,11 @@ Version 2016-11-19"
             (goto-char -p1)
             (insert *left-bracket)
             (goto-char (+ -p2 (length *left-bracket)))))
-         ((eq (point) (line-beginning-position))
+         ( ;  do line. line must contain space
+          (and
+           (eq (point) (line-beginning-position))
+           (string-match " " (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
+           (not (eq (line-beginning-position) (line-end-position))))
           (insert *left-bracket )
           (end-of-line)
           (insert  *right-bracket))
@@ -2575,8 +2570,12 @@ If `universal-argument' is called first, do switch frame."
 (progn
   (when xah-fly-use-control-key
     (progn
-      (define-key xah-fly-key-map (kbd "<C-next>") 'xah-next-user-buffer)
       (define-key xah-fly-key-map (kbd "<C-prior>") 'xah-previous-user-buffer)
+      (define-key xah-fly-key-map (kbd "<C-next>") 'xah-next-user-buffer)
+
+      (define-key xah-fly-key-map (kbd "<C-S-prior>") 'xah-previous-emacs-buffer)
+      (define-key xah-fly-key-map (kbd "<C-S-next>") 'xah-next-emacs-buffer)
+
       (define-key xah-fly-key-map (kbd "<C-tab>") 'xah-next-user-buffer)
       (define-key xah-fly-key-map (kbd "<C-S-iso-lefttab>") 'xah-previous-user-buffer)
 
