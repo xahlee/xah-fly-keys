@@ -1,10 +1,11 @@
-;;; xah-fly-keys.el --- A efficient modal keybinding set minor mode based on ergonomics.
+;;; xah-fly-keys.el --- ergonomic modal keybinding minor mode. -*- coding: utf-8; lexical-binding: t; -*-
 
-;; Copyright © 2013-2015, by Xah Lee
+;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 5.7.3
+;; Version: 5.7.5
 ;; Created: 10 Sep 2013
+;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
 
@@ -589,37 +590,24 @@ Version 2015-12-22"
   "Remove whitespaces around cursor to just one or none.
 Call this command again to shrink more. 3 calls will remove all whitespaces.
 URL `http://ergoemacs.org/emacs/emacs_shrink_whitespace.html'
-Version 2015-11-04"
+Version 2016-12-18"
   (interactive)
   (let ((-p0 (point))
         -line-has-char-p ; current line contains non-white space chars
         -has-space-tab-neighbor-p
-        -whitespace-begin -whitespace-end
         -space-or-tab-begin -space-or-tab-end
         )
     (save-excursion
       (setq -has-space-tab-neighbor-p
-            (if (or
-                 (looking-at " \\|\t")
-                 (looking-back " \\|\t" 1))
-                t
-              nil))
+            (or (looking-at " \\|\t") (looking-back " \\|\t" 1)))
       (beginning-of-line)
       (setq -line-has-char-p (search-forward-regexp "[[:graph:]]" (line-end-position) t))
-
       (goto-char -p0)
       (skip-chars-backward "\t ")
       (setq -space-or-tab-begin (point))
-
-      (skip-chars-backward "\t \n")
-      (setq -whitespace-begin (point))
-
       (goto-char -p0)
       (skip-chars-forward "\t ")
-      (setq -space-or-tab-end (point))
-      (skip-chars-forward "\t \n")
-      (setq -whitespace-end (point)))
-
+      (setq -space-or-tab-end (point)))
     (if -line-has-char-p
         (if -has-space-tab-neighbor-p
             (let (-deleted-text)
@@ -629,7 +617,6 @@ Version 2015-11-04"
               ;; insert a whitespace only if we have removed something different than a simple whitespace
               (when (not (string= -deleted-text " "))
                 (insert " ")))
-
           (progn
             (when (equal (char-before) 10) (delete-char -1))
             (when (equal (char-after) 10) (delete-char 1))))
@@ -676,7 +663,7 @@ When the command is called for the first time, it checks the current line's leng
 
 Repeated call toggles between formatting to 1 long line and multiple lines.
 URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
-Version 2016-10-19"
+Version 2016-12-13"
   (interactive)
   ;; This command symbol has a property “'compact-p”, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
   (let (
@@ -703,43 +690,13 @@ Version 2016-10-19"
     (progn
       (if -compact-p
           (xah-reformat-to-multi-lines-region -p1 -p2)
-        (xah-replace-whitespaces-to-1 -p1 -p2))
+        (xah-reformat-whitespaces-to-one-space -p1 -p2))
       (put this-command 'compact-p (not -compact-p)))))
 
-(defun xah-reformat-to-single-line-region (*begin *end)
-  "Replace whitespaces at end line by one space or 1 return.
-Basically, collapse whitespaces. But 2 or more newline will collapse to 1.
-URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
-Version 2016-10-30"
-  (interactive "r")
-  (save-excursion
-    (save-restriction
-      (narrow-to-region *begin *end)
-      (goto-char (point-min))
-      (while
-          (search-forward-regexp "\n\n+" nil 'NOERROR)
-        (replace-match ",,j0mxwz9jiv"))
-      (goto-char (point-min))
-      (while
-          (search-forward "\t" nil 'NOERROR)
-        (replace-match " "))
-      (goto-char (point-min))
-      (while
-          (search-forward-regexp "\n" nil 'NOERROR)
-        (replace-match " "))
-      (goto-char (point-min))
-      (while
-          (search-forward-regexp "  +" nil 'NOERROR)
-        (replace-match " "))
-      (goto-char (point-min))
-      (while
-          (search-forward ",,j0mxwz9jiv" nil 'NOERROR)
-        (replace-match "\n\n")))))
-
-(defun xah-replace-whitespaces-to-1 (*begin *end)
+(defun xah-reformat-whitespaces-to-one-space (*begin *end)
   "Replace whitespaces by one space.
 URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
-Version 2016-11-01"
+Version 2016-12-13"
   (interactive "r")
   (save-excursion
     (save-restriction
@@ -758,9 +715,9 @@ Version 2016-11-01"
         (replace-match " ")))))
 
 (defun xah-reformat-to-multi-lines-region (*begin *end)
-  "replace space by a newline char at places so lines are not long.
+  "Replace space by a newline char at places so lines are not long.
 URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
-Version 2016-10-19"
+Version 2016-12-13"
   (interactive "r")
   (save-restriction
     (narrow-to-region *begin *end)
@@ -769,6 +726,36 @@ Version 2016-10-19"
         (search-forward " " nil 'NOERROR)
       (when (> (- (point) (line-beginning-position)) fill-column)
         (replace-match "\n" )))))
+
+;; (defun xah-reformat-to-single-line-region (*begin *end)
+;;   "Replace whitespaces at end line by one space or 1 return.
+;; Basically, collapse whitespaces. But 2 or more newline will collapse to 1.
+;; URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
+;; Version 2016-10-30"
+;;   (interactive "r")
+;;   (save-excursion
+;;     (save-restriction
+;;       (narrow-to-region *begin *end)
+;;       (goto-char (point-min))
+;;       (while
+;;           (search-forward-regexp "\n\n+" nil 'NOERROR)
+;;         (replace-match ",,j0mxwz9jiv"))
+;;       (goto-char (point-min))
+;;       (while
+;;           (search-forward "\t" nil 'NOERROR)
+;;         (replace-match " "))
+;;       (goto-char (point-min))
+;;       (while
+;;           (search-forward-regexp "\n" nil 'NOERROR)
+;;         (replace-match " "))
+;;       (goto-char (point-min))
+;;       (while
+;;           (search-forward-regexp "  +" nil 'NOERROR)
+;;         (replace-match " "))
+;;       (goto-char (point-min))
+;;       (while
+;;           (search-forward ",,j0mxwz9jiv" nil 'NOERROR)
+;;         (replace-match "\n\n")))))
 
 (defun xah-unfill-paragraph ()
   "Replace newline chars in current paragraph by single spaces.
@@ -848,12 +835,12 @@ Version 2016-10-12"
 When called repeatedly, this command cycles the {“_”, “-”, “ ”} characters, in that order.
 
 The region to work on is by this order:
-① if there's active region (text selection), use that.
-② If cursor is string quote or any type of bracket, and is within current line, work on that region.
-③ else, work on current line.
+ ① if there's active region (text selection), use that.
+ ② If cursor is string quote or any type of bracket, and is within current line, work on that region.
+ ③ else, work on current line.
 
 URL `http://ergoemacs.org/emacs/elisp_change_space-hyphen_underscore.html'
-Version 2016-11-11"
+Version 2016-12-18"
   (interactive)
   ;; this function sets a property 「'state」. Possible values are 0 to length of -charArray.
   (let (-p1 -p2)
@@ -877,7 +864,7 @@ Version 2016-11-11"
             (skip-chars-forward -skipChars (line-end-position))
             (setq -p2 (point))
             (set-mark -p1)))))
-    (let* ((-inputText (buffer-substring-no-properties -p1 -p2))
+    (let* (
            (-charArray ["_" "-" " "])
            (-length (length -charArray))
            (-regionWasActive-p (region-active-p))
@@ -1155,7 +1142,7 @@ If there's text selection, delete it first.
 Do not use this function in lisp code. Call `format-time-string' directly.
 
 URL `http://ergoemacs.org/emacs/elisp_insert-date-time.html'
-version 2016-10-11"
+version 2016-12-18"
   (interactive)
   (when (use-region-p) (delete-region (region-beginning) (region-end)))
   (let ((-style
@@ -1186,30 +1173,30 @@ version 2016-10-11"
       ((= -style 2)
        (concat
         (format-time-string "%Y-%m-%dT%T")
-        ((lambda (-x) (format "%s:%s" (substring -x 0 3) (substring -x 3 5))) (format-time-string "%z")))
-       ;; "2016-10-10T19:02:23-07:00"
+        (funcall (lambda (-x) (format "%s:%s" (substring -x 0 3) (substring -x 3 5))) (format-time-string "%z")))
+       ;; eg "2016-10-10T19:02:23-07:00"
        )
       ((= -style 3)
        (concat
         (format-time-string "%Y-%m-%d %T")
-        ((lambda (-x) (format "%s:%s" (substring -x 0 3) (substring -x 3 5))) (format-time-string "%z")))
-       ;; "2016-10-10 19:10:09-07:00"
+        (funcall (lambda (-x) (format "%s:%s" (substring -x 0 3) (substring -x 3 5))) (format-time-string "%z")))
+       ;; eg "2016-10-10 19:10:09-07:00"
        )
       ((= -style 4)
        (format-time-string "%A, %B %d, %Y")
-       ;; "Monday, October 10, 2016"
+       ;; eg "Monday, October 10, 2016"
        )
       ((= -style 5)
        (format-time-string "%a, %b %d, %Y")
-       ;; "Mon, Oct 10, 2016"
+       ;; eg "Mon, Oct 10, 2016"
        )
       ((= -style 6)
        (format-time-string "%B %d, %Y")
-       ;; "October 10, 2016"
+       ;; eg "October 10, 2016"
        )
       ((= -style 7)
        (format-time-string "%b %d, %Y")
-       ;; "Oct 10, 2016"
+       ;; eg "Oct 10, 2016"
        )
       (t
        (format-time-string "%Y-%m-%d"))))))
@@ -1278,7 +1265,7 @@ Version 2016-12-04"
          ( ;  do line. line must contain space
           (and
            (eq (point) (line-beginning-position))
-           (string-match " " (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
+           ;; (string-match " " (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
            (not (eq (line-beginning-position) (line-end-position))))
           (insert *left-bracket )
           (end-of-line)
@@ -1526,21 +1513,19 @@ Written by Nikolaj Schumacher, 2008-10-20. Released under GPL 2."
 Delimiters here includes the following chars: \"<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕（）
 This command does not properly deal with nested brackets.
 URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
-Version 2015-05-16"
+Version 2016-12-18"
   (interactive)
   (let (
         (-skipChars
          (if (boundp 'xah-brackets)
              (concat "^\"" xah-brackets)
            "^\"<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕（）"))
-        -p1
-        -p2
+        -pos
         )
     (skip-chars-backward -skipChars)
-    (setq -p1 (point))
+    (setq -pos (point))
     (skip-chars-forward -skipChars)
-    (setq -p2 (point))
-    (set-mark -p1)))
+    (set-mark -pos)))
 
 
 ;; misc
@@ -2862,9 +2847,5 @@ If `universal-argument' is called first, do switch frame."
   (xah-fly-keys 0))
 
 (provide 'xah-fly-keys)
-
-;; Local Variables:
-;; coding: utf-8
-;; End:
 
 ;;; xah-fly-keys.el ends here
