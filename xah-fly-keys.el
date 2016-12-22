@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 5.7.5
+;; Version: 5.7.6
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -800,15 +800,16 @@ Version 2016-10-25"
 (defun xah-dired-rename-space-to-underscore ()
   "In dired, rename current or marked files by replacing space to underscore _.
 If not in `dired', do nothing.
-
 URL `http://ergoemacs.org/emacs/elisp_dired_rename_space_to_underscore.html'
-Version 2016-11-09"
+Version 2016-12-22"
   (interactive)
+  (require 'dired-aux)
   (if (equal major-mode 'dired-mode)
       (progn
-        (mapc (lambda (fname)
-                (when (string-match " " fname )
-                  (rename-file fname (replace-regexp-in-string " " "_" fname))))
+        (mapc (lambda (x)
+                (when (string-match " " x )
+                  (dired-rename-file x (replace-regexp-in-string " " "_" x) nil)
+                  ))
               (dired-get-marked-files ))
         (revert-buffer)
         (forward-line ))
@@ -817,15 +818,15 @@ Version 2016-11-09"
 (defun xah-dired-rename-space-to-hyphen ()
   "In dired, rename current or marked files by replacing space to hyphen -.
 If not in `dired', do nothing.
-
 URL `http://ergoemacs.org/emacs/elisp_dired_rename_space_to_underscore.html'
-Version 2016-10-12"
+Version 2016-12-22"
   (interactive)
+  (require 'dired-aux)
   (if (equal major-mode 'dired-mode)
       (progn
-        (mapc (lambda (fname)
-                (when (string-match " " fname )
-                  (rename-file fname (replace-regexp-in-string " " "-" fname))))
+        (mapc (lambda (x)
+                (when (string-match " " x )
+                  (dired-rename-file x (replace-regexp-in-string " " "_" x) nil)))
               (dired-get-marked-files ))
         (revert-buffer))
     (user-error "Not in dired")))
