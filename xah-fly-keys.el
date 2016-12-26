@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 5.7.6
+;; Version: 5.8.6
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -796,6 +796,78 @@ Version 2016-10-25"
           (progn
             (comment-or-uncomment-region -lbp -lep)
             (forward-line )))))))
+
+(defun xah-line-to-quoted-lines ()
+  "Change current text block's lines to quoted lines with comma or other separator char.
+When there is a text selection, act on the the selection, else, act on a text block separated by blank lines.
+
+For example,
+
+ cat
+ dog
+ cow
+
+becomes
+
+ \"cat\",
+ \"dog\",
+ \"cow\",
+
+or
+
+ (cat)
+ (dog)
+ (cow)
+
+Version 2016-12-26"
+  (interactive)
+  (let* (
+         (-bounds (xah-get-bounds-of-thing 'block))
+         (deactivate-mark nil)
+         (-blanks-regex "\n[ \t]*\n")
+         ( -p1 (car -bounds))
+         ( -p2 (cdr -bounds))
+         (-quoteToUse
+          (read-string
+           "Quote to use:" "\"" nil
+           '(
+             ""
+             "\""
+             "'"
+             "("
+             "{"
+             "["
+             )))
+         (-separator
+          (read-string
+           "line separator:" "," nil
+           '(
+             ""
+             ","
+             ";"
+             )))
+         (-beginQuote -quoteToUse)
+         (-endQuote
+          (cond
+           ((equal -quoteToUse "(") ")")
+           ((equal -quoteToUse "{") "}")
+           ((equal -quoteToUse "[") "]")
+           (t -quoteToUse))))
+    (save-excursion
+      (save-restriction
+        (narrow-to-region -p1 -p2)
+
+        (goto-char (point-min))
+        (insert -quoteToUse)
+        (goto-char (point-max))
+        (insert -quoteToUse)
+
+        (goto-char (point-min))
+
+        (while (search-forward "\n" nil 'NOERROR)
+          (replace-match (concat -endQuote -separator "\n" -beginQuote) 'FIXEDCASE 'LITERAL))
+        ;;
+        ))))
 
 (defun xah-dired-rename-space-to-underscore ()
   "In dired, rename current or marked files by replacing space to underscore _.
@@ -2567,6 +2639,13 @@ If `universal-argument' is called first, do switch frame."
 
       (define-key xah-fly-key-map (kbd "C-1") 'xah-pop-local-mark-ring)
       (define-key xah-fly-key-map (kbd "C-2") 'pop-global-mark)
+
+      (define-key xah-fly-key-map (kbd "C-7") 'xah-pop-local-mark-ring)
+      (define-key xah-fly-key-map (kbd "C-8") 'pop-global-mark)
+
+      (define-key xah-fly-key-map (kbd "C-9") 'scroll-down-command)
+      (define-key xah-fly-key-map (kbd "C-0") 'scroll-up-command)
+
       (define-key xah-fly-key-map (kbd "C-SPC") 'xah-fly-leader-key-map)
 
       (define-key xah-fly-key-map (kbd "C-a") 'mark-whole-buffer)
@@ -2587,12 +2666,10 @@ If `universal-argument' is called first, do switch frame."
 
       (define-key xah-fly-key-map (kbd "C-r") 'hippie-expand)
       (define-key xah-fly-key-map (kbd "C-t") 'xah-toggle-letter-case) ; never do transpose-chars
-
+      ;;
       ))
 
   (progn ; rule: all commands with meta key defined here must have other shortcuts. that is, meta binding is considered a luxury
-    (define-key xah-fly-key-map (kbd "M-1") 'xah-pop-local-mark-ring)
-    (define-key xah-fly-key-map (kbd "M-2") 'pop-global-mark)
 
     (define-key xah-fly-key-map (kbd "M-RET") 'xah-cycle-hyphen-underscore-space)
     (define-key xah-fly-key-map (kbd "M-c") 'xah-toggle-letter-case )
