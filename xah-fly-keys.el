@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 5.8.7
+;; Version: 5.8.8
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -820,13 +820,11 @@ or
  (cow)
 
 URL `http://ergoemacs.org/emacs/emacs_quote_lines.html'
-Version 2016-12-26"
+Version 2016-12-27"
   (interactive)
   (let* (
-         (-bounds (xah-get-bounds-of-thing 'block))
-         (deactivate-mark nil)
-         ( -p1 (car -bounds))
-         ( -p2 (cdr -bounds))
+         -p1
+         -p2
          (-quoteToUse
           (read-string
            "Quote to use:" "\"" nil
@@ -853,6 +851,17 @@ Version 2016-12-26"
            ((equal -quoteToUse "{") "}")
            ((equal -quoteToUse "[") "]")
            (t -quoteToUse))))
+    (if (use-region-p)
+        (progn
+          (setq -p1 (region-beginning))
+          (setq -p2 (region-end)))
+      (progn
+        (if (re-search-backward "\n[ \t]*\n" nil "NOERROR")
+            (progn (re-search-forward "\n[ \t]*\n")
+                   (setq -p1 (point)))
+          (setq -p1 (point)))
+        (re-search-forward "\n[ \t]*\n" nil "NOERROR")
+        (setq -p2 (point))))
     (save-excursion
       (save-restriction
         (narrow-to-region -p1 -p2)
