@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 5.8.8
+;; Version: 5.8.9
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -820,7 +820,7 @@ or
  (cow)
 
 URL `http://ergoemacs.org/emacs/emacs_quote_lines.html'
-Version 2016-12-27"
+Version 2017-01-02"
   (interactive)
   (let* (
          -p1
@@ -861,6 +861,7 @@ Version 2016-12-27"
                    (setq -p1 (point)))
           (setq -p1 (point)))
         (re-search-forward "\n[ \t]*\n" nil "NOERROR")
+        (skip-chars-backward " \t\n" )
         (setq -p2 (point))))
     (save-excursion
       (save-restriction
@@ -882,18 +883,16 @@ Version 2016-12-27"
   "In dired, rename current or marked files by replacing space to underscore _.
 If not in `dired', do nothing.
 URL `http://ergoemacs.org/emacs/elisp_dired_rename_space_to_underscore.html'
-Version 2016-12-22"
+Version 2017-01-02"
   (interactive)
   (require 'dired-aux)
   (if (equal major-mode 'dired-mode)
       (progn
         (mapc (lambda (x)
                 (when (string-match " " x )
-                  (dired-rename-file x (replace-regexp-in-string " " "_" x) nil)
-                  ))
+                  (dired-rename-file x (replace-regexp-in-string " " "_" x) nil)))
               (dired-get-marked-files ))
-        (revert-buffer)
-        (forward-line ))
+        (revert-buffer))
     (user-error "Not in dired")))
 
 (defun xah-dired-rename-space-to-hyphen ()
@@ -1160,7 +1159,7 @@ Capitalize first letter of each word, except words like {to, of, the, a, in, or,
 
 When called in a elisp program, *begin *end are region boundaries.
 URL `http://ergoemacs.org/emacs/elisp_title_case_text.html'
-Version 2015-05-07"
+Version 2017-01-02"
   (interactive
    (if (use-region-p)
        (list (region-beginning) (region-end))
@@ -1198,6 +1197,7 @@ Version 2015-05-07"
                      [" With " " with "]
                      [" From " " from "]
                      ["'S " "'s "]
+                     ["'T " "'t "]
                      ]))
     (save-excursion
       (save-restriction
