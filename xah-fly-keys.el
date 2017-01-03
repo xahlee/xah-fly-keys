@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 5.8.9
+;; Version: 5.9.0
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -414,7 +414,7 @@ Version 2016-10-11"
     (redraw-frame)))
 
 
-;; text selection
+;; editing commands
 
 (defun xah-delete-current-line ()
   "Delete current line."
@@ -530,13 +530,33 @@ Version 2016-10-06"
 
 (defun xah-cut-all ()
   "Cut the whole buffer content into the `kill-ring'.
-Respects `narrow-to-region'."
+Respects `narrow-to-region'.
+Version 2017-01-03"
   (interactive)
   (kill-new (buffer-string))
   (delete-region (point-min) (point-max)))
 
-
-;; editing commands
+(defun xah-cut-all ()
+  "Cut the whole buffer content into the `kill-ring'.
+Respects `narrow-to-region'.
+Version 2017-01-03"
+  (interactive)
+  (kill-new (buffer-string))
+  (delete-region (point-min) (point-max)))
+
+(defun xah-paste-or-paste-previous ()
+  "Paste. When called repeatedly, paste previous.
+This command calls `yank', and if repeated, call `yank-pop'.
+
+URL `http://ergoemacs.org/emacs/emacs_paste_or_paste_previous.html'
+Version 2017-01-03"
+  (interactive)
+  (progn
+    (when (and delete-selection-mode (region-active-p))
+      (delete-region (region-beginning) (region-end)))
+    (if (eq real-last-command this-command)
+        (yank-pop)
+      (yank))))
 
 (defun xah-toggle-letter-case ()
   "Toggle the letter case of current word or text selection.
@@ -2468,7 +2488,7 @@ If `universal-argument' is called first, do switch frame."
   (define-key xah-fly-leader-key-map "h" 'xah-help-keymap)
   (define-key xah-fly-leader-key-map "i" 'xah-copy-file-path)
   (define-key xah-fly-leader-key-map "j" 'xah-cut-all-or-region)
-  (define-key xah-fly-leader-key-map "k" 'yank)
+  (define-key xah-fly-leader-key-map "k" 'xah-paste-or-paste-previous)
   (define-key xah-fly-leader-key-map "l" 'recenter-top-bottom)
   (define-key xah-fly-leader-key-map "m" 'dired-jump)
   (define-key xah-fly-leader-key-map "n" xah-harmless-keymap)
@@ -2653,7 +2673,6 @@ If `universal-argument' is called first, do switch frame."
       (define-key xah-fly-key-map (kbd "C-SPC") 'xah-fly-leader-key-map)
 
       (define-key xah-fly-key-map (kbd "C-a") 'mark-whole-buffer)
-      (define-key xah-fly-key-map (kbd "C-k") 'yank-pop)
       (define-key xah-fly-key-map (kbd "C-n") 'xah-new-empty-buffer)
       (define-key xah-fly-key-map (kbd "C-S-n") 'make-frame-command)
       (define-key xah-fly-key-map (kbd "C-o") 'find-file)
@@ -2769,7 +2788,7 @@ If `universal-argument' is called first, do switch frame."
     (define-key xah-fly-key-map (kbd "h") 'backward-char)
     (define-key xah-fly-key-map (kbd "i") 'xah-delete-text-block)
     (define-key xah-fly-key-map (kbd "j") 'xah-cut-line-or-region)
-    (define-key xah-fly-key-map (kbd "k") 'yank)
+    (define-key xah-fly-key-map (kbd "k") 'xah-paste-or-paste-previous)
     (define-key xah-fly-key-map (kbd "l") 'xah-fly-insert-mode-activate-space-before)
     (define-key xah-fly-key-map (kbd "m") 'xah-backward-left-bracket)
     (define-key xah-fly-key-map (kbd "n") 'forward-char)
