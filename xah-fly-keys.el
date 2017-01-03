@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 5.9.0
+;; Version: 5.9.1
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -557,6 +557,27 @@ Version 2017-01-03"
     (if (eq real-last-command this-command)
         (yank-pop)
       (yank))))
+
+(defun xah-delete-backward-char-or-bracket-text ()
+  "Delete backward 1 character, but if it's a bracket ()[]{}【】「」 etc, delete bracket and the inner text.
+If it's bracket, put the deleted text on `kill-ring'
+Version 2017-01-03"
+  (interactive)
+  (let (
+        (-rb (regexp-opt xah-right-brackets ))
+        (-lb (regexp-opt xah-left-brackets )))
+    (cond
+     ((looking-back -rb 1)
+      (progn
+        (backward-sexp)
+        (mark-sexp)
+        (kill-region (region-beginning) (region-end))))
+     ((looking-back -lb 1)
+      (progn
+        (backward-char )
+        (mark-sexp)
+        (kill-region (region-beginning) (region-end))))
+     (t (delete-backward-char 1)))))
 
 (defun xah-toggle-letter-case ()
   "Toggle the letter case of current word or text selection.
@@ -2782,7 +2803,7 @@ If `universal-argument' is called first, do switch frame."
     (define-key xah-fly-key-map "b" 'isearch-forward)
     (define-key xah-fly-key-map (kbd "c") 'previous-line)
     (define-key xah-fly-key-map (kbd "d") 'xah-beginning-of-line-or-block)
-    (define-key xah-fly-key-map (kbd "e") 'delete-backward-char)
+    (define-key xah-fly-key-map (kbd "e") 'xah-delete-backward-char-or-bracket-text)
     (define-key xah-fly-key-map (kbd "f") 'undo)
     (define-key xah-fly-key-map (kbd "g") 'backward-word)
     (define-key xah-fly-key-map (kbd "h") 'backward-char)
