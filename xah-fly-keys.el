@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 5.9.1
+;; Version: 5.9.2
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -536,14 +536,6 @@ Version 2017-01-03"
   (kill-new (buffer-string))
   (delete-region (point-min) (point-max)))
 
-(defun xah-cut-all ()
-  "Cut the whole buffer content into the `kill-ring'.
-Respects `narrow-to-region'.
-Version 2017-01-03"
-  (interactive)
-  (kill-new (buffer-string))
-  (delete-region (point-min) (point-max)))
-
 (defun xah-paste-or-paste-previous ()
   "Paste. When called repeatedly, paste previous.
 This command calls `yank', and if repeated, call `yank-pop'.
@@ -560,24 +552,28 @@ Version 2017-01-03"
 
 (defun xah-delete-backward-char-or-bracket-text ()
   "Delete backward 1 character, but if it's a bracket ()[]{}【】「」 etc, delete bracket and the inner text.
-If it's bracket, put the deleted text on `kill-ring'
-Version 2017-01-03"
+If it's bracket, push the deleted text to `kill-ring'
+
+URL `http://ergoemacs.org/emacs/emacs_delete_backward_char_or_bracket_text.html'
+Version 2017-01-08"
   (interactive)
   (let (
-        (-rb (regexp-opt xah-right-brackets ))
-        (-lb (regexp-opt xah-left-brackets )))
-    (cond
-     ((looking-back -rb 1)
-      (progn
-        (backward-sexp)
-        (mark-sexp)
-        (kill-region (region-beginning) (region-end))))
-     ((looking-back -lb 1)
-      (progn
-        (backward-char )
-        (mark-sexp)
-        (kill-region (region-beginning) (region-end))))
-     (t (delete-backward-char 1)))))
+        (-right-brackets (regexp-opt '(")" "]" "}" "〕" "】" "〗" "〉" "》" "」" "』" "”" "’" "›" "»")))
+        (-left-brackets (regexp-opt '("(" "{" "[" "〔" "【" "〖" "〈" "《" "「" "『" "“" "‘" "‹" "«" ))))
+    (if (and delete-selection-mode (region-active-p))
+        (delete-region (region-beginning) (region-end))
+      (cond
+       ((looking-back -right-brackets 1)
+        (progn
+          (backward-sexp)
+          (mark-sexp)
+          (kill-region (region-beginning) (region-end))))
+       ((looking-back -left-brackets 1)
+        (progn
+          (backward-char )
+          (mark-sexp)
+          (kill-region (region-beginning) (region-end))))
+       (t (delete-char -1))))))
 
 (defun xah-toggle-letter-case ()
   "Toggle the letter case of current word or text selection.
@@ -665,9 +661,9 @@ Version 2016-12-18"
 
 (defun xah-fill-or-unfill ()
   "Reformat current paragraph or region to `fill-column', like `fill-paragraph' or “unfill”.
-When there is a text selection, act on the the selection, else, act on a text block separated by blank lines.
+When there is a text selection, act on the selection, else, act on a text block separated by blank lines.
 URL `http://ergoemacs.org/emacs/modernization_fill-paragraph.html'
-Version 2016-07-13"
+Version 2017-01-08"
   (interactive)
   ;; This command symbol has a property “'compact-p”, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
   (let ( (-compact-p
@@ -698,13 +694,13 @@ Version 2016-07-13"
 
 (defun xah-reformat-lines ()
   "Reformat current text block into 1 long line or multiple short lines.
-When there is a text selection, act on the the selection, else, act on a text block separated by blank lines.
+When there is a text selection, act on the selection, else, act on a text block separated by blank lines.
 
 When the command is called for the first time, it checks the current line's length to decide to go into 1 line or multiple lines. If current line is short, it'll reformat to 1 long lines. And vice versa.
 
 Repeated call toggles between formatting to 1 long line and multiple lines.
 URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
-Version 2016-12-13"
+Version 2017-01-08"
   (interactive)
   ;; This command symbol has a property “'compact-p”, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
   (let (
@@ -840,7 +836,7 @@ Version 2016-10-25"
 
 (defun xah-quote-lines ()
   "Change current text block's lines to quoted lines with comma or other separator char.
-When there is a text selection, act on the the selection, else, act on a text block separated by blank lines.
+When there is a text selection, act on the selection, else, act on a text block separated by blank lines.
 
 For example,
 
@@ -860,8 +856,10 @@ or
  (dog)
  (cow)
 
+If the delimiter is any left bracket, the end delimiter is automatically the matching bracket.
+
 URL `http://ergoemacs.org/emacs/emacs_quote_lines.html'
-Version 2017-01-02"
+Version 2017-01-08"
   (interactive)
   (let* (
          -p1
@@ -887,11 +885,12 @@ Version 2017-01-02"
              )))
          (-beginQuote -quoteToUse)
          (-endQuote
-          (cond
-           ((equal -quoteToUse "(") ")")
-           ((equal -quoteToUse "{") "}")
-           ((equal -quoteToUse "[") "]")
-           (t -quoteToUse))))
+          ;; if begin quote is a bracket, set end quote to the matching one. else, same as begin quote
+          (let ((-syntableValue (aref (syntax-table) (string-to-char -beginQuote))))
+            (if (eq (car -syntableValue ) 4) ; ; syntax table, code 4 is open paren
+                (char-to-string (cdr -syntableValue))
+              -quoteToUse
+              ))))
     (if (use-region-p)
         (progn
           (setq -p1 (region-beginning))
@@ -907,16 +906,15 @@ Version 2017-01-02"
     (save-excursion
       (save-restriction
         (narrow-to-region -p1 -p2)
-
         (goto-char (point-min))
-        (insert -quoteToUse)
+        (skip-chars-forward "\t ")
+        (insert -beginQuote)
         (goto-char (point-max))
-        (insert -quoteToUse)
-
+        (insert -endQuote)
         (goto-char (point-min))
-
-        (while (search-forward "\n" nil 'NOERROR)
-          (replace-match (concat -endQuote -separator "\n" -beginQuote) 'FIXEDCASE 'LITERAL))
+        (while (re-search-forward "\n\\([\t ]*\\)" nil 'NOERROR )
+          (replace-match
+           (concat -endQuote -separator (concat "\n" (match-string 1)) -beginQuote) 'FIXEDCASE 'LITERAL))
         ;;
         ))))
 
