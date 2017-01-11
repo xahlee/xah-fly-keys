@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 5.9.3
+;; Version: 5.9.4
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -144,7 +144,7 @@ URL `http://ergoemacs.org/emacs/emacs_move_by_paragraph.html'
 Version 2016-06-15"
   (interactive "p")
   (let ((n (if (null n) 1 n)))
-    (search-forward-regexp "\n[\t\n ]*\n+" nil "NOERROR" n)))
+    (re-search-forward "\n[\t\n ]*\n+" nil "NOERROR" n)))
 
 (defun xah-backward-block (&optional n)
   "Move cursor to previous text block.
@@ -224,7 +224,7 @@ version 2016-06-15"
   "Move cursor to the next occurrence of punctuation.
 The list of punctuations to jump to is defined by `xah-punctuation-regex'"
   (interactive "p")
-  (search-forward-regexp xah-punctuation-regex nil t n))
+  (re-search-forward xah-punctuation-regex nil t n))
 
 (defun xah-backward-punct (&optional n)
   "Move cursor to the previous occurrence of punctuation.
@@ -246,7 +246,7 @@ The list of brackets to jump to is defined by `xah-right-brackets'.
 URL `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
 Version 2015-10-01"
   (interactive)
-  (search-forward-regexp (regexp-opt xah-right-brackets) nil t))
+  (re-search-forward (regexp-opt xah-right-brackets) nil t))
 
 (defun xah-goto-matching-bracket ()
   "Move cursor to the matching bracket.
@@ -271,14 +271,14 @@ Version 2016-11-22"
 URL `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
 Version 2015-05-05"
   (interactive)
-  (search-forward-regexp "=[ \n]*\\('+\\|\\\"+\\)" nil t))
+  (re-search-forward "=[ \n]*\\('+\\|\\\"+\\)" nil t))
 
 (defun xah-forward-equal-sign ()
   "Move cursor to the next occurrence of equal sign 「=」.
 URL `http://ergoemacs.org/emacs/emacs_jump_to_punctuations.html'
 Version 2015-06-15"
   (interactive)
-  (search-forward-regexp "=+" nil t))
+  (re-search-forward "=+" nil t))
 
 (defun xah-backward-equal-sign ()
   "Move cursor to previous occurrence of equal sign 「=」.
@@ -293,7 +293,7 @@ Version 2015-06-15"
   "Move cursor to the next occurrence of comma 「,」.
 Version 2016-01-19"
   (interactive)
-  (search-forward-regexp ",+" nil t))
+  (re-search-forward ",+" nil t))
 
 (defun xah-backward-comma-sign ()
   "Move cursor to previous occurrence of comma sign 「,」.
@@ -310,7 +310,7 @@ Returns `t' if found, else `nil'.
 URL `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
 Version 2016-07-23"
   (interactive)
-  (if (search-forward-regexp "\\\"+" nil t)
+  (if (re-search-forward "\\\"+" nil t)
       t
     (progn
       (message "No more quotes after cursor..")
@@ -337,10 +337,10 @@ Version 2016-11-22"
         (progn
           (backward-up-list 1 'ESCAPE-STRINGS 'NO-SYNTAX-CROSSING)
           (forward-sexp)
-          (search-forward-regexp "\\\"" nil t))
-      (progn (search-forward-regexp "\\\"" nil t)))
+          (re-search-forward "\\\"" nil t))
+      (progn (re-search-forward "\\\"" nil t)))
     (when (<= (point) -pos)
-      (progn (search-forward-regexp "\\\"" nil t)))))
+      (progn (re-search-forward "\\\"" nil t)))))
 
 (defun xah-backward-quote ()
   "Move cursor to the previous occurrence of \".
@@ -363,7 +363,7 @@ Version 2016-07-23"
 URL `http://ergoemacs.org/emacs/emacs_jump_to_punctuations.html'
 Version 2015-03-24"
   (interactive)
-  (search-forward-regexp "\\.+\\|,+\\|;+" nil t))
+  (re-search-forward "\\.+\\|,+\\|;+" nil t))
 
 (defun xah-backward-dot-comma ()
   "Move cursor to the previous occurrence of 「.」 「,」 「;」
@@ -638,7 +638,7 @@ Version 2016-12-18"
       (setq -has-space-tab-neighbor-p
             (or (looking-at " \\|\t") (looking-back " \\|\t" 1)))
       (beginning-of-line)
-      (setq -line-has-char-p (search-forward-regexp "[[:graph:]]" (line-end-position) t))
+      (setq -line-has-char-p (re-search-forward "[[:graph:]]" (line-end-position) t))
       (goto-char -p0)
       (skip-chars-backward "\t ")
       (setq -space-or-tab-begin (point))
@@ -748,7 +748,7 @@ Version 2017-01-11"
         (replace-match " "))
       (goto-char (point-min))
       (while
-          (search-forward-regexp "  +" nil "NOERROR")
+          (re-search-forward "  +" nil "NOERROR")
         (replace-match " ")))))
 
 (defun xah-reformat-to-multi-lines-region (*begin *end)
@@ -775,7 +775,7 @@ Version 2016-12-13"
 ;;       (narrow-to-region *begin *end)
 ;;       (goto-char (point-min))
 ;;       (while
-;;           (search-forward-regexp "\n\n+" nil "NOERROR")
+;;           (re-search-forward "\n\n+" nil "NOERROR")
 ;;         (replace-match ",,j0mxwz9jiv"))
 ;;       (goto-char (point-min))
 ;;       (while
@@ -783,11 +783,11 @@ Version 2016-12-13"
 ;;         (replace-match " "))
 ;;       (goto-char (point-min))
 ;;       (while
-;;           (search-forward-regexp "\n" nil "NOERROR")
+;;           (re-search-forward "\n" nil "NOERROR")
 ;;         (replace-match " "))
 ;;       (goto-char (point-min))
 ;;       (while
-;;           (search-forward-regexp "  +" nil "NOERROR")
+;;           (re-search-forward "  +" nil "NOERROR")
 ;;         (replace-match " "))
 ;;       (goto-char (point-min))
 ;;       (while
@@ -998,7 +998,7 @@ Version 2017-01-11"
           (narrow-to-region -p1 -p2)
           (goto-char (point-min))
           (while
-              (search-forward-regexp
+              (re-search-forward
                (elt -charArray (% (+ -nowState 2) -length))
                ;; (concat
                ;;  (elt -charArray (% (+ -nowState 1) -length))
@@ -1023,7 +1023,7 @@ Version 2017-01-11"
       (narrow-to-region *begin *end)
       (goto-char (point-min))
       (while
-          (search-forward-regexp "_" (point-max) "NOERROR")
+          (re-search-forward "_" (point-max) "NOERROR")
         (replace-match " " "FIXEDCASE" "LITERAL")))))
 
 (defun xah-copy-file-path (&optional *dir-path-only-p)
@@ -1064,9 +1064,9 @@ Version 2016-10-10"
       (kill-region (region-beginning) (region-end))
     (progn
       (beginning-of-line)
-      (if (search-forward-regexp "[[:graph:]]" (line-end-position) "NOERROR" )
+      (if (re-search-forward "[[:graph:]]" (line-end-position) "NOERROR" )
           (xah-delete-current-text-block)
-        (when (search-forward-regexp "[[:graph:]]" )
+        (when (re-search-forward "[[:graph:]]" )
           (xah-delete-current-text-block))))))
 
 (defun xah-delete-current-text-block ()
@@ -1888,7 +1888,7 @@ Version 2016-10-07"
       (narrow-to-region *begin *end)
       (progn
         (goto-char (point-min))
-        (while (search-forward-regexp "\n\n\n+" nil "noerror")
+        (while (re-search-forward "\n\n\n+" nil "noerror")
           (replace-match (make-string (if (null *n) 2 *n ) 10)))))))
 
 (defun xah-clean-whitespace (&optional *begin *end)
@@ -1909,7 +1909,7 @@ Version 2016-10-15"
       (narrow-to-region *begin *end)
       (progn
         (goto-char (point-min))
-        (while (search-forward-regexp "[ \t]+\n" nil "noerror")
+        (while (re-search-forward "[ \t]+\n" nil "noerror")
           (replace-match "\n")))
       (xah-clean-empty-lines (point-min) (point-max))
       (progn
