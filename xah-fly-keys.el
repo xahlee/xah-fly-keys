@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 5.9.2
+;; Version: 5.9.3
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -733,22 +733,22 @@ Version 2017-01-08"
 (defun xah-reformat-whitespaces-to-one-space (*begin *end)
   "Replace whitespaces by one space.
 URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
-Version 2016-12-13"
+Version 2017-01-11"
   (interactive "r")
   (save-excursion
     (save-restriction
       (narrow-to-region *begin *end)
       (goto-char (point-min))
       (while
-          (search-forward "\n" nil 'NOERROR)
+          (search-forward "\n" nil "NOERROR")
         (replace-match " "))
       (goto-char (point-min))
       (while
-          (search-forward "\t" nil 'NOERROR)
+          (search-forward "\t" nil "NOERROR")
         (replace-match " "))
       (goto-char (point-min))
       (while
-          (search-forward-regexp "  +" nil 'NOERROR)
+          (search-forward-regexp "  +" nil "NOERROR")
         (replace-match " ")))))
 
 (defun xah-reformat-to-multi-lines-region (*begin *end)
@@ -760,7 +760,7 @@ Version 2016-12-13"
     (narrow-to-region *begin *end)
     (goto-char (point-min))
     (while
-        (search-forward " " nil 'NOERROR)
+        (search-forward " " nil "NOERROR")
       (when (> (- (point) (line-beginning-position)) fill-column)
         (replace-match "\n" )))))
 
@@ -775,23 +775,23 @@ Version 2016-12-13"
 ;;       (narrow-to-region *begin *end)
 ;;       (goto-char (point-min))
 ;;       (while
-;;           (search-forward-regexp "\n\n+" nil 'NOERROR)
+;;           (search-forward-regexp "\n\n+" nil "NOERROR")
 ;;         (replace-match ",,j0mxwz9jiv"))
 ;;       (goto-char (point-min))
 ;;       (while
-;;           (search-forward "\t" nil 'NOERROR)
+;;           (search-forward "\t" nil "NOERROR")
 ;;         (replace-match " "))
 ;;       (goto-char (point-min))
 ;;       (while
-;;           (search-forward-regexp "\n" nil 'NOERROR)
+;;           (search-forward-regexp "\n" nil "NOERROR")
 ;;         (replace-match " "))
 ;;       (goto-char (point-min))
 ;;       (while
-;;           (search-forward-regexp "  +" nil 'NOERROR)
+;;           (search-forward-regexp "  +" nil "NOERROR")
 ;;         (replace-match " "))
 ;;       (goto-char (point-min))
 ;;       (while
-;;           (search-forward ",,j0mxwz9jiv" nil 'NOERROR)
+;;           (search-forward ",,j0mxwz9jiv" nil "NOERROR")
 ;;         (replace-match "\n\n")))))
 
 (defun xah-unfill-paragraph ()
@@ -859,7 +859,7 @@ or
 If the delimiter is any left bracket, the end delimiter is automatically the matching bracket.
 
 URL `http://ergoemacs.org/emacs/emacs_quote_lines.html'
-Version 2017-01-08"
+Version 2017-01-11"
   (interactive)
   (let* (
          -p1
@@ -912,9 +912,9 @@ Version 2017-01-08"
         (goto-char (point-max))
         (insert -endQuote)
         (goto-char (point-min))
-        (while (re-search-forward "\n\\([\t ]*\\)" nil 'NOERROR )
+        (while (re-search-forward "\n\\([\t ]*\\)" nil "NOERROR" )
           (replace-match
-           (concat -endQuote -separator (concat "\n" (match-string 1)) -beginQuote) 'FIXEDCASE 'LITERAL))
+           (concat -endQuote -separator (concat "\n" (match-string 1)) -beginQuote) "FIXEDCASE" "LITERAL"))
         ;;
         ))))
 
@@ -960,7 +960,7 @@ The region to work on is by this order:
  ③ else, work on current line.
 
 URL `http://ergoemacs.org/emacs/elisp_change_space-hyphen_underscore.html'
-Version 2016-12-18"
+Version 2017-01-11"
   (interactive)
   ;; this function sets a property 「'state」. Possible values are 0 to length of -charArray.
   (let (-p1 -p2)
@@ -1005,8 +1005,8 @@ Version 2016-12-18"
                ;;  "\\|"
                ;;  (elt -charArray (% (+ -nowState 2) -length)))
                (point-max)
-               'NOERROR)
-            (replace-match -changeTo 'FIXEDCASE 'LITERAL))))
+               "NOERROR")
+            (replace-match -changeTo "FIXEDCASE" "LITERAL"))))
       (when (or (string= -changeTo " ") -regionWasActive-p)
         (goto-char -p2)
         (set-mark -p1)
@@ -1016,15 +1016,15 @@ Version 2016-12-18"
 (defun xah-underscore-to-space-region (*begin *end)
   "Change underscore char to space.
 URL `http://ergoemacs.org/emacs/elisp_change_space-hyphen_underscore.html'
-Version 2015-08-18"
+Version 2017-01-11"
   (interactive "r")
   (save-excursion
     (save-restriction
       (narrow-to-region *begin *end)
       (goto-char (point-min))
       (while
-          (search-forward-regexp "_" (point-max) 'NOERROR)
-        (replace-match " " 'FIXEDCASE 'LITERAL)))))
+          (search-forward-regexp "_" (point-max) "NOERROR")
+        (replace-match " " "FIXEDCASE" "LITERAL")))))
 
 (defun xah-copy-file-path (&optional *dir-path-only-p)
   "Copy the current buffer's file path or dired path to `kill-ring'.
@@ -1064,7 +1064,7 @@ Version 2016-10-10"
       (kill-region (region-beginning) (region-end))
     (progn
       (beginning-of-line)
-      (if (search-forward-regexp "[[:graph:]]" (line-end-position) 'NOERROR )
+      (if (search-forward-regexp "[[:graph:]]" (line-end-position) "NOERROR" )
           (xah-delete-current-text-block)
         (when (search-forward-regexp "[[:graph:]]" )
           (xah-delete-current-text-block))))))
@@ -1163,8 +1163,9 @@ nil
 (defun xah-escape-quotes (*begin *end)
   "Replace 「\"」 by 「\\\"」 in current line or text selection.
 See also: `xah-unescape-quotes'
+
 URL `http://ergoemacs.org/emacs/elisp_escape_quotes.html'
-Version 2016-07-17"
+Version 2017-01-11"
   (interactive
    (if (use-region-p)
        (list (region-beginning) (region-end))
@@ -1174,13 +1175,14 @@ Version 2016-07-17"
         (narrow-to-region *begin *end)
         (goto-char (point-min))
         (while (search-forward "\"" nil t)
-          (replace-match "\\\"" 'FIXEDCASE 'LITERAL)))))
+          (replace-match "\\\"" "FIXEDCASE" "LITERAL")))))
 
 (defun xah-unescape-quotes (*begin *end)
   "Replace  「\\\"」 by 「\"」 in current line or text selection.
 See also: `xah-escape-quotes'
+
 URL `http://ergoemacs.org/emacs/elisp_escape_quotes.html'
-Version 2016-07-17"
+Version 2017-01-11"
   (interactive
    (if (use-region-p)
        (list (region-beginning) (region-end))
@@ -1190,7 +1192,7 @@ Version 2016-07-17"
       (narrow-to-region *begin *end)
       (goto-char (point-min))
       (while (search-forward "\\\"" nil t)
-        (replace-match "\"" 'FIXEDCASE 'LITERAL)))))
+        (replace-match "\"" "FIXEDCASE" "LITERAL")))))
 
 (defun xah-title-case-region-or-line (*begin *end)
   "Title case text between nearest brackets, or current line, or text selection.
@@ -1198,7 +1200,7 @@ Capitalize first letter of each word, except words like {to, of, the, a, in, or,
 
 When called in a elisp program, *begin *end are region boundaries.
 URL `http://ergoemacs.org/emacs/elisp_title_case_text.html'
-Version 2017-01-02"
+Version 2017-01-11"
   (interactive
    (if (use-region-p)
        (list (region-beginning) (region-end))
@@ -1248,7 +1250,7 @@ Version 2017-01-02"
              (goto-char (point-min))
              (while
                  (search-forward (aref -x 0) nil t)
-               (replace-match (aref -x 1) 'FIXEDCASE 'LITERAL)))
+               (replace-match (aref -x 1) "FIXEDCASE" "LITERAL")))
            -strPairs))))))
 
 
