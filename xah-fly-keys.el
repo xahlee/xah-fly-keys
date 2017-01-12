@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 5.9.4
+;; Version: 5.9.5
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -541,13 +541,13 @@ Version 2017-01-03"
 This command calls `yank', and if repeated, call `yank-pop'.
 
 URL `http://ergoemacs.org/emacs/emacs_paste_or_paste_previous.html'
-Version 2017-01-03"
+Version 2017-01-11"
   (interactive)
   (progn
     (when (and delete-selection-mode (region-active-p))
       (delete-region (region-beginning) (region-end)))
     (if (eq real-last-command this-command)
-        (yank-pop)
+        (yank-pop 1)
       (yank))))
 
 (defun xah-delete-backward-char-or-bracket-text ()
