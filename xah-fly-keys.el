@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 5.9.5
+;; Version: 5.9.6
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -555,11 +555,11 @@ Version 2017-01-11"
 If it's bracket, push the deleted text to `kill-ring'
 
 URL `http://ergoemacs.org/emacs/emacs_delete_backward_char_or_bracket_text.html'
-Version 2017-01-08"
+Version 2017-01-13"
   (interactive)
   (let (
-        (-right-brackets (regexp-opt '(")" "]" "}" "〕" "】" "〗" "〉" "》" "」" "』" "”" "’" "›" "»")))
-        (-left-brackets (regexp-opt '("(" "{" "[" "〔" "【" "〖" "〈" "《" "「" "『" "“" "‘" "‹" "«" ))))
+        (-right-brackets (regexp-opt '(")" "]" "}" "〕" "】" "〗" "〉" "》" "」" "』" "›" "»")))
+        (-left-brackets (regexp-opt '("(" "{" "[" "〔" "【" "〖" "〈" "《" "「" "『" "‹" "«" ))))
     (if (and delete-selection-mode (region-active-p))
         (delete-region (region-beginning) (region-end))
       (cond
@@ -2376,8 +2376,6 @@ If `universal-argument' is called first, do switch frame."
  (define-prefix-command 'xah-edit-cmds-keymap)
  '(
    ("SPC" . rectangle-mark-mode)
-   ("9" . delete-non-matching-lines)
-   ("0" . delete-duplicate-lines)
    ("," . apply-macro-to-region-lines)
    ("." . kmacro-start-macro)
    ("p" . kmacro-end-macro)
@@ -2390,7 +2388,6 @@ If `universal-argument' is called first, do switch frame."
    ("n" . rectangle-number-lines)
    ("o" . open-rectangle)
    ("r" . yank-rectangle)
-   ("t" . delete-matching-lines)
    ("y" . delete-whitespace-rectangle)))
 
 (xah-fly-map-keys
@@ -2405,6 +2402,8 @@ If `universal-argument' is called first, do switch frame."
    ("'" . reverse-region)
    ("d" . mark-defun)
    ("e" . list-matching-lines)
+   ("u" . delete-matching-lines)
+   ("i" . delete-non-matching-lines)
    ("j" . copy-to-register)
    ("k" . insert-register)
    ("l" . increment-register)
@@ -2414,6 +2413,7 @@ If `universal-argument' is called first, do switch frame."
    ("r" . copy-rectangle-to-register)
    ("t" . repeat)
    ("w" . xah-next-window-or-frame)
+   ("y" . delete-duplicate-lines)
    ("z" . number-to-register)))
 
 (xah-fly-map-keys
