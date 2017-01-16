@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 5.9.6
+;; Version: 6.0.0
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -155,7 +155,7 @@ Version 2016-06-15"
   (let ((n (if (null n) 1 n))
         (-i 1))
     (while (<= -i n)
-      (if (search-backward-regexp "\n[\t\n ]*\n+" nil "NOERROR")
+      (if (re-search-backward "\n[\t\n ]*\n+" nil "NOERROR")
           (progn (skip-chars-backward "\n\t "))
         (progn (goto-char (point-min))
                (setq -i n)))
@@ -230,7 +230,7 @@ The list of punctuations to jump to is defined by `xah-punctuation-regex'"
   "Move cursor to the previous occurrence of punctuation.
 See `xah-forward-punct'"
   (interactive "p")
-  (search-backward-regexp xah-punctuation-regex nil t n))
+  (re-search-backward xah-punctuation-regex nil t n))
 
 (defun xah-backward-left-bracket ()
   "Move cursor to the previous occurrence of left bracket.
@@ -238,7 +238,7 @@ The list of brackets to jump to is defined by `xah-left-brackets'.
 URL `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
 Version 2015-10-01"
   (interactive)
-  (search-backward-regexp (regexp-opt xah-left-brackets) nil t))
+  (re-search-backward (regexp-opt xah-left-brackets) nil t))
 
 (defun xah-forward-right-bracket ()
   "Move cursor to the next occurrence of right bracket.
@@ -285,7 +285,7 @@ Version 2015-06-15"
 URL `http://ergoemacs.org/emacs/emacs_jump_to_punctuations.html'
 Version 2015-06-15"
   (interactive)
-  (when (search-backward-regexp "=+" nil t)
+  (when (re-search-backward "=+" nil t)
     (while (search-backward "=" (- (point) 1) t)
       (left-char))))
 
@@ -299,7 +299,7 @@ Version 2016-01-19"
   "Move cursor to previous occurrence of comma sign 「,」.
 Version 2016-01-19"
   (interactive)
-  (when (search-backward-regexp ",+" nil t)
+  (when (re-search-backward ",+" nil t)
     (while (search-backward "," (- (point) 1) t)
       (left-char))))
 
@@ -349,7 +349,7 @@ Returns `t' if found, else `nil'.
 URL `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
 Version 2016-07-23"
   (interactive)
-  (if (search-backward-regexp "\\\"+" nil t)
+  (if (re-search-backward "\\\"+" nil t)
       (when (char-before) ; isn't nil, at beginning of buffer
         (while (char-equal (char-before) (char-after))
           (left-char)
@@ -370,7 +370,7 @@ Version 2015-03-24"
 URL `http://ergoemacs.org/emacs/emacs_jump_to_punctuations.html'
 Version 2015-03-24"
   (interactive)
-  (search-backward-regexp "\\.+\\|,+\\|;+" nil t))
+  (re-search-backward "\\.+\\|,+\\|;+" nil t))
 
 ;; (defun goto-point-min ()
 ;;   "Goto the beginning of buffer.
@@ -551,11 +551,11 @@ Version 2017-01-11"
       (yank))))
 
 (defun xah-delete-backward-char-or-bracket-text ()
-  "Delete backward 1 character, but if it's a bracket ()[]{}【】「」 etc, delete bracket and the inner text.
+  "Delete backward 1 character, but if it's a \"quote\" or bracket ()[]{}【】「」 etc, delete bracket and the inner text.
 If it's bracket, push the deleted text to `kill-ring'
 
 URL `http://ergoemacs.org/emacs/emacs_delete_backward_char_or_bracket_text.html'
-Version 2017-01-13"
+Version 2017-01-16"
   (interactive)
   (let (
         (-right-brackets (regexp-opt '(")" "]" "}" "〕" "】" "〗" "〉" "》" "」" "』" "›" "»")))
@@ -573,6 +573,16 @@ Version 2017-01-13"
           (backward-char )
           (mark-sexp)
           (kill-region (region-beginning) (region-end))))
+       ((looking-back "\\s\"" 1)
+        (if (nth 3 (syntax-ppss))
+            (progn
+              (backward-char )
+              (mark-sexp)
+              (kill-region (region-beginning) (region-end)))
+          (progn
+            (backward-sexp)
+            (mark-sexp)
+            (kill-region (region-beginning) (region-end)))))
        (t (delete-char -1))))))
 
 (defun xah-toggle-letter-case ()
@@ -1064,7 +1074,7 @@ Version 2016-10-10"
       (kill-region (region-beginning) (region-end))
     (progn
       (beginning-of-line)
-      (if (re-search-forward "[[:graph:]]" (line-end-position) "NOERROR" )
+      (if (re-search-forward "[[:graph:]]" (line-end-position) "NOERROR")
           (xah-delete-current-text-block)
         (when (re-search-forward "[[:graph:]]" )
           (xah-delete-current-text-block))))))
@@ -1606,7 +1616,7 @@ Written by Nikolaj Schumacher, 2008-10-20. Released under GPL 2"
       (setq arg (1+ arg) )))
   (up-list arg))
 
-(defun xah-extend-selection (arg &optional incremental-p)
+(defun xah-extend-selection-old-2017-01-14 (arg &optional incremental-p)
   "Select the current word.
 Subsequent calls expands the selection to larger semantic unit.
 
@@ -1630,6 +1640,111 @@ Written by Nikolaj Schumacher, 2008-10-20. Released under GPL 2."
         (unless (memq (char-before) '(?\) ?\"))
           (forward-sexp)))
       (mark-sexp -1))))
+
+(defun xah-extend-selection ()
+  "Select the current word, bracket/quote expression, or expand selection.
+Subsequent calls expands the selection.
+
+when no selection,
+• if cursor is on a bracket, select whole bracketed thing including bracket
+• if cursor is on a quote, select whole quoted thing including quoted
+• if cursor is on the beginning of line, select the line.
+• else, select current word.
+
+when there's a selection, the selection extension behavior is still experimental.
+Roughly:
+• if 1 line is selected, extend to next line.
+• if multiple lines is selected, extend to next line.
+• if a bracketed text is selected, extend to include the outer bracket. If there's no outer, select current line.
+
+ to line, or bracket/quoted text,
+or text block, whichever is the smallest.
+
+URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
+Version 2017-01-15"
+  (interactive)
+  (if (region-active-p)
+      (progn
+        (let ((-rb (region-beginning)) (-re (region-end)))
+          (goto-char -rb)
+          (cond
+           ((looking-at "\\s(")
+            (if (eq (nth 0 (syntax-ppss)) 0)
+                (progn
+                  (message "left bracket, depth 0.")
+                  (end-of-line) ; select current line
+                  (set-mark (line-beginning-position)))
+              (progn
+                (message "left bracket, depth not 0")
+                (up-list -1 t t)
+                (mark-sexp))))
+           ((eq -rb (line-beginning-position))
+            (progn
+              (goto-char -rb)
+              (let ((-firstLineEndPos (line-end-position)))
+                (cond
+                 ((eq -re -firstLineEndPos)
+                  (progn
+                    (message "exactly 1 line. extend to next whole line." )
+                    (forward-line 1)
+                    (end-of-line)))
+                 ((< -re -firstLineEndPos)
+                  (progn
+                    (message "less than 1 line. complete the line." )
+                    (end-of-line)))
+                 ((> -re -firstLineEndPos)
+                  (progn
+                    (message "beginning of line, but end is greater than 1st end of line" )
+                    (goto-char -re)
+                    (if (eq (point) (line-end-position))
+                        (progn
+                          (message "exactly multiple lines" )
+                          (forward-line 1)
+                          (end-of-line))
+                      (progn
+                        (message "multiple lines but end is not eol. make it so" )
+                        (goto-char -re)
+                        (end-of-line)))))
+                 (t (error "logic error 42946" ))))))
+           ((and (> (point) (line-beginning-position)) (<= (point) (line-end-position)))
+            (progn
+              (message "less than 1 line" )
+              (end-of-line) ; select current line
+              (set-mark (line-beginning-position))))
+           (t (message "last resort" ) nil))))
+    (progn
+      (cond
+       ((looking-at "\\s(")
+        (message "left bracket")
+        (mark-sexp)) ; left bracket
+       ((looking-at "\\s)")
+        (message "right bracket")
+        (backward-up-list) (mark-sexp))
+       ((looking-at "\\s\"")
+        (message "string quote")
+        (mark-sexp)) ; string quote
+       ((and (eq (point) (line-beginning-position)) (not (looking-at "\n")))
+        (message "beginning of line and not empty")
+        (end-of-line)
+        (set-mark (line-beginning-position)))
+       ((or (looking-back "\\s_" 1) (looking-back "\\sw" 1))
+        (message "left is word or symbol")
+        (skip-syntax-backward "_w" )
+        ;; (re-search-backward "^\\(\\sw\\|\\s_\\)" nil t)
+        (mark-sexp))
+       ((and (looking-at "\\s ") (looking-back "\\s " 1))
+        (message "left and right both space" )
+        (skip-chars-backward "\\s " ) (set-mark (point))
+        (skip-chars-forward "\\s "))
+       ((and (looking-at "\n") (looking-back "\n" 1))
+        (message "left and right both newline")
+        (skip-chars-forward "\n")
+        (set-mark (point))
+        (re-search-forward "\n[ \t]*\n")) ; between blank lines, select next text block
+       (t (message "just mark sexp" )
+          (mark-sexp))
+       ;;
+       ))))
 
 (defun xah-select-text-in-quote ()
   "Select text between the nearest left and right delimiters.
@@ -1831,6 +1946,7 @@ version 2016-01-28"
             ("rb" . "ruby")
             ("go" . "go run")
             ("js" . "node") ; node.js
+            ("ts" . "tsc") ; TypeScript
             ("sh" . "bash")
             ("clj" . "java -cp /home/xah/apps/clojure-1.6.0/clojure-1.6.0.jar clojure.main")
             ("rkt" . "racket")
@@ -1888,7 +2004,7 @@ Version 2016-10-07"
       (narrow-to-region *begin *end)
       (progn
         (goto-char (point-min))
-        (while (re-search-forward "\n\n\n+" nil "noerror")
+        (while (re-search-forward "\n\n\n+" nil "NOERROR")
           (replace-match (make-string (if (null *n) 2 *n ) 10)))))))
 
 (defun xah-clean-whitespace (&optional *begin *end)
@@ -1909,7 +2025,7 @@ Version 2016-10-15"
       (narrow-to-region *begin *end)
       (progn
         (goto-char (point-min))
-        (while (re-search-forward "[ \t]+\n" nil "noerror")
+        (while (re-search-forward "[ \t]+\n" nil "NOERROR")
           (replace-match "\n")))
       (xah-clean-empty-lines (point-min) (point-max))
       (progn
@@ -2784,7 +2900,7 @@ If `universal-argument' is called first, do switch frame."
         (progn
           (define-key xah-fly-key-map (kbd "8") nil)
           (define-key xah-fly-key-map (kbd "7") nil)
-          (define-key xah-fly-key-map (kbd "2") 'xah-select-line)
+          (define-key xah-fly-key-map (kbd "2") 'xah-select-current-line)
           (define-key xah-fly-key-map (kbd "1") 'xah-extend-selection))
       (progn
         (define-key xah-fly-key-map (kbd "1") nil)
