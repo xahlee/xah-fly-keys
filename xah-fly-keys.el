@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 6.0.3
+;; Version: 6.1.3
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -136,62 +136,27 @@ version 2016-04-04"
   (interactive)
   (set-mark-command t))
 
-(defun xah-forward-block (&optional n)
-  "Move cursor beginning of next text block.
-A text block is separated by blank lines.
-This command similar to `forward-paragraph', but this command's behavior is the same regardless of syntax table.
-URL `http://ergoemacs.org/emacs/emacs_move_by_paragraph.html'
-Version 2016-06-15"
-  (interactive "p")
-  (let ((n (if (null n) 1 n)))
-    (re-search-forward "\n[\t\n ]*\n+" nil "NOERROR" n)))
-
-(defun xah-backward-block (&optional n)
-  "Move cursor to previous text block.
-See: `xah-forward-block'
-URL `http://ergoemacs.org/emacs/emacs_move_by_paragraph.html'
-Version 2016-06-15"
-  (interactive "p")
-  (let ((n (if (null n) 1 n))
-        (-i 1))
-    (while (<= -i n)
-      (if (re-search-backward "\n[\t\n ]*\n+" nil "NOERROR")
-          (progn (skip-chars-backward "\n\t "))
-        (progn (goto-char (point-min))
-               (setq -i n)))
-      (setq -i (1+ -i)))))
-
-(defun xah-beginning-of-line-or-block (&optional n)
+(defun xah-beginning-of-line-or-block ()
   "Move cursor to beginning of line, or beginning of current or previous text block.
  (a text block is separated by blank lines)
 URL `http://ergoemacs.org/emacs/emacs_keybinding_design_beginning-of-line-or-block.html'
-version 2016-06-15"
-  (interactive "p")
-  (let ((n (if (null n) 1 n)))
-    (if (equal n 1)
-        (if (or (equal (point) (line-beginning-position))
-                (equal last-command this-command )
-                ;; (equal last-command 'xah-end-of-line-or-block )
-                )
-            (xah-backward-block n)
-          (beginning-of-line))
-      (xah-backward-block n))))
+version 2017-01-17"
+  (interactive)
+  (if (or (equal (point) (line-beginning-position))
+          (equal last-command this-command ))
+      (if (re-search-backward "\n[\t\n ]*\n+" nil "NOERROR") (skip-chars-backward "\n\t ") (goto-char (point-min)))
+    (beginning-of-line)))
 
-(defun xah-end-of-line-or-block (&optional n)
+(defun xah-end-of-line-or-block ()
   "Move cursor to end of line, or end of current or next text block.
  (a text block is separated by blank lines)
 URL `http://ergoemacs.org/emacs/emacs_keybinding_design_beginning-of-line-or-block.html'
-version 2016-06-15"
-  (interactive "p")
-  (let ((n (if (null n) 1 n)))
-    (if (equal n 1)
-        (if (or (equal (point) (line-end-position))
-                (equal last-command this-command )
-                ;; (equal last-command 'xah-beginning-of-line-or-block )
-                )
-            (xah-forward-block)
-          (end-of-line))
-      (progn (xah-forward-block n)))))
+version 2017-01-17"
+  (interactive)
+  (if (or (equal (point) (line-end-position))
+          (equal last-command this-command ))
+      (re-search-forward "\n[\t\n ]*\n+" nil "NOERROR" )
+    (end-of-line)))
 
 (defvar xah-brackets nil "string of left/right brackets pairs.")
 (setq xah-brackets "()[]{}<>（）［］｛｝⦅⦆〚〛⦃⦄“”‘’‹›«»「」〈〉《》【】〔〕⦗⦘『』〖〗〘〙｢｣⟦⟧⟨⟩⟪⟫⟮⟯⟬⟭⌈⌉⌊⌋⦇⦈⦉⦊❛❜❝❞❨❩❪❫❴❵❬❭❮❯❰❱❲❳〈〉⦑⦒⧼⧽﹙﹚﹛﹜﹝﹞⁽⁾₍₎⦋⦌⦍⦎⦏⦐⁅⁆⸢⸣⸤⸥⟅⟆⦓⦔⦕⦖⸦⸧⸨⸩｟｠⧘⧙⧚⧛⸜⸝⸌⸍⸂⸃⸄⸅⸉⸊᚛᚜༺༻༼༽⏜⏝⎴⎵⏞⏟⏠⏡﹁﹂﹃﹄︹︺︻︼︗︘︿﹀︽︾﹇﹈︷︸")
