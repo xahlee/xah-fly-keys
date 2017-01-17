@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 6.0.1
+;; Version: 6.0.2
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1139,6 +1139,7 @@ version 2016-07-17"
 (defun xah-upcase-sentence ()
   "Upcase first letters of sentences of current text block or selection.
 
+URL `http://ergoemacs.org/emacs/emacs_upcase_sentence.html'
 Version 2017-01-16"
   (interactive)
   (let (-p1 -p2)
@@ -1148,8 +1149,9 @@ Version 2017-01-16"
           (setq -p2 (region-end)))
       (save-excursion
         (if (re-search-backward "\n[ \t]*\n" nil "move")
-            (progn (re-search-forward "\n[ \t]*\n")
-                   (setq -p1 (point)))
+            (progn
+              (setq -p1 (point))
+              (re-search-forward "\n[ \t]*\n"))
           (setq -p1 (point)))
         (progn
           (re-search-forward "\n[ \t]*\n" nil "move")
@@ -1165,9 +1167,15 @@ Version 2017-01-16"
             ;;
             )
           (goto-char (point-min))
-          (while (re-search-forward "\n\\([a-z]\\)" nil "move") ; right after an blank line
+          (while (re-search-forward "\\. ?\n *\\([a-z]\\)" nil "move") ; new line after period
             (upcase-region (match-beginning 1) (match-end 1))
             (overlay-put (make-overlay (match-beginning 1) (match-end 1)) 'face 'highlight)
+            ;;
+            )
+          (goto-char (point-min))
+          (while (re-search-forward "\\(\\`\\|\n\n\\)\\([a-z]\\)" nil "move") ; after a blank line, or beginning of buffer
+            (upcase-region (match-beginning 2) (match-end 2))
+            (overlay-put (make-overlay (match-beginning 2) (match-end 2)) 'face 'highlight)
             ;;
             )
           (goto-char (point-min))
@@ -2495,23 +2503,24 @@ If `universal-argument' is called first, do switch frame."
    ("z" . abort-recursive-edit)))
 
 (xah-fly-map-keys
-   ;; kinda replacement related
+ ;; kinda replacement related
  (define-prefix-command 'xah-edit-cmds-keymap)
  '(
-   ("SPC" . rectangle-mark-mode)
    ("," . apply-macro-to-region-lines)
    ("." . kmacro-start-macro)
-   ("p" . kmacro-end-macro)
-   ("e" . call-last-kbd-macro)
-   ("u" . xah-quote-lines)
    ("c" . replace-rectangle)
    ("d" . delete-rectangle)
+   ("e" . call-last-kbd-macro)
    ("g" . kill-rectangle)
+   ("i" . xah-upcase-sentence)
    ("l" . clear-rectangle)
    ("n" . rectangle-number-lines)
    ("o" . open-rectangle)
+   ("p" . kmacro-end-macro)
    ("r" . yank-rectangle)
-   ("y" . delete-whitespace-rectangle)))
+   ("u" . xah-quote-lines)
+   ("y" . delete-whitespace-rectangle)
+   ("SPC" . rectangle-mark-mode)))
 
 (xah-fly-map-keys
  (define-prefix-command 'xah-leader-t-keymap)
