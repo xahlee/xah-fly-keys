@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 6.0.2
+;; Version: 6.0.3
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1140,7 +1140,7 @@ version 2016-07-17"
   "Upcase first letters of sentences of current text block or selection.
 
 URL `http://ergoemacs.org/emacs/emacs_upcase_sentence.html'
-Version 2017-01-16"
+Version 2017-01-17"
   (interactive)
   (let (-p1 -p2)
     (if (region-active-p)
@@ -1179,7 +1179,15 @@ Version 2017-01-16"
             ;;
             )
           (goto-char (point-min))
-          (while (re-search-forward "<p>\\([a-z]\\)" nil "move") ; for HTML. first letter after tag
+          (while (re-search-forward "<p>\\([a-z]\\)" nil "move")
+            ;; for HTML. first letter after tag
+            (upcase-region (match-beginning 1) (match-end 1))
+            (overlay-put (make-overlay (match-beginning 1) (match-end 1)) 'face 'highlight)
+            ;;
+            )
+          (goto-char (point-min))
+          (while (re-search-forward "<li>\\([a-z]\\)" nil "move")
+            ;; for HTML. first letter after tag
             (upcase-region (match-beginning 1) (match-end 1))
             (overlay-put (make-overlay (match-beginning 1) (match-end 1)) 'face 'highlight)
             ;;
