@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 6.0.0
+;; Version: 6.0.1
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1137,38 +1137,45 @@ version 2016-07-17"
   (kill-new (mapconcat 'identity (extract-rectangle *begin *end) "\n")))
 
 (defun xah-upcase-sentence ()
-  "Upcase sentence.
-TODO 2014-09-30 command incomplete
-"
+  "Upcase first letters of sentences of current text block or selection.
+
+Version 2017-01-16"
   (interactive)
   (let (-p1 -p2)
-
     (if (region-active-p)
         (progn
           (setq -p1 (region-beginning))
           (setq -p2 (region-end)))
-      (progn
-        (save-excursion
-          (progn
-            (if (re-search-backward "\n[ \t]*\n" nil "move")
-                (progn (re-search-forward "\n[ \t]*\n")
-                       (setq -p1 (point)))
-              (setq -p1 (point)))
-            (if (re-search-forward "\n[ \t]*\n" nil "move")
-                (progn (re-search-backward "\n[ \t]*\n")
-                       (setq -p2 (point)))
-              (setq -p2 (point)))))))
-
+      (save-excursion
+        (if (re-search-backward "\n[ \t]*\n" nil "move")
+            (progn (re-search-forward "\n[ \t]*\n")
+                   (setq -p1 (point)))
+          (setq -p1 (point)))
+        (progn
+          (re-search-forward "\n[ \t]*\n" nil "move")
+          (setq -p2 (point)))))
     (save-excursion
       (save-restriction
         (narrow-to-region -p1 -p2)
-
-        (goto-char (point-min))
-        (while (search-forward "\. \{1,2\}\\([a-z]\\)" nil t)
-nil
-;; (replace-match "myReplaceStr2")
-
-)))))
+        (let ((case-fold-search nil))
+          (goto-char (point-min))
+          (while (re-search-forward "\\. \\{1,2\\}\\([a-z]\\)" nil "move") ; after period
+            (upcase-region (match-beginning 1) (match-end 1))
+            (overlay-put (make-overlay (match-beginning 1) (match-end 1)) 'face 'highlight)
+            ;;
+            )
+          (goto-char (point-min))
+          (while (re-search-forward "\n\\([a-z]\\)" nil "move") ; right after an blank line
+            (upcase-region (match-beginning 1) (match-end 1))
+            (overlay-put (make-overlay (match-beginning 1) (match-end 1)) 'face 'highlight)
+            ;;
+            )
+          (goto-char (point-min))
+          (while (re-search-forward "<p>\\([a-z]\\)" nil "move") ; for HTML. first letter after tag
+            (upcase-region (match-beginning 1) (match-end 1))
+            (overlay-put (make-overlay (match-beginning 1) (match-end 1)) 'face 'highlight)
+            ;;
+            ))))))
 
 (defun xah-escape-quotes (*begin *end)
   "Replace 「\"」 by 「\\\"」 in current line or text selection.
