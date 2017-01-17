@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 6.1.3
+;; Version: 6.1.4
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -138,20 +138,30 @@ version 2016-04-04"
 
 (defun xah-beginning-of-line-or-block ()
   "Move cursor to beginning of line, or beginning of current or previous text block.
- (a text block is separated by blank lines)
+
+• When called first time, move cursor to beginning of line.
+• When called again, move cursor to beginning of paragraph.
+• When called again, move cursor to beginning of previous paragraph.
+
 URL `http://ergoemacs.org/emacs/emacs_keybinding_design_beginning-of-line-or-block.html'
-version 2017-01-17"
+Version 2017-01-17"
   (interactive)
   (if (or (equal (point) (line-beginning-position))
           (equal last-command this-command ))
-      (if (re-search-backward "\n[\t\n ]*\n+" nil "NOERROR") (skip-chars-backward "\n\t ") (goto-char (point-min)))
+      (if (re-search-backward "\n[\t\n ]*\n+" nil "NOERROR")
+          (skip-chars-backward "\n\t ")
+        (goto-char (point-min)))
     (beginning-of-line)))
 
 (defun xah-end-of-line-or-block ()
   "Move cursor to end of line, or end of current or next text block.
- (a text block is separated by blank lines)
+
+• When called first time, move cursor to end of line.
+• When called again, move cursor to end of paragraph.
+• When called again, move cursor to end of next paragraph.
+
 URL `http://ergoemacs.org/emacs/emacs_keybinding_design_beginning-of-line-or-block.html'
-version 2017-01-17"
+Version 2017-01-17"
   (interactive)
   (if (or (equal (point) (line-end-position))
           (equal last-command this-command ))
