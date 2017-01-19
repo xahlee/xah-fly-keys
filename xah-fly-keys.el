@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 6.2.0
+;; Version: 6.2.1
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1067,7 +1067,7 @@ Version 2015-12-08"
 
 (defun xah-copy-to-register-1 ()
   "Copy current line or text selection to register 1.
-When no selection, copy current line, but newline char is not included.
+When no selection, copy current line, with newline char.
 See also: `xah-paste-from-register-1', `copy-to-register'.
 
 URL `http://ergoemacs.org/emacs/elisp_copy-paste_register_1.html'
@@ -1080,11 +1080,13 @@ Version 2017-01-18"
       (progn (setq -p1 (line-beginning-position))
              (setq -p2 (line-end-position))))
     (copy-to-register ?1 -p1 -p2)
+    (with-temp-buffer (insert "\n")
+                      (append-to-register ?1 (point-min) (point-max)))
     (message "Copied to register 1: 「%s」." (buffer-substring-no-properties -p1 -p2))))
 
 (defun xah-append-to-register-1 ()
   "Append current line or text selection to register 1.
-When no selection, append current line, but newline char is not included.
+When no selection, append current line, with newline char.
 See also: `xah-paste-from-register-1', `copy-to-register'.
 
 URL `http://ergoemacs.org/emacs/elisp_copy-paste_register_1.html'
@@ -1096,7 +1098,9 @@ Version 2015-12-08"
                (setq -p2 (region-end)))
       (progn (setq -p1 (line-beginning-position))
              (setq -p2 (line-end-position))))
-    (append-to-register ?1  -p1 -p2)
+    (append-to-register ?1 -p1 -p2)
+    (with-temp-buffer (insert "\n")
+                      (append-to-register ?1 (point-min) (point-max)))
     (message "Appended to register 1: 「%s」." (buffer-substring-no-properties -p1 -p2))))
 
 (defun xah-paste-from-register-1 ()
