@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 6.1.4
+;; Version: 6.2.0
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -397,27 +397,6 @@ Version 2016-10-11"
   (delete-region (line-beginning-position) (line-end-position))
   (when (looking-at "\n")
     (delete-char 1)))
-
-;; (defun xah-copy-line-or-region ()
-;;   "Copy current line, or text selection.
-;; When `universal-argument' is called first, copy whole buffer (respects `narrow-to-region').
-
-;; URL `http://ergoemacs.org/emacs/emacs_copy_cut_current_line.html'
-;; Version 2015-05-06"
-;;   (interactive)
-;;   (let (-p1 -p2)
-;;     (if current-prefix-arg
-;;         (progn (setq -p1 (point-min))
-;;                (setq -p2 (point-max)))
-;;       (progn (if (use-region-p)
-;;                  (progn (setq -p1 (region-beginning))
-;;                         (setq -p2 (region-end)))
-;;                (progn (setq -p1 (line-beginning-position))
-;;                       (setq -p2 (line-end-position))))))
-;;     (kill-ring-save -p1 -p2)
-;;     (if current-prefix-arg
-;;         (message "buffer text copied")
-;;       (message "text copied"))))
 
 (defun xah-copy-line-or-region ()
   "Copy current line, or text selection.
@@ -1075,8 +1054,37 @@ Version 2016-10-10"
       (setq -p2 (point)))
     (kill-region -p1 -p2)))
 
+(defun xah-clear-register-1 ()
+  "Clear register 1.
+See also: `xah-paste-from-register-1', `copy-to-register'.
+
+URL `http://ergoemacs.org/emacs/elisp_copy-paste_register_1.html'
+Version 2015-12-08"
+  (interactive)
+  (progn
+    (copy-to-register ?1 (point-min) (point-min))
+    (message "Cleared register 1.")))
+
 (defun xah-copy-to-register-1 ()
   "Copy current line or text selection to register 1.
+When no selection, copy current line, but newline char is not included.
+See also: `xah-paste-from-register-1', `copy-to-register'.
+
+URL `http://ergoemacs.org/emacs/elisp_copy-paste_register_1.html'
+Version 2017-01-18"
+  (interactive)
+  (let (-p1 -p2)
+    (if (region-active-p)
+        (progn (setq -p1 (region-beginning))
+               (setq -p2 (region-end)))
+      (progn (setq -p1 (line-beginning-position))
+             (setq -p2 (line-end-position))))
+    (copy-to-register ?1 -p1 -p2)
+    (message "Copied to register 1: 「%s」." (buffer-substring-no-properties -p1 -p2))))
+
+(defun xah-append-to-register-1 ()
+  "Append current line or text selection to register 1.
+When no selection, append current line, but newline char is not included.
 See also: `xah-paste-from-register-1', `copy-to-register'.
 
 URL `http://ergoemacs.org/emacs/elisp_copy-paste_register_1.html'
@@ -1088,8 +1096,8 @@ Version 2015-12-08"
                (setq -p2 (region-end)))
       (progn (setq -p1 (line-beginning-position))
              (setq -p2 (line-end-position))))
-    (copy-to-register ?1 -p1 -p2)
-    (message "copied to register 1: 「%s」." (buffer-substring-no-properties -p1 -p2))))
+    (append-to-register ?1  -p1 -p2)
+    (message "Appended to register 1: 「%s」." (buffer-substring-no-properties -p1 -p2))))
 
 (defun xah-paste-from-register-1 ()
   "Paste text from register 1.
@@ -1356,7 +1364,7 @@ version 2016-12-18"
 • wrap brackets around word if any. e.g. xy▮z → (xyz▮). Or just (▮)
 
 URL `http://ergoemacs.org/emacs/elisp_insert_brackets_by_pair.html'
-Version 2016-12-04"
+Version 2017-01-17"
   (if (use-region-p)
       (progn ; there's active region
         (let (
@@ -1406,14 +1414,14 @@ Version 2016-12-04"
             (looking-at "[^-_[:alnum:]]")
             (eq (point) (point-max)))
            (not (or
-                 (eq major-mode 'xah-elisp-mode)
-                 (eq major-mode 'emacs-lisp-mode)
-                 (eq major-mode 'lisp-mode)
-                 (eq major-mode 'lisp-interaction-mode)
-                 (eq major-mode 'common-lisp-mode)
-                 (eq major-mode 'clojure-mode)
-                 (eq major-mode 'xah-clojure-mode)
-                 (eq major-mode 'scheme-mode))))
+                 (string-equal major-mode "xah-elisp-mode")
+                 (string-equal major-mode "emacs-lisp-mode")
+                 (string-equal major-mode "lisp-mode")
+                 (string-equal major-mode "lisp-interaction-mode")
+                 (string-equal major-mode "common-lisp-mode")
+                 (string-equal major-mode "clojure-mode")
+                 (string-equal major-mode "xah-clojure-mode")
+                 (string-equal major-mode "scheme-mode"))))
           (progn
             (setq -p1 (point) -p2 (point))
             (insert *left-bracket *right-bracket)
@@ -2491,11 +2499,11 @@ If `universal-argument' is called first, do switch frame."
  '(
    ("," . apply-macro-to-region-lines)
    ("." . kmacro-start-macro)
+   ("a" . xah-upcase-sentence)
    ("c" . replace-rectangle)
    ("d" . delete-rectangle)
    ("e" . call-last-kbd-macro)
    ("g" . kill-rectangle)
-   ("i" . xah-upcase-sentence)
    ("l" . clear-rectangle)
    ("n" . rectangle-number-lines)
    ("o" . open-rectangle)
@@ -2510,8 +2518,10 @@ If `universal-argument' is called first, do switch frame."
  '(
    ("SPC" . xah-clean-whitespace)
    ("TAB" . nil)
-   ("3" . point-to-register)
-   ("4" . jump-to-register)
+   ("1" . xah-clear-register-1)
+   ("2" . xah-append-to-register-1)
+   ("3" . xah-copy-to-register-1)
+   ("4" . xah-paste-from-register-1)
    ("." . sort-lines)
    ("," . sort-numeric-fields)
    ("'" . reverse-region)
