@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 6.2.1
+;; Version: 7.0.0
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -32,6 +32,8 @@
 ;; (add-to-list 'load-path "~/.emacs.d/lisp/")
 ;; (require 'xah-fly-keys)
 ;; (xah-fly-keys 1)
+;; (xah-fly-set-layout "qwerty") ; required if you use qwerty
+;; (xah-fly-set-layout "dvorak")
 
 ;; --------------------------------------------------
 ;; HOW TO USE
@@ -110,14 +112,11 @@
 
 
 
-(defcustom
-  xah-fly-key-layout
+(defvar
+  xah-fly-key--current-layout
   nil
-  "The layout to use. Value is one of \"dvorak\" or \"qwerty\". If nil, dvorak is default."
-  :group 'xah-fly-keys
+  "The current keyboard layout. Use `xah-fly-set-layout' to set the layout."
   )
-
-(setq xah-fly-key-layout "dvorak")
 
 (defvar xah-fly-command-mode-activate-hook nil "Hook for `xah-fly-command-mode-activate'")
 (defvar xah-fly-insert-mode-activate-hook nil "Hook for `xah-fly-insert-mode-activate'")
@@ -2259,75 +2258,105 @@ If `universal-argument' is called first, do switch frame."
 
 
 
-(setq xah-dvorak-to-qwerty-kmap
-      '(
-        ("a" . "a")
-        ("b" . "n")
-        ("c" . "i")
-        ("d" . "h")
-        ("e" . "d")
-        ("f" . "y")
-        ("g" . "u")
-        ("h" . "j")
-        ("i" . "g")
-        ("j" . "c")
-        ("k" . "v")
-        ("l" . "p")
-        ("m" . "m")
-        ("n" . "l")
-        ("o" . "s")
-        ("p" . "r")
-        ("q" . "x")
-        ("r" . "o")
-        ("s" . ";")
-        ("t" . "k")
-        ("u" . "f")
-        ("v" . ".")
-        ("w" . ",")
-        ("x" . "b")
-        ("y" . "t")
-        ("z" . "/")
-        ("." . "e")
-        ("," . "w")
-        ("'" . "q")
-        (";" . "z")
-        ("/" . "[")
-        ("[" . "-")
-        ("]" . "=")
-        ("=" . "]")
-        ("-" . "'")))
+(defvar xah--dvorak-to-qwerty-kmap
+  '(("." . "e")
+    ("," . "w")
+    ("'" . "q")
+    (";" . "z")
+    ("/" . "[")
+    ("[" . "-")
+    ("]" . "=")
+    ("=" . "]")
+    ("-" . "'")
 
-(defun xah-dvorak-to-qwerty (charstr)
-  "Convert dvorak key to qwerty. charstr is single char string."
+    ("a" . "a")
+    ("b" . "n")
+    ("c" . "i")
+    ("d" . "h")
+    ("e" . "d")
+    ("f" . "y")
+    ("g" . "u")
+    ("h" . "j")
+    ("i" . "g")
+    ("j" . "c")
+    ("k" . "v")
+    ("l" . "p")
+    ("m" . "m")
+    ("n" . "l")
+    ("o" . "s")
+    ("p" . "r")
+    ("q" . "x")
+    ("r" . "o")
+    ("s" . ";")
+    ("t" . "k")
+    ("u" . "f")
+    ("v" . ".")
+    ("w" . ",")
+    ("x" . "b")
+    ("y" . "t")
+    ("z" . "/"))
+  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding qwerty. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+
+(defun xah--dvorak-to-qwerty (*charstr)
+  "Convert dvorak key to qwerty. *charstr is single char string.
+For example, \"e\" becomes \"d\".
+For some char, the result is the same. For example, 1 2 3, etc.
+*CHARSTR should be a letter or punctuation, if  length of *CHARSTR is greater than 1, such as \"DEL\" or \"RET\" or \"TAB\", *CHARSTR is returned unchanged.
+*CHARSTR should be a letter or punctuation, if  length of *CHARSTR is greater than 1, *CHARSTR is returned unchanged.
+Version 2017-01-21"
   (interactive)
-  (cdr (assoc charstr xah-dvorak-to-qwerty-kmap)))
+  (if (> (length *charstr) 1)
+      *charstr
+    (let ((-result (assoc *charstr xah--dvorak-to-qwerty-kmap)))
+      (if (null -result)
+          *charstr
+        (cdr -result)))))
 
-(defun xah-qwerty-to-dvorak (charstr)
-  "Convert qwerty key to dvorak. charstr is single char string."
+(defun xah--qwerty-to-dvorak (*charstr)
+  "Convert qwerty key to dvorak. charstr is single char string.
+For example, \"d\" becomes \"e\".
+For some char, the result is the same. For example, 1 2 3, etc.
+*CHARSTR should be a letter or punctuation, if  length of *CHARSTR is greater than 1, such as \"DEL\" or \"RET\" or \"TAB\", *CHARSTR is returned unchanged.
+Version 2017-01-21"
   (interactive)
-  (car (rassoc charstr xah-dvorak-to-qwerty-kmap)))
+  (if (> (length *charstr) 1)
+      *charstr
+    (let ((-result (rassoc *charstr xah--dvorak-to-qwerty-kmap)))
+      (if (null -result)
+          *charstr
+        (car -result)))))
 
-(defun xah-fly-map-keys (*kmap-name *key-cmd-alist)
-  "similar to `define-key' but map over a alist."
+(defun xah-fly--key-char (*charstr)
+  "Return the corresponding char *CHARSTR according to current `xah-fly-key--current-layout'.
+*CHARSTR must be a string of single char.
+Version 2017-01-21"
+  (interactive)
+  (if (or (null xah-fly-key--current-layout)
+          (string-equal xah-fly-key--current-layout "dvorak"))
+      *charstr
+    (progn (xah--dvorak-to-qwerty *charstr))))
+
+(defun xah-fly--define-keys (*kmap-name *key-cmd-alist)
+  "Map `define-key' over a alist *key-cmd-alist.
+Example usage:
+;; (xah-fly--define-keys
+;;  (define-prefix-command 'xah-highlight-keymap)
+;;  '(
+;;    (\"h\" . highlight-symbol-at-point)
+;;    (\".\" . isearch-forward-symbol-at-point)
+;;    (\"1\" . hi-lock-find-patterns)
+;;    (\"w\" . isearch-forward-word)))
+Version 2017-01-21"
   (interactive)
   (mapc
    (lambda (-pair)
-     (define-key *kmap-name (xah-fly-kbd (car -pair)) (cdr -pair)))
+     (define-key *kmap-name (xah-fly--key-char (kbd (car -pair))) (cdr -pair)))
    *key-cmd-alist))
-
-(defun xah-fly-kbd (*arg)
-  "similar to `kbd' but are translated to current `xah-fly-key-layout' first,
-*arg must be a single char."
-  (interactive)
-  (if (or (null xah-fly-key-layout)
-          (string-equal xah-fly-key-layout "dvorak"))
-      (kbd *arg)
-    (progn (kbd (xah-dvorak-to-qwerty *arg)))))
 
 
 ;; keymaps
 
-(defvar xah-fly-swapped-1827-p nil "Boolean. If true, it means keys 1 and 8 are swapped, and 2 and 7 are swapped. See: http://xahlee.info/kbd/best_number_key_layout.html")
+(defvar xah-fly-swapped-1-8-and-2-7-p nil "If non-nil, it means keys 1 and 8 are swapped, and 2 and 7 are swapped. See: http://xahlee.info/kbd/best_number_key_layout.html")
 
 (defvar xah-fly-key-map nil "Keybinding for `xah-fly-keys' minor mode.")
 (progn
@@ -2338,7 +2367,7 @@ If `universal-argument' is called first, do switch frame."
   )
 
 ;; commands in search-map and facemenu-keymap
-(xah-fly-map-keys
+(xah-fly--define-keys
  (define-prefix-command 'xah-highlight-keymap)
  '(
 
@@ -2367,7 +2396,7 @@ If `universal-argument' is called first, do switch frame."
    ("u" . facemenu-set-underline)
    ))
 
-(xah-fly-map-keys
+(xah-fly--define-keys
  (define-prefix-command 'xah-leader-tab-keymap)
  '(
    ("TAB" . indent-for-tab-command)
@@ -2392,7 +2421,7 @@ If `universal-argument' is called first, do switch frame."
 
 
 
-(xah-fly-map-keys
+(xah-fly--define-keys
  (define-prefix-command 'xah-leader-c-keymap)
  '(
    ("," . xah-open-in-external-app)
@@ -2411,7 +2440,7 @@ If `universal-argument' is called first, do switch frame."
    ("s" . write-file)
    ))
 
-(xah-fly-map-keys
+(xah-fly--define-keys
  (define-prefix-command 'xah-help-keymap)
  '(
    (";" . Info-goto-emacs-command-node)
@@ -2438,7 +2467,7 @@ If `universal-argument' is called first, do switch frame."
    ("v" . apropos-value)
    ("z" . describe-coding-system)))
 
-(xah-fly-map-keys
+(xah-fly--define-keys
  (define-prefix-command 'xah-leader-i-keymap) ; commands in goto-map
  '(
    ("TAB" . move-to-column)
@@ -2448,7 +2477,7 @@ If `universal-argument' is called first, do switch frame."
    ("d" . previous-error
     )))
 
-(xah-fly-map-keys
+(xah-fly--define-keys
  ;; commands here are harmless (safe). They don't modify text.
  ;; they turn on minor/major mode, change display, prompt, start shell, etc.
  (define-prefix-command 'xah-harmless-keymap)
@@ -2497,10 +2526,11 @@ If `universal-argument' is called first, do switch frame."
    ("y" . nil)
    ("z" . abort-recursive-edit)))
 
-(xah-fly-map-keys
+(xah-fly--define-keys
  ;; kinda replacement related
  (define-prefix-command 'xah-edit-cmds-keymap)
  '(
+   ("SPC" . rectangle-mark-mode)
    ("," . apply-macro-to-region-lines)
    ("." . kmacro-start-macro)
    ("a" . xah-upcase-sentence)
@@ -2514,10 +2544,9 @@ If `universal-argument' is called first, do switch frame."
    ("p" . kmacro-end-macro)
    ("r" . yank-rectangle)
    ("u" . xah-quote-lines)
-   ("y" . delete-whitespace-rectangle)
-   ("SPC" . rectangle-mark-mode)))
+   ("y" . delete-whitespace-rectangle)))
 
-(xah-fly-map-keys
+(xah-fly--define-keys
  (define-prefix-command 'xah-leader-t-keymap)
  '(
    ("SPC" . xah-clean-whitespace)
@@ -2545,7 +2574,7 @@ If `universal-argument' is called first, do switch frame."
    ("y" . delete-duplicate-lines)
    ("z" . number-to-register)))
 
-(xah-fly-map-keys
+(xah-fly--define-keys
  (define-prefix-command 'xah-danger-keymap)
  '(
    ("DEL" . xah-delete-current-file)
@@ -2558,7 +2587,7 @@ If `universal-argument' is called first, do switch frame."
    ("w" . delete-frame)
    ("j" . xah-run-current-file)))
 
-(xah-fly-map-keys
+(xah-fly--define-keys
  (define-prefix-command 'xah-insertion-keymap)
  '(
    ("RET" . insert-char)
@@ -2581,10 +2610,9 @@ If `universal-argument' is called first, do switch frame."
    ("W" . xah-insert-double-angle-bracket《》)
    ("y" . xah-insert-double-angle-quote«»)))
 
-(xah-fly-map-keys
+(xah-fly--define-keys
  (define-prefix-command 'xah-coding-system-keymap)
  '(
-
    ("n" . set-file-name-coding-system)
    ("s" . set-next-selection-coding-system)
    ("c" . universal-coding-system-argument)
@@ -2594,71 +2622,71 @@ If `universal-argument' is called first, do switch frame."
    ("p" . set-buffer-process-coding-system)
    ("r" . revert-buffer-with-coding-system)
    ("t" . set-terminal-coding-system)
-   ("x" . set-selection-coding-system)
+   ("x" . set-selection-coding-system)))
 
-))
+(xah-fly--define-keys
+ (define-prefix-command 'xah-fly-leader-key-map)
+ '(
+   ("SPC" . xah-fly-insert-mode-activate)
+   ("DEL" . xah-close-current-buffer)
+   ("RET" . execute-extended-command)
+   ("TAB" . xah-leader-tab-keymap)
 
-(progn
-  (define-prefix-command 'xah-fly-leader-key-map)
-  (define-key xah-fly-leader-key-map (kbd "SPC") 'xah-fly-insert-mode-activate)
-  (define-key xah-fly-leader-key-map (kbd "DEL") 'xah-close-current-buffer)
-  (define-key xah-fly-leader-key-map (kbd "RET") (if (fboundp 'smex) 'smex 'execute-extended-command ))
-  (define-key xah-fly-leader-key-map (kbd "TAB") xah-leader-tab-keymap)
+   ("." . xah-highlight-keymap)
+   ("'" . xah-fill-or-unfill)
+   ("," . universal-argument)
+   ("-" . xah-display-page-break-as-line)
+   ("/" . nil)
+   (";" . nil)
+   ("=" . nil)
+   ("[" . nil)
+   ("\\" nil)
+   ("`" . nil)
 
-  (define-key xah-fly-leader-key-map "." xah-highlight-keymap)
+   ("1" . nil)
+   ("2" . nil)
+   ("3" . delete-window)
+   ("4" . split-window-right)
+   ("5" . nil)
+   ("6" . nil)
+   ("7" . nil)
+   ("8" . nil)
+   ("9" . ispell-word)
+   ("0" . nil)
 
-  (define-key xah-fly-leader-key-map "'" 'xah-fill-or-unfill)
-  (define-key xah-fly-leader-key-map "," 'universal-argument)
-  (define-key xah-fly-leader-key-map "-" 'xah-display-page-break-as-line)
-  (define-key xah-fly-leader-key-map "/" nil)
-  (define-key xah-fly-leader-key-map ";" nil)
-  (define-key xah-fly-leader-key-map "=" nil)
-  (define-key xah-fly-leader-key-map "[" nil)
-  (define-key xah-fly-leader-key-map (kbd "\\") nil)
-  (define-key xah-fly-leader-key-map "`" nil)
-
-  (define-key xah-fly-leader-key-map "1" nil)
-  (define-key xah-fly-leader-key-map "2" nil)
-  (define-key xah-fly-leader-key-map "3" 'delete-window)
-  (define-key xah-fly-leader-key-map "4" 'split-window-right)
-  (define-key xah-fly-leader-key-map "5" nil)
-  (define-key xah-fly-leader-key-map "6" nil)
-  (define-key xah-fly-leader-key-map "7" nil)
-  (define-key xah-fly-leader-key-map "8" nil)
-  (define-key xah-fly-leader-key-map "9" 'ispell-word)
-  (define-key xah-fly-leader-key-map "0" nil)
-
-  (define-key xah-fly-leader-key-map "a" 'mark-whole-buffer)
-  (define-key xah-fly-leader-key-map "b" 'end-of-buffer)
-  (define-key xah-fly-leader-key-map "c" xah-leader-c-keymap)
-  (define-key xah-fly-leader-key-map "d" 'beginning-of-buffer)
-  (define-key xah-fly-leader-key-map "e" xah-insertion-keymap)
-  (define-key xah-fly-leader-key-map "f" 'xah-search-current-word)
-  (define-key xah-fly-leader-key-map "g" 'isearch-forward)
-  (define-key xah-fly-leader-key-map "h" 'xah-help-keymap)
-  (define-key xah-fly-leader-key-map "i" 'xah-copy-file-path)
-  (define-key xah-fly-leader-key-map "j" 'xah-cut-all-or-region)
-  (define-key xah-fly-leader-key-map "k" 'xah-paste-or-paste-previous)
-  (define-key xah-fly-leader-key-map "l" 'recenter-top-bottom)
-  (define-key xah-fly-leader-key-map "m" 'dired-jump)
-  (define-key xah-fly-leader-key-map "n" xah-harmless-keymap)
-  (define-key xah-fly-leader-key-map "o" 'exchange-point-and-mark)
-  (define-key xah-fly-leader-key-map "p" 'query-replace)
-  (define-key xah-fly-leader-key-map "q" 'xah-copy-all-or-region)
-  (define-key xah-fly-leader-key-map "r" xah-edit-cmds-keymap)
-  (define-key xah-fly-leader-key-map "s" 'save-buffer)
-  (define-key xah-fly-leader-key-map "t" xah-leader-t-keymap)
-  (define-key xah-fly-leader-key-map "u" 'switch-to-buffer)
-  (define-key xah-fly-leader-key-map "v" nil)
-  (define-key xah-fly-leader-key-map "w" xah-danger-keymap)
-  (define-key xah-fly-leader-key-map "x" nil)
-  (define-key xah-fly-leader-key-map "y" xah-leader-i-keymap)
-  (define-key xah-fly-leader-key-map "z" nil))
+   ("a" . mark-whole-buffer)
+   ("b" . end-of-buffer)
+   ("c" . xah-leader-c-keymap)
+   ("d" . beginning-of-buffer)
+   ("e" . xah-insertion-keymap)
+   ("f" . xah-search-current-word)
+   ("g" . isearch-forward)
+   ("h" . xah-help-keymap)
+   ("i" . xah-copy-file-path)
+   ("j" . xah-cut-all-or-region)
+   ("k" . xah-paste-or-paste-previous)
+   ("l" . recenter-top-bottom)
+   ("m" . dired-jump)
+   ("n" . xah-harmless-keymap)
+   ("o" . exchange-point-and-mark)
+   ("p" . query-replace)
+   ("q" . xah-copy-all-or-region)
+   ("r" . xah-edit-cmds-keymap)
+   ("s" . save-buffer)
+   ("t" . xah-leader-t-keymap)
+   ("u" . switch-to-buffer)
+   ("v" . nil)
+   ("w" . xah-danger-keymap)
+   ("x" . nil)
+   ("y" . xah-leader-i-keymap)
+   ("z" . nil)
+   ;;
+   ))
 
 
 ;;;; misc
 
-;; these commands have keys in emacs, but right now i decided not to give them a key
+;; these commands have keys in emacs, but right now i decided not to give them a key, because either they are rarely used, or there is a more efficient command with key in xah-fly-keys
 
 ;; C-x C-p	mark-page
 ;; C-x C-l	downcase-region
@@ -2771,7 +2799,7 @@ If `universal-argument' is called first, do switch frame."
 ;; r o       other-frame
 ;; r r       find-file-read-only-other-frame
 
-;; (xah-fly-map-keys
+;; (xah-fly--define-keys
 ;;  (define-prefix-command 'xah-leader-vc-keymap)
 ;;  '(
 ;;    ("+" . vc-update)
@@ -2886,137 +2914,148 @@ If `universal-argument' is called first, do switch frame."
 (defvar xah-fly-insert-state-q t "Boolean value. true means insertion mode is on.")
 (setq xah-fly-insert-state-q t)
 
-(defun xah-fly-command-mode-init ()
-  "set command mode keys"
+(defun xah-fly-set-layout (*layout)
+  "Set a keyboard layout.
+Possible value should be \"qwerty\" or \"dvorak\"
+Version 2017-01-21"
   (interactive)
-  (progn
-    (progn ; need shift key
-      (define-key xah-fly-key-map "~" nil)
-      (define-key xah-fly-key-map ":" nil) ;
-      )
-    (progn ; special
-      (define-key xah-fly-key-map (kbd "'") 'xah-reformat-lines)
-      (define-key xah-fly-key-map (kbd ",") 'xah-shrink-whitespaces)
-      (define-key xah-fly-key-map (kbd "-") 'xah-cycle-hyphen-underscore-space)
-      (define-key xah-fly-key-map (kbd ".") 'backward-kill-word)
-      (define-key xah-fly-key-map (kbd ";") 'xah-comment-dwim)
-      (define-key xah-fly-key-map (kbd "/") 'xah-backward-equal-sign)
-      (define-key xah-fly-key-map (kbd "\\") nil)
-      (define-key xah-fly-key-map (kbd "=") 'xah-forward-equal-sign)
-      (define-key xah-fly-key-map (kbd "[") 'xah-backward-quote )
-      (define-key xah-fly-key-map (kbd "]") 'xah-forward-quote-smart)
-      (define-key xah-fly-key-map (kbd "`") 'other-frame)
-      (define-key xah-fly-key-map (kbd "SPC") xah-fly-leader-key-map)
-      (define-key xah-fly-key-map (kbd "DEL") xah-fly-leader-key-map) ; for kinesis
-      )
-    (if xah-fly-swapped-1827-p
-        (progn
-          (define-key xah-fly-key-map (kbd "8") nil)
-          (define-key xah-fly-key-map (kbd "7") nil)
-          (define-key xah-fly-key-map (kbd "2") 'xah-select-current-line)
-          (define-key xah-fly-key-map (kbd "1") 'xah-extend-selection))
-      (progn
-        (define-key xah-fly-key-map (kbd "1") nil)
-        (define-key xah-fly-key-map (kbd "2") nil)
-        (define-key xah-fly-key-map (kbd "7") 'xah-select-current-line)
-        (define-key xah-fly-key-map (kbd "8") 'xah-extend-selection)))
+  (setq xah-fly-key--current-layout *layout)
+  (load "xah-fly-keys"))
 
-    (define-key xah-fly-key-map (kbd "3") 'delete-other-windows)
-    (define-key xah-fly-key-map (kbd "4") 'split-window-below)
-    (define-key xah-fly-key-map (kbd "5") 'delete-char)
-    (define-key xah-fly-key-map (kbd "6") 'xah-select-block)
-    (define-key xah-fly-key-map (kbd "9") 'xah-select-text-in-quote)
-    (define-key xah-fly-key-map (kbd "0") 'xah-backward-punct)
+(defun xah-fly-command-mode-init ()
+  "Set command mode keys.
+Version 2017-01-21"
+  (interactive)
+  (xah-fly--define-keys
+   xah-fly-key-map
+   '(
+     ("~" . nil)
+     (":" . nil)
 
-    (define-key xah-fly-key-map (kbd "a") (if (fboundp 'smex) 'smex 'execute-extended-command ))
-    (define-key xah-fly-key-map "b" 'isearch-forward)
-    (define-key xah-fly-key-map (kbd "c") 'previous-line)
-    (define-key xah-fly-key-map (kbd "d") 'xah-beginning-of-line-or-block)
-    (define-key xah-fly-key-map (kbd "e") 'xah-delete-backward-char-or-bracket-text)
-    (define-key xah-fly-key-map (kbd "f") 'undo)
-    (define-key xah-fly-key-map (kbd "g") 'backward-word)
-    (define-key xah-fly-key-map (kbd "h") 'backward-char)
-    (define-key xah-fly-key-map (kbd "i") 'xah-delete-text-block)
-    (define-key xah-fly-key-map (kbd "j") 'xah-cut-line-or-region)
-    (define-key xah-fly-key-map (kbd "k") 'xah-paste-or-paste-previous)
-    (define-key xah-fly-key-map (kbd "l") 'xah-fly-insert-mode-activate-space-before)
-    (define-key xah-fly-key-map (kbd "m") 'xah-backward-left-bracket)
-    (define-key xah-fly-key-map (kbd "n") 'forward-char)
-    (define-key xah-fly-key-map (kbd "o") 'open-line)
-    (define-key xah-fly-key-map (kbd "p") 'kill-word)
-    (define-key xah-fly-key-map (kbd "q") 'xah-copy-line-or-region)
-    (define-key xah-fly-key-map (kbd "r") 'forward-word)
-    (define-key xah-fly-key-map (kbd "s") 'xah-end-of-line-or-block)
-    (define-key xah-fly-key-map (kbd "t") 'next-line)
-    (define-key xah-fly-key-map (kbd "u") 'xah-fly-insert-mode-activate)
-    (define-key xah-fly-key-map (kbd "v") 'xah-forward-right-bracket)
-    (define-key xah-fly-key-map (kbd "w") 'xah-next-window-or-frame)
-    (define-key xah-fly-key-map (kbd "x") nil)
-    (define-key xah-fly-key-map (kbd "y") 'set-mark-command)
-    (define-key xah-fly-key-map (kbd "z") 'xah-goto-matching-bracket)
+     ("SPC" . xah-fly-leader-key-map)
+     ("DEL" . xah-fly-leader-key-map) ; for kinesis
 
-    ;;
-    ))
+     ("'" . xah-reformat-lines)
+     ("," . xah-shrink-whitespaces)
+     ("-" . xah-cycle-hyphen-underscore-space)
+     ("." . backward-kill-word)
+     (";" . xah-comment-dwim)
+     ("/" . xah-backward-equal-sign)
+     ("\\" . nil)
+     ("=" . xah-forward-equal-sign)
+     ("[" . xah-backward-quote )
+     ("]" . xah-forward-quote-smart)
+     ("`" . other-frame)
+
+     ("1" . nil)
+     ("2" . nil)
+     ("3" . delete-other-windows)
+     ("4" . split-window-below)
+     ("5" . delete-char)
+     ("6" . xah-select-block)
+     ("7" . delete-other-windows)
+     ("8" . delete-other-windows)
+     ("9" . xah-select-text-in-quote)
+     ("0" . xah-backward-punct)
+
+     ("a" . execute-extended-command)
+     ("b" . isearch-forward)
+     ("c" . previous-line)
+     ("d" . xah-beginning-of-line-or-block)
+     ("e" . xah-delete-backward-char-or-bracket-text)
+     ("f" . undo)
+     ("g" . backward-word)
+     ("h" . backward-char)
+     ("i" . xah-delete-text-block)
+     ("j" . xah-cut-line-or-region)
+     ("k" . xah-paste-or-paste-previous)
+     ("l" . xah-fly-insert-mode-activate-space-before)
+     ("m" . xah-backward-left-bracket)
+     ("n" . forward-char)
+     ("o" . open-line)
+     ("p" . kill-word)
+     ("q" . xah-copy-line-or-region)
+     ("r" . forward-word)
+     ("s" . xah-end-of-line-or-block)
+     ("t" . next-line)
+     ("u" . xah-fly-insert-mode-activate)
+     ("v" . xah-forward-right-bracket)
+     ("w" . xah-next-window-or-frame)
+     ("x" . nil)
+     ("y" . set-mark-command)
+     ("z" . xah-goto-matching-bracket)))
+
+  (define-key xah-fly-key-map (kbd "a") (if (fboundp 'smex) 'smex 'execute-extended-command ))
+  (when xah-fly-swapped-1-8-and-2-7-p
+    (progn
+      (define-key xah-fly-key-map (kbd "8") nil)
+      (define-key xah-fly-key-map (kbd "7") nil)
+      (define-key xah-fly-key-map (kbd "2") 'xah-select-current-line)
+      (define-key xah-fly-key-map (kbd "1") 'xah-extend-selection))))
 
 (defun xah-fly-insert-mode-init ()
   "Set insertion mode keys"
   (interactive)
-  (progn
-    (define-key xah-fly-key-map (kbd "'") nil)
-    (define-key xah-fly-key-map (kbd ",") nil)
-    (define-key xah-fly-key-map (kbd "-") nil)
-    (define-key xah-fly-key-map (kbd ".") nil)
-    (define-key xah-fly-key-map (kbd "/") nil)
-    (define-key xah-fly-key-map (kbd ";") nil)
-    (define-key xah-fly-key-map (kbd "=") nil)
-    (define-key xah-fly-key-map (kbd "[") nil)
-    (define-key xah-fly-key-map (kbd "\\") nil)
-    (define-key xah-fly-key-map (kbd "]") nil)
-    (define-key xah-fly-key-map (kbd "`") nil)
-    (define-key xah-fly-key-map (kbd "~") nil)
-    (define-key xah-fly-key-map (kbd "SPC") nil)
-    (define-key xah-fly-key-map (kbd "DEL") nil)
+  (xah-fly--define-keys
+   xah-fly-key-map
+   '(
 
-    (define-key xah-fly-key-map (kbd "1") nil)
-    (define-key xah-fly-key-map (kbd "2") nil)
-    (define-key xah-fly-key-map (kbd "3") nil)
-    (define-key xah-fly-key-map (kbd "4") nil)
-    (define-key xah-fly-key-map (kbd "5") nil)
-    (define-key xah-fly-key-map (kbd "6") nil)
-    (define-key xah-fly-key-map (kbd "7") nil)
-    (define-key xah-fly-key-map (kbd "8") nil)
-    (define-key xah-fly-key-map (kbd "9") nil)
-    (define-key xah-fly-key-map (kbd "0") nil)
+     ("SPC" . nil)
+     ("DEL" . nil)
 
-    (define-key xah-fly-key-map (kbd "a") nil)
-    (define-key xah-fly-key-map (kbd "b") nil)
-    (define-key xah-fly-key-map (kbd "c") nil)
-    (define-key xah-fly-key-map (kbd "d") nil)
-    (define-key xah-fly-key-map (kbd "e") nil)
-    (define-key xah-fly-key-map (kbd "f") nil)
-    (define-key xah-fly-key-map (kbd "g") nil)
-    (define-key xah-fly-key-map (kbd "h") nil)
-    (define-key xah-fly-key-map (kbd "i") nil)
-    (define-key xah-fly-key-map (kbd "j") nil)
-    (define-key xah-fly-key-map (kbd "k") nil)
-    (define-key xah-fly-key-map (kbd "l") nil)
-    (define-key xah-fly-key-map (kbd "m") nil)
-    (define-key xah-fly-key-map (kbd "n") nil)
-    (define-key xah-fly-key-map (kbd "o") nil)
-    (define-key xah-fly-key-map (kbd "p") nil)
-    (define-key xah-fly-key-map (kbd "q") nil)
-    (define-key xah-fly-key-map (kbd "r") nil)
-    (define-key xah-fly-key-map (kbd "s") nil)
-    (define-key xah-fly-key-map (kbd "t") nil)
-    (define-key xah-fly-key-map (kbd "u") nil)
-    (define-key xah-fly-key-map (kbd "v") nil)
-    (define-key xah-fly-key-map (kbd "w") nil)
-    (define-key xah-fly-key-map (kbd "x") nil)
-    (define-key xah-fly-key-map (kbd "y") nil)
-    (define-key xah-fly-key-map (kbd "z") nil)
+     ("'" . nil)
+     ("," . nil)
+     ("-" . nil)
+     ("." . nil)
+     ("/" . nil)
+     (";" . nil)
+     ("=" . nil)
+     ("[" . nil)
+     ("\\" . nil)
+     ("]" . nil)
+     ("`" . nil)
+     ("~" . nil)
 
-    ;;
-))
+     ("1" . nil)
+     ("2" . nil)
+     ("3" . nil)
+     ("4" . nil)
+     ("5" . nil)
+     ("6" . nil)
+     ("7" . nil)
+     ("8" . nil)
+     ("9" . nil)
+     ("0" . nil)
+
+     ("a" . nil)
+     ("b" . nil)
+     ("c" . nil)
+     ("d" . nil)
+     ("e" . nil)
+     ("f" . nil)
+     ("g" . nil)
+     ("h" . nil)
+     ("i" . nil)
+     ("j" . nil)
+     ("k" . nil)
+     ("l" . nil)
+     ("m" . nil)
+     ("n" . nil)
+     ("o" . nil)
+     ("p" . nil)
+     ("q" . nil)
+     ("r" . nil)
+     ("s" . nil)
+     ("t" . nil)
+     ("u" . nil)
+     ("v" . nil)
+     ("w" . nil)
+     ("x" . nil)
+     ("y" . nil)
+     ("z" . nil)
+
+     ;;
+     )))
 
 (defun xah-fly-mode-toggle ()
   "Switch between {insertion, command} modes."
@@ -3096,6 +3135,8 @@ If `universal-argument' is called first, do switch frame."
   "Turn off xah-fly-keys minor mode."
   (interactive)
   (xah-fly-keys 0))
+
+(xah-fly-keys 1)
 
 (provide 'xah-fly-keys)
 
