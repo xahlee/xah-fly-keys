@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.0.1
+;; Version: 7.0.2
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2921,7 +2921,8 @@ Possible value should be \"qwerty\" or \"dvorak\"
 Version 2017-01-21"
   (interactive)
   (setq xah-fly-key--current-layout *layout)
-  (load "xah-fly-keys"))
+  (load "xah-fly-keys")
+  (xah-fly-command-mode-activate))
 
 (defun xah-fly-command-mode-init ()
   "Set command mode keys.
@@ -3136,8 +3137,6 @@ Version 2017-01-21"
   "Turn off xah-fly-keys minor mode."
   (interactive)
   (xah-fly-keys 0))
-
-(xah-fly-keys 1)
 
 (provide 'xah-fly-keys)
 
