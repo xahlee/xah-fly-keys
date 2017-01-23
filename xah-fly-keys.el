@@ -1608,49 +1608,6 @@ Version 2016-07-22"
         (end-of-line))
     (xah-select-current-line)))
 
-(defun xah-semnav-up (arg)
-"Called by `xah-extend-selection'.
-
-URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
-Version 2015-11-13.
-Written by Nikolaj Schumacher, 2008-10-20. Released under GPL 2"
-  (interactive "p")
-  (when (nth 3 (syntax-ppss))
-    (if (> arg 0)
-        (progn
-          (skip-syntax-forward "^\"")
-          (goto-char (1+ (point)))
-          (setq arg (1- arg) ))
-      (skip-syntax-backward "^\"")
-      (goto-char (1- (point)))
-      (setq arg (1+ arg) )))
-  (up-list arg))
-
-(defun xah-extend-selection-old-2017-01-14 (arg &optional incremental-p)
-  "Select the current word.
-Subsequent calls expands the selection to larger semantic unit.
-
-This command works mostly in lisp syntax.
-URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
-Version 2015-11-13.
-Written by Nikolaj Schumacher, 2008-10-20. Released under GPL 2."
-  (interactive
-   (list (prefix-numeric-value current-prefix-arg)
-         (or (use-region-p)
-             (eq last-command this-command))))
-  (if incremental-p
-      (progn
-        (xah-semnav-up (- arg))
-        (forward-sexp)
-        (mark-sexp -1))
-    (if (> arg 1)
-        (xah-extend-selection (1- arg) t)
-      (if (looking-at "\\=\\(\\s_\\|\\sw\\)*\\_>")
-          (goto-char (match-end 0))
-        (unless (memq (char-before) '(?\) ?\"))
-          (forward-sexp)))
-      (mark-sexp -1))))
-
 (defun xah-extend-selection ()
   "Select the current word, bracket/quote expression, or expand selection.
 Subsequent calls expands the selection.
