@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.0.2
+;; Version: 7.0.4
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1067,11 +1067,10 @@ Version 2015-12-08"
 
 (defun xah-copy-to-register-1 ()
   "Copy current line or text selection to register 1.
-When no selection, copy current line, with newline char.
 See also: `xah-paste-from-register-1', `copy-to-register'.
 
 URL `http://ergoemacs.org/emacs/elisp_copy-paste_register_1.html'
-Version 2017-01-18"
+Version 2017-01-23"
   (interactive)
   (let (-p1 -p2)
     (if (region-active-p)
@@ -1080,8 +1079,6 @@ Version 2017-01-18"
       (progn (setq -p1 (line-beginning-position))
              (setq -p2 (line-end-position))))
     (copy-to-register ?1 -p1 -p2)
-    (with-temp-buffer (insert "\n")
-                      (append-to-register ?1 (point-min) (point-max)))
     (message "Copied to register 1: 「%s」." (buffer-substring-no-properties -p1 -p2))))
 
 (defun xah-append-to-register-1 ()
@@ -1127,7 +1124,7 @@ version 2016-07-17"
   "Upcase first letters of sentences of current text block or selection.
 
 URL `http://ergoemacs.org/emacs/emacs_upcase_sentence.html'
-Version 2017-01-17"
+Version 2017-01-24"
   (interactive)
   (let (-p1 -p2)
     (if (region-active-p)
@@ -1150,33 +1147,40 @@ Version 2017-01-17"
           (goto-char (point-min))
           (while (re-search-forward "\\. \\{1,2\\}\\([a-z]\\)" nil "move") ; after period
             (upcase-region (match-beginning 1) (match-end 1))
-            (overlay-put (make-overlay (match-beginning 1) (match-end 1)) 'face 'highlight)
+            (overlay-put (make-overlay (match-beginning 1) (match-end 1)) 'face '((t :background "red" :foreground "white")))
             ;;
             )
           (goto-char (point-min))
           (while (re-search-forward "\\. ?\n *\\([a-z]\\)" nil "move") ; new line after period
             (upcase-region (match-beginning 1) (match-end 1))
-            (overlay-put (make-overlay (match-beginning 1) (match-end 1)) 'face 'highlight)
+            (overlay-put (make-overlay (match-beginning 1) (match-end 1)) 'face '((t :background "red" :foreground "white")))
             ;;
             )
           (goto-char (point-min))
           (while (re-search-forward "\\(\\`\\|\n\n\\)\\([a-z]\\)" nil "move") ; after a blank line, or beginning of buffer
             (upcase-region (match-beginning 2) (match-end 2))
-            (overlay-put (make-overlay (match-beginning 2) (match-end 2)) 'face 'highlight)
+            (overlay-put (make-overlay (match-beginning 2) (match-end 2)) 'face '((t :background "red" :foreground "white")))
             ;;
             )
           (goto-char (point-min))
           (while (re-search-forward "<p>\\([a-z]\\)" nil "move")
             ;; for HTML. first letter after tag
             (upcase-region (match-beginning 1) (match-end 1))
-            (overlay-put (make-overlay (match-beginning 1) (match-end 1)) 'face 'highlight)
+            (overlay-put (make-overlay (match-beginning 1) (match-end 1)) 'face '((t :background "red" :foreground "white")))
             ;;
             )
           (goto-char (point-min))
           (while (re-search-forward "<li>\\([a-z]\\)" nil "move")
             ;; for HTML. first letter after tag
             (upcase-region (match-beginning 1) (match-end 1))
-            (overlay-put (make-overlay (match-beginning 1) (match-end 1)) 'face 'highlight)
+            (overlay-put (make-overlay (match-beginning 1) (match-end 1)) 'face '((t :background "red" :foreground "white")))
+            ;;
+            )
+          (goto-char (point-min))
+          (while (re-search-forward "<td>\\([a-z]\\)" nil "move")
+            ;; for HTML. first letter after tag
+            (upcase-region (match-beginning 1) (match-end 1))
+            (overlay-put (make-overlay (match-beginning 1) (match-end 1)) 'face '((t :background "red" :foreground "white")))
             ;;
             ))))))
 
@@ -2644,7 +2648,7 @@ Version 2017-01-21"
 
 ;;;; misc
 
-;; these commands have keys in emacs, but right now i decided not to give them a key, because either they are rarely used, or there is a more efficient command with key in xah-fly-keys
+;; the following have keys in emacs, but right now i decided not to give them a key, because either they are rarely used (say, less than once a month by 90% of emacs users), or there is a more efficient command/workflow with key in xah-fly-keys
 
 ;; C-x C-p	mark-page
 ;; C-x C-l	downcase-region
@@ -2946,11 +2950,13 @@ Version 2017-01-21"
 
   (define-key xah-fly-key-map (kbd "a") (if (fboundp 'smex) 'smex 'execute-extended-command ))
   (when xah-fly-swapped-1-8-and-2-7-p
-    (progn
-      (define-key xah-fly-key-map (kbd "8") nil)
-      (define-key xah-fly-key-map (kbd "7") nil)
-      (define-key xah-fly-key-map (kbd "2") 'xah-select-current-line)
-      (define-key xah-fly-key-map (kbd "1") 'xah-extend-selection))))
+    (xah-fly--define-keys
+     xah-fly-key-map
+     '(
+       ("8" . nil)
+       ("7" . nil)
+       ("2" . xah-select-current-line)
+       ("1" . xah-extend-selection)))))
 
 (defun xah-fly-insert-mode-init ()
   "Set insertion mode keys"
