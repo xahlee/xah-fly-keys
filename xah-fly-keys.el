@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.0.6
+;; Version: 7.0.7
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -31,8 +31,8 @@
 
 ;; (add-to-list 'load-path "~/.emacs.d/lisp/")
 ;; (require 'xah-fly-keys)
-;; (xah-fly-set-layout "qwerty") ; required if you use qwerty
-;; (xah-fly-set-layout "dvorak")
+;; (xah-fly-keys-set-layout "qwerty") ; required if you use qwerty
+;; (xah-fly-keys-set-layout "dvorak")
 ;; (xah-fly-keys 1)
 
 ;; --------------------------------------------------
@@ -116,7 +116,7 @@
 (defvar
   xah-fly-key--current-layout
   nil
-  "The current keyboard layout. Use `xah-fly-set-layout' to set the layout."
+  "The current keyboard layout. Use `xah-fly-keys-set-layout' to set the layout."
   )
 
 (defvar xah-fly-command-mode-activate-hook nil "Hook for `xah-fly-command-mode-activate'")
@@ -2876,7 +2876,7 @@ Version 2017-01-21"
 (defvar xah-fly-insert-state-q t "Boolean value. true means insertion mode is on.")
 (setq xah-fly-insert-state-q t)
 
-(defun xah-fly-set-layout (*layout)
+(defun xah-fly-keys-set-layout (*layout)
   "Set a keyboard layout.
 Possible value should be \"qwerty\" or \"dvorak\"
 Version 2017-01-21"
