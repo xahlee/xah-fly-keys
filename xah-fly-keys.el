@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.0.5
+;; Version: 7.0.6
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -31,9 +31,9 @@
 
 ;; (add-to-list 'load-path "~/.emacs.d/lisp/")
 ;; (require 'xah-fly-keys)
-;; (xah-fly-keys 1)
 ;; (xah-fly-set-layout "qwerty") ; required if you use qwerty
 ;; (xah-fly-set-layout "dvorak")
+;; (xah-fly-keys 1)
 
 ;; --------------------------------------------------
 ;; HOW TO USE
