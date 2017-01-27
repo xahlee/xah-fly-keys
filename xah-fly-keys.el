@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.0.7
+;; Version: 7.0.8
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -382,7 +382,7 @@ Version 2016-10-11"
   (interactive)
   ;; 2016-10-11 thanks to Steve Purcell's page-break-lines.el
   (progn
-    (when (null buffer-display-table)
+    (when (not buffer-display-table)
       (setq buffer-display-table (make-display-table)))
     (aset buffer-display-table ?\^L
           (vconcat (make-list 70 (make-glyph-code ?─ 'font-lock-comment-face))))
@@ -924,11 +924,11 @@ The region to work on is by this order:
  ③ else, work on current line.
 
 URL `http://ergoemacs.org/emacs/elisp_change_space-hyphen_underscore.html'
-Version 2017-01-11"
+Version 2017-01-27"
   (interactive)
   ;; this function sets a property 「'state」. Possible values are 0 to length of -charArray.
   (let (-p1 -p2)
-    (if (and (not (null *begin)) (not (null *end)))
+    (if (and *begin *end)
         (progn (setq -p1 *begin -p2 *end))
       (if (use-region-p)
           (setq -p1 (region-beginning) -p2 (region-end))
@@ -994,24 +994,24 @@ Version 2017-01-11"
   "Copy the current buffer's file path or dired path to `kill-ring'.
 Result is full path.
 If `universal-argument' is called first, copy only the dir path.
+
 URL `http://ergoemacs.org/emacs/emacs_copy_file_path.html'
-Version 2016-07-17"
+Version 2017-01-27"
   (interactive "P")
   (let ((-fpath
          (if (equal major-mode 'dired-mode)
              (expand-file-name default-directory)
-           (if (null (buffer-file-name))
-               (user-error "Current buffer is not associated with a file.")
-             (buffer-file-name)))))
+           (if (buffer-file-name)
+               (buffer-file-name)
+             (user-error "Current buffer is not associated with a file.")))))
     (kill-new
-     (if (null *dir-path-only-p)
+     (if *dir-path-only-p
          (progn
-           (message "File path copied: 「%s」" -fpath)
-           -fpath
-           )
+           (message "Directory path copied: 「%s」" (file-name-directory -fpath))
+           (file-name-directory -fpath))
        (progn
-         (message "Directory path copied: 「%s」" (file-name-directory -fpath))
-         (file-name-directory -fpath))))))
+         (message "File path copied: 「%s」" -fpath)
+         -fpath )))))
 
 (defun xah-delete-text-block ()
   "Delete current/next text block or selection, and also copy to `kill-ring'.
@@ -1904,7 +1904,7 @@ File suffix is used to determine what program to run.
 If the file is modified or not saved, save it automatically before run.
 
 URL `http://ergoemacs.org/emacs/elisp_run_current_file.html'
-version 2016-01-28"
+version 2017-01-27"
   (interactive)
   (let (
          (-suffix-map
@@ -1933,7 +1933,7 @@ version 2016-01-28"
          -prog-name
          -cmd-str)
 
-    (when (null (buffer-file-name)) (save-buffer))
+    (when (not (buffer-file-name)) (save-buffer))
     (when (buffer-modified-p) (save-buffer))
 
     (setq -fname (buffer-file-name))
@@ -1963,12 +1963,12 @@ If 0, it means lines will be joined.
 By befault, *N is 2. It means, 1 visible blank line.
 
 URL `http://ergoemacs.org/emacs/elisp_compact_empty_lines.html'
-Version 2016-10-07"
+Version 2017-01-27"
   (interactive
    (if (region-active-p)
        (list (region-beginning) (region-end))
      (list (point-min) (point-max))))
-  (when (null *begin)
+  (when (not *begin)
     (setq *begin (point-min) *end (point-max)))
   (save-excursion
     (save-restriction
@@ -1976,7 +1976,7 @@ Version 2016-10-07"
       (progn
         (goto-char (point-min))
         (while (re-search-forward "\n\n\n+" nil "NOERROR")
-          (replace-match (make-string (if (null *n) 2 *n ) 10)))))))
+          (replace-match (make-string (if *n *n 2) 10)))))))
 
 (defun xah-clean-whitespace (&optional *begin *end)
   "Delete trailing whitespace, and replace repeated blank lines to just 1.
@@ -1989,8 +1989,8 @@ Version 2016-10-15"
    (if (region-active-p)
        (list (region-beginning) (region-end))
      (list (point-min) (point-max))))
-  (when (null *begin)
-    (setq *begin (point-min)  *end (point-max)))
+  (when (not *begin)
+    (setq *begin (point-min) *end (point-max)))
   (save-excursion
     (save-restriction
       (narrow-to-region *begin *end)
@@ -2205,13 +2205,14 @@ Version 2015-12-10"
 (defun xah-next-window-or-frame ()
   "Switch to next window or frame.
 If current frame has only one window, switch to next frame.
-If `universal-argument' is called first, do switch frame."
+If `universal-argument' is called first, do switch frame.
+Version 2017-01-27"
   (interactive)
-  (if (null current-prefix-arg)
-      (if (one-window-p)
-          (other-frame 1)
-        (other-window 1))
-    (other-frame 1)))
+  (if current-prefix-arg
+      (other-frame 1)
+    (if (one-window-p)
+        (other-frame 1)
+      (other-window 1))))
 
 (defun xah-describe-major-mode ()
   "Display inline doc for current `major-mode'."
@@ -2265,38 +2266,40 @@ For example, \"e\" becomes \"d\".
 For some char, the result is the same. For example, 1 2 3, etc.
 *CHARSTR should be a letter or punctuation, if  length of *CHARSTR is greater than 1, such as \"DEL\" or \"RET\" or \"TAB\", *CHARSTR is returned unchanged.
 *CHARSTR should be a letter or punctuation, if  length of *CHARSTR is greater than 1, *CHARSTR is returned unchanged.
-Version 2017-01-21"
+Version 2017-01-27"
   (interactive)
   (if (> (length *charstr) 1)
       *charstr
     (let ((-result (assoc *charstr xah--dvorak-to-qwerty-kmap)))
-      (if (null -result)
-          *charstr
-        (cdr -result)))))
+      (if -result
+          (cdr -result)
+        *charstr
+        ))))
 
 (defun xah--qwerty-to-dvorak (*charstr)
   "Convert qwerty key to dvorak. charstr is single char string.
 For example, \"d\" becomes \"e\".
 For some char, the result is the same. For example, 1 2 3, etc.
 *CHARSTR should be a letter or punctuation, if  length of *CHARSTR is greater than 1, such as \"DEL\" or \"RET\" or \"TAB\", *CHARSTR is returned unchanged.
-Version 2017-01-21"
+Version 2017-01-27"
   (interactive)
   (if (> (length *charstr) 1)
       *charstr
     (let ((-result (rassoc *charstr xah--dvorak-to-qwerty-kmap)))
-      (if (null -result)
-          *charstr
-        (car -result)))))
+      (if -result
+          (car -result)
+        *charstr
+        ))))
 
 (defun xah-fly--key-char (*charstr)
   "Return the corresponding char *CHARSTR according to current `xah-fly-key--current-layout'.
 *CHARSTR must be a string of single char.
-Version 2017-01-21"
+Version 2017-01-27"
   (interactive)
-  (if (or (null xah-fly-key--current-layout)
+  (if (or (not xah-fly-key--current-layout)
           (string-equal xah-fly-key--current-layout "dvorak"))
       *charstr
-    (progn (xah--dvorak-to-qwerty *charstr))))
+    (xah--dvorak-to-qwerty *charstr)))
 
 (defun xah-fly--define-keys (*keymap-name *key-cmd-alist)
   "Map `define-key' over a alist *key-cmd-alist.
