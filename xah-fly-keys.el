@@ -3092,8 +3092,10 @@ Version 2017-01-21"
 ;; (cancel-timer xah-fly-timer-id)
 
 (define-minor-mode xah-fly-keys
-  "A modal keybinding set, like vim, but based on ergonomic principles, like Dvorak layout."
+  "A modal keybinding set, like vim, but based on ergonomic principles, like Dvorak layout.
+URL `http'://ergoemacs.org/misc/ergoemacs_vi_mode.html"
   t "ξflykeys" xah-fly-key-map
+  (add-to-list 'emulation-mode-map-alists (list (cons 'xah-fly-keys xah-fly-key-map )))
   (xah-fly-command-mode-activate))
 
 (defun xah-fly-keys-off ()
