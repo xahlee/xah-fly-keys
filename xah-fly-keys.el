@@ -44,7 +44,7 @@
 
 ;; xah-fly-command-mode-activate (press 【<home>】 or 【F8】 or 【Alt+Space】 or 【menu】)
 
-;; xah-fly-insert-mode-activate  (when in command mode, press letter 【f】 key)
+;; xah-fly-insert-mode-activate  (when in command mode, press qwerty letter key f. (Dvorak key u))
 
 ;; When in command mode:
 ;; 【f】 (or Dvorak 【u】) activates insertion mode.
@@ -125,8 +125,8 @@
 (defvar xah-fly-use-control-key nil "if nil, do not bind any control key. When t, standard keys for open, close, paste, are bound.")
 (setq xah-fly-use-control-key t)
 
-;; (defvar xah-fly-use-meta-key nil "if nil, do not bind any meta key.")
-;; (setq xah-fly-use-meta-key t)
+(defvar xah-fly-use-meta-key nil "if nil, do not bind any meta key.")
+(setq xah-fly-use-meta-key t)
 
 
 ;; cursor movement
@@ -2838,19 +2838,8 @@ Version 2017-01-21"
       ;;
       ))
 
-  ;; (when xah-fly-use-meta-key
-  ;;   ;; rule: all commands with meta key defined here must have other shortcuts. that is, meta binding is considered a luxury
-  ;;   (define-key xah-fly-key-map (kbd "M-RET") 'xah-cycle-hyphen-underscore-space)
-  ;;   (define-key xah-fly-key-map (kbd "M-c") 'xah-toggle-letter-case )
-  ;;   (define-key xah-fly-key-map (kbd "M-g") 'hippie-expand )
-  ;;   (define-key xah-fly-key-map (kbd "M-h") 'xah-insert-brace )
-  ;;   (define-key xah-fly-key-map (kbd "M-m") xah-insertion-keymap)
-  ;;   (define-key xah-fly-key-map (kbd "M-n") 'xah-insert-square-bracket)
-  ;;   (define-key xah-fly-key-map (kbd "M-t") 'xah-insert-paren)
-  ;;   (define-key xah-fly-key-map (kbd "M-l") 'left-char) ; rid of downcase-word
-  ;;   (define-key xah-fly-key-map (kbd "M-SPC") 'xah-fly-command-mode-activate)
-  ;;   ;;
-  ;;   )
+  (when xah-fly-use-meta-key
+    (define-key xah-fly-key-map (kbd "M-SPC") 'xah-fly-command-mode-activate))
 
   (define-key xah-fly-key-map (kbd "<home>") 'xah-fly-command-mode-activate)
   (define-key xah-fly-key-map (kbd "<menu>") 'xah-fly-command-mode-activate)
@@ -2968,6 +2957,9 @@ Version 2017-01-21"
 (defun xah-fly-insert-mode-init ()
   "Set insertion mode keys"
   (interactive)
+  ;; (setq xah-fly-key-map (make-sparse-keymap))
+  ;; (setq xah-fly-key-map (make-keymap))
+
   (xah-fly--define-keys
    xah-fly-key-map
    '(
@@ -3100,10 +3092,11 @@ Version 2017-01-21"
 
 (define-minor-mode xah-fly-keys
   "A modal keybinding set, like vim, but based on ergonomic principles, like Dvorak layout.
-URL `http'://ergoemacs.org/misc/ergoemacs_vi_mode.html"
+URL `http://ergoemacs.org/misc/ergoemacs_vi_mode.html'"
   t "ξflykeys" xah-fly-key-map
   (add-to-list 'emulation-mode-map-alists (list (cons 'xah-fly-keys xah-fly-key-map )))
-  (xah-fly-command-mode-activate))
+  (xah-fly-command-mode-activate)
+)
 
 (defun xah-fly-keys-off ()
   "Turn off xah-fly-keys minor mode."
