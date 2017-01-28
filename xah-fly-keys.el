@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.0.8
+;; Version: 7.1.0
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -122,8 +122,11 @@
 (defvar xah-fly-command-mode-activate-hook nil "Hook for `xah-fly-command-mode-activate'")
 (defvar xah-fly-insert-mode-activate-hook nil "Hook for `xah-fly-insert-mode-activate'")
 
-(defvar xah-fly-use-control-key nil "if true, define standard keys for open, close, paste, etc.")
+(defvar xah-fly-use-control-key nil "if nil, do not bind any control key. When t, standard keys for open, close, paste, are bound.")
 (setq xah-fly-use-control-key t)
+
+;; (defvar xah-fly-use-meta-key nil "if nil, do not bind any meta key.")
+;; (setq xah-fly-use-meta-key t)
 
 
 ;; cursor movement
@@ -2835,18 +2838,19 @@ Version 2017-01-21"
       ;;
       ))
 
-  (progn ; rule: all commands with meta key defined here must have other shortcuts. that is, meta binding is considered a luxury
-
-    (define-key xah-fly-key-map (kbd "M-RET") 'xah-cycle-hyphen-underscore-space)
-    (define-key xah-fly-key-map (kbd "M-c") 'xah-toggle-letter-case )
-    (define-key xah-fly-key-map (kbd "M-g") 'hippie-expand )
-    (define-key xah-fly-key-map (kbd "M-h") 'xah-insert-brace )
-    (define-key xah-fly-key-map (kbd "M-m") xah-insertion-keymap)
-    (define-key xah-fly-key-map (kbd "M-n") 'xah-insert-square-bracket)
-    (define-key xah-fly-key-map (kbd "M-t") 'xah-insert-paren)
-    (define-key xah-fly-key-map (kbd "M-l") 'left-char) ; rid of downcase-word
-
-    (define-key xah-fly-key-map (kbd "M-SPC") 'xah-fly-command-mode-activate))
+  ;; (when xah-fly-use-meta-key
+  ;;   ;; rule: all commands with meta key defined here must have other shortcuts. that is, meta binding is considered a luxury
+  ;;   (define-key xah-fly-key-map (kbd "M-RET") 'xah-cycle-hyphen-underscore-space)
+  ;;   (define-key xah-fly-key-map (kbd "M-c") 'xah-toggle-letter-case )
+  ;;   (define-key xah-fly-key-map (kbd "M-g") 'hippie-expand )
+  ;;   (define-key xah-fly-key-map (kbd "M-h") 'xah-insert-brace )
+  ;;   (define-key xah-fly-key-map (kbd "M-m") xah-insertion-keymap)
+  ;;   (define-key xah-fly-key-map (kbd "M-n") 'xah-insert-square-bracket)
+  ;;   (define-key xah-fly-key-map (kbd "M-t") 'xah-insert-paren)
+  ;;   (define-key xah-fly-key-map (kbd "M-l") 'left-char) ; rid of downcase-word
+  ;;   (define-key xah-fly-key-map (kbd "M-SPC") 'xah-fly-command-mode-activate)
+  ;;   ;;
+  ;;   )
 
   (define-key xah-fly-key-map (kbd "<home>") 'xah-fly-command-mode-activate)
   (define-key xah-fly-key-map (kbd "<menu>") 'xah-fly-command-mode-activate)
