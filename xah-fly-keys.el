@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.1.0
+;; Version: 7.1.1
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2217,6 +2217,14 @@ Version 2017-01-27"
         (other-frame 1)
       (other-window 1))))
 
+(defun xah-unplit-window-or-next-frame ()
+  "Unsplit window. If current frame has only one window, switch to next frame.
+Version 2017-01-29"
+  (interactive)
+  (if (one-window-p)
+      (other-frame 1)
+    (delete-other-windows)))
+
 (defun xah-describe-major-mode ()
   "Display inline doc for current `major-mode'."
   (interactive)
@@ -2908,7 +2916,7 @@ Version 2017-01-21"
 
      ("1" . nil)
      ("2" . nil)
-     ("3" . delete-other-windows)
+     ("3" . xah-unplit-window-or-next-frame)
      ("4" . split-window-below)
      ("5" . delete-char)
      ("6" . xah-select-block)
