@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.1.1
+;; Version: 7.1.2
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2332,12 +2332,7 @@ Version 2017-01-21"
 (defvar xah-fly-swapped-1-8-and-2-7-p nil "If non-nil, it means keys 1 and 8 are swapped, and 2 and 7 are swapped. See: http://xahlee.info/kbd/best_number_key_layout.html")
 
 (defvar xah-fly-key-map nil "Keybinding for `xah-fly-keys' minor mode.")
-(progn
-  (setq xah-fly-key-map (make-sparse-keymap))
-
-  ;; (define-key xah-fly-key-map (kbd "'") 'self-insert-command)
-
-  )
+(setq xah-fly-key-map (make-sparse-keymap))
 
 ;; commands in search-map and facemenu-keymap
 (xah-fly--define-keys
@@ -2441,16 +2436,6 @@ Version 2017-01-21"
    ("z" . describe-coding-system)))
 
 (xah-fly--define-keys
- (define-prefix-command 'xah-leader-i-keymap) ; commands in goto-map
- '(
-   ("TAB" . move-to-column)
-   ("c" . goto-char)
-   ("t" . goto-line)
-   ("n" . next-error)
-   ("d" . previous-error
-    )))
-
-(xah-fly--define-keys
  ;; commands here are harmless (safe). They don't modify text.
  ;; they turn on minor/major mode, change display, prompt, start shell, etc.
  (define-prefix-command 'xah-harmless-keymap)
@@ -2523,7 +2508,7 @@ Version 2017-01-21"
  (define-prefix-command 'xah-leader-t-keymap)
  '(
    ("SPC" . xah-clean-whitespace)
-   ("TAB" . nil)
+   ("TAB" . move-to-column)
    ("1" . xah-clear-register-1)
    ("2" . xah-append-to-register-1)
    ("3" . xah-copy-to-register-1)
@@ -2531,9 +2516,13 @@ Version 2017-01-21"
    ("." . sort-lines)
    ("," . sort-numeric-fields)
    ("'" . reverse-region)
+   ("a" . previous-error)
+   ("b" . next-error)
+   ("c" . goto-char)
    ("d" . mark-defun)
    ("e" . list-matching-lines)
    ("u" . delete-matching-lines)
+   ("h" . goto-line)
    ("i" . delete-non-matching-lines)
    ("j" . copy-to-register)
    ("k" . insert-register)
@@ -2651,7 +2640,7 @@ Version 2017-01-21"
    ("v" . nil)
    ("w" . xah-danger-keymap)
    ("x" . nil)
-   ("y" . xah-leader-i-keymap)
+   ("y" . nil)
    ("z" . nil)
    ;;
    ))
@@ -2757,7 +2746,7 @@ Version 2017-01-21"
 ;; C-x 6 s	2C-split
 ;; C-x 6 <f2>	2C-two-columns
 
-  ;; (define-key xah-leader-i-keymap (kbd "r") ctl-x-5-map)
+;; ctl-x-5-map
 
 ;; r C-f     find-file-other-frame
 ;; r C-o     display-buffer-other-frame
@@ -2812,11 +2801,7 @@ Version 2017-01-21"
       (define-key xah-fly-key-map (kbd "<C-tab>") 'xah-next-user-buffer)
       (define-key xah-fly-key-map (kbd "<C-S-iso-lefttab>") 'xah-previous-user-buffer)
 
-      (define-key xah-fly-key-map (kbd "C-1") 'xah-pop-local-mark-ring)
-      (define-key xah-fly-key-map (kbd "C-2") 'pop-global-mark)
-
-      (define-key xah-fly-key-map (kbd "C-7") 'xah-pop-local-mark-ring)
-      (define-key xah-fly-key-map (kbd "C-8") 'pop-global-mark)
+      (define-key xah-fly-key-map (kbd "C-1") 'xah-fly-keys)
 
       (define-key xah-fly-key-map (kbd "C-9") 'scroll-down-command)
       (define-key xah-fly-key-map (kbd "C-0") 'scroll-up-command)
@@ -2911,8 +2896,8 @@ Version 2017-01-21"
      ("]" . xah-forward-quote-smart)
      ("`" . other-frame)
 
-     ("1" . nil)
-     ("2" . nil)
+     ("1" . pop-global-mark)
+     ("2" . xah-pop-local-mark-ring)
      ("3" . xah-unplit-window-or-next-frame)
      ("4" . split-window-below)
      ("5" . delete-char)
@@ -2954,8 +2939,8 @@ Version 2017-01-21"
     (xah-fly--define-keys
      xah-fly-key-map
      '(
-       ("8" . nil)
-       ("7" . nil)
+       ("8" . pop-global-mark)
+       ("7" . xah-pop-local-mark-ring)
        ("2" . xah-select-current-line)
        ("1" . xah-extend-selection)))))
 
