@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.1.2
+;; Version: 7.1.3
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -32,7 +32,7 @@
 ;; (add-to-list 'load-path "~/.emacs.d/lisp/")
 ;; (require 'xah-fly-keys)
 ;; (xah-fly-keys-set-layout "qwerty") ; required if you use qwerty
-;; (xah-fly-keys-set-layout "dvorak")
+;; ;; (xah-fly-keys-set-layout "dvorak")
 ;; (xah-fly-keys 1)
 
 ;; --------------------------------------------------
@@ -379,27 +379,8 @@ Version 2015-03-24"
 ;;   (posix-search-backward "[ \t\n]+" nil t)
 ;;   )
 
-(defun xah-display-page-break-as-line ()
-  "Display the formfeed ^L char as line.
-Version 2016-10-11"
-  (interactive)
-  ;; 2016-10-11 thanks to Steve Purcell's page-break-lines.el
-  (progn
-    (when (not buffer-display-table)
-      (setq buffer-display-table (make-display-table)))
-    (aset buffer-display-table ?\^L
-          (vconcat (make-list 70 (make-glyph-code ?─ 'font-lock-comment-face))))
-    (redraw-frame)))
-
 
 ;; editing commands
-
-(defun xah-delete-current-line ()
-  "Delete current line."
-  (interactive)
-  (delete-region (line-beginning-position) (line-end-position))
-  (when (looking-at "\n")
-    (delete-char 1)))
 
 (defun xah-copy-line-or-region ()
   "Copy current line, or text selection.
@@ -508,11 +489,11 @@ Version 2017-01-11"
       (yank))))
 
 (defun xah-delete-backward-char-or-bracket-text ()
-  "Delete backward 1 character, but if it's a \"quote\" or bracket ()[]{}【】「」 etc, delete bracket and the inner text.
-If it's bracket, push the deleted text to `kill-ring'
+  "Delete backward 1 character, but if it's a \"quote\" or bracket ()[]{}【】「」 etc, delete bracket and the inner text,
+push the deleted text to `kill-ring'
 
 URL `http://ergoemacs.org/emacs/emacs_delete_backward_char_or_bracket_text.html'
-Version 2017-01-16"
+Version 2017-02-10"
   (interactive)
   (let (
         (-right-brackets (regexp-opt '(")" "]" "}" "〕" "】" "〗" "〉" "》" "」" "』" "›" "»")))
@@ -659,6 +640,26 @@ Version 2017-01-08"
         (fill-region -p1 -p2)))
     (put this-command 'compact-p (not -compact-p))))
 
+(defun xah-unfill-paragraph ()
+  "Replace newline chars in current paragraph by single spaces.
+This command does the inverse of `fill-paragraph'.
+
+URL `http://ergoemacs.org/emacs/emacs_unfill-paragraph.html'
+Version 2016-07-13"
+  (interactive)
+  (let ((fill-column most-positive-fixnum))
+    (fill-paragraph)))
+
+(defun xah-unfill-region (*begin *end)
+  "Replace newline chars in region by single spaces.
+This command does the inverse of `fill-region'.
+
+URL `http://ergoemacs.org/emacs/emacs_unfill-paragraph.html'
+Version 2016-07-13"
+  (interactive "r")
+  (let ((fill-column most-positive-fixnum))
+    (fill-region *begin *end)))
+
 (defun xah-reformat-lines ()
   "Reformat current text block into 1 long line or multiple short lines.
 When there is a text selection, act on the selection, else, act on a text block separated by blank lines.
@@ -730,56 +731,6 @@ Version 2016-12-13"
         (search-forward " " nil "NOERROR")
       (when (> (- (point) (line-beginning-position)) fill-column)
         (replace-match "\n" )))))
-
-;; (defun xah-reformat-to-single-line-region (*begin *end)
-;;   "Replace whitespaces at end line by one space or 1 return.
-;; Basically, collapse whitespaces. But 2 or more newline will collapse to 1.
-;; URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
-;; Version 2016-10-30"
-;;   (interactive "r")
-;;   (save-excursion
-;;     (save-restriction
-;;       (narrow-to-region *begin *end)
-;;       (goto-char (point-min))
-;;       (while
-;;           (re-search-forward "\n\n+" nil "NOERROR")
-;;         (replace-match ",,j0mxwz9jiv"))
-;;       (goto-char (point-min))
-;;       (while
-;;           (search-forward "\t" nil "NOERROR")
-;;         (replace-match " "))
-;;       (goto-char (point-min))
-;;       (while
-;;           (re-search-forward "\n" nil "NOERROR")
-;;         (replace-match " "))
-;;       (goto-char (point-min))
-;;       (while
-;;           (re-search-forward "  +" nil "NOERROR")
-;;         (replace-match " "))
-;;       (goto-char (point-min))
-;;       (while
-;;           (search-forward ",,j0mxwz9jiv" nil "NOERROR")
-;;         (replace-match "\n\n")))))
-
-(defun xah-unfill-paragraph ()
-  "Replace newline chars in current paragraph by single spaces.
-This command does the inverse of `fill-paragraph'.
-
-URL `http://ergoemacs.org/emacs/emacs_unfill-paragraph.html'
-Version 2016-07-13"
-  (interactive)
-  (let ((fill-column most-positive-fixnum))
-    (fill-paragraph)))
-
-(defun xah-unfill-region (*begin *end)
-  "Replace newline chars in region by single spaces.
-This command does the inverse of `fill-region'.
-
-URL `http://ergoemacs.org/emacs/emacs_unfill-paragraph.html'
-Version 2016-07-13"
-  (interactive "r")
-  (let ((fill-column most-positive-fixnum))
-    (fill-region *begin *end)))
 
 (defun xah-comment-dwim ()
   "Like `comment-dwim', but toggle comment if cursor is not at end of line.
@@ -1723,7 +1674,12 @@ Version 2017-01-15"
 (defun xah-select-text-in-quote ()
   "Select text between the nearest left and right delimiters.
 Delimiters here includes the following chars: \"<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕（）
-This command does not properly deal with nested brackets.
+This command select between any bracket chars, not the inner text of a bracket. For example, if text is
+
+ (a(b)c▮)
+
+ the selected char is “c”, not “a(b)c”.
+
 URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
 Version 2016-12-18"
   (interactive)
@@ -1742,12 +1698,24 @@ Version 2016-12-18"
 
 ;; misc
 
+(defun xah-display-page-break-as-line ()
+  "Display the formfeed ^L char as line.
+Version 2016-10-11"
+  (interactive)
+  ;; 2016-10-11 thanks to Steve Purcell's page-break-lines.el
+  (progn
+    (when (not buffer-display-table)
+      (setq buffer-display-table (make-display-table)))
+    (aset buffer-display-table ?\^L
+          (vconcat (make-list 70 (make-glyph-code ?─ 'font-lock-comment-face))))
+    (redraw-frame)))
+
 (defun xah-user-buffer-q ()
   "Return t if current buffer is a user buffer, else nil.
 Typically, if buffer name starts with *, it's not considered a user buffer.
 This function is used by buffer switching command and close buffer command, so that next buffer shown is a user buffer.
 You can override this function to get your idea of “user buffer”.
-version 2016-06-18"
+Version 2016-06-18"
   (interactive)
   (if (string-equal "*" (substring (buffer-name) 0 1))
       nil
@@ -1900,7 +1868,7 @@ Version 2016-06-19"
 
 (defun xah-run-current-file ()
   "Execute the current file.
-For example, if the current buffer is the x.py, then it'll call 「python x.py」 in a shell.
+For example, if the current buffer is x.py, then it'll call 「python x.py」 in a shell. Output is printed to message buffer.
 The file can be Emacs Lisp, PHP, Perl, Python, Ruby, JavaScript, TypeScript, Bash, Ocaml, Visual Basic, TeX, Java, Clojure.
 File suffix is used to determine what program to run.
 
@@ -2271,10 +2239,8 @@ Version 2017-01-29"
 (defun xah--dvorak-to-qwerty (*charstr)
   "Convert dvorak key to qwerty. *charstr is single char string.
 For example, \"e\" becomes \"d\".
-For some char, the result is the same. For example, 1 2 3, etc.
-*CHARSTR should be a letter or punctuation, if  length of *CHARSTR is greater than 1, such as \"DEL\" or \"RET\" or \"TAB\", *CHARSTR is returned unchanged.
-*CHARSTR should be a letter or punctuation, if  length of *CHARSTR is greater than 1, *CHARSTR is returned unchanged.
-Version 2017-01-27"
+If  length of *CHARSTR is greater than 1, such as \"TAB\", *CHARSTR is returned unchanged.
+Version 2017-02-10"
   (interactive)
   (if (> (length *charstr) 1)
       *charstr
@@ -3064,7 +3030,7 @@ Version 2017-01-21"
 
 
 
-;; when in going into minibuffer, switch to insertion mode.
+;; when going into minibuffer, switch to insertion mode.
 (add-hook 'minibuffer-setup-hook 'xah-fly-insert-mode-activate)
 (add-hook 'minibuffer-exit-hook 'xah-fly-command-mode-activate)
 
