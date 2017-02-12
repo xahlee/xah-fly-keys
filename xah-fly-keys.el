@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.1.3
+;; Version: 7.1.4
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2740,10 +2740,6 @@ Version 2017-01-21"
 ;;    ("v" . vc-next-action)
 ;;    ("~" . vc-revision-other-window)))
 
-;; ;; 2013-11-04 make emacs auto show suggestions when a prefix key is pressed
-;; (require 'guide-key)
-;; (guide-key-mode 1)
-
 
 ;; setting keys
 
@@ -2826,8 +2822,7 @@ Possible value should be \"qwerty\" or \"dvorak\"
 Version 2017-01-21"
   (interactive)
   (setq xah-fly-key--current-layout *layout)
-  (load "xah-fly-keys")
-  (xah-fly-command-mode-activate))
+  (load "xah-fly-keys"))
 
 (defun xah-fly-command-mode-init ()
   "Set command mode keys.
