@@ -1573,20 +1573,12 @@ Subsequent calls expands the selection.
 when no selection,
 • if cursor is on a bracket, select whole bracketed thing including bracket
 • if cursor is on a quote, select whole quoted thing including quoted
-• if cursor is on the beginning of line, select the line.
 • else, select current word.
 
-when there's a selection, the selection extension behavior is still experimental.
-Roughly:
-• if 1 line is selected, extend to next line.
-• if multiple lines is selected, extend to next line.
-• if a bracketed text is selected, extend to include the outer bracket. If there's no outer, select current line.
-
- to line, or bracket/quoted text,
-or text block, whichever is the smallest.
+when there's a selection, the selection extension behavior is still experimental. But when cursor is on a any type of bracket (parenthesis, quote), it extends selection to outer bracket.
 
 URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
-Version 2017-01-15"
+Version 2017-02-12"
   (interactive)
   (if (region-active-p)
       (progn
@@ -1648,10 +1640,10 @@ Version 2017-01-15"
        ((looking-at "\\s\"")
         (message "string quote")
         (mark-sexp)) ; string quote
-       ((and (eq (point) (line-beginning-position)) (not (looking-at "\n")))
-        (message "beginning of line and not empty")
-        (end-of-line)
-        (set-mark (line-beginning-position)))
+       ;; ((and (eq (point) (line-beginning-position)) (not (looking-at "\n")))
+       ;;  (message "beginning of line and not empty")
+       ;;  (end-of-line)
+       ;;  (set-mark (line-beginning-position)))
        ((or (looking-back "\\s_" 1) (looking-back "\\sw" 1))
         (message "left is word or symbol")
         (skip-syntax-backward "_w" )
