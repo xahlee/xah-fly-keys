@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.1.7
+;; Version: 7.1.8
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2278,7 +2278,7 @@ Version 2017-01-27"
   "Map `define-key' over a alist *key-cmd-alist.
 Example usage:
 ;; (xah-fly--define-keys
-;;  (define-prefix-command 'xah-highlight-keymap)
+;;  (define-prefix-command 'xah-fly-dot-keymap)
 ;;  '(
 ;;    (\"h\" . highlight-symbol-at-point)
 ;;    (\".\" . isearch-forward-symbol-at-point)
@@ -2300,7 +2300,7 @@ Version 2017-01-21"
 
 ;; commands in search-map and facemenu-keymap
 (xah-fly--define-keys
- (define-prefix-command 'xah-highlight-keymap)
+ (define-prefix-command 'xah-fly-dot-keymap)
  '(
 
    ("b" . facemenu-set-bold)
@@ -2329,7 +2329,7 @@ Version 2017-01-21"
    ))
 
 (xah-fly--define-keys
- (define-prefix-command 'xah-leader-tab-keymap)
+ (define-prefix-command 'xah-fly--tab-key-map)
  '(
    ("TAB" . indent-for-tab-command)
 
@@ -2354,7 +2354,7 @@ Version 2017-01-21"
 
 
 (xah-fly--define-keys
- (define-prefix-command 'xah-leader-c-keymap)
+ (define-prefix-command 'xah-fly-c-keymap)
  '(
    ("," . xah-open-in-external-app)
    ("." . find-file)
@@ -2373,7 +2373,7 @@ Version 2017-01-21"
    ))
 
 (xah-fly--define-keys
- (define-prefix-command 'xah-help-keymap)
+ (define-prefix-command 'xah-fly-h-keymap)
  '(
    (";" . Info-goto-emacs-command-node)
    ("a" . apropos-command)
@@ -2402,7 +2402,7 @@ Version 2017-01-21"
 (xah-fly--define-keys
  ;; commands here are harmless (safe). They don't modify text.
  ;; they turn on minor/major mode, change display, prompt, start shell, etc.
- (define-prefix-command 'xah-harmless-keymap)
+ (define-prefix-command 'xah-fly-n-keymap)
  '(
    ("SPC" . whitespace-mode)
    ("RET" . nil)
@@ -2450,7 +2450,7 @@ Version 2017-01-21"
 
 (xah-fly--define-keys
  ;; kinda replacement related
- (define-prefix-command 'xah-edit-cmds-keymap)
+ (define-prefix-command 'xah-fly-r-keymap)
  '(
    ("SPC" . rectangle-mark-mode)
    ("," . apply-macro-to-region-lines)
@@ -2469,7 +2469,7 @@ Version 2017-01-21"
    ("y" . delete-whitespace-rectangle)))
 
 (xah-fly--define-keys
- (define-prefix-command 'xah-leader-t-keymap)
+ (define-prefix-command 'xah-fly-t-keymap)
  '(
    ("SPC" . xah-clean-whitespace)
    ("TAB" . move-to-column)
@@ -2501,7 +2501,7 @@ Version 2017-01-21"
    ("z" . number-to-register)))
 
 (xah-fly--define-keys
- (define-prefix-command 'xah-danger-keymap)
+ (define-prefix-command 'xah-fly-w-keymap)
  '(
    ("DEL" . xah-delete-current-file)
    ("." . eval-buffer)
@@ -2514,7 +2514,7 @@ Version 2017-01-21"
    ("j" . xah-run-current-file)))
 
 (xah-fly--define-keys
- (define-prefix-command 'xah-insertion-keymap)
+ (define-prefix-command 'xah-fly-e-keymap)
  '(
    ("RET" . insert-char)
    ("SPC" . xah-insert-unicode)
@@ -2556,9 +2556,9 @@ Version 2017-01-21"
    ("SPC" . xah-fly-insert-mode-activate)
    ("DEL" . xah-close-current-buffer)
    ("RET" . execute-extended-command)
-   ("TAB" . xah-leader-tab-keymap)
+   ("TAB" . xah-fly--tab-key-map)
 
-   ("." . xah-highlight-keymap)
+   ("." . xah-fly-dot-keymap)
    ("'" . xah-fill-or-unfill)
    ("," . universal-argument)
    ("-" . xah-display-page-break-as-line)
@@ -2582,27 +2582,27 @@ Version 2017-01-21"
 
    ("a" . mark-whole-buffer)
    ("b" . end-of-buffer)
-   ("c" . xah-leader-c-keymap)
+   ("c" . xah-fly-c-keymap)
    ("d" . beginning-of-buffer)
-   ("e" . xah-insertion-keymap)
+   ("e" . xah-fly-e-keymap)
    ("f" . xah-search-current-word)
    ("g" . isearch-forward)
-   ("h" . xah-help-keymap)
+   ("h" . xah-fly-h-keymap)
    ("i" . xah-copy-file-path)
    ("j" . xah-cut-all-or-region)
    ("k" . xah-paste-or-paste-previous)
    ("l" . recenter-top-bottom)
    ("m" . dired-jump)
-   ("n" . xah-harmless-keymap)
+   ("n" . xah-fly-n-keymap)
    ("o" . exchange-point-and-mark)
    ("p" . query-replace)
    ("q" . xah-copy-all-or-region)
-   ("r" . xah-edit-cmds-keymap)
+   ("r" . xah-fly-r-keymap)
    ("s" . save-buffer)
-   ("t" . xah-leader-t-keymap)
+   ("t" . xah-fly-t-keymap)
    ("u" . switch-to-buffer)
    ("v" . nil)
-   ("w" . xah-danger-keymap)
+   ("w" . xah-fly-w-keymap)
    ("x" . nil)
    ("y" . nil)
    ("z" . nil)
@@ -2750,6 +2750,32 @@ Version 2017-01-21"
 ;; setting keys
 
 (progn
+
+  (progn
+    (define-key xah-fly-key-map (kbd "<home>") 'xah-fly-command-mode-activate)
+    (define-key xah-fly-key-map (kbd "<menu>") 'xah-fly-command-mode-activate)
+    (define-key xah-fly-key-map (kbd "<f8>") 'xah-fly-command-mode-activate)
+
+    (define-key xah-fly-key-map (kbd "<f9>") xah-fly-leader-key-map)
+
+    (define-key xah-fly-key-map (kbd "<f11>") 'xah-previous-user-buffer)
+    (define-key xah-fly-key-map (kbd "<f12>") 'xah-next-user-buffer)
+    (define-key xah-fly-key-map (kbd "<C-f11>") 'xah-previous-emacs-buffer)
+    (define-key xah-fly-key-map (kbd "<C-f12>") 'xah-next-emacs-buffer))
+
+  (progn
+    ;; set arrow keys in isearch. left/right is backward/forward, up/down is history. press Return to exit
+    (define-key isearch-mode-map (kbd "<up>") 'isearch-ring-retreat )
+    (define-key isearch-mode-map (kbd "<down>") 'isearch-ring-advance )
+
+    (define-key isearch-mode-map (kbd "<left>") 'isearch-repeat-backward)
+    (define-key isearch-mode-map (kbd "<right>") 'isearch-repeat-forward)
+
+    (define-key minibuffer-local-isearch-map (kbd "<left>") 'isearch-reverse-exit-minibuffer)
+    (define-key minibuffer-local-isearch-map (kbd "<right>") 'isearch-forward-exit-minibuffer)
+    ;;
+    )
+  ;;
   (when xah-fly-use-control-key
     (progn
       (define-key xah-fly-key-map (kbd "<C-prior>") 'xah-previous-user-buffer)
@@ -2788,32 +2814,9 @@ Version 2017-01-21"
       ;;
       ))
 
-  (when xah-fly-use-meta-key
-    (define-key xah-fly-key-map (kbd "M-SPC") 'xah-fly-command-mode-activate))
-
-  (define-key xah-fly-key-map (kbd "<home>") 'xah-fly-command-mode-activate)
-  (define-key xah-fly-key-map (kbd "<menu>") 'xah-fly-command-mode-activate)
-  (define-key xah-fly-key-map (kbd "<f8>") 'xah-fly-command-mode-activate)
-
-  (define-key xah-fly-key-map (kbd "<f9>") xah-fly-leader-key-map)
-
-  (define-key xah-fly-key-map (kbd "<f11>") 'xah-previous-user-buffer)
-  (define-key xah-fly-key-map (kbd "<f12>") 'xah-next-user-buffer)
-  (define-key xah-fly-key-map (kbd "<C-f11>") 'xah-previous-emacs-buffer)
-  (define-key xah-fly-key-map (kbd "<C-f12>") 'xah-next-emacs-buffer)
-
   (progn
-    ;; set arrow keys in isearch. left/right is backward/forward, up/down is history. press Return to exit
-    (define-key isearch-mode-map (kbd "<up>") 'isearch-ring-retreat )
-    (define-key isearch-mode-map (kbd "<down>") 'isearch-ring-advance )
-
-    (define-key isearch-mode-map (kbd "<left>") 'isearch-repeat-backward)
-    (define-key isearch-mode-map (kbd "<right>") 'isearch-repeat-forward)
-
-    (define-key minibuffer-local-isearch-map (kbd "<left>") 'isearch-reverse-exit-minibuffer)
-    (define-key minibuffer-local-isearch-map (kbd "<right>") 'isearch-forward-exit-minibuffer)
-    ;;
-    )
+    (when xah-fly-use-meta-key
+      (define-key xah-fly-key-map (kbd "M-SPC") 'xah-fly-command-mode-activate)))
   ;;
   )
 
@@ -3043,8 +3046,8 @@ Version 2017-01-21"
   "A modal keybinding set, like vim, but based on ergonomic principles, like Dvorak layout.
 URL `http://ergoemacs.org/misc/ergoemacs_vi_mode.html'"
   t "ξflykeys" xah-fly-key-map
-  (add-to-list 'emulation-mode-map-alists (list (cons 'xah-fly-keys xah-fly-key-map )))
   (xah-fly-command-mode-activate)
+  (add-to-list 'emulation-mode-map-alists (list (cons 'xah-fly-keys xah-fly-key-map )))
 )
 
 (defun xah-fly-keys-off ()
