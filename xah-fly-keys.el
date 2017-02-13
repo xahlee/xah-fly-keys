@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.1.4
+;; Version: 7.1.5
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -492,36 +492,43 @@ Version 2017-01-11"
   "Delete backward 1 character, but if it's a \"quote\" or bracket ()[]{}【】「」 etc, delete bracket and the inner text,
 push the deleted text to `kill-ring'
 
+Whether a char is a quote or bracket depends on current buffer's syntax table.
+
+When cursor is inside a string or comment, just delete backward 1 char.
+
 URL `http://ergoemacs.org/emacs/emacs_delete_backward_char_or_bracket_text.html'
-Version 2017-02-10"
+Version 2017-02-12"
   (interactive)
   (let (
-        (-right-brackets (regexp-opt '(")" "]" "}" "〕" "】" "〗" "〉" "》" "」" "』" "›" "»")))
-        (-left-brackets (regexp-opt '("(" "{" "[" "〔" "【" "〖" "〈" "《" "「" "『" "‹" "«" ))))
+        ;; (-right-brackets (regexp-opt '(")" "]" "}" "〕" "】" "〗" "〉" "》" "」" "』" "›" "»")))
+        ;; (-left-brackets (regexp-opt '("(" "{" "[" "〔" "【" "〖" "〈" "《" "「" "『" "‹" "«" )))
+        )
     (if (and delete-selection-mode (region-active-p))
         (delete-region (region-beginning) (region-end))
-      (cond
-       ((looking-back -right-brackets 1)
-        (progn
-          (backward-sexp)
-          (mark-sexp)
-          (kill-region (region-beginning) (region-end))))
-       ((looking-back -left-brackets 1)
-        (progn
-          (backward-char )
-          (mark-sexp)
-          (kill-region (region-beginning) (region-end))))
-       ((looking-back "\\s\"" 1)
-        (if (nth 3 (syntax-ppss))
-            (progn
-              (backward-char )
-              (mark-sexp)
-              (kill-region (region-beginning) (region-end)))
+      (if (or (nth 3 (syntax-ppss)) (nth 4 (syntax-ppss)))
+          (delete-char -1)
+        (cond
+         ((looking-back "\\s)" 1)
           (progn
             (backward-sexp)
             (mark-sexp)
-            (kill-region (region-beginning) (region-end)))))
-       (t (delete-char -1))))))
+            (kill-region (region-beginning) (region-end))))
+         ((looking-back "\\s(" 1)
+          (progn
+            (backward-char )
+            (mark-sexp)
+            (kill-region (region-beginning) (region-end))))
+         ((looking-back "\\s\"" 1)
+          (if (nth 3 (syntax-ppss))
+              (progn
+                (backward-char )
+                (mark-sexp)
+                (kill-region (region-beginning) (region-end)))
+            (progn
+              (backward-sexp)
+              (mark-sexp)
+              (kill-region (region-beginning) (region-end)))))
+         (t (delete-char -1)))))))
 
 (defun xah-toggle-letter-case ()
   "Toggle the letter case of current word or text selection.
