@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.1.6
+;; Version: 7.1.7
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2536,19 +2536,19 @@ Version 2017-01-21"
    ("W" . xah-insert-double-angle-bracket《》)
    ("y" . xah-insert-double-angle-quote«»)))
 
-(xah-fly--define-keys
- (define-prefix-command 'xah-coding-system-keymap)
- '(
-   ("n" . set-file-name-coding-system)
-   ("s" . set-next-selection-coding-system)
-   ("c" . universal-coding-system-argument)
-   ("f" . set-buffer-file-coding-system)
-   ("k" . set-keyboard-coding-system)
-   ("l" . set-language-environment)
-   ("p" . set-buffer-process-coding-system)
-   ("r" . revert-buffer-with-coding-system)
-   ("t" . set-terminal-coding-system)
-   ("x" . set-selection-coding-system)))
+;; (xah-fly--define-keys
+;;  (define-prefix-command 'xah-coding-system-keymap)
+;;  '(
+;;    ("n" . set-file-name-coding-system)
+;;    ("s" . set-next-selection-coding-system)
+;;    ("c" . universal-coding-system-argument)
+;;    ("f" . set-buffer-file-coding-system)
+;;    ("k" . set-keyboard-coding-system)
+;;    ("l" . set-language-environment)
+;;    ("p" . set-buffer-process-coding-system)
+;;    ("r" . revert-buffer-with-coding-system)
+;;    ("t" . set-terminal-coding-system)
+;;    ("x" . set-selection-coding-system)))
 
 (xah-fly--define-keys
  (define-prefix-command 'xah-fly-leader-key-map)
