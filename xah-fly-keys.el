@@ -497,16 +497,23 @@ Whether a char is a quote or bracket depends on current buffer's syntax table.
 When cursor is inside a string or comment, just delete backward 1 char.
 
 URL `http://ergoemacs.org/emacs/emacs_delete_backward_char_or_bracket_text.html'
-Version 2017-02-12"
+Version 2017-02-13"
   (interactive)
   (let (
         ;; (-right-brackets (regexp-opt '(")" "]" "}" "〕" "】" "〗" "〉" "》" "」" "』" "›" "»")))
         ;; (-left-brackets (regexp-opt '("(" "{" "[" "〔" "【" "〖" "〈" "《" "「" "『" "‹" "«" )))
-        )
-    (if (and delete-selection-mode (region-active-p))
-        (delete-region (region-beginning) (region-end))
-      (if (or (nth 3 (syntax-ppss)) (nth 4 (syntax-ppss)))
-          (delete-char -1)
+        (-temp-syn-table (make-syntax-table)))
+
+    (modify-syntax-entry ?\« "(»" -temp-syn-table)
+    (modify-syntax-entry ?\» ")«" -temp-syn-table)
+    (modify-syntax-entry ?\‹ "(›" -temp-syn-table)
+    (modify-syntax-entry ?\› ")‹" -temp-syn-table)
+    (modify-syntax-entry ?\“ "(”" -temp-syn-table)
+    (modify-syntax-entry ?\” ")“" -temp-syn-table)
+
+    (with-syntax-table -temp-syn-table
+      (if (and delete-selection-mode (region-active-p))
+          (delete-region (region-beginning) (region-end))
         (cond
          ((looking-back "\\s)" 1)
           (progn
@@ -528,7 +535,11 @@ Version 2017-02-12"
               (backward-sexp)
               (mark-sexp)
               (kill-region (region-beginning) (region-end)))))
-         (t (delete-char -1)))))))
+         (t (delete-char -1)))
+
+        ;; (or (nth 3 (syntax-ppss)) (nth 4 (syntax-ppss)))
+
+        ))))
 
 (defun xah-toggle-letter-case ()
   "Toggle the letter case of current word or text selection.
@@ -3047,8 +3058,7 @@ Version 2017-01-21"
 URL `http://ergoemacs.org/misc/ergoemacs_vi_mode.html'"
   t "ξflykeys" xah-fly-key-map
   (xah-fly-command-mode-activate)
-  (add-to-list 'emulation-mode-map-alists (list (cons 'xah-fly-keys xah-fly-key-map )))
-)
+  (add-to-list 'emulation-mode-map-alists (list (cons 'xah-fly-keys xah-fly-key-map ))))
 
 (defun xah-fly-keys-off ()
   "Turn off xah-fly-keys minor mode."
