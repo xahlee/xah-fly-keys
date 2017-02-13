@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.1.5
+;; Version: 7.1.6
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2296,8 +2296,7 @@ Version 2017-01-21"
 
 (defvar xah-fly-swapped-1-8-and-2-7-p nil "If non-nil, it means keys 1 and 8 are swapped, and 2 and 7 are swapped. See: http://xahlee.info/kbd/best_number_key_layout.html")
 
-(defvar xah-fly-key-map nil "Keybinding for `xah-fly-keys' minor mode.")
-(setq xah-fly-key-map (make-sparse-keymap))
+(defvar xah-fly-key-map (make-sparse-keymap) "Keybinding for `xah-fly-keys' minor mode.")
 
 ;; commands in search-map and facemenu-keymap
 (xah-fly--define-keys
