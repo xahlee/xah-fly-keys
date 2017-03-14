@@ -2922,7 +2922,6 @@ Version 2017-01-21"
    '(
 
      ("SPC" . nil)
-     ("DEL" . nil)
 
      ("'" . nil)
      ("," . nil)
