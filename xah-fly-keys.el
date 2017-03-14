@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.1.8
+;; Version: 7.2.0
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -489,20 +489,17 @@ Version 2017-01-11"
       (yank))))
 
 (defun xah-delete-backward-char-or-bracket-text ()
-  "Delete backward 1 character, but if it's a \"quote\" or bracket ()[]{}【】「」 etc, delete bracket and the inner text,
-push the deleted text to `kill-ring'
-
-Whether a char is a quote or bracket depends on current buffer's syntax table.
+  "Delete backward 1 character, but if it's a \"quote\" or bracket ()[]{}【】「」 etc, delete bracket and the inner text, push the deleted text to `kill-ring'.
 
 When cursor is inside a string or comment, just delete backward 1 char.
 
+If `universal-argument' is called first, do not delete inner text.
+
 URL `http://ergoemacs.org/emacs/emacs_delete_backward_char_or_bracket_text.html'
-Version 2017-02-13"
+Version 2017-03-13"
   (interactive)
-  (let (
-        ;; (-right-brackets (regexp-opt '(")" "]" "}" "〕" "】" "〗" "〉" "》" "」" "』" "›" "»")))
-        ;; (-left-brackets (regexp-opt '("(" "{" "[" "〔" "【" "〖" "〈" "《" "「" "『" "‹" "«" )))
-        (-temp-syn-table (make-syntax-table)))
+
+  (let ((-temp-syn-table (make-syntax-table)))
 
     (modify-syntax-entry ?\« "(»" -temp-syn-table)
     (modify-syntax-entry ?\» ")«" -temp-syn-table)
@@ -518,28 +515,36 @@ Version 2017-02-13"
          ((looking-back "\\s)" 1)
           (progn
             (backward-sexp)
-            (mark-sexp)
-            (kill-region (region-beginning) (region-end))))
+            (xah-delete-matching-brackets (not current-prefix-arg))))
          ((looking-back "\\s(" 1)
           (progn
             (backward-char )
-            (mark-sexp)
-            (kill-region (region-beginning) (region-end))))
+            (xah-delete-matching-brackets (not current-prefix-arg))))
          ((looking-back "\\s\"" 1)
           (if (nth 3 (syntax-ppss))
               (progn
                 (backward-char )
-                (mark-sexp)
-                (kill-region (region-beginning) (region-end)))
+                (xah-delete-matching-brackets (not current-prefix-arg)))
             (progn
               (backward-sexp)
-              (mark-sexp)
-              (kill-region (region-beginning) (region-end)))))
-         (t (delete-char -1)))
+              (xah-delete-matching-brackets (not current-prefix-arg)))))
+         (t (delete-char -1)))))))
 
-        ;; (or (nth 3 (syntax-ppss)) (nth 4 (syntax-ppss)))
-
-        ))))
+(defun xah-delete-matching-brackets ( &optional *delete-inner-text-p)
+  "Delete the matching brackets/quotes to the right of `point'.
+If *delete-inner-text-p is true, also delete the inner text.
+This command assumes that the char to the right of point is a bracket/quote, and have a matching one after.
+2017-03-13"
+  (interactive)
+  (if *delete-inner-text-p
+      (progn
+        (mark-sexp)
+        (kill-region (region-beginning) (region-end)))
+    (let ((-pt (point)))
+      (forward-sexp)
+      (delete-char -1)
+      (goto-char -pt)
+      (delete-char 1))))
 
 (defun xah-toggle-letter-case ()
   "Toggle the letter case of current word or text selection.
@@ -686,7 +691,7 @@ When the command is called for the first time, it checks the current line's leng
 
 Repeated call toggles between formatting to 1 long line and multiple lines.
 URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
-Version 2017-01-08"
+Version 2017-03-08"
   (interactive)
   ;; This command symbol has a property “'compact-p”, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
   (let (
@@ -710,7 +715,7 @@ Version 2017-01-08"
             (progn (re-search-backward -blanks-regex)
                    (setq -p2 (point)))
           (setq -p2 (point)))))
-    (progn
+    (save-excursion
       (if -compact-p
           (xah-reformat-to-multi-lines-region -p1 -p2)
         (xah-reformat-whitespaces-to-one-space -p1 -p2))
@@ -1096,7 +1101,7 @@ version 2016-07-17"
   "Upcase first letters of sentences of current text block or selection.
 
 URL `http://ergoemacs.org/emacs/emacs_upcase_sentence.html'
-Version 2017-01-24"
+Version 2017-03-08"
   (interactive)
   (let (-p1 -p2)
     (if (region-active-p)
@@ -1134,27 +1139,17 @@ Version 2017-01-24"
             (overlay-put (make-overlay (match-beginning 2) (match-end 2)) 'face '((t :background "red" :foreground "white")))
             ;;
             )
+
           (goto-char (point-min))
-          (while (re-search-forward "<p>\\([a-z]\\)" nil "move")
+          (while (re-search-forward "\\(<p>\\|<li>\\|<td>\\|<figcaption>\\)\\([a-z]\\)" nil "move")
             ;; for HTML. first letter after tag
-            (upcase-region (match-beginning 1) (match-end 1))
-            (overlay-put (make-overlay (match-beginning 1) (match-end 1)) 'face '((t :background "red" :foreground "white")))
+            (upcase-region (match-beginning 2) (match-end 2))
+            (overlay-put (make-overlay (match-beginning 2) (match-end 2)) 'face '((t :background "red" :foreground "white")))
             ;;
             )
+
           (goto-char (point-min))
-          (while (re-search-forward "<li>\\([a-z]\\)" nil "move")
-            ;; for HTML. first letter after tag
-            (upcase-region (match-beginning 1) (match-end 1))
-            (overlay-put (make-overlay (match-beginning 1) (match-end 1)) 'face '((t :background "red" :foreground "white")))
-            ;;
-            )
-          (goto-char (point-min))
-          (while (re-search-forward "<td>\\([a-z]\\)" nil "move")
-            ;; for HTML. first letter after tag
-            (upcase-region (match-beginning 1) (match-end 1))
-            (overlay-put (make-overlay (match-beginning 1) (match-end 1)) 'face '((t :background "red" :foreground "white")))
-            ;;
-            ))))))
+          )))))
 
 (defun xah-escape-quotes (*begin *end)
   "Replace 「\"」 by 「\\\"」 in current line or text selection.
