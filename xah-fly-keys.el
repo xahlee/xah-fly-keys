@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.2.1
+;; Version: 7.2.2
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2850,6 +2850,7 @@ Version 2017-01-21"
      (":" . nil)
 
      ("SPC" . xah-fly-leader-key-map)
+     ("DEL" . xah-fly-leader-key-map)
 
      ("'" . xah-reformat-lines)
      ("," . xah-shrink-whitespaces)
@@ -2922,6 +2923,7 @@ Version 2017-01-21"
    '(
 
      ("SPC" . nil)
+     ("DEL" . nil)
 
      ("'" . nil)
      ("," . nil)
