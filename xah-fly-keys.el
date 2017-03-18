@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.2.3
+;; Version: 7.2.4
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -386,7 +386,7 @@ When called repeatedly, append copy subsequent lines.
 When `universal-argument' is called first, copy whole buffer (respects `narrow-to-region').
 
 URL `http://ergoemacs.org/emacs/emacs_copy_cut_current_line.html'
-Version 2016-06-18"
+Version 2017-03-17"
   (interactive)
   (let (-p1 -p2)
     (if current-prefix-arg
@@ -409,9 +409,9 @@ Version 2016-06-18"
         (if current-prefix-arg
             (message "Buffer text copied")
           (message "Text copied"))))
-    (end-of-line)
-    (forward-char)
-    ))
+    (when (not (region-active-p))
+      (end-of-line)
+      (forward-char))))
 
 (defun xah-cut-line-or-region ()
   "Cut current line, or text selection.
