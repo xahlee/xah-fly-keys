@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.2.4
+;; Version: 7.2.5
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1589,7 +1589,7 @@ when no selection,
 when there's a selection, the selection extension behavior is still experimental. But when cursor is on a any type of bracket (parenthesis, quote), it extends selection to outer bracket.
 
 URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
-Version 2017-02-12"
+Version 2017-03-28"
   (interactive)
   (if (region-active-p)
       (progn
@@ -2434,7 +2434,7 @@ Version 2017-01-21"
    ("g" . nil)
    ("h" . widen)
    ("i" . make-frame-command)
-   ("j" . nil)
+   ("j" . flyspell-buffer)
    ("k" . menu-bar-open)
    ("l" . toggle-word-wrap)
    ("m" . global-linum-mode)
@@ -2443,7 +2443,7 @@ Version 2017-01-21"
    ("p" . read-only-mode) ; toggle-read-only
    ("q" . nil)
    ("r" . nil)
-   ("s" . flyspell-buffer)
+   ("s" . nil)
    ("t" . narrow-to-defun)
    ("u" . shell)
    ("v" . variable-pitch-mode)
