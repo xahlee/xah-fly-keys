@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.2.5
+;; Version: 7.2.6
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -489,44 +489,76 @@ Version 2017-01-11"
 (defun xah-delete-backward-char-or-bracket-text ()
   "Delete backward 1 character, but if it's a \"quote\" or bracket ()[]{}【】「」 etc, delete bracket and the inner text, push the deleted text to `kill-ring'.
 
-When cursor is inside a string or comment, just delete backward 1 char.
+What char is considered bracket or quote is determined by current syntax table.
 
 If `universal-argument' is called first, do not delete inner text.
 
 URL `http://ergoemacs.org/emacs/emacs_delete_backward_char_or_bracket_text.html'
-Version 2017-03-13"
+Version 2017-04-25 26437"
   (interactive)
 
-  (let ((-temp-syn-table (make-syntax-table)))
-
-    (modify-syntax-entry ?\« "(»" -temp-syn-table)
-    (modify-syntax-entry ?\» ")«" -temp-syn-table)
-    (modify-syntax-entry ?\‹ "(›" -temp-syn-table)
-    (modify-syntax-entry ?\› ")‹" -temp-syn-table)
-    (modify-syntax-entry ?\“ "(”" -temp-syn-table)
-    (modify-syntax-entry ?\” ")“" -temp-syn-table)
-
-    (with-syntax-table -temp-syn-table
-      (if (and delete-selection-mode (region-active-p))
-          (delete-region (region-beginning) (region-end))
-        (cond
-         ((looking-back "\\s)" 1)
-          (progn
-            (backward-sexp)
-            (xah-delete-matching-brackets (not current-prefix-arg))))
-         ((looking-back "\\s(" 1)
+  (if (and delete-selection-mode (region-active-p))
+      (delete-region (region-beginning) (region-end))
+    (cond
+     ((looking-back "\\s)" 1)
+      (progn
+        (backward-sexp)
+        (xah-delete-matching-brackets (not current-prefix-arg))))
+     ((looking-back "\\s(" 1)
+      (progn
+        (backward-char )
+        (xah-delete-matching-brackets (not current-prefix-arg))))
+     ((looking-back "\\s\"" 1)
+      (if (nth 3 (syntax-ppss))
           (progn
             (backward-char )
-            (xah-delete-matching-brackets (not current-prefix-arg))))
-         ((looking-back "\\s\"" 1)
-          (if (nth 3 (syntax-ppss))
-              (progn
-                (backward-char )
-                (xah-delete-matching-brackets (not current-prefix-arg)))
-            (progn
-              (backward-sexp)
-              (xah-delete-matching-brackets (not current-prefix-arg)))))
-         (t (delete-char -1)))))))
+            (xah-delete-matching-brackets (not current-prefix-arg)))
+        (progn
+          (backward-sexp)
+          (xah-delete-matching-brackets (not current-prefix-arg)))))
+     (t (delete-char -1)))))
+
+;; (defun xah-delete-backward-char-or-bracket-text2 ()
+;;   "Delete backward 1 character, but if it's a \"quote\" or bracket ()[]{}【】「」 etc, delete bracket and the inner text, push the deleted text to `kill-ring'.
+
+;; When cursor is inside a string or comment, just delete backward 1 char.
+
+;; If `universal-argument' is called first, do not delete inner text.
+
+;; URL `http://ergoemacs.org/emacs/emacs_delete_backward_char_or_bracket_text.html'
+;; Version 2017-03-13"
+;;   (interactive)
+
+;;   (let ((-temp-syn-table (make-syntax-table)))
+
+;;     (modify-syntax-entry ?\« "(»" -temp-syn-table)
+;;     (modify-syntax-entry ?\» ")«" -temp-syn-table)
+;;     (modify-syntax-entry ?\‹ "(›" -temp-syn-table)
+;;     (modify-syntax-entry ?\› ")‹" -temp-syn-table)
+;;     (modify-syntax-entry ?\“ "(”" -temp-syn-table)
+;;     (modify-syntax-entry ?\” ")“" -temp-syn-table)
+
+;;     (with-syntax-table -temp-syn-table
+;;       (if (and delete-selection-mode (region-active-p))
+;;           (delete-region (region-beginning) (region-end))
+;;         (cond
+;;          ((looking-back "\\s)" 1)
+;;           (progn
+;;             (backward-sexp)
+;;             (xah-delete-matching-brackets (not current-prefix-arg))))
+;;          ((looking-back "\\s(" 1)
+;;           (progn
+;;             (backward-char )
+;;             (xah-delete-matching-brackets (not current-prefix-arg))))
+;;          ((looking-back "\\s\"" 1)
+;;           (if (nth 3 (syntax-ppss))
+;;               (progn
+;;                 (backward-char )
+;;                 (xah-delete-matching-brackets (not current-prefix-arg)))
+;;             (progn
+;;               (backward-sexp)
+;;               (xah-delete-matching-brackets (not current-prefix-arg)))))
+;;          (t (delete-char -1)))))))
 
 (defun xah-delete-matching-brackets ( &optional *delete-inner-text-p)
   "Delete the matching brackets/quotes to the right of `point'.
@@ -549,7 +581,7 @@ This command assumes that the char to the right of point is a bracket/quote, and
 Always cycle in this order: Init Caps, ALL CAPS, all lower.
 
 URL `http://ergoemacs.org/emacs/modernization_upcase-word.html'
-Version 2016-01-08"
+Version 2017-04-19"
   (interactive)
   (let (
         (deactivate-mark nil)
@@ -558,9 +590,9 @@ Version 2016-01-08"
         (setq -p1 (region-beginning)
               -p2 (region-end))
       (save-excursion
-        (skip-chars-backward "[:alnum:]")
+        (skip-chars-backward "[:alnum:]-_")
         (setq -p1 (point))
-        (skip-chars-forward "[:alnum:]")
+        (skip-chars-forward "[:alnum:]-_")
         (setq -p2 (point))))
     (when (not (eq last-command this-command))
       (put this-command 'state 0))
@@ -1099,7 +1131,7 @@ version 2016-07-17"
   "Upcase first letters of sentences of current text block or selection.
 
 URL `http://ergoemacs.org/emacs/emacs_upcase_sentence.html'
-Version 2017-03-08"
+Version 2017-04-23"
   (interactive)
   (let (-p1 -p2)
     (if (region-active-p)
@@ -1122,19 +1154,21 @@ Version 2017-03-08"
           (goto-char (point-min))
           (while (re-search-forward "\\. \\{1,2\\}\\([a-z]\\)" nil "move") ; after period
             (upcase-region (match-beginning 1) (match-end 1))
-            (overlay-put (make-overlay (match-beginning 1) (match-end 1)) 'face '((t :background "red" :foreground "white")))
+            ;; (overlay-put (make-overlay (match-beginning 1) (match-end 1)) 'face '((t :background "red" :foreground "white")))
+            (overlay-put (make-overlay (match-beginning 1) (match-end 1)) 'face 'highlight)
+
             ;;
             )
           (goto-char (point-min))
           (while (re-search-forward "\\. ?\n *\\([a-z]\\)" nil "move") ; new line after period
             (upcase-region (match-beginning 1) (match-end 1))
-            (overlay-put (make-overlay (match-beginning 1) (match-end 1)) 'face '((t :background "red" :foreground "white")))
+            (overlay-put (make-overlay (match-beginning 1) (match-end 1)) 'face 'highlight)
             ;;
             )
           (goto-char (point-min))
           (while (re-search-forward "\\(\\`\\|\n\n\\)\\([a-z]\\)" nil "move") ; after a blank line, or beginning of buffer
             (upcase-region (match-beginning 2) (match-end 2))
-            (overlay-put (make-overlay (match-beginning 2) (match-end 2)) 'face '((t :background "red" :foreground "white")))
+            (overlay-put (make-overlay (match-beginning 2) (match-end 2)) 'face 'highlight)
             ;;
             )
 
@@ -1142,12 +1176,11 @@ Version 2017-03-08"
           (while (re-search-forward "\\(<p>\\|<li>\\|<td>\\|<figcaption>\\)\\([a-z]\\)" nil "move")
             ;; for HTML. first letter after tag
             (upcase-region (match-beginning 2) (match-end 2))
-            (overlay-put (make-overlay (match-beginning 2) (match-end 2)) 'face '((t :background "red" :foreground "white")))
+            (overlay-put (make-overlay (match-beginning 2) (match-end 2)) 'face 'highlight)
             ;;
             )
 
-          (goto-char (point-min))
-          )))))
+          (goto-char (point-min)))))))
 
 (defun xah-escape-quotes (*begin *end)
   "Replace 「\"」 by 「\\\"」 in current line or text selection.
@@ -1432,9 +1465,14 @@ Version 2017-01-17"
 (defun xah-insert-tortoise-shell-bracket〔〕 () (interactive) (xah-insert-bracket-pair "〔" "〕" ) )
 
 (defun xah-insert-hyphen ()
-  "Insert a hyphen character."
+  "Insert a HYPHEN-MINUS character."
   (interactive)
   (insert "-"))
+
+(defun xah-insert-low-line ()
+  "Insert a LOW LINE character."
+  (interactive)
+  (insert "_"))
 
 (defun xah-insert-string-assignment ()
   "Insert space before cursor"
@@ -2439,14 +2477,14 @@ Version 2017-01-21"
    ("l" . toggle-word-wrap)
    ("m" . global-linum-mode)
    ("n" . narrow-to-region)
-   ("o" . nil)
+   ("o" . variable-pitch-mode)
    ("p" . read-only-mode) ; toggle-read-only
    ("q" . nil)
    ("r" . nil)
    ("s" . nil)
    ("t" . narrow-to-defun)
    ("u" . shell)
-   ("v" . variable-pitch-mode)
+   ("v" . nil)
    ("w" . eww)
    ("x" . save-some-buffers)
    ("y" . nil)
