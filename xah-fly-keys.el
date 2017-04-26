@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.2.6
+;; Version: 7.3.0
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -496,7 +496,6 @@ If `universal-argument' is called first, do not delete inner text.
 URL `http://ergoemacs.org/emacs/emacs_delete_backward_char_or_bracket_text.html'
 Version 2017-04-25 26437"
   (interactive)
-
   (if (and delete-selection-mode (region-active-p))
       (delete-region (region-beginning) (region-end))
     (cond
@@ -517,48 +516,6 @@ Version 2017-04-25 26437"
           (backward-sexp)
           (xah-delete-matching-brackets (not current-prefix-arg)))))
      (t (delete-char -1)))))
-
-;; (defun xah-delete-backward-char-or-bracket-text2 ()
-;;   "Delete backward 1 character, but if it's a \"quote\" or bracket ()[]{}【】「」 etc, delete bracket and the inner text, push the deleted text to `kill-ring'.
-
-;; When cursor is inside a string or comment, just delete backward 1 char.
-
-;; If `universal-argument' is called first, do not delete inner text.
-
-;; URL `http://ergoemacs.org/emacs/emacs_delete_backward_char_or_bracket_text.html'
-;; Version 2017-03-13"
-;;   (interactive)
-
-;;   (let ((-temp-syn-table (make-syntax-table)))
-
-;;     (modify-syntax-entry ?\« "(»" -temp-syn-table)
-;;     (modify-syntax-entry ?\» ")«" -temp-syn-table)
-;;     (modify-syntax-entry ?\‹ "(›" -temp-syn-table)
-;;     (modify-syntax-entry ?\› ")‹" -temp-syn-table)
-;;     (modify-syntax-entry ?\“ "(”" -temp-syn-table)
-;;     (modify-syntax-entry ?\” ")“" -temp-syn-table)
-
-;;     (with-syntax-table -temp-syn-table
-;;       (if (and delete-selection-mode (region-active-p))
-;;           (delete-region (region-beginning) (region-end))
-;;         (cond
-;;          ((looking-back "\\s)" 1)
-;;           (progn
-;;             (backward-sexp)
-;;             (xah-delete-matching-brackets (not current-prefix-arg))))
-;;          ((looking-back "\\s(" 1)
-;;           (progn
-;;             (backward-char )
-;;             (xah-delete-matching-brackets (not current-prefix-arg))))
-;;          ((looking-back "\\s\"" 1)
-;;           (if (nth 3 (syntax-ppss))
-;;               (progn
-;;                 (backward-char )
-;;                 (xah-delete-matching-brackets (not current-prefix-arg)))
-;;             (progn
-;;               (backward-sexp)
-;;               (xah-delete-matching-brackets (not current-prefix-arg)))))
-;;          (t (delete-char -1)))))))
 
 (defun xah-delete-matching-brackets ( &optional *delete-inner-text-p)
   "Delete the matching brackets/quotes to the right of `point'.
@@ -1905,6 +1862,21 @@ Version 2016-06-19"
     (mapc (lambda (-f) (insert (cdr -f) "\n"))
           xah-recently-closed-buffers)))
 
+(defun xah-open-file-fast ()
+  "Prompt to open a file from bookmark `bookmark-bmenu-list'.
+This command is similar to `bookmark-jump', but use `ido-mode' interface, and ignore cursor position in bookmark.
+
+URL `http://ergoemacs.org/emacs/emacs_hotkey_open_file_fast.html'
+Version 2017-04-26"
+  (interactive)
+  (require 'bookmark)
+  (bookmark-maybe-load-default-file)
+  (let ((-this-bookmark
+         (ido-completing-read "Open bookmark:" (mapcar (lambda (-x) (car -x)) bookmark-alist))))
+    (find-file (bookmark-get-filename -this-bookmark))
+    ;; (bookmark-jump -this-bookmark)
+    ))
+
 
 
 (defun xah-run-current-file ()
@@ -2410,7 +2382,7 @@ Version 2017-01-21"
    ("p" . xah-open-last-closed)
    ("f" . xah-open-recently-closed)
    ("y" . xah-list-recently-closed)
-   ("r" . bookmark-jump)
+   ("r" . xah-open-file-fast)
    ("s" . write-file)
    ))
 
