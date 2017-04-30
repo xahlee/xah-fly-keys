@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.3.1
+;; Version: 7.3.2
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1123,7 +1123,7 @@ Version 2017-04-23"
             ;;
             )
           (goto-char (point-min))
-          (while (re-search-forward "\\(\\`\\|\n\n\\)\\([a-z]\\)" nil "move") ; after a blank line, or beginning of buffer
+          (while (re-search-forward "\\(\\`\\|\n\\)\\([a-z]\\)" nil "move") ; after a blank line, or beginning of buffer
             (upcase-region (match-beginning 2) (match-end 2))
             (overlay-put (make-overlay (match-beginning 2) (match-end 2)) 'face 'highlight)
             ;;
