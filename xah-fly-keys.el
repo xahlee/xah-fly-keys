@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.3.2
+;; Version: 7.3.3
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1088,7 +1088,7 @@ version 2016-07-17"
   "Upcase first letters of sentences of current text block or selection.
 
 URL `http://ergoemacs.org/emacs/emacs_upcase_sentence.html'
-Version 2017-04-23"
+Version 2017-04-28"
   (interactive)
   (let (-p1 -p2)
     (if (region-active-p)
@@ -2768,7 +2768,7 @@ Version 2017-01-21"
   (progn
     (define-key xah-fly-key-map (kbd "<home>") 'xah-fly-command-mode-activate)
     (define-key xah-fly-key-map (kbd "<menu>") 'xah-fly-command-mode-activate)
-    (define-key xah-fly-key-map (kbd "<f8>") 'xah-fly-command-mode-activate)
+    (define-key xah-fly-key-map (kbd "<f8>") 'xah-fly-command-mode-activate-no-hook)
 
     (define-key xah-fly-key-map (kbd "<f9>") xah-fly-leader-key-map)
 
@@ -3004,12 +3004,19 @@ Version 2017-01-21"
     (save-buffer)))
 
 (defun xah-fly-command-mode-activate ()
-  "Activate command mode."
+  "Activate command mode and run `xah-fly-command-mode-activate-hook'"
   (interactive)
   (modify-all-frames-parameters (list (cons 'cursor-type 'box)))
   (setq xah-fly-insert-state-q nil )
   (xah-fly-command-mode-init)
   (run-hooks 'xah-fly-command-mode-activate-hook))
+
+(defun xah-fly-command-mode-activate-no-hook ()
+  "Activate command mode. Does not run `xah-fly-command-mode-activate-hook'"
+  (interactive)
+  (modify-all-frames-parameters (list (cons 'cursor-type 'box)))
+  (setq xah-fly-insert-state-q nil )
+  (xah-fly-command-mode-init))
 
 (defun xah-fly-insert-mode-activate ()
   "Activate insertion mode."
