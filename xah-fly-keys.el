@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.3.3
+;; Version: 7.4.0
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -138,35 +138,43 @@ version 2016-04-04"
   (set-mark-command t))
 
 (defun xah-beginning-of-line-or-block ()
-  "Move cursor to beginning of line, or beginning of current or previous text block.
+  "Move cursor to beginning of line of visible char, or beginning of current or previous text block.
 
-• When called first time, move cursor to beginning of line.
-• When called again, move cursor to beginning of paragraph.
-• When called again, move cursor to beginning of previous paragraph.
+• When called first time, move cursor to beginning of char in current line. (if already, move to beginning of line.)
+• When called again, move cursor backward by jumping over any sequence of whitespaces containing 2 blank lines.
+
+Cursor position always results in beginning of line or beginning of first visible char.
 
 URL `http://ergoemacs.org/emacs/emacs_keybinding_design_beginning-of-line-or-block.html'
-Version 2017-01-17"
+Version 2017-05-03"
   (interactive)
-  (if (or (equal (point) (line-beginning-position))
-          (equal last-command this-command ))
-      (if (re-search-backward "\n[\t\n ]*\n+" nil "NOERROR")
-          (skip-chars-backward "\n\t ")
-        (goto-char (point-min)))
-    (beginning-of-line)))
+  (let ((-p (point)))
+    (if (equal last-command this-command )
+        (if (re-search-backward "\n[\t\n ]*\n+" nil "NOERROR")
+            (progn
+              (skip-chars-backward "\n\t ")
+              (forward-char ))
+          (goto-char (point-min)))
+      (progn
+        (back-to-indentation)
+        (when (eq -p (point))
+          (beginning-of-line))))))
 
 (defun xah-end-of-line-or-block ()
   "Move cursor to end of line, or end of current or next text block.
 
 • When called first time, move cursor to end of line.
-• When called again, move cursor to end of paragraph.
-• When called again, move cursor to end of next paragraph.
+• When called again, move cursor forward by jumping over any sequence of whitespaces containing 2 blank lines.
+
+Cursor position always results in end of line.
 
 URL `http://ergoemacs.org/emacs/emacs_keybinding_design_beginning-of-line-or-block.html'
-Version 2017-01-17"
+Version 2017-05-03"
   (interactive)
   (if (or (equal (point) (line-end-position))
           (equal last-command this-command ))
-      (re-search-forward "\n[\t\n ]*\n+" nil "NOERROR" )
+      (when (re-search-forward "\n[\t\n ]*\n+" nil "NOERROR" )
+        (progn (end-of-line )))
     (end-of-line)))
 
 (defvar xah-brackets nil "string of left/right brackets pairs.")
@@ -1088,7 +1096,7 @@ version 2016-07-17"
   "Upcase first letters of sentences of current text block or selection.
 
 URL `http://ergoemacs.org/emacs/emacs_upcase_sentence.html'
-Version 2017-04-28"
+Version 2017-04-30"
   (interactive)
   (let (-p1 -p2)
     (if (region-active-p)
@@ -1123,7 +1131,7 @@ Version 2017-04-28"
             ;;
             )
           (goto-char (point-min))
-          (while (re-search-forward "\\(\\`\\|\n\\)\\([a-z]\\)" nil "move") ; after a blank line, or beginning of buffer
+          (while (re-search-forward "\\(\\`\\|\n\n\\)\\([a-z]\\)" nil "move") ; after a blank line, or beginning of buffer
             (upcase-region (match-beginning 2) (match-end 2))
             (overlay-put (make-overlay (match-beginning 2) (match-end 2)) 'face 'highlight)
             ;;
@@ -1449,9 +1457,9 @@ Version 2017-01-17"
   (left-char))
 
 (defun xah-insert-form-feed ()
-  "insert a form feed char (ASCII 12)"
+  "Insert a form feed char (codepoint 12)"
   (interactive)
-  (insert ""))
+  (insert "\n\n"))
 
 (defun xah-insert-column-counter (*n)
   "Insert a sequence of numbers vertically.
@@ -1696,7 +1704,7 @@ Version 2016-12-18"
 
 ;; misc
 
-(defun xah-display-page-break-as-line ()
+(defun xah-display-form-feed-as-line ()
   "Display the formfeed ^L char as line.
 Version 2016-10-11"
   (interactive)
@@ -1901,7 +1909,7 @@ Version 2017-02-10"
            ("rb" . "ruby")
            ("go" . "go run")
            ("js" . "node") ; node.js
-           ("ts" . "tsc --alwaysStrict --lib DOM,ES2015,DOM.Iterable,ScriptHost --target ES5") ; TypeScript
+           ("ts" . "tsc --alwaysStrict --lib DOM,ES2015,DOM.Iterable,ScriptHost --target ES6") ; TypeScript
            ("sh" . "bash")
            ("clj" . "java -cp /home/xah/apps/clojure-1.6.0/clojure-1.6.0.jar clojure.main")
            ("rkt" . "racket")
@@ -2539,6 +2547,7 @@ Version 2017-01-21"
    ("g" . xah-insert-ascii-double-quote)
    ("h" . xah-insert-brace) ; {}
    ("i" . xah-insert-curly-single-quote‘’)
+   ("l" . xah-insert-form-feed)
    ("m" . xah-insert-corner-bracket「」)
    ("n" . xah-insert-square-bracket) ; []
    ("p" . xah-insert-single-angle-quote‹›)
@@ -2575,7 +2584,7 @@ Version 2017-01-21"
    ("." . xah-fly-dot-keymap)
    ("'" . xah-fill-or-unfill)
    ("," . universal-argument)
-   ("-" . xah-display-page-break-as-line)
+   ("-" . xah-display-form-feed-as-line)
    ("/" . nil)
    (";" . nil)
    ("=" . nil)
@@ -2587,7 +2596,7 @@ Version 2017-01-21"
    ("2" . nil)
    ("3" . delete-window)
    ("4" . split-window-right)
-   ("5" . nil)
+   ("5" . balance-windows)
    ("6" . nil)
    ("7" . nil)
    ("8" . nil)
