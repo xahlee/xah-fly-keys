@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.4.0
+;; Version: 7.4.1
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -138,15 +138,13 @@ version 2016-04-04"
   (set-mark-command t))
 
 (defun xah-beginning-of-line-or-block ()
-  "Move cursor to beginning of line of visible char, or beginning of current or previous text block.
+  "Move cursor to beginning of line or previous paragraph.
 
 • When called first time, move cursor to beginning of char in current line. (if already, move to beginning of line.)
 • When called again, move cursor backward by jumping over any sequence of whitespaces containing 2 blank lines.
 
-Cursor position always results in beginning of line or beginning of first visible char.
-
 URL `http://ergoemacs.org/emacs/emacs_keybinding_design_beginning-of-line-or-block.html'
-Version 2017-05-03"
+Version 2017-05-04"
   (interactive)
   (let ((-p (point)))
     (if (equal last-command this-command )
@@ -161,15 +159,13 @@ Version 2017-05-03"
           (beginning-of-line))))))
 
 (defun xah-end-of-line-or-block ()
-  "Move cursor to end of line, or end of current or next text block.
+  "Move cursor to end of line or next paragraph.
 
 • When called first time, move cursor to end of line.
 • When called again, move cursor forward by jumping over any sequence of whitespaces containing 2 blank lines.
 
-Cursor position always results in end of line.
-
 URL `http://ergoemacs.org/emacs/emacs_keybinding_design_beginning-of-line-or-block.html'
-Version 2017-05-03"
+Version 2017-05-04"
   (interactive)
   (if (or (equal (point) (line-end-position))
           (equal last-command this-command ))
@@ -3056,13 +3052,6 @@ Version 2017-01-21"
 
 
 
-;; when going into minibuffer, switch to insertion mode.
-(add-hook 'minibuffer-setup-hook 'xah-fly-insert-mode-activate)
-(add-hook 'minibuffer-exit-hook 'xah-fly-command-mode-activate)
-
-;; when in shell mode, switch to insertion mode.
-(add-hook 'shell-mode-hook 'xah-fly-insert-mode-activate)
-
 ;; ;; when in shell mode, switch to insertion mode.
 ;; (add-hook 'dired-mode-hook 'xah-fly-keys-off)
 
@@ -3076,12 +3065,27 @@ Version 2017-01-21"
   "A modal keybinding set, like vim, but based on ergonomic principles, like Dvorak layout.
 URL `http://ergoemacs.org/misc/ergoemacs_vi_mode.html'"
   t "ξflykeys" xah-fly-key-map
+  (progn
+    ;; when going into minibuffer, switch to insertion mode.
+    (add-hook 'minibuffer-setup-hook 'xah-fly-insert-mode-activate)
+    (add-hook 'minibuffer-exit-hook 'xah-fly-command-mode-activate)
+    (add-hook 'xah-fly-command-mode-activate-hook 'xah-fly-save-buffer-if-file)
+    ;; when in shell mode, switch to insertion mode.
+    (add-hook 'shell-mode-hook 'xah-fly-insert-mode-activate))
   (xah-fly-command-mode-activate)
-  (add-to-list 'emulation-mode-map-alists (list (cons 'xah-fly-keys xah-fly-key-map ))))
+  ;; (add-to-list 'emulation-mode-map-alists (list (cons 'xah-fly-keys xah-fly-key-map )))
+  ;; (add-to-list 'emulation-mode-map-alists '((cons xah-fly-keys xah-fly-key-map )))
+)
 
 (defun xah-fly-keys-off ()
   "Turn off xah-fly-keys minor mode."
   (interactive)
+  (progn
+    (remove-hook 'minibuffer-setup-hook 'xah-fly-insert-mode-activate)
+    (remove-hook 'minibuffer-exit-hook 'xah-fly-command-mode-activate)
+    (remove-hook 'xah-fly-command-mode-activate-hook 'xah-fly-save-buffer-if-file)
+    (remove-hook 'shell-mode-hook 'xah-fly-insert-mode-activate))
+  (xah-fly-insert-mode-activate)
   (xah-fly-keys 0))
 
 (provide 'xah-fly-keys)
