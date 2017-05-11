@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.4.2
+;; Version: 7.4.3
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -139,52 +139,39 @@ version 2016-04-04"
 
 (defun xah-beginning-of-line-or-block ()
   "Move cursor to beginning of line or previous paragraph.
-• If point at the beginning of the block - move point to the beginning of previous block
-• If point at the beginning of the line - move point to the beginning of current block
-• If point at the beginning of indentation - move point to the beginning of current line
-• If point at the beginning of the visual line (i.e., when visual-line-mode on) - move point to the beginning of current line
-• If point in the middle of the line - move point to the beginning of visual line or indentation
+
+• When called first time, move cursor to beginning of char in current line. (if already, move to beginning of line.)
+• When called again, move cursor backward by jumping over any sequence of whitespaces containing 2 blank lines.
+
 URL `http://ergoemacs.org/emacs/emacs_keybinding_design_beginning-of-line-or-block.html'
-Version 2017-05-07"
+Version 2017-05-11"
   (interactive)
   (let ((-p (point)))
-    (if (equal last-command this-command)
-        (if (eq (point) (line-beginning-position))
-            (if (re-search-backward "\n[\t\n ]*\n[\t\n ]*[^\t\n ]" nil "NOERROR")
-                (skip-chars-forward "\n\t ")
-              (goto-char (point-min)))
-          (beginning-of-line))
-      (if visual-line-mode
-          (progn
-            (beginning-of-visual-line)
-            (when (eq -p (point))
-              (beginning-of-line)))
-        (progn
-          (back-to-indentation)
-          (when (eq -p (point))
-            (beginning-of-line)))))))
+    (if (equal last-command this-command )
+        (if (re-search-backward "\n[\t\n ]*\n+" nil "NOERROR")
+            (progn
+              (skip-chars-backward "\n\t ")
+              (forward-char ))
+          (goto-char (point-min)))
+      (progn
+        (back-to-indentation)
+        (when (eq -p (point))
+          (beginning-of-line))))))
 
 (defun xah-end-of-line-or-block ()
   "Move cursor to end of line or next paragraph.
-• If point at the end of the block - move point to the end of next block
-• If point at the end of the line - move point to the end of current block
-• If point at the end of the visual line (i.e., when visual-line-mode on) - move point to the end of current line
-• If point in the middle of the line - move point to the end of visual line
+
+• When called first time, move cursor to end of line.
+• When called again, move cursor forward by jumping over any sequence of whitespaces containing 2 blank lines.
+
 URL `http://ergoemacs.org/emacs/emacs_keybinding_design_beginning-of-line-or-block.html'
-Version 2017-05-07"
+Version 2017-05-11"
   (interactive)
-  (let ((-p (point)))
-    (if (eq (point) (line-end-position))
-        (if (re-search-forward "[^\t\n ][\t\n ]*\n[\t\n ]*\n" nil "NOERROR" )
-            (skip-chars-backward "\n\t ")
-          (goto-char (point-max)))
-      (progn
-        (if visual-line-mode
-            (progn
-              (end-of-visual-line)
-              (when (eq -p (point))
-                (end-of-line)))
-          (end-of-line))))))
+  (if (or (equal (point) (line-end-position))
+          (equal last-command this-command ))
+      (when (re-search-forward "\n[\t\n ]*\n+" nil "NOERROR" )
+        (progn (end-of-line )))
+    (end-of-line)))
 
 (defvar xah-brackets nil "string of left/right brackets pairs.")
 (setq xah-brackets "()[]{}<>（）［］｛｝⦅⦆〚〛⦃⦄“”‘’‹›«»「」〈〉《》【】〔〕⦗⦘『』〖〗〘〙｢｣⟦⟧⟨⟩⟪⟫⟮⟯⟬⟭⌈⌉⌊⌋⦇⦈⦉⦊❛❜❝❞❨❩❪❫❴❵❬❭❮❯❰❱❲❳〈〉⦑⦒⧼⧽﹙﹚﹛﹜﹝﹞⁽⁾₍₎⦋⦌⦍⦎⦏⦐⁅⁆⸢⸣⸤⸥⟅⟆⦓⦔⦕⦖⸦⸧⸨⸩｟｠⧘⧙⧚⧛⸜⸝⸌⸍⸂⸃⸄⸅⸉⸊᚛᚜༺༻༼༽⏜⏝⎴⎵⏞⏟⏠⏡﹁﹂﹃﹄︹︺︻︼︗︘︿﹀︽︾﹇﹈︷︸")
