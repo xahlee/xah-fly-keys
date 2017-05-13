@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.4.4
+;; Version: 7.4.5
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2606,14 +2606,14 @@ Version 2017-01-21"
    ("g" . isearch-forward)
    ("h" . xah-fly-h-keymap)
    ("i" . xah-copy-file-path)
-   ("j" . xah-cut-all-or-region)
+   ("j" . xah-copy-all-or-region)
    ("k" . xah-paste-or-paste-previous)
    ("l" . recenter-top-bottom)
    ("m" . dired-jump)
    ("n" . xah-fly-n-keymap)
    ("o" . exchange-point-and-mark)
    ("p" . query-replace)
-   ("q" . xah-copy-all-or-region)
+   ("q" . xah-cut-all-or-region)
    ("r" . xah-fly-r-keymap)
    ("s" . save-buffer)
    ("t" . xah-fly-t-keymap)
