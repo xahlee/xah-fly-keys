@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.4.5
+;; Version: 7.4.6
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -144,10 +144,11 @@ version 2016-04-04"
 • When called again, move cursor backward by jumping over any sequence of whitespaces containing 2 blank lines.
 
 URL `http://ergoemacs.org/emacs/emacs_keybinding_design_beginning-of-line-or-block.html'
-Version 2017-05-11"
+Version 2017-05-13"
   (interactive)
   (let ((-p (point)))
-    (if (equal last-command this-command )
+    (if (or (equal (point) (line-beginning-position))
+            (equal last-command this-command ))
         (if (re-search-backward "\n[\t\n ]*\n+" nil "NOERROR")
             (progn
               (skip-chars-backward "\n\t ")
@@ -165,12 +166,13 @@ Version 2017-05-11"
 • When called again, move cursor forward by jumping over any sequence of whitespaces containing 2 blank lines.
 
 URL `http://ergoemacs.org/emacs/emacs_keybinding_design_beginning-of-line-or-block.html'
-Version 2017-05-11"
+Version 2017-05-13"
   (interactive)
   (if (or (equal (point) (line-end-position))
           (equal last-command this-command ))
-      (when (re-search-forward "\n[\t\n ]*\n+" nil "NOERROR" )
-        (progn (end-of-line )))
+      (progn
+        (re-search-forward "\n[\t\n ]*\n+" nil "NOERROR" )
+        (backward-char ))
     (end-of-line)))
 
 (defvar xah-brackets nil "string of left/right brackets pairs.")
