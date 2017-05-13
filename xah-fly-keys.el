@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.4.3
+;; Version: 7.4.4
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -390,7 +390,7 @@ When called repeatedly, append copy subsequent lines.
 When `universal-argument' is called first, copy whole buffer (respects `narrow-to-region').
 
 URL `http://ergoemacs.org/emacs/emacs_copy_cut_current_line.html'
-Version 2017-03-17"
+Version 2017-05-13"
   (interactive)
   (let (-p1 -p2)
     (if current-prefix-arg
@@ -400,10 +400,8 @@ Version 2017-03-17"
         (setq -p1 (line-beginning-position) -p2 (line-end-position))))
     (if (eq last-command this-command)
         (progn
-          (progn ; hack. exit if there's no more next line
-            (end-of-line)
-            (forward-char)
-            (backward-char))
+          ;; (end-of-line)
+          ;; (forward-char)
           ;; (push-mark (point) "NOMSG" "ACTIVATE")
           (kill-append "\n" nil)
           (kill-append (buffer-substring-no-properties (line-beginning-position) (line-end-position)) nil)
@@ -1905,7 +1903,7 @@ Version 2017-02-10"
            ("rb" . "ruby")
            ("go" . "go run")
            ("js" . "node") ; node.js
-           ("ts" . "tsc --alwaysStrict --lib DOM,ES2015,DOM.Iterable,ScriptHost --target ES6") ; TypeScript
+           ("ts" . "tsc --alwaysStrict --lib DOM,ES2015,DOM.Iterable,ScriptHost --target ES5") ; TypeScript
            ("sh" . "bash")
            ("clj" . "java -cp /home/xah/apps/clojure-1.6.0/clojure-1.6.0.jar clojure.main")
            ("rkt" . "racket")
@@ -2896,14 +2894,14 @@ Version 2017-01-21"
      ("g" . backward-word)
      ("h" . backward-char)
      ("i" . xah-delete-text-block)
-     ("j" . xah-cut-line-or-region)
+     ("j" . xah-copy-line-or-region)
      ("k" . xah-paste-or-paste-previous)
      ("l" . xah-fly-insert-mode-activate-space-before)
      ("m" . xah-backward-left-bracket)
      ("n" . forward-char)
      ("o" . open-line)
      ("p" . kill-word)
-     ("q" . xah-copy-line-or-region)
+     ("q" . xah-cut-line-or-region)
      ("r" . forward-word)
      ("s" . xah-end-of-line-or-block)
      ("t" . next-line)
