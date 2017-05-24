@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.4.8
+;; Version: 7.4.9
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1535,14 +1535,14 @@ Version 2015-11-06"
   "Select the current block of text between blank lines.
 
 URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
-Version 2016-07-22"
+Version 2017-05-24"
   (interactive)
   (let (-p1)
     (progn
+      (skip-chars-forward " \n\t")
       (if (re-search-backward "\n[ \t]*\n" nil "move")
           (progn (re-search-forward "\n[ \t]*\n")
-                 (setq -p1 (point)))
-        (setq -p1 (point)))
+                 (setq -p1 (point))))
       (re-search-forward "\n[ \t]*\n" nil "move"))
     (set-mark -p1)))
 
@@ -1551,7 +1551,7 @@ Version 2016-07-22"
 If region is active, extend selection downward by block.
 
 URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
-Version 2016-07-22"
+Version 2017-05-24"
   (interactive)
   (if (region-active-p)
       (re-search-forward "\n[ \t]*\n" nil "move")
@@ -1587,8 +1587,10 @@ when no selection,
 
 when there's a selection, the selection extension behavior is still experimental. But when cursor is on a any type of bracket (parenthesis, quote), it extends selection to outer bracket.
 
+2017-05-22 this command is experimental. How to extend selection may change a lot, and lots more code to do.
+
 URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
-Version 2017-03-28"
+Version 2017-05-22"
   (interactive)
   (if (region-active-p)
       (progn
@@ -1658,7 +1660,8 @@ Version 2017-03-28"
         (message "left is word or symbol")
         (skip-syntax-backward "_w" )
         ;; (re-search-backward "^\\(\\sw\\|\\s_\\)" nil t)
-        (mark-sexp))
+        (mark-sexp)
+        (exchange-point-and-mark))
        ((and (looking-at "\\s ") (looking-back "\\s " 1))
         (message "left and right both space" )
         (skip-chars-backward "\\s " ) (set-mark (point))
