@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.4.9
+;; Version: 7.4.10
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1537,21 +1537,20 @@ Version 2015-11-06"
 URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
 Version 2017-05-24"
   (interactive)
-  (let (-p1)
+  (let ((-p1 (point)))
     (progn
       (skip-chars-forward " \n\t")
-      (if (re-search-backward "\n[ \t]*\n" nil "move")
-          (progn (re-search-forward "\n[ \t]*\n")
-                 (setq -p1 (point))))
-      (re-search-forward "\n[ \t]*\n" nil "move"))
-    (set-mark -p1)))
+      (when (re-search-backward "\n[ \t]*\n" nil "move")
+          (re-search-forward "\n[ \t]*\n"))
+      (push-mark (point) t t)
+      (re-search-forward "\n[ \t]*\n" nil "move"))))
 
 (defun xah-select-block ()
   "Select the current/next block of text between blank lines.
 If region is active, extend selection downward by block.
 
 URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
-Version 2017-05-24"
+Version 2017-05-27"
   (interactive)
   (if (region-active-p)
       (re-search-forward "\n[ \t]*\n" nil "move")
