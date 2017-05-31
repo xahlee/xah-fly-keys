@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.4.10
+;; Version: 7.4.11
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -166,13 +166,12 @@ Version 2017-05-13"
 • When called again, move cursor forward by jumping over any sequence of whitespaces containing 2 blank lines.
 
 URL `http://ergoemacs.org/emacs/emacs_keybinding_design_beginning-of-line-or-block.html'
-Version 2017-05-13"
+Version 2017-05-30"
   (interactive)
   (if (or (equal (point) (line-end-position))
           (equal last-command this-command ))
       (progn
-        (re-search-forward "\n[\t\n ]*\n+" nil "NOERROR" )
-        (backward-char ))
+        (re-search-forward "\n[\t\n ]*\n+" nil "NOERROR" ))
     (end-of-line)))
 
 (defvar xah-brackets nil "string of left/right brackets pairs.")
