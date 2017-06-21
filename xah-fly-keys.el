@@ -489,6 +489,21 @@ Version 2017-01-11"
         (yank-pop 1)
       (yank))))
 
+(defun xah-show-kill-ring ()
+  "Insert all `kill-ring' content in a new buffer.
+
+URL `http://ergoemacs.org/emacs/emacs_show_kill_ring.html'
+Version 2017-06-19"
+  (interactive)
+  (let ((-buf (generate-new-buffer "untitled")))
+    (progn
+      (switch-to-buffer -buf)
+      (funcall 'fundamental-mode)
+      (setq buffer-offer-save t)
+      (dolist (x kill-ring )
+        (insert x "\n--------------------------------------------------\n\n"))
+      (goto-char (point-min)))))
+
 (defun xah-delete-backward-char-or-bracket-text ()
   "Delete backward 1 character, but if it's a \"quote\" or bracket ()[]{}【】「」 etc, delete bracket and the inner text, push the deleted text to `kill-ring'.
 
@@ -1885,7 +1900,7 @@ File suffix is used to determine what program to run.
 If the file is modified or not saved, save it automatically before run.
 
 URL `http://ergoemacs.org/emacs/elisp_run_current_file.html'
-Version 2017-02-10"
+Version 2017-06-18"
   (interactive)
   (let (
         (-suffix-map
@@ -1897,6 +1912,7 @@ Version 2017-02-10"
            ("py3" . ,(if (string-equal system-type "windows-nt") "c:/Python32/python.exe" "python3"))
            ("rb" . "ruby")
            ("go" . "go run")
+           ("hs" . "runhaskell")
            ("js" . "node") ; node.js
            ("ts" . "tsc --alwaysStrict --lib DOM,ES2015,DOM.Iterable,ScriptHost --target ES5") ; TypeScript
            ("sh" . "bash")
@@ -2616,7 +2632,7 @@ Version 2017-01-21"
    ("v" . nil)
    ("w" . xah-fly-w-keymap)
    ("x" . nil)
-   ("y" . nil)
+   ("y" . xah-show-kill-ring)
    ("z" . nil)
    ;;
    ))
@@ -2903,7 +2919,7 @@ Version 2017-01-21"
      ("u" . xah-fly-insert-mode-activate)
      ("v" . xah-forward-right-bracket)
      ("w" . xah-next-window-or-frame)
-     ("x" . nil)
+     ("x" . xah-toggle-letter-case)
      ("y" . set-mark-command)
      ("z" . xah-goto-matching-bracket)))
 
