@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.4.11
+;; Version: 7.4.12
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2887,7 +2887,7 @@ Version 2017-01-21"
 
      ("1" . pop-global-mark)
      ("2" . xah-pop-local-mark-ring)
-     ("3" . xah-unplit-window-or-next-frame)
+     ("3" . delete-other-windows)
      ("4" . split-window-below)
      ("5" . delete-char)
      ("6" . xah-select-block)
