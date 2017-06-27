@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.4.12
+;; Version: 7.4.13
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -144,7 +144,7 @@ version 2016-04-04"
 • When called again, move cursor backward by jumping over any sequence of whitespaces containing 2 blank lines.
 
 URL `http://ergoemacs.org/emacs/emacs_keybinding_design_beginning-of-line-or-block.html'
-Version 2017-05-13"
+Version 2017-06-26"
   (interactive)
   (let ((-p (point)))
     (if (or (equal (point) (line-beginning-position))
@@ -152,7 +152,8 @@ Version 2017-05-13"
         (if (re-search-backward "\n[\t\n ]*\n+" nil "NOERROR")
             (progn
               (skip-chars-backward "\n\t ")
-              (forward-char ))
+              ;; (forward-char )
+              )
           (goto-char (point-min)))
       (progn
         (back-to-indentation)
@@ -199,17 +200,23 @@ Version 2017-05-30"
   (setq xah-right-brackets (reverse xah-right-brackets)))
 
 (defvar xah-punctuation-regex nil "a regex string for the purpose of jumping to punctuations in programing modes.")
-(setq xah-punctuation-regex "[\\!\?\"'#$%&*+,/:;<=>@^`|~]+")
+(setq xah-punctuation-regex "[\\!\?\"\.'#$%&*+,/:;<=>@^`|~]+")
 
 (defun xah-forward-punct (&optional n)
   "Move cursor to the next occurrence of punctuation.
-The list of punctuations to jump to is defined by `xah-punctuation-regex'"
+The list of punctuations to jump to is defined by `xah-punctuation-regex'
+
+URL `http://ergoemacs.org/emacs/emacs_jump_to_punctuations.html'
+Version 2017-06-26"
   (interactive "p")
   (re-search-forward xah-punctuation-regex nil t n))
 
 (defun xah-backward-punct (&optional n)
   "Move cursor to the previous occurrence of punctuation.
-See `xah-forward-punct'"
+See `xah-forward-punct'
+
+URL `http://ergoemacs.org/emacs/emacs_jump_to_punctuations.html'
+Version 2017-06-26"
   (interactive "p")
   (re-search-backward xah-punctuation-regex nil t n))
 
@@ -2881,9 +2888,12 @@ Version 2017-01-21"
      ("/" . xah-backward-equal-sign)
      ("\\" . nil)
      ("=" . xah-forward-equal-sign)
-     ("[" . xah-backward-quote )
-     ("]" . xah-forward-quote)
+     ("[" . xah-backward-punct )
+     ("]" . xah-forward-punct)
      ("`" . other-frame)
+
+     ;; ("#" . xah-backward-quote)
+     ;; ("$" . xah-forward-punct)
 
      ("1" . pop-global-mark)
      ("2" . xah-pop-local-mark-ring)
@@ -2958,6 +2968,9 @@ Version 2017-01-21"
      ("]" . nil)
      ("`" . nil)
      ("~" . nil)
+
+     ;; ("#" . nil)
+     ;; ("$" . nil)
 
      ("1" . nil)
      ("2" . nil)
