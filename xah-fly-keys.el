@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.4.13
+;; Version: 7.5.0
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -199,7 +199,7 @@ Version 2017-05-30"
             xah-right-brackets)))
   (setq xah-right-brackets (reverse xah-right-brackets)))
 
-(defvar xah-punctuation-regex nil "a regex string for the purpose of jumping to punctuations in programing modes.")
+(defvar xah-punctuation-regex nil "A regex string for the purpose of moving cursor to a punctuation.")
 (setq xah-punctuation-regex "[\\!\?\"\.'#$%&*+,/:;<=>@^`|~]+")
 
 (defun xah-forward-punct (&optional n)
@@ -2519,8 +2519,8 @@ Version 2017-01-21"
    ("c" . goto-char)
    ("d" . mark-defun)
    ("e" . list-matching-lines)
-   ("u" . delete-matching-lines)
-   ("h" . goto-line)
+   ("f" . goto-line )
+   ("h" . xah-close-current-buffer )
    ("i" . delete-non-matching-lines)
    ("j" . copy-to-register)
    ("k" . insert-register)
@@ -2530,6 +2530,7 @@ Version 2017-01-21"
    ("p" . query-replace-regexp)
    ("r" . copy-rectangle-to-register)
    ("t" . repeat)
+   ("u" . delete-matching-lines)
    ("w" . xah-next-window-or-frame)
    ("y" . delete-duplicate-lines)
    ("z" . number-to-register)))
@@ -2589,9 +2590,11 @@ Version 2017-01-21"
  (define-prefix-command 'xah-fly-leader-key-map)
  '(
    ("SPC" . xah-fly-insert-mode-activate)
-   ("DEL" . xah-close-current-buffer)
+   ("DEL" . xah-fly-insert-mode-activate)
    ("RET" . execute-extended-command)
    ("TAB" . xah-fly--tab-key-map)
+
+   ("<delete>" . xah-close-current-buffer)
 
    ("." . xah-fly-dot-keymap)
    ("'" . xah-fill-or-unfill)
