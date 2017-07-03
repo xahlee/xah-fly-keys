@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.5.1
+;; Version: 7.5.2
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -398,7 +398,7 @@ When called repeatedly, append copy subsequent lines.
 When `universal-argument' is called first, copy whole buffer (respects `narrow-to-region').
 
 URL `http://ergoemacs.org/emacs/emacs_copy_cut_current_line.html'
-Version 2017-05-13"
+Version 2017-07-02"
   (interactive)
   (let (-p1 -p2)
     (if current-prefix-arg
@@ -406,7 +406,9 @@ Version 2017-05-13"
       (if (use-region-p)
           (setq -p1 (region-beginning) -p2 (region-end))
         (setq -p1 (line-beginning-position) -p2 (line-end-position))))
-    (if (eq last-command this-command)
+    (if (and
+         (eq last-command this-command)
+         (eq (point) (get this-command 'xl-last-cursor-pos)))
         (progn
           ;; (end-of-line)
           ;; (forward-char)
@@ -421,7 +423,8 @@ Version 2017-05-13"
           (message "Text copied"))))
     (when (not (region-active-p))
       (end-of-line)
-      (forward-char))))
+      (forward-char)))
+  (put this-command 'xl-last-cursor-pos (point)))
 
 (defun xah-cut-line-or-region ()
   "Cut current line, or text selection.
@@ -519,34 +522,82 @@ What char is considered bracket or quote is determined by current syntax table.
 If `universal-argument' is called first, do not delete inner text.
 
 URL `http://ergoemacs.org/emacs/emacs_delete_backward_char_or_bracket_text.html'
-Version 2017-04-25 26437"
+Version 2017-07-02"
   (interactive)
   (if (and delete-selection-mode (region-active-p))
       (delete-region (region-beginning) (region-end))
     (cond
      ((looking-back "\\s)" 1)
-      (progn
-        (backward-sexp)
-        (xah-delete-matching-brackets (not current-prefix-arg))))
+      (if current-prefix-arg
+          (xah-delete-backward-bracket-pair)
+        (xah-delete-backward-bracket-text)))
      ((looking-back "\\s(" 1)
       (progn
-        (backward-char )
-        (xah-delete-matching-brackets (not current-prefix-arg))))
+        (backward-char)
+        (forward-sexp)
+        (if current-prefix-arg
+            (xah-delete-backward-bracket-pair)
+          (xah-delete-backward-bracket-text))))
      ((looking-back "\\s\"" 1)
       (if (nth 3 (syntax-ppss))
           (progn
             (backward-char )
-            (xah-delete-matching-brackets (not current-prefix-arg)))
-        (progn
-          (backward-sexp)
-          (xah-delete-matching-brackets (not current-prefix-arg)))))
-     (t (delete-char -1)))))
+            (xah-delete-forward-bracket-pairs (not current-prefix-arg)))
+        (if current-prefix-arg
+            (xah-delete-backward-bracket-pair)
+          (xah-delete-backward-bracket-text))))
+     (t
+      (delete-char -1)))))
 
-(defun xah-delete-matching-brackets ( &optional *delete-inner-text-p)
+(defun xah-delete-backward-bracket-text ()
+  "Delete the matching brackets/quotes to the left of `point', including the inner text.
+
+This command assumes the left of point is a right bracket, and there's a matching one before it.
+
+What char is considered bracket or quote is determined by current syntax table.
+
+URL `http://ergoemacs.org/emacs/emacs_delete_backward_char_or_bracket_text.html'
+Version 2017-07-02"
+  (interactive)
+  (progn
+    (forward-sexp -1)
+    (mark-sexp)
+    (kill-region (region-beginning) (region-end))))
+
+(defun xah-delete-backward-bracket-pair ()
+  "Delete the matching brackets/quotes to the left of `point'.
+
+After the command, mark is set at the left matching bracket position, so you can `exchange-point-and-mark' to select it.
+
+This command assumes the left of point is a right bracket, and there's a matching one before it.
+
+What char is considered bracket or quote is determined by current syntax table.
+
+URL `http://ergoemacs.org/emacs/emacs_delete_backward_char_or_bracket_text.html'
+Version 2017-07-02"
+  (interactive)
+  (let (( -p0 (point)) -p1)
+    (forward-sexp -1)
+    (setq -p1 (point))
+    (goto-char -p0)
+    (delete-char -1)
+    (goto-char -p1)
+    (delete-char 1)
+    (push-mark (point) t)
+    (goto-char (- -p0 2))))
+
+(defun xah-delete-forward-bracket-pairs ( &optional *delete-inner-text-p)
   "Delete the matching brackets/quotes to the right of `point'.
 If *delete-inner-text-p is true, also delete the inner text.
-This command assumes that the char to the right of point is a bracket/quote, and have a matching one after.
-2017-03-13"
+
+After the command, mark is set at the left matching bracket position, so you can `exchange-point-and-mark' to select it.
+
+This command assumes the char to the right of point is a left bracket or quote, and have a matching one after.
+
+What char is considered bracket or quote is determined by current syntax table.
+
+URL `http://ergoemacs.org/emacs/emacs_delete_backward_char_or_bracket_text.html'
+Version 2017-07-02"
   (interactive)
   (if *delete-inner-text-p
       (progn
@@ -555,6 +606,7 @@ This command assumes that the char to the right of point is a bracket/quote, and
     (let ((-pt (point)))
       (forward-sexp)
       (delete-char -1)
+      (push-mark (point) t)
       (goto-char -pt)
       (delete-char 1))))
 
@@ -1556,15 +1608,14 @@ Version 2015-11-06"
   "Select the current block of text between blank lines.
 
 URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
-Version 2017-05-24"
+Version 2017-07-02"
   (interactive)
-  (let ((-p1 (point)))
-    (progn
-      (skip-chars-forward " \n\t")
-      (when (re-search-backward "\n[ \t]*\n" nil "move")
-          (re-search-forward "\n[ \t]*\n"))
-      (push-mark (point) t t)
-      (re-search-forward "\n[ \t]*\n" nil "move"))))
+  (progn
+    (skip-chars-forward " \n\t")
+    (when (re-search-backward "\n[ \t]*\n" nil "move")
+      (re-search-forward "\n[ \t]*\n"))
+    (push-mark (point) t t)
+    (re-search-forward "\n[ \t]*\n" nil "move")))
 
 (defun xah-select-block ()
   "Select the current/next block of text between blank lines.
