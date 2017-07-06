@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.6.0
+;; Version: 7.6.1
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -149,7 +149,7 @@ Version 2017-06-26"
   (let ((-p (point)))
     (if (or (equal (point) (line-beginning-position))
             (equal last-command this-command ))
-        (if (re-search-backward "\n[\t\n ]*\n+" nil "NOERROR")
+        (if (re-search-backward "\n[\t\n ]*\n+" nil "move")
             (progn
               (skip-chars-backward "\n\t ")
               ;; (forward-char )
@@ -172,7 +172,7 @@ Version 2017-05-30"
   (if (or (equal (point) (line-end-position))
           (equal last-command this-command ))
       (progn
-        (re-search-forward "\n[\t\n ]*\n+" nil "NOERROR" ))
+        (re-search-forward "\n[\t\n ]*\n+" nil "move" ))
     (end-of-line)))
 
 (defvar xah-brackets nil "string of left/right brackets pairs.")
@@ -713,11 +713,11 @@ Version 2017-01-08"
         (progn (setq -p1 (region-beginning))
                (setq -p2 (region-end)))
       (save-excursion
-        (if (re-search-backward -blanks-regex nil "NOERROR")
+        (if (re-search-backward -blanks-regex nil "move")
             (progn (re-search-forward -blanks-regex)
                    (setq -p1 (point)))
           (setq -p1 (point)))
-        (if (re-search-forward -blanks-regex nil "NOERROR")
+        (if (re-search-forward -blanks-regex nil "move")
             (progn (re-search-backward -blanks-regex)
                    (setq -p2 (point)))
           (setq -p2 (point)))))
@@ -933,11 +933,11 @@ Version 2017-01-11"
           (setq -p1 (region-beginning))
           (setq -p2 (region-end)))
       (progn
-        (if (re-search-backward "\n[ \t]*\n" nil "NOERROR")
+        (if (re-search-backward "\n[ \t]*\n" nil "move")
             (progn (re-search-forward "\n[ \t]*\n")
                    (setq -p1 (point)))
           (setq -p1 (point)))
-        (re-search-forward "\n[ \t]*\n" nil "NOERROR")
+        (re-search-forward "\n[ \t]*\n" nil "move")
         (skip-chars-backward " \t\n" )
         (setq -p2 (point))))
     (save-excursion
@@ -949,7 +949,7 @@ Version 2017-01-11"
         (goto-char (point-max))
         (insert -endQuote)
         (goto-char (point-min))
-        (while (re-search-forward "\n\\([\t ]*\\)" nil "NOERROR" )
+        (while (re-search-forward "\n\\([\t ]*\\)" nil "move" )
           (replace-match
            (concat -endQuote -separator (concat "\n" (match-string 1)) -beginQuote) "FIXEDCASE" "LITERAL"))
         ;;
@@ -1042,7 +1042,7 @@ Version 2017-01-27"
                ;;  "\\|"
                ;;  (elt -charArray (% (+ -nowState 2) -length)))
                (point-max)
-               "NOERROR")
+               "move")
             (replace-match -changeTo "FIXEDCASE" "LITERAL"))))
       (when (or (string= -changeTo " ") -regionWasActive-p)
         (goto-char -p2)
@@ -1060,7 +1060,7 @@ Version 2017-01-11"
       (narrow-to-region *begin *end)
       (goto-char (point-min))
       (while
-          (re-search-forward "_" (point-max) "NOERROR")
+          (re-search-forward "_" (point-max) "move")
         (replace-match " " "FIXEDCASE" "LITERAL")))))
 
 (defun xah-copy-file-path (&optional *dir-path-only-p)
@@ -1101,7 +1101,7 @@ Version 2016-10-10"
       (kill-region (region-beginning) (region-end))
     (progn
       (beginning-of-line)
-      (if (re-search-forward "[[:graph:]]" (line-end-position) "NOERROR")
+      (if (re-search-forward "[[:graph:]]" (line-end-position) "move")
           (xah-delete-current-text-block)
         (when (re-search-forward "[[:graph:]]" )
           (xah-delete-current-text-block))))))
@@ -1119,11 +1119,11 @@ Version 2016-10-10"
   (interactive)
   (let (-p1 -p2)
     (progn
-      (if (re-search-backward "\n[ \t]*\n" nil "NOERROR")
+      (if (re-search-backward "\n[ \t]*\n" nil "move")
           (progn (re-search-forward "\n[ \t]*\n")
                  (setq -p1 (point)))
         (setq -p1 (point)))
-      (re-search-forward "\n[ \t]*\n" nil "NOERROR")
+      (re-search-forward "\n[ \t]*\n" nil "move")
       (setq -p2 (point)))
     (kill-region -p1 -p2)))
 
@@ -2062,7 +2062,7 @@ Version 2017-01-27"
       (narrow-to-region *begin *end)
       (progn
         (goto-char (point-min))
-        (while (re-search-forward "\n\n\n+" nil "NOERROR")
+        (while (re-search-forward "\n\n\n+" nil "move")
           (replace-match (make-string (if *n *n 2) 10)))))))
 
 (defun xah-clean-whitespace (&optional *begin *end)
@@ -2083,7 +2083,7 @@ Version 2016-10-15"
       (narrow-to-region *begin *end)
       (progn
         (goto-char (point-min))
-        (while (re-search-forward "[ \t]+\n" nil "NOERROR")
+        (while (re-search-forward "[ \t]+\n" nil "move")
           (replace-match "\n")))
       (xah-clean-empty-lines (point-min) (point-max))
       (progn
