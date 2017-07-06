@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.6.1
+;; Version: 7.6.2
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1086,25 +1086,25 @@ Version 2017-01-27"
          (message "File path copied: 「%s」" -fpath)
          -fpath )))))
 
-(defun xah-delete-text-block ()
-  "Delete current/next text block or selection, and also copy to `kill-ring'.
+;; (defun xah-delete-text-block ()
+;;   "Delete current/next text block or selection, and also copy to `kill-ring'.
 
-A “block” is text between blank lines.
-The “current block” is the block the cursor is at.
-If cursor is not on a block, deletes the next block.
-If there's a text selection, just delete that region.
+;; A “block” is text between blank lines.
+;; The “current block” is the block the cursor is at.
+;; If cursor is not on a block, deletes the next block.
+;; If there's a text selection, just delete that region.
 
-URL `http://ergoemacs.org/emacs/emacs_delete_block.html'
-Version 2016-10-10"
-  (interactive)
-  (if (use-region-p)
-      (kill-region (region-beginning) (region-end))
-    (progn
-      (beginning-of-line)
-      (if (re-search-forward "[[:graph:]]" (line-end-position) "move")
-          (xah-delete-current-text-block)
-        (when (re-search-forward "[[:graph:]]" )
-          (xah-delete-current-text-block))))))
+;; URL `http://ergoemacs.org/emacs/emacs_delete_block.html'
+;; Version 2016-10-10"
+;;   (interactive)
+;;   (if (use-region-p)
+;;       (kill-region (region-beginning) (region-end))
+;;     (progn
+;;       (beginning-of-line)
+;;       (if (re-search-forward "[[:graph:]]" (line-end-position) "move")
+;;           (xah-delete-current-text-block)
+;;         (when (re-search-forward "[[:graph:]]" )
+;;           (xah-delete-current-text-block))))))
 
 (defun xah-delete-current-text-block ()
   "Delete the current text block and also copy to `kill-ring'.
@@ -3001,7 +3001,7 @@ Version 2017-01-21"
      ("f" . undo)
      ("g" . backward-word)
      ("h" . backward-char)
-     ("i" . xah-delete-text-block)
+     ("i" . xah-delete-current-text-block)
      ("j" . xah-copy-line-or-region)
      ("k" . xah-paste-or-paste-previous)
      ("l" . xah-fly-insert-mode-activate-space-before)
