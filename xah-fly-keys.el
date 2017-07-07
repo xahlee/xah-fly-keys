@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.6.3
+;; Version: 7.6.4
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1107,15 +1107,11 @@ Version 2017-01-27"
 ;;           (xah-delete-current-text-block))))))
 
 (defun xah-delete-current-text-block ()
-  "Delete the current text block or selection, and also copy to `kill-ring'.
-
+  "Delete the current text block or selection, and copy to `kill-ring'.
 A “block” is text between blank lines.
-The “current block” is the block the cursor is at.
-If cursor is not on a block nor on edge of a block, delete 2 empty lines.
-If there's a text selection, ignore it.
 
 URL `http://ergoemacs.org/emacs/emacs_delete_block.html'
-Version 2016-10-10"
+Version 2017-07-07"
   (interactive)
   (let (-p1 -p2)
     (if (use-region-p)
@@ -1780,7 +1776,8 @@ Version 2017-05-22"
         (re-search-forward "\n[ \t]*\n")) ; between blank lines, select next text block
        (t
         ;; (message "just mark sexp" )
-        (mark-sexp))
+        (mark-sexp)
+        (exchange-point-and-mark))
        ;;
        ))))
 
