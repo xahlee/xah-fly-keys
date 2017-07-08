@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.6.4
+;; Version: 7.6.5
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -3116,11 +3116,13 @@ Version 2017-01-21"
     (save-buffer)))
 
 (defun xah-fly-command-mode-activate ()
-  "Activate command mode and run `xah-fly-command-mode-activate-hook'"
+  "Activate command mode and run `xah-fly-command-mode-activate-hook'
+Version 2017-07-07"
   (interactive)
   (modify-all-frames-parameters (list (cons 'cursor-type 'box)))
   (setq xah-fly-insert-state-q nil )
   (xah-fly-command-mode-init)
+  (setq mode-name "ξflykeys▮")
   (run-hooks 'xah-fly-command-mode-activate-hook))
 
 (defun xah-fly-command-mode-activate-no-hook ()
@@ -3131,11 +3133,14 @@ Version 2017-01-21"
   (xah-fly-command-mode-init))
 
 (defun xah-fly-insert-mode-activate ()
-  "Activate insertion mode."
+  "Activate insertion mode.
+Version 2017-07-07"
   (interactive)
   (modify-all-frames-parameters (list (cons 'cursor-type 'bar)))
   (setq xah-fly-insert-state-q t )
   (xah-fly-insert-mode-init)
+  (setq mode-name "ξflykeys⌶")
+
   (run-hooks 'xah-fly-insert-mode-activate-hook))
 
 (defun xah-fly-insert-mode-activate-newline ()
