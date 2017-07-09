@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.6.9
+;; Version: 7.6.10
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -3194,7 +3194,7 @@ URL `http://ergoemacs.org/misc/ergoemacs_vi_mode.html'"
     ;; when going into minibuffer, switch to insertion mode.
     (add-hook 'minibuffer-setup-hook 'xah-fly-insert-mode-activate)
     (add-hook 'minibuffer-exit-hook 'xah-fly-command-mode-activate)
-    (add-hook 'xah-fly-command-mode-activate-hook 'xah-fly-save-buffer-if-file)
+    ;; (add-hook 'xah-fly-command-mode-activate-hook 'xah-fly-save-buffer-if-file)
     ;; when in shell mode, switch to insertion mode.
     (add-hook 'shell-mode-hook 'xah-fly-insert-mode-activate))
   (xah-fly-command-mode-activate)
