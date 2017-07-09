@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.6.5
+;; Version: 7.6.6
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -398,33 +398,40 @@ When called repeatedly, append copy subsequent lines.
 When `universal-argument' is called first, copy whole buffer (respects `narrow-to-region').
 
 URL `http://ergoemacs.org/emacs/emacs_copy_cut_current_line.html'
-Version 2017-07-02"
+Version 2017-07-08"
   (interactive)
-  (let (-p1 -p2)
-    (if current-prefix-arg
-        (setq -p1 (point-min) -p2 (point-max))
-      (if (use-region-p)
-          (setq -p1 (region-beginning) -p2 (region-end))
-        (setq -p1 (line-beginning-position) -p2 (line-end-position))))
-    (if (and
-         (eq last-command this-command)
-         (eq (point) (get this-command 'xl-last-cursor-pos)))
-        (progn
-          ;; (end-of-line)
-          ;; (forward-char)
-          ;; (push-mark (point) "NOMSG" "ACTIVATE")
-          (kill-append "\n" nil)
-          (kill-append (buffer-substring-no-properties (line-beginning-position) (line-end-position)) nil)
-          (message "Line copy appended"))
+  (if current-prefix-arg
       (progn
-        (kill-ring-save -p1 -p2)
-        (if current-prefix-arg
-            (message "Buffer text copied")
-          (message "Text copied"))))
-    (when (not (region-active-p))
-      (end-of-line)
-      (forward-char)))
-  (put this-command 'xl-last-cursor-pos (point)))
+        (kill-ring-save (point-min) (point-max))
+        (message "All visible buffer text copied"))
+    (if (use-region-p)
+        (progn
+          (kill-ring-save (region-beginning) (region-end))
+          (message "Active region copied"))
+      (if (eq last-command this-command)
+          (if (eobp)
+              (progn (message "empty line at end of buffer." ))
+            (progn
+              (kill-append "\n" nil)
+              (kill-append
+               (buffer-substring-no-properties (line-beginning-position) (line-end-position))
+               nil)
+              (message "Line copy appended")
+              (progn
+                (end-of-line)
+                (forward-char))))
+        (if (eobp)
+            (if (eq (char-before) 10 )
+                (progn (message "empty line at end of buffer." ))
+              (progn
+                (kill-ring-save (line-beginning-position) (line-end-position))
+                (end-of-line)
+                (message "line copied")))
+          (progn
+            (kill-ring-save (line-beginning-position) (line-end-position))
+            (end-of-line)
+            (forward-char)
+            (message "line copied")))))))
 
 (defun xah-cut-line-or-region ()
   "Cut current line, or text selection.
@@ -3027,7 +3034,14 @@ Version 2017-01-21"
        ("8" . pop-global-mark)
        ("7" . xah-pop-local-mark-ring)
        ("2" . xah-select-current-line)
-       ("1" . xah-extend-selection)))))
+       ("1" . xah-extend-selection))))
+
+  (progn
+    (setq xah-fly-insert-state-q nil )
+    (modify-all-frames-parameters (list (cons 'cursor-type 'box))))
+
+  ;;
+  )
 
 (defun xah-fly-insert-mode-init ()
   "Set insertion mode keys"
@@ -3097,7 +3111,14 @@ Version 2017-01-21"
      ("z" . nil)
 
      ;;
-     )))
+     ))
+
+  (progn
+    (setq xah-fly-insert-state-q t )
+    (modify-all-frames-parameters (list (cons 'cursor-type 'bar))))
+
+  ;;
+  )
 
 (defun xah-fly-mode-toggle ()
   "Switch between {insertion, command} modes."
@@ -3119,28 +3140,20 @@ Version 2017-01-21"
   "Activate command mode and run `xah-fly-command-mode-activate-hook'
 Version 2017-07-07"
   (interactive)
-  (modify-all-frames-parameters (list (cons 'cursor-type 'box)))
-  (setq xah-fly-insert-state-q nil )
   (xah-fly-command-mode-init)
-  (setq mode-name "ξflykeys▮")
   (run-hooks 'xah-fly-command-mode-activate-hook))
 
 (defun xah-fly-command-mode-activate-no-hook ()
-  "Activate command mode. Does not run `xah-fly-command-mode-activate-hook'"
+  "Activate command mode. Does not run `xah-fly-command-mode-activate-hook'
+Version 2017-07-07"
   (interactive)
-  (modify-all-frames-parameters (list (cons 'cursor-type 'box)))
-  (setq xah-fly-insert-state-q nil )
   (xah-fly-command-mode-init))
 
 (defun xah-fly-insert-mode-activate ()
   "Activate insertion mode.
 Version 2017-07-07"
   (interactive)
-  (modify-all-frames-parameters (list (cons 'cursor-type 'bar)))
-  (setq xah-fly-insert-state-q t )
   (xah-fly-insert-mode-init)
-  (setq mode-name "ξflykeys⌶")
-
   (run-hooks 'xah-fly-insert-mode-activate-hook))
 
 (defun xah-fly-insert-mode-activate-newline ()
@@ -3176,7 +3189,7 @@ Version 2017-07-07"
 (define-minor-mode xah-fly-keys
   "A modal keybinding set, like vim, but based on ergonomic principles, like Dvorak layout.
 URL `http://ergoemacs.org/misc/ergoemacs_vi_mode.html'"
-  t "ξflykeys" xah-fly-key-map
+  t "∑flykeys" xah-fly-key-map
   (progn
     ;; when going into minibuffer, switch to insertion mode.
     (add-hook 'minibuffer-setup-hook 'xah-fly-insert-mode-activate)
