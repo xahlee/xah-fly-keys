@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.6.6
+;; Version: 7.6.8
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1120,17 +1120,21 @@ A “block” is text between blank lines.
 URL `http://ergoemacs.org/emacs/emacs_delete_block.html'
 Version 2017-07-07"
   (interactive)
-  (let (-p1 -p2)
+  (let ((p0 (point)) p1 p2)
     (if (use-region-p)
-        (setq -p1 (region-beginning) -p2 (region-end))
-      (progn
-        (if (re-search-backward "\n[ \t]*\n" nil "move")
-            (progn (re-search-forward "\n[ \t]*\n")
-                   (setq -p1 (point)))
-          (setq -p1 (point)))
-        (re-search-forward "\n[ \t]*\n" nil "move")
-        (setq -p2 (point))))
-    (kill-region -p1 -p2)))
+        (kill-region (region-beginning) (region-end))
+      (if (and
+           (eq (skip-chars-backward "\n\t ") 0)
+           (not (bobp)))
+          (progn
+            (kill-region (point) (re-search-backward "\n[ \t]*\n+" nil "move")))
+        (progn
+          (goto-char p0)
+          (skip-chars-forward "\n\t " )
+          (setq p1 (point))
+          (re-search-forward "\n[ \t]*\n+" nil "move")
+          (setq p2 (point))
+          (kill-region p1 p2))))))
 
 (defun xah-clear-register-1 ()
   "Clear register 1.
