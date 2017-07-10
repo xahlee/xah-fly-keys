@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.6.10
+;; Version: 7.6.11
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -3040,6 +3040,9 @@ Version 2017-01-21"
     (setq xah-fly-insert-state-q nil )
     (modify-all-frames-parameters (list (cons 'cursor-type 'box))))
 
+  (setq mode-line-front-space "▮")
+  (force-mode-line-update)
+
   ;;
   )
 
@@ -3116,6 +3119,9 @@ Version 2017-01-21"
   (progn
     (setq xah-fly-insert-state-q t )
     (modify-all-frames-parameters (list (cons 'cursor-type 'bar))))
+
+(setq mode-line-front-space "⌶")
+(force-mode-line-update)
 
   ;;
   )
