@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.6.13
+;; Version: 7.6.14
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -669,16 +669,14 @@ Version 2015-12-22"
   "Remove whitespaces around cursor to just one or none.
 Call this command again to shrink more. 3 calls will remove all whitespaces.
 URL `http://ergoemacs.org/emacs/emacs_shrink_whitespace.html'
-Version 2016-12-18"
+Version 2017-07-15"
   (interactive)
   (let (($p0 (point))
         $line-has-char-p ; current line contains non-white space chars
-        $has-space-tab-neighbor-p
+        ($has-space-tab-neighbor-p (or (looking-at " \\|\t") (looking-back " \\|\t" 1)))
         $space-or-tab-begin $space-or-tab-end
         )
     (save-excursion
-      (setq $has-space-tab-neighbor-p
-            (or (looking-at " \\|\t") (looking-back " \\|\t" 1)))
       (beginning-of-line)
       (setq $line-has-char-p (re-search-forward "[[:graph:]]" (line-end-position) t))
       (goto-char $p0)
@@ -765,7 +763,7 @@ Repeated call toggles between formatting to 1 long line and multiple lines.
 If `universal-argument' is called first, use the number value for min length of line. By default, it's 70.
 
 URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
-Version 2017-07-06"
+Version 2017-07-15"
   (interactive)
   ;; This command symbol has a property “'is-longline-p”, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
   (let* (
@@ -776,7 +774,6 @@ Version 2017-07-06"
           (if (eq last-command this-command)
               (get this-command 'is-longline-p)
             (> (- (line-end-position) (line-beginning-position)) *length)))
-         (deactivate-mark nil)
          ($blanks-regex "\n[ \t]*\n")
          $p1 $p2
          )
@@ -792,7 +789,7 @@ Version 2017-07-06"
             (progn (re-search-backward $blanks-regex)
                    (setq $p2 (point)))
           (setq $p2 (point)))))
-    (save-excursion
+    (progn
       (if current-prefix-arg
           (xah-reformat-to-multi-lines $p1 $p2 *length)
         (if is-longline-p
@@ -2694,7 +2691,7 @@ Version 2017-01-21"
    (";" . nil)
    ("=" . nil)
    ("[" . nil)
-   ("\\" nil)
+   ("\\" . toggle-input-method)
    ("`" . nil)
 
    ("1" . nil)
