@@ -2366,6 +2366,39 @@ Version 2017-01-29"
     ("y" . "t")
     ("z" . "/"))
   "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding qwerty. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+  
+(defvar xah--dvorak-to-workman-kmap
+  '(("'" . "q")
+	("," . "d")
+	("." . "r")
+	("p" . "w")
+	("y" . "b")
+	("f" . "j")
+	("g" . "f")
+	("c" . "u")
+	("r" . "p")
+	("l" . ";")
+	("a" . "a")
+	("o" . "s")
+	("e" . "h")
+	("u" . "t")
+	("i" . "g")
+	("d" . "y")
+	("h" . "n")
+	("t" . "e")
+	("n" . "o")
+	("s" . "i")
+	(";" . "z")
+	("q" . "x")
+	("j" . "m")
+	("k" . "c")
+	("x" . "v")
+	("b" . "k")
+	("m" . "l")
+	("w" . ",")
+	("v" . ".")
+	("z" . "/"))
+  "A alist, each element is of the form(\"e\" . \"d\"). First char is dvorak, second is corresponding workman. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
 
 (defun xah--dvorak-to-qwerty (*charstr)
   "Convert dvorak key to qwerty. *charstr is single char string.
@@ -2376,6 +2409,20 @@ Version 2017-02-10"
   (if (> (length *charstr) 1)
       *charstr
     (let (($result (assoc *charstr xah--dvorak-to-qwerty-kmap)))
+      (if $result
+          (cdr $result)
+        *charstr
+        ))))
+	
+(defun xah--dvorak-to-workman (*charstr)
+  "Convert dvorak key to workman. *charstr is single char string.
+For example, \"e\" becomes \"d\".
+If  length of *CHARSTR is greater than 1, such as \"TAB\", *CHARSTR is returned unchanged.
+Version 2017-02-10"
+  (interactive)
+  (if (> (length *charstr) 1)
+      *charstr
+    (let (($result (assoc *charstr xah--dvorak-to-workman-kmap)))
       (if $result
           (cdr $result)
         *charstr
@@ -2398,13 +2445,13 @@ Version 2017-01-27"
 
 (defun xah-fly--key-char (*charstr)
   "Return the corresponding char *CHARSTR according to current `xah-fly-key--current-layout'.
-*CHARSTR must be a string of single char.
-Version 2017-01-27"
+*CHARSTR must be a string of single char. Default layout is dvorak.
+Version 2017-07-27"
   (interactive)
-  (if (or (not xah-fly-key--current-layout)
-          (string-equal xah-fly-key--current-layout "dvorak"))
-      *charstr
-    (xah--dvorak-to-qwerty *charstr)))
+  (cond
+    ((string-equal xah-fly-key--current-layout "qwerty") (xah--dvorak-to-qwerty *charstr))
+	((string-equal xah-fly-key--current-layout "workman") (xah--dvorak-to-workman *charstr))
+	(t *charstr)))
 
 (defun xah-fly--define-keys (*keymap-name *key-cmd-alist)
   "Map `define-key' over a alist *key-cmd-alist.
@@ -2960,7 +3007,7 @@ Version 2017-01-21"
 
 (defun xah-fly-keys-set-layout (*layout)
   "Set a keyboard layout.
-Possible value should be \"qwerty\" or \"dvorak\"
+Possible value should be \"qwerty\", \"dvorak\" or \"workman\"
 Version 2017-01-21"
   (interactive)
   (setq xah-fly-key--current-layout *layout)
