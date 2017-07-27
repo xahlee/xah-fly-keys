@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.6.16
+;; Version: 7.7.0
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -32,7 +32,8 @@
 ;; (add-to-list 'load-path "~/.emacs.d/lisp/")
 ;; (require 'xah-fly-keys)
 ;; (xah-fly-keys-set-layout "qwerty") ; required if you use qwerty
-;; ;; (xah-fly-keys-set-layout "dvorak")
+;; ;; (xah-fly-keys-set-layout "workman") ; required if you use workman
+;; ;; (xah-fly-keys-set-layout "dvorak") ; by default, it's dvorak
 ;; (xah-fly-keys 1)
 
 ;; --------------------------------------------------
@@ -2369,35 +2370,35 @@ Version 2017-01-29"
   
 (defvar xah--dvorak-to-workman-kmap
   '(("'" . "q")
-	("," . "d")
-	("." . "r")
-	("p" . "w")
-	("y" . "b")
-	("f" . "j")
-	("g" . "f")
-	("c" . "u")
-	("r" . "p")
-	("l" . ";")
-	("a" . "a")
-	("o" . "s")
-	("e" . "h")
-	("u" . "t")
-	("i" . "g")
-	("d" . "y")
-	("h" . "n")
-	("t" . "e")
-	("n" . "o")
-	("s" . "i")
-	(";" . "z")
-	("q" . "x")
-	("j" . "m")
-	("k" . "c")
-	("x" . "v")
-	("b" . "k")
-	("m" . "l")
-	("w" . ",")
-	("v" . ".")
-	("z" . "/"))
+    ("," . "d")
+    ("." . "r")
+    ("p" . "w")
+    ("y" . "b")
+    ("f" . "j")
+    ("g" . "f")
+    ("c" . "u")
+    ("r" . "p")
+    ("l" . ";")
+    ("a" . "a")
+    ("o" . "s")
+    ("e" . "h")
+    ("u" . "t")
+    ("i" . "g")
+    ("d" . "y")
+    ("h" . "n")
+    ("t" . "e")
+    ("n" . "o")
+    ("s" . "i")
+    (";" . "z")
+    ("q" . "x")
+    ("j" . "m")
+    ("k" . "c")
+    ("x" . "v")
+    ("b" . "k")
+    ("m" . "l")
+    ("w" . ",")
+    ("v" . ".")
+    ("z" . "/"))
   "A alist, each element is of the form(\"e\" . \"d\"). First char is dvorak, second is corresponding workman. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
 
 (defun xah--dvorak-to-qwerty (*charstr)
@@ -2418,28 +2419,13 @@ Version 2017-02-10"
   "Convert dvorak key to workman. *charstr is single char string.
 For example, \"e\" becomes \"d\".
 If  length of *CHARSTR is greater than 1, such as \"TAB\", *CHARSTR is returned unchanged.
-Version 2017-02-10"
+Version 2017-07-27"
   (interactive)
   (if (> (length *charstr) 1)
       *charstr
     (let (($result (assoc *charstr xah--dvorak-to-workman-kmap)))
       (if $result
           (cdr $result)
-        *charstr
-        ))))
-
-(defun xah--qwerty-to-dvorak (*charstr)
-  "Convert qwerty key to dvorak. charstr is single char string.
-For example, \"d\" becomes \"e\".
-For some char, the result is the same. For example, 1 2 3, etc.
-*CHARSTR should be a letter or punctuation, if  length of *CHARSTR is greater than 1, such as \"DEL\" or \"RET\" or \"TAB\", *CHARSTR is returned unchanged.
-Version 2017-01-27"
-  (interactive)
-  (if (> (length *charstr) 1)
-      *charstr
-    (let (($result (rassoc *charstr xah--dvorak-to-qwerty-kmap)))
-      (if $result
-          (car $result)
         *charstr
         ))))
 
