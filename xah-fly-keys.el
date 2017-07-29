@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.7.0
+;; Version: 7.8.0
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1995,6 +1995,56 @@ Version 2017-04-26"
     ;; (bookmark-jump $this-bookmark)
     ))
 
+(defun xah-open-file-at-cursor ()
+  "Open the file path under cursor.
+If there is text selection, uses the text selection for path.
+If the path starts with “http://”, open the URL in browser.
+Input path can be {relative, full path, URL}.
+Path may have a trailing “:‹n›” that indicates line number. If so, jump to that line number.
+If path does not have a file extention, automatically try with “.el” for elisp files.
+This command is similar to `find-file-at-point' but without prompting for confirmation.
+
+URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'
+Version 2016-06-14"
+  (interactive)
+  (let* (($inputStr (if (use-region-p)
+                 (buffer-substring-no-properties (region-beginning) (region-end))
+               (let ($p0 $p1 $p2
+                         ($charSkipRegex "^  \"\t\n`'|()[]{}<>〔〕“”〈〉《》【】〖〗«»‹›❮❯·。\\`"))
+                 (setq $p0 (point))
+                 ;; chars that are likely to be delimiters of full path, e.g. space, tabs, brakets.
+                 (skip-chars-backward $charSkipRegex)
+                 (setq $p1 (point))
+                 (goto-char $p0)
+                 (skip-chars-forward $charSkipRegex)
+                 (setq $p2 (point))
+                 (goto-char $p0)
+                 (buffer-substring-no-properties $p1 $p2))))
+         ($path (replace-regexp-in-string ":\\'" "" $inputStr)))
+    (if (string-match-p "\\`https?://" $path)
+        (browse-url $path)
+      (progn ; not starting “http://”
+        (if (string-match "^\\`\\(.+?\\):\\([0-9]+\\)\\'" $path)
+            (progn
+              (let (
+                    ($fpath (match-string 1 $path))
+                    ($line-num (string-to-number (match-string 2 $path))))
+                (if (file-exists-p $fpath)
+                    (progn
+                      (find-file $fpath)
+                      (goto-char 1)
+                      (forward-line (1- $line-num)))
+                  (progn
+                    (when (y-or-n-p (format "file doesn't exist: 「%s」. Create?" $fpath))
+                      (find-file $fpath))))))
+          (progn
+            (if (file-exists-p $path)
+                (find-file $path)
+              (if (file-exists-p (concat $path ".el"))
+                  (find-file (concat $path ".el"))
+                (when (y-or-n-p (format "file doesn't exist: 「%s」. Create?" $path))
+                  (find-file $path ))))))))))
+
 
 
 (defun xah-run-current-file ()
@@ -2525,7 +2575,7 @@ Version 2017-01-21"
    ("." . find-file)
    ("c" . bookmark-bmenu-list)
    ("e" . ibuffer)
-   ("u" . find-file-at-point)
+   ("u" . xah-open-file-at-cursor)
    ("h" . recentf-open-files)
    ("l" . bookmark-set)
    ("n" . xah-new-empty-buffer)
@@ -2924,10 +2974,10 @@ Version 2017-01-21"
 
     (define-key xah-fly-key-map (kbd "<f9>") xah-fly-leader-key-map)
 
-    (define-key xah-fly-key-map (kbd "<f1>") 'xah-previous-user-buffer)
-    (define-key xah-fly-key-map (kbd "<f2>") 'xah-next-user-buffer)
-    (define-key xah-fly-key-map (kbd "<C-f1>") 'xah-previous-emacs-buffer)
-    (define-key xah-fly-key-map (kbd "<C-f2>") 'xah-next-emacs-buffer))
+    (define-key xah-fly-key-map (kbd "<f11>") 'xah-previous-user-buffer)
+    (define-key xah-fly-key-map (kbd "<f12>") 'xah-next-user-buffer)
+    (define-key xah-fly-key-map (kbd "<C-f11>") 'xah-previous-emacs-buffer)
+    (define-key xah-fly-key-map (kbd "<C-f22>") 'xah-next-emacs-buffer))
 
   (progn
     ;; set arrow keys in isearch. left/right is backward/forward, up/down is history. press Return to exit
