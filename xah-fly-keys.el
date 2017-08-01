@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.8.0
+;; Version: 7.8.1
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2050,13 +2050,14 @@ Version 2016-06-14"
 (defun xah-run-current-file ()
   "Execute the current file.
 For example, if the current buffer is x.py, then it'll call 「python x.py」 in a shell. Output is printed to message buffer.
-The file can be Emacs Lisp, PHP, Perl, Python, Ruby, JavaScript, TypeScript, Bash, Ocaml, Visual Basic, TeX, Java, Clojure.
+
+The file can be Emacs Lisp, PHP, Perl, Python, Ruby, JavaScript, TypeScript, golang, Bash, Ocaml, Visual Basic, TeX, Java, Clojure.
 File suffix is used to determine what program to run.
 
 If the file is modified or not saved, save it automatically before run.
 
 URL `http://ergoemacs.org/emacs/elisp_run_current_file.html'
-Version 2017-06-18"
+Version 2017-07-31"
   (interactive)
   (let (
         ($suffix-map
@@ -2093,6 +2094,10 @@ Version 2017-06-18"
     (setq $cmd-str (concat $prog-name " \""   $fname "\""))
     (cond
      ((string-equal $fSuffix "el") (load $fname))
+     ((string-equal $fSuffix "go")
+      (when (fboundp 'gofmt)
+        (gofmt)
+        (shell-command $cmd-str "*xah-run-current-file output*" )))
      ((string-equal $fSuffix "java")
       (progn
         (shell-command $cmd-str "*xah-run-current-file output*" )
