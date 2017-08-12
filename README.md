@@ -18,6 +18,8 @@ DVORAK layout
 -------------------
 ![xah-fly-keys dvorak layout](https://cdn.rawgit.com/jessdejong/xah-fly-keys/c45a13cf/xah_fly_keys_layout_dvorak.svg "xah-fly-keys dvorak layout")
 
+![xah-fly-keys dvorak layout](https://cdn.rawgit.com/xahlee/xah-fly-keys/master/xah_fly_keys_layout_dvorak.svg "xah-fly-keys dvorak layout")
+
 Been working on this since 2013, and since 2007 on ergoemacs-mode.
 
 Put in 5 bucks in my patreon.
