@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.10.20170819
+;; Version: 7.10.20170820
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -865,6 +865,33 @@ Version 2017-07-06"
         (when (> (- (point) (line-beginning-position)) $minlen)
           (replace-match "\n" ))))))
 
+(defun xah-space-to-newline ()
+  "Replace space sequence to a newline char.
+Works on current block or selection.
+
+URL `http://ergoemacs.org/emacs/emacs_space_to_newline.html'
+Version 2017-08-19"
+  (interactive)
+  (let* ( $p1 $p2 )
+    (if (use-region-p)
+        (progn
+          (setq $p1 (region-beginning))
+          (setq $p2 (region-end)))
+      (save-excursion
+        (if (re-search-backward "\n[ \t]*\n" nil "move")
+            (progn (re-search-forward "\n[ \t]*\n")
+                   (setq $p1 (point)))
+          (setq $p1 (point)))
+        (re-search-forward "\n[ \t]*\n" nil "move")
+        (skip-chars-backward " \t\n" )
+        (setq $p2 (point))))
+    (save-excursion
+      (save-restriction
+        (narrow-to-region $p1 $p2)
+        (goto-char (point-min))
+        (while (re-search-forward " +" nil t)
+          (replace-match "\n" ))))))
+
 (defun xah-comment-dwim ()
   "Like `comment-dwim', but toggle comment if cursor is not at end of line.
 
@@ -968,6 +995,40 @@ Version 2017-01-11"
            (concat $endQuote $separator (concat "\n" (match-string 1)) $beginQuote) "FIXEDCASE" "LITERAL"))
         ;;
         ))))
+
+(defun xah-escape-quotes (@begin @end)
+  "Replace 「\"」 by 「\\\"」 in current line or text selection.
+See also: `xah-unescape-quotes'
+
+URL `http://ergoemacs.org/emacs/elisp_escape_quotes.html'
+Version 2017-01-11"
+  (interactive
+   (if (use-region-p)
+       (list (region-beginning) (region-end))
+     (list (line-beginning-position) (line-end-position))))
+  (save-excursion
+      (save-restriction
+        (narrow-to-region @begin @end)
+        (goto-char (point-min))
+        (while (search-forward "\"" nil t)
+          (replace-match "\\\"" "FIXEDCASE" "LITERAL")))))
+
+(defun xah-unescape-quotes (@begin @end)
+  "Replace  「\\\"」 by 「\"」 in current line or text selection.
+See also: `xah-escape-quotes'
+
+URL `http://ergoemacs.org/emacs/elisp_escape_quotes.html'
+Version 2017-01-11"
+  (interactive
+   (if (use-region-p)
+       (list (region-beginning) (region-end))
+     (list (line-beginning-position) (line-end-position))))
+  (save-excursion
+    (save-restriction
+      (narrow-to-region @begin @end)
+      (goto-char (point-min))
+      (while (search-forward "\\\"" nil t)
+        (replace-match "\"" "FIXEDCASE" "LITERAL")))))
 
 (defun xah-dired-rename-space-to-underscore ()
   "In dired, rename current or marked files by replacing space to underscore _.
@@ -1259,40 +1320,6 @@ Version 2017-04-30"
             )
 
           (goto-char (point-min)))))))
-
-(defun xah-escape-quotes (@begin @end)
-  "Replace 「\"」 by 「\\\"」 in current line or text selection.
-See also: `xah-unescape-quotes'
-
-URL `http://ergoemacs.org/emacs/elisp_escape_quotes.html'
-Version 2017-01-11"
-  (interactive
-   (if (use-region-p)
-       (list (region-beginning) (region-end))
-     (list (line-beginning-position) (line-end-position))))
-  (save-excursion
-      (save-restriction
-        (narrow-to-region @begin @end)
-        (goto-char (point-min))
-        (while (search-forward "\"" nil t)
-          (replace-match "\\\"" "FIXEDCASE" "LITERAL")))))
-
-(defun xah-unescape-quotes (@begin @end)
-  "Replace  「\\\"」 by 「\"」 in current line or text selection.
-See also: `xah-escape-quotes'
-
-URL `http://ergoemacs.org/emacs/elisp_escape_quotes.html'
-Version 2017-01-11"
-  (interactive
-   (if (use-region-p)
-       (list (region-beginning) (region-end))
-     (list (line-beginning-position) (line-end-position))))
-  (save-excursion
-    (save-restriction
-      (narrow-to-region @begin @end)
-      (goto-char (point-min))
-      (while (search-forward "\\\"" nil t)
-        (replace-match "\"" "FIXEDCASE" "LITERAL")))))
 
 (defun xah-title-case-region-or-line (@begin @end)
   "Title case text between nearest brackets, or current line, or text selection.
@@ -2681,6 +2708,7 @@ Version 2017-01-21"
    ("e" . call-last-kbd-macro)
    ("g" . kill-rectangle)
    ("l" . clear-rectangle)
+   ("i" . xah-space-to-newline)
    ("n" . rectangle-number-lines)
    ("o" . open-rectangle)
    ("p" . kmacro-end-macro)
