@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.8.20170811
+;; Version: 7.9.20170819
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -13,7 +13,7 @@
 
 ;;; License:
 
-;; You can redistribute this program and/or modify it under the terms of the GNU General Public License version 2.
+;; You can redistribute this program and/or modify it under the terms of the GNU General Public License version 3.
 
 ;;; Commentary:
 
@@ -2002,12 +2002,13 @@ If path does not have a file extention, automatically try with “.el” for eli
 This command is similar to `find-file-at-point' but without prompting for confirmation.
 
 URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'
-Version 2016-06-14"
+Version 2017-08-17"
   (interactive)
   (let* (($inputStr (if (use-region-p)
                  (buffer-substring-no-properties (region-beginning) (region-end))
                (let ($p0 $p1 $p2
-                         ($charSkipRegex "^  \"\t\n`'|()[]{}<>〔〕“”〈〉《》【】〖〗«»‹›❮❯·。\\`"))
+                       ;; chars that are likely to be delimiters of full path, e.g. space, tabs, brakets. The colon is a problem. cuz it's in url, but not in file name. Don't want to use just space as delimiter because path or url are often in brackets or quotes as in markdown or html
+                       ($charSkipRegex "^  \"\t\n`'|()[]{}「」<>〔〕“”〈〉《》【】〖〗«»‹›❮❯❬❭·。\\`"))
                  (setq $p0 (point))
                  ;; chars that are likely to be delimiters of full path, e.g. space, tabs, brakets.
                  (skip-chars-backward $charSkipRegex)
@@ -2419,7 +2420,7 @@ Version 2017-01-29"
     ("y" . "t")
     ("z" . "/"))
   "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding qwerty. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
-  
+
 (defvar xah--dvorak-to-workman-kmap
   '(("'" . "q")
     ("," . "d")
@@ -2466,7 +2467,7 @@ Version 2017-02-10"
           (cdr $result)
         @charstr
         ))))
-	
+
 (defun xah--dvorak-to-workman (@charstr)
   "Convert dvorak key to workman. @charstr is single char string.
 For example, \"e\" becomes \"d\".
@@ -2672,6 +2673,8 @@ Version 2017-01-21"
    ("SPC" . rectangle-mark-mode)
    ("," . apply-macro-to-region-lines)
    ("." . kmacro-start-macro)
+   ("3" . number-to-register)
+   ("4" . increment-register)
    ("a" . xah-upcase-sentence)
    ("c" . replace-rectangle)
    ("d" . delete-rectangle)
@@ -2697,8 +2700,8 @@ Version 2017-01-21"
    ("." . sort-lines)
    ("," . sort-numeric-fields)
    ("'" . reverse-region)
-   ("a" . previous-error)
-   ("b" . next-error)
+   ("a" . nil)
+   ("b" . nil)
    ("c" . goto-char)
    ("d" . mark-defun)
    ("e" . list-matching-lines)
@@ -2707,7 +2710,7 @@ Version 2017-01-21"
    ("i" . delete-non-matching-lines)
    ("j" . copy-to-register)
    ("k" . insert-register)
-   ("l" . increment-register)
+   ("l" . xah-escape-quotes)
    ("m" . xah-make-backup-and-save)
    ("n" . repeat-complex-command)
    ("p" . query-replace-regexp)
@@ -2716,7 +2719,7 @@ Version 2017-01-21"
    ("u" . delete-matching-lines)
    ("w" . xah-next-window-or-frame)
    ("y" . delete-duplicate-lines)
-   ("z" . number-to-register)))
+   ("z" . nil)))
 
 (xah-fly--define-keys
  (define-prefix-command 'xah-fly-w-keymap)
@@ -3005,8 +3008,6 @@ Version 2017-01-21"
       (define-key xah-fly-key-map (kbd "<C-tab>") 'xah-next-user-buffer)
       (define-key xah-fly-key-map (kbd "<C-S-iso-lefttab>") 'xah-previous-user-buffer)
 
-      (define-key xah-fly-key-map (kbd "C-1") 'xah-fly-keys)
-
       (define-key xah-fly-key-map (kbd "C-9") 'scroll-down-command)
       (define-key xah-fly-key-map (kbd "C-0") 'scroll-up-command)
 
@@ -3023,9 +3024,11 @@ Version 2017-01-21"
       (define-key xah-fly-key-map (kbd "C-w") 'xah-close-current-buffer)
       (define-key xah-fly-key-map (kbd "C-z") 'undo)
 
+      (define-key xah-fly-key-map (kbd "C-3") 'previous-error)
+      (define-key xah-fly-key-map (kbd "C-4") 'next-error)
+
       (define-key xah-fly-key-map (kbd "C-+") 'text-scale-increase)
       (define-key xah-fly-key-map (kbd "C--") 'text-scale-decrease)
-      (define-key xah-fly-key-map (kbd "C-0") (lambda () (interactive) (text-scale-set 0)))
 
       (define-key xah-fly-key-map (kbd "C-t") nil) ; never do transpose-chars
 
