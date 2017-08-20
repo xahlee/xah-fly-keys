@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.9.20170819
+;; Version: 7.10.20170819
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2782,7 +2782,7 @@ Version 2017-01-21"
 
    ("." . xah-fly-dot-keymap)
    ("'" . xah-fill-or-unfill)
-   ("," . universal-argument)
+   ("," . nil)
    ("-" . xah-display-form-feed-as-line)
    ("/" . nil)
    (";" . nil)
