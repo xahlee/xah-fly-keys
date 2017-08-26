@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.10.20170820
+;; Version: 7.10.20170826
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1140,15 +1140,20 @@ Version 2017-01-11"
 Result is full path.
 If `universal-argument' is called first, copy only the dir path.
 
+If in dired, copy the file/dir cursor is on, or marked files.
+
+If a buffer is not file and not dired, copy value of `default-directory' (which is usually the “current” dir when that buffer was created)
+
 URL `http://ergoemacs.org/emacs/emacs_copy_file_path.html'
-Version 2017-01-27"
+Version 2017-08-25"
   (interactive "P")
   (let (($fpath
          (if (equal major-mode 'dired-mode)
-             (expand-file-name default-directory)
+             (progn
+               (mapconcat 'identity (dired-get-marked-files) "\n"))
            (if (buffer-file-name)
                (buffer-file-name)
-             (user-error "Current buffer is not associated with a file.")))))
+             (expand-file-name default-directory)))))
     (kill-new
      (if @dir-path-only-p
          (progn
