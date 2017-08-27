@@ -2031,19 +2031,18 @@ If path does not have a file extention, automatically try with “.el” for eli
 This command is similar to `find-file-at-point' but without prompting for confirmation.
 
 URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'
-Version 2017-08-17"
+Version 2017-08-26"
   (interactive)
   (let* (($inputStr (if (use-region-p)
                  (buffer-substring-no-properties (region-beginning) (region-end))
                (let ($p0 $p1 $p2
-                       ;; chars that are likely to be delimiters of full path, e.g. space, tabs, brakets. The colon is a problem. cuz it's in url, but not in file name. Don't want to use just space as delimiter because path or url are often in brackets or quotes as in markdown or html
-                       ($charSkipRegex "^  \"\t\n`'|()[]{}「」<>〔〕“”〈〉《》【】〖〗«»‹›❮❯❬❭·。\\`"))
+                       ;; chars that are likely to be delimiters of file path or url, e.g. space, tabs, brakets. The colon is a problem. cuz it's in url, but not in file name. Don't want to use just space as delimiter because path or url are often in brackets or quotes as in markdown or html
+                       ($pathStops "^  \t\n\"`'‘’“”|()[]{}「」<>〔〕〈〉《》【】〖〗«»‹›❮❯❬❭·。\\"))
                  (setq $p0 (point))
-                 ;; chars that are likely to be delimiters of full path, e.g. space, tabs, brakets.
-                 (skip-chars-backward $charSkipRegex)
+                 (skip-chars-backward $pathStops)
                  (setq $p1 (point))
                  (goto-char $p0)
-                 (skip-chars-forward $charSkipRegex)
+                 (skip-chars-forward $pathStops)
                  (setq $p2 (point))
                  (goto-char $p0)
                  (buffer-substring-no-properties $p1 $p2))))
