@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.10.20170826
+;; Version: 7.11.20170827
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2031,24 +2031,27 @@ If path does not have a file extention, automatically try with “.el” for eli
 This command is similar to `find-file-at-point' but without prompting for confirmation.
 
 URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'
-Version 2017-08-26"
+Version 2017-08-27"
   (interactive)
   (let* (($inputStr (if (use-region-p)
-                 (buffer-substring-no-properties (region-beginning) (region-end))
-               (let ($p0 $p1 $p2
-                       ;; chars that are likely to be delimiters of file path or url, e.g. space, tabs, brakets. The colon is a problem. cuz it's in url, but not in file name. Don't want to use just space as delimiter because path or url are often in brackets or quotes as in markdown or html
-                       ($pathStops "^  \t\n\"`'‘’“”|()[]{}「」<>〔〕〈〉《》【】〖〗«»‹›❮❯❬❭·。\\"))
-                 (setq $p0 (point))
-                 (skip-chars-backward $pathStops)
-                 (setq $p1 (point))
-                 (goto-char $p0)
-                 (skip-chars-forward $pathStops)
-                 (setq $p2 (point))
-                 (goto-char $p0)
-                 (buffer-substring-no-properties $p1 $p2))))
+                        (buffer-substring-no-properties (region-beginning) (region-end))
+                      (let ($p0 $p1 $p2
+                                ;; chars that are likely to be delimiters of file path or url, e.g. space, tabs, brakets. The colon is a problem. cuz it's in url, but not in file name. Don't want to use just space as delimiter because path or url are often in brackets or quotes as in markdown or html
+                                ($pathStops "^  \t\n\"`'‘’“”|()[]{}「」<>〔〕〈〉《》【】〖〗«»‹›❮❯❬❭·。\\"))
+                        (setq $p0 (point))
+                        (skip-chars-backward $pathStops)
+                        (setq $p1 (point))
+                        (goto-char $p0)
+                        (skip-chars-forward $pathStops)
+                        (setq $p2 (point))
+                        (goto-char $p0)
+                        (buffer-substring-no-properties $p1 $p2))))
          ($path (replace-regexp-in-string ":\\'" "" $inputStr)))
     (if (string-match-p "\\`https?://" $path)
-        (browse-url $path)
+        (if (fboundp 'xahsite-url-to-filepath)
+            (progn
+              (find-file (xahsite-url-to-filepath $path)))
+          (progn (browse-url $path)))
       (progn ; not starting “http://”
         (if (string-match "^\\`\\(.+?\\):\\([0-9]+\\)\\'" $path)
             (progn
@@ -2280,19 +2283,27 @@ Version 2016-09-03"
   "Delete current buffer/file.
 If buffer is a file, makes a backup~, else, push file content to `kill-ring'.
 
+If buffer is dired, go up a dir and mark it for delete  (by `dired-flag-file-deletion').
+ (press 【x】 to call `dired-do-flagged-delete'  to actually delete it)
+
 This commands calls `xah-delete-current-file-make-backup' or
  `xah-delete-current-file-copy-to-kill-ring'.
 
 If next buffer is dired, refresh it.
 
 URL `http://ergoemacs.org/emacs/elisp_delete-current-file.html'
-Version 2016-07-20"
+Version 2017-08-27"
   (interactive "P")
-  (if (buffer-file-name)
-      (xah-delete-current-file-make-backup @no-backup-p)
-    (xah-delete-current-file-copy-to-kill-ring))
-  (when (eq major-mode 'dired-mode)
-    (revert-buffer)))
+  (if (eq major-mode 'dired-mode)
+      (progn (dired-up-directory)
+             (dired-flag-file-deletion 1)
+             (revert-buffer))
+    (progn
+      (if (buffer-file-name)
+          (xah-delete-current-file-make-backup @no-backup-p)
+        (xah-delete-current-file-copy-to-kill-ring)))
+    (when (eq major-mode 'dired-mode)
+      (revert-buffer))))
 
 
 
