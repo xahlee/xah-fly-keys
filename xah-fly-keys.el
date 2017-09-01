@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.11.20170827
+;; Version: 7.11.20170901
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1148,9 +1148,12 @@ URL `http://ergoemacs.org/emacs/emacs_copy_file_path.html'
 Version 2017-08-25"
   (interactive "P")
   (let (($fpath
-         (if (equal major-mode 'dired-mode)
+         (if (string-equal major-mode 'dired-mode)
              (progn
-               (mapconcat 'identity (dired-get-marked-files) "\n"))
+               (let (($result (mapconcat 'identity (dired-get-marked-files) "\n")))
+                 (if (equal (length $result) 0)
+                     (progn default-directory )
+                   (progn $result))))
            (if (buffer-file-name)
                (buffer-file-name)
              (expand-file-name default-directory)))))
@@ -1731,7 +1734,7 @@ when there's no selection,
 when there's a selection, the selection extension behavior is still experimental. But when cursor is on a any type of bracket (parenthesis, quote), it extends selection to outer bracket.
 
 URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
-Version 2017-05-22"
+Version 2017-09-01"
   (interactive)
   (if (region-active-p)
       (progn
@@ -1803,8 +1806,11 @@ Version 2017-05-22"
         ;; (message "left is word or symbol")
         (skip-syntax-backward "_w" )
         ;; (re-search-backward "^\\(\\sw\\|\\s_\\)" nil t)
-        (mark-sexp)
-        (exchange-point-and-mark))
+        (push-mark)
+        (skip-syntax-forward "_w")
+        (setq mark-active t)
+        ;; (exchange-point-and-mark)
+        )
        ((and (looking-at "\\s ") (looking-back "\\s " 1))
         ;; (message "left and right both space" )
         (skip-chars-backward "\\s " ) (set-mark (point))
@@ -2031,7 +2037,7 @@ If path does not have a file extention, automatically try with “.el” for eli
 This command is similar to `find-file-at-point' but without prompting for confirmation.
 
 URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'
-Version 2017-08-27"
+Version 2017-09-01"
   (interactive)
   (let* (($inputStr (if (use-region-p)
                         (buffer-substring-no-properties (region-beginning) (region-end))
@@ -2046,7 +2052,11 @@ Version 2017-08-27"
                         (setq $p2 (point))
                         (goto-char $p0)
                         (buffer-substring-no-properties $p1 $p2))))
-         ($path (replace-regexp-in-string ":\\'" "" $inputStr)))
+         ($path
+          (replace-regexp-in-string
+           "^file:///" "/"
+           (replace-regexp-in-string
+            ":\\'" "" $inputStr))))
     (if (string-match-p "\\`https?://" $path)
         (if (fboundp 'xahsite-url-to-filepath)
             (progn
@@ -2101,6 +2111,7 @@ Version 2017-08-07"
            ("hs" . "runhaskell")
            ("js" . "node")
            ("ts" . "tsc --alwaysStrict --lib DOM,ES2015,DOM.Iterable,ScriptHost --target ES6") ; TypeScript
+           ;; ("ts" . "tsc --alwaysStrict --lib DOM,ES2015,DOM.Iterable,ScriptHost --target ES5") ; TypeScript
            ("sh" . "bash")
            ("clj" . "java -cp /home/xah/apps/clojure-1.6.0/clojure-1.6.0.jar clojure.main")
            ("rkt" . "racket")
