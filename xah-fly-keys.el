@@ -507,7 +507,7 @@ Version 2017-07-25"
       (delete-region (region-beginning) (region-end)))
     (if current-prefix-arg
         (progn
-          (dotimes ($i (prefix-numeric-value current-prefix-arg))
+          (dotimes ($_ (prefix-numeric-value current-prefix-arg))
             (yank)))
       (if (eq real-last-command this-command)
           (yank-pop 1)
