@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.11.20170901
+;; Version: 7.11.20170905
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1145,7 +1145,7 @@ If in dired, copy the file/dir cursor is on, or marked files.
 If a buffer is not file and not dired, copy value of `default-directory' (which is usually the “current” dir when that buffer was created)
 
 URL `http://ergoemacs.org/emacs/emacs_copy_file_path.html'
-Version 2017-08-25"
+Version 2017-09-01"
   (interactive "P")
   (let (($fpath
          (if (string-equal major-mode 'dired-mode)
@@ -2059,8 +2059,10 @@ Version 2017-09-01"
             ":\\'" "" $inputStr))))
     (if (string-match-p "\\`https?://" $path)
         (if (fboundp 'xahsite-url-to-filepath)
-            (progn
-              (find-file (xahsite-url-to-filepath $path)))
+            (let (($x (xahsite-url-to-filepath $path)))
+              (if (string-match "^http" $x )
+                  (browse-url $x)
+                (find-file $x)))
           (progn (browse-url $path)))
       (progn ; not starting “http://”
         (if (string-match "^\\`\\(.+?\\):\\([0-9]+\\)\\'" $path)
