@@ -2433,6 +2433,41 @@ Version 2017-01-29"
   (describe-function major-mode))
 
 
+(defvar xah--dvorak-to-qwertz-kmap
+  '(("." . "e")
+    ("," . "w")
+    ("'" . "q")
+    (";" . "y")
+    ("/" . "ü")
+    ("-" . "ä")
+
+    ("a" . "a")
+    ("b" . "n")
+    ("c" . "i")
+    ("d" . "h")
+    ("e" . "d")
+    ("f" . "z")
+    ("g" . "u")
+    ("h" . "j")
+    ("i" . "g")
+    ("j" . "c")
+    ("k" . "v")
+    ("l" . "p")
+    ("m" . "m")
+    ("n" . "l")
+    ("o" . "s")
+    ("p" . "r")
+    ("q" . "x")
+    ("r" . "o")
+    ("s" . "ö")
+    ("t" . "k")
+    ("u" . "f")
+    ("v" . ".")
+    ("w" . ",")
+    ("x" . "b")
+    ("y" . "t")
+    ("z" . "-"))
+    "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding qwertz. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
 
 (defvar xah--dvorak-to-qwerty-kmap
   '(("." . "e")
@@ -2506,6 +2541,20 @@ Version 2017-01-29"
     ("z" . "/"))
   "A alist, each element is of the form(\"e\" . \"d\"). First char is dvorak, second is corresponding workman. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
 
+(defun xah--dvorak-to-qwertz (@charstr)
+  "Convert dvorak key to qwertz. @charstr is single char string.
+For example, \"e\" becomes \"d\".
+If  length of @CHARSTR is greater than 1, such as \"TAB\", @CHARSTR is returned unchanged.
+Version 2017-09-13"
+  (interactive)
+  (if (> (length @charstr) 1)
+      @charstr
+    (let (($result (assoc @charstr xah--dvorak-to-qwertz-kmap)))
+      (if $result
+          (cdr $result)
+        @charstr
+        ))))
+
 (defun xah--dvorak-to-qwerty (@charstr)
   "Convert dvorak key to qwerty. @charstr is single char string.
 For example, \"e\" becomes \"d\".
@@ -2540,6 +2589,7 @@ Version 2017-07-27"
 Version 2017-07-27"
   (interactive)
   (cond
+    ((string-equal xah-fly-key--current-layout "qwertz") (xah--dvorak-to-qwertz @charstr))
     ((string-equal xah-fly-key--current-layout "qwerty") (xah--dvorak-to-qwerty @charstr))
 	((string-equal xah-fly-key--current-layout "workman") (xah--dvorak-to-workman @charstr))
 	(t @charstr)))
