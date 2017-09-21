@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 8.0.20170921
+;; Version: 8.1.20170921
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2116,7 +2116,7 @@ Version 2017-08-07"
            ("ts" . "tsc --alwaysStrict --lib DOM,ES2015,DOM.Iterable,ScriptHost --target ES6") ; TypeScript
            ;; ("ts" . "tsc --alwaysStrict --lib DOM,ES2015,DOM.Iterable,ScriptHost --target ES5") ; TypeScript
            ("sh" . "bash")
-           ("clj" . "java -cp /home/xah/apps/clojure-1.6.0/clojure-1.6.0.jar clojure.main")
+           ("clj" . "java -cp ~/apps/clojure-1.6.0/clojure-1.6.0.jar clojure.main")
            ("rkt" . "racket")
            ("ml" . "ocaml")
            ("vbs" . "cscript")
@@ -3111,6 +3111,7 @@ Version 2017-01-21"
       (define-key xah-fly-key-map (kbd "<C-S-next>") 'xah-next-emacs-buffer)
 
       (define-key xah-fly-key-map (kbd "<C-tab>") 'xah-next-user-buffer)
+      (define-key xah-fly-key-map (kbd "<C-S-tab>") 'xah-previous-user-buffer)
       (define-key xah-fly-key-map (kbd "<C-S-iso-lefttab>") 'xah-previous-user-buffer)
 
       (define-key xah-fly-key-map (kbd "C-9") 'scroll-down-command)
