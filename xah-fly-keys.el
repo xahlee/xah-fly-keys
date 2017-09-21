@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.11.20170905
+;; Version: 8.0.20170921
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -29,6 +29,7 @@
 ;; (add-to-list 'load-path "~/.emacs.d/lisp/")
 ;; (require 'xah-fly-keys)
 ;; (xah-fly-keys-set-layout "qwerty") ; required if you use qwerty
+;; (xah-fly-keys-set-layout "qwertz") ; required if you use qwertz (Germany, etc.)
 ;; ;; (xah-fly-keys-set-layout "workman") ; required if you use workman
 ;; ;; (xah-fly-keys-set-layout "dvorak") ; by default, it's dvorak
 ;; (xah-fly-keys 1)
@@ -564,14 +565,14 @@ Version 2017-07-02"
       (delete-char -1)))))
 
 (defun xah-delete-backward-bracket-text ()
-  "Delete the matching brackets/quotes to the left of `point', including the inner text.
+  "Delete the matching brackets/quotes to the left of cursor, including the inner text.
 
-This command assumes the left of point is a right bracket, and there's a matching one before it.
+This command assumes the left of cursor is a right bracket, and there's a matching one before it.
 
 What char is considered bracket or quote is determined by current syntax table.
 
 URL `http://ergoemacs.org/emacs/emacs_delete_backward_char_or_bracket_text.html'
-Version 2017-07-02"
+Version 2017-09-21"
   (interactive)
   (progn
     (forward-sexp -1)
@@ -579,7 +580,7 @@ Version 2017-07-02"
     (kill-region (region-beginning) (region-end))))
 
 (defun xah-delete-backward-bracket-pair ()
-  "Delete the matching brackets/quotes to the left of `point'.
+  "Delete the matching brackets/quotes to the left of cursor.
 
 After the command, mark is set at the left matching bracket position, so you can `exchange-point-and-mark' to select it.
 
@@ -601,7 +602,7 @@ Version 2017-07-02"
     (goto-char (- $p0 2))))
 
 (defun xah-delete-forward-bracket-pairs ( &optional @delete-inner-text-p)
-  "Delete the matching brackets/quotes to the right of `point'.
+  "Delete the matching brackets/quotes to the right of cursor.
 If @delete-inner-text-p is true, also delete the inner text.
 
 After the command, mark is set at the left matching bracket position, so you can `exchange-point-and-mark' to select it.
@@ -2433,41 +2434,6 @@ Version 2017-01-29"
   (describe-function major-mode))
 
 
-(defvar xah--dvorak-to-qwertz-kmap
-  '(("." . "e")
-    ("," . "w")
-    ("'" . "q")
-    (";" . "y")
-    ("/" . "ü")
-    ("-" . "ä")
-
-    ("a" . "a")
-    ("b" . "n")
-    ("c" . "i")
-    ("d" . "h")
-    ("e" . "d")
-    ("f" . "z")
-    ("g" . "u")
-    ("h" . "j")
-    ("i" . "g")
-    ("j" . "c")
-    ("k" . "v")
-    ("l" . "p")
-    ("m" . "m")
-    ("n" . "l")
-    ("o" . "s")
-    ("p" . "r")
-    ("q" . "x")
-    ("r" . "o")
-    ("s" . "ö")
-    ("t" . "k")
-    ("u" . "f")
-    ("v" . ".")
-    ("w" . ",")
-    ("x" . "b")
-    ("y" . "t")
-    ("z" . "-"))
-    "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding qwertz. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
 
 (defvar xah--dvorak-to-qwerty-kmap
   '(("." . "e")
@@ -2508,6 +2474,42 @@ Version 2017-01-29"
     ("z" . "/"))
   "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding qwerty. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
 
+(defvar xah--dvorak-to-qwertz-kmap
+  '(("." . "e")
+    ("," . "w")
+    ("'" . "q")
+    (";" . "y")
+    ("/" . "ü")
+    ("-" . "ä")
+
+    ("a" . "a")
+    ("b" . "n")
+    ("c" . "i")
+    ("d" . "h")
+    ("e" . "d")
+    ("f" . "z")
+    ("g" . "u")
+    ("h" . "j")
+    ("i" . "g")
+    ("j" . "c")
+    ("k" . "v")
+    ("l" . "p")
+    ("m" . "m")
+    ("n" . "l")
+    ("o" . "s")
+    ("p" . "r")
+    ("q" . "x")
+    ("r" . "o")
+    ("s" . "ö")
+    ("t" . "k")
+    ("u" . "f")
+    ("v" . ".")
+    ("w" . ",")
+    ("x" . "b")
+    ("y" . "t")
+    ("z" . "-"))
+    "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding qwertz. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+
 (defvar xah--dvorak-to-workman-kmap
   '(("'" . "q")
     ("," . "d")
@@ -2542,7 +2544,7 @@ Version 2017-01-29"
   "A alist, each element is of the form(\"e\" . \"d\"). First char is dvorak, second is corresponding workman. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
 
 (defun xah--dvorak-to-qwertz (@charstr)
-  "Convert dvorak key to qwertz. @charstr is single char string.
+  "Convert dvorak key to qwertz. @charstr is a string of single char.
 For example, \"e\" becomes \"d\".
 If  length of @CHARSTR is greater than 1, such as \"TAB\", @CHARSTR is returned unchanged.
 Version 2017-09-13"
@@ -2556,7 +2558,7 @@ Version 2017-09-13"
         ))))
 
 (defun xah--dvorak-to-qwerty (@charstr)
-  "Convert dvorak key to qwerty. @charstr is single char string.
+  "Convert dvorak key to qwerty. @charstr is a string of single char.
 For example, \"e\" becomes \"d\".
 If  length of @CHARSTR is greater than 1, such as \"TAB\", @CHARSTR is returned unchanged.
 Version 2017-02-10"
@@ -2570,7 +2572,7 @@ Version 2017-02-10"
         ))))
 
 (defun xah--dvorak-to-workman (@charstr)
-  "Convert dvorak key to workman. @charstr is single char string.
+  "Convert dvorak key to workman. @charstr is a string of single char.
 For example, \"e\" becomes \"d\".
 If  length of @CHARSTR is greater than 1, such as \"TAB\", @CHARSTR is returned unchanged.
 Version 2017-07-27"
@@ -2589,10 +2591,10 @@ Version 2017-07-27"
 Version 2017-07-27"
   (interactive)
   (cond
-    ((string-equal xah-fly-key--current-layout "qwertz") (xah--dvorak-to-qwertz @charstr))
-    ((string-equal xah-fly-key--current-layout "qwerty") (xah--dvorak-to-qwerty @charstr))
-	((string-equal xah-fly-key--current-layout "workman") (xah--dvorak-to-workman @charstr))
-	(t @charstr)))
+   ((string-equal xah-fly-key--current-layout "qwerty") (xah--dvorak-to-qwerty @charstr))
+   ((string-equal xah-fly-key--current-layout "qwertz") (xah--dvorak-to-qwertz @charstr))
+   ((string-equal xah-fly-key--current-layout "workman") (xah--dvorak-to-workman @charstr))
+   (t @charstr)))
 
 (defun xah-fly--define-keys (@keymap-name @key-cmd-alist)
   "Map `define-key' over a alist @key-cmd-alist.
