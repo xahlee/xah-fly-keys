@@ -3087,7 +3087,7 @@ Version 2017-01-21"
     (define-key xah-fly-key-map (kbd "<f11>") 'xah-previous-user-buffer)
     (define-key xah-fly-key-map (kbd "<f12>") 'xah-next-user-buffer)
     (define-key xah-fly-key-map (kbd "<C-f11>") 'xah-previous-emacs-buffer)
-    (define-key xah-fly-key-map (kbd "<C-f22>") 'xah-next-emacs-buffer))
+    (define-key xah-fly-key-map (kbd "<C-f12>") 'xah-next-emacs-buffer))
 
   (progn
     ;; set arrow keys in isearch. left/right is backward/forward, up/down is history. press Return to exit
