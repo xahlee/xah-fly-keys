@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 8.1.20170921
+;; Version: 8.1.20170922
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2152,55 +2152,53 @@ Version 2017-08-07"
               (shell-command $cmd-str "*xah-run-current-file output*" ))
           (message "No recognized program file suffix for this file."))))))
 
-(defun xah-clean-empty-lines (&optional @begin @end @n)
+(defun xah-clean-empty-lines ()
   "Replace repeated blank lines to just 1.
 Works on whole buffer or text selection, respects `narrow-to-region'.
 
-@N is the number of newline chars to use in replacement.
-If 0, it means lines will be joined.
-By befault, @N is 2. It means, 1 visible blank line.
-
 URL `http://ergoemacs.org/emacs/elisp_compact_empty_lines.html'
-Version 2017-01-27"
-  (interactive
-   (if (region-active-p)
-       (list (region-beginning) (region-end))
-     (list (point-min) (point-max))))
-  (when (not @begin)
-    (setq @begin (point-min) @end (point-max)))
-  (save-excursion
-    (save-restriction
-      (narrow-to-region @begin @end)
-      (progn
-        (goto-char (point-min))
-        (while (re-search-forward "\n\n\n+" nil "move")
-          (replace-match (make-string (if @n @n 2) 10)))))))
+Version 2017-09-22"
+  (interactive)
+  (let ($begin $end)
+    (if (region-active-p)
+        (setq $begin (region-beginning) $end (region-end))
+      (setq $begin (point-min) $end (point-max)))
+    (save-excursion
+      (save-restriction
+        (narrow-to-region $begin $end)
+        (progn
+          (goto-char (point-min))
+          (while (re-search-forward "\n\n\n+" nil "move")
+            (replace-match "\n\n")))))))
 
-(defun xah-clean-whitespace (&optional @begin @end)
+(defun xah-clean-whitespace ()
   "Delete trailing whitespace, and replace repeated blank lines to just 1.
 Only space and tab is considered whitespace here.
 Works on whole buffer or text selection, respects `narrow-to-region'.
 
 URL `http://ergoemacs.org/emacs/elisp_compact_empty_lines.html'
-Version 2016-10-15"
-  (interactive
-   (if (region-active-p)
-       (list (region-beginning) (region-end))
-     (list (point-min) (point-max))))
-  (when (not @begin)
-    (setq @begin (point-min) @end (point-max)))
-  (save-excursion
-    (save-restriction
-      (narrow-to-region @begin @end)
-      (progn
-        (goto-char (point-min))
-        (while (re-search-forward "[ \t]+\n" nil "move")
-          (replace-match "\n")))
-      (xah-clean-empty-lines (point-min) (point-max))
-      (progn
-        (goto-char (point-max))
-        (while (equal (char-before) 32) ; char 32 is space
-          (delete-char -1))))))
+Version 2017-09-22"
+  (interactive)
+  (let ($begin $end)
+    (if (region-active-p)
+        (setq $begin (region-beginning) $end (region-end))
+      (setq $begin (point-min) $end (point-max)))
+    (save-excursion
+      (save-restriction
+        (narrow-to-region $begin $end)
+        (progn
+          (goto-char (point-min))
+          (while (re-search-forward "[ \t]+\n" nil "move")
+            (replace-match "\n")))
+        (progn
+          (goto-char (point-min))
+          (while (re-search-forward "\n\n\n+" nil "move")
+            (replace-match "\n\n")))
+        (progn
+          (goto-char (point-max))
+          (while (equal (char-before) 32) ; char 32 is space
+            (delete-char -1))))
+      (message "white space cleaned"))))
 
 (defun xah-make-backup ()
   "Make a backup copy of current file or dired marked files.
@@ -3109,6 +3107,9 @@ Version 2017-01-21"
 
       (define-key xah-fly-key-map (kbd "<C-S-prior>") 'xah-previous-emacs-buffer)
       (define-key xah-fly-key-map (kbd "<C-S-next>") 'xah-next-emacs-buffer)
+
+      (define-key xah-fly-key-map (kbd "C-2") 'xah-previous-emacs-buffer)
+      (define-key xah-fly-key-map (kbd "C-1") 'xah-next-emacs-buffer)
 
       (define-key xah-fly-key-map (kbd "<C-tab>") 'xah-next-user-buffer)
       (define-key xah-fly-key-map (kbd "<C-S-tab>") 'xah-previous-user-buffer)
