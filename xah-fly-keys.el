@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 8.1.20170922
+;; Version: 8.2.20170922
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -3105,11 +3105,11 @@ Version 2017-01-21"
       (define-key xah-fly-key-map (kbd "<C-prior>") 'xah-previous-user-buffer)
       (define-key xah-fly-key-map (kbd "<C-next>") 'xah-next-user-buffer)
 
+      (define-key xah-fly-key-map (kbd "C-2") 'xah-previous-user-buffer)
+      (define-key xah-fly-key-map (kbd "C-1") 'xah-next-user-buffer)
+
       (define-key xah-fly-key-map (kbd "<C-S-prior>") 'xah-previous-emacs-buffer)
       (define-key xah-fly-key-map (kbd "<C-S-next>") 'xah-next-emacs-buffer)
-
-      (define-key xah-fly-key-map (kbd "C-2") 'xah-previous-emacs-buffer)
-      (define-key xah-fly-key-map (kbd "C-1") 'xah-next-emacs-buffer)
 
       (define-key xah-fly-key-map (kbd "<C-tab>") 'xah-next-user-buffer)
       (define-key xah-fly-key-map (kbd "<C-S-tab>") 'xah-previous-user-buffer)
