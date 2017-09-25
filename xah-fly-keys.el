@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 8.2.20170922
+;; Version: 8.2.20170924
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2099,7 +2099,7 @@ File suffix is used to determine what program to run.
 If the file is modified or not saved, save it automatically before run.
 
 URL `http://ergoemacs.org/emacs/elisp_run_current_file.html'
-Version 2017-08-07"
+Version 2017-09-24"
   (interactive)
   (let (
         ($suffix-map
@@ -2138,9 +2138,8 @@ Version 2017-08-07"
     (cond
      ((string-equal $fSuffix "el") (load $fname))
      ((string-equal $fSuffix "go")
-      (when (fboundp 'gofmt)
-        (gofmt)
-        (shell-command $cmd-str "*xah-run-current-file output*" )))
+      (when (fboundp 'gofmt) (gofmt) )
+      (shell-command $cmd-str "*xah-run-current-file output*" ))
      ((string-equal $fSuffix "java")
       (progn
         (shell-command $cmd-str "*xah-run-current-file output*" )
