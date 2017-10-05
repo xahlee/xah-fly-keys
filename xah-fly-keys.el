@@ -2477,6 +2477,9 @@ Version 2017-01-29"
     ("'" . "q")
     (";" . "y")
     ("/" . "ü")
+	("[" . "ß")
+    ("]" . "´")
+	("=" . "+")
     ("-" . "ä")
 
     ("a" . "a")
@@ -2817,6 +2820,7 @@ Version 2017-01-21"
    ("n" . repeat-complex-command)
    ("p" . query-replace-regexp)
    ("r" . copy-rectangle-to-register)
+   ("o" . swiper)
    ("t" . repeat)
    ("u" . delete-matching-lines)
    ("w" . xah-next-window-or-frame)
@@ -2875,6 +2879,19 @@ Version 2017-01-21"
 ;;    ("x" . set-selection-coding-system)))
 
 (xah-fly--define-keys
+ ;; kinda replacement related
+ (define-prefix-command 'xah-fly-comma-keymap)
+ '(
+   ("i" . magit-status)
+   ("u" . projectile-find-file)
+   ("e" . projectile-find-dir)
+   ("t" . xref-find-definitions)
+   ("n" . xref-pop-marker-stack)
+   ("x" . compile)
+   ("p" . gdb)
+   ("y" . pdb)))
+
+(xah-fly--define-keys
  (define-prefix-command 'xah-fly-leader-key-map)
  '(
    ("SPC" . xah-fly-insert-mode-activate)
@@ -2884,7 +2901,7 @@ Version 2017-01-21"
 
    ("." . xah-fly-dot-keymap)
    ("'" . xah-fill-or-unfill)
-   ("," . nil)
+   ("," . xah-fly-comma-keymap)
    ("-" . xah-display-form-feed-as-line)
    ("/" . nil)
    (";" . nil)
@@ -2902,7 +2919,7 @@ Version 2017-01-21"
    ("7" . nil)
    ("8" . nil)
    ("9" . ispell-word)
-   ("0" . nil)
+   ("0" . transpose-lines)
 
    ("a" . mark-whole-buffer)
    ("b" . end-of-buffer)
@@ -3197,7 +3214,7 @@ Version 2017-01-21"
      ("7" . xah-select-current-line)
      ("8" . xah-extend-selection)
      ("9" . xah-select-text-in-quote)
-     ("0" . nil)
+     ("0" . transpose-words)
 
      ("a" . execute-extended-command)
      ("b" . isearch-forward)
