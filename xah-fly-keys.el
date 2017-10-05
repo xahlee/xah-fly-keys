@@ -2820,7 +2820,6 @@ Version 2017-01-21"
    ("n" . repeat-complex-command)
    ("p" . query-replace-regexp)
    ("r" . copy-rectangle-to-register)
-   ("o" . swiper)
    ("t" . repeat)
    ("u" . delete-matching-lines)
    ("w" . xah-next-window-or-frame)
@@ -2882,14 +2881,8 @@ Version 2017-01-21"
  ;; kinda replacement related
  (define-prefix-command 'xah-fly-comma-keymap)
  '(
-   ("i" . magit-status)
-   ("u" . projectile-find-file)
-   ("e" . projectile-find-dir)
    ("t" . xref-find-definitions)
-   ("n" . xref-pop-marker-stack)
-   ("x" . compile)
-   ("p" . gdb)
-   ("y" . pdb)))
+   ("n" . xref-pop-marker-stack)))
 
 (xah-fly--define-keys
  (define-prefix-command 'xah-fly-leader-key-map)
@@ -2919,7 +2912,7 @@ Version 2017-01-21"
    ("7" . nil)
    ("8" . nil)
    ("9" . ispell-word)
-   ("0" . transpose-lines)
+   ("0" . nil)
 
    ("a" . mark-whole-buffer)
    ("b" . end-of-buffer)
@@ -3214,7 +3207,7 @@ Version 2017-01-21"
      ("7" . xah-select-current-line)
      ("8" . xah-extend-selection)
      ("9" . xah-select-text-in-quote)
-     ("0" . transpose-words)
+     ("0" . nil)
 
      ("a" . execute-extended-command)
      ("b" . isearch-forward)
