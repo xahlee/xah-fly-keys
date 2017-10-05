@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 7.11.20170905
+;; Version: 8.2.20170924
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -29,6 +29,7 @@
 ;; (add-to-list 'load-path "~/.emacs.d/lisp/")
 ;; (require 'xah-fly-keys)
 ;; (xah-fly-keys-set-layout "qwerty") ; required if you use qwerty
+;; (xah-fly-keys-set-layout "qwertz") ; required if you use qwertz (Germany, etc.)
 ;; ;; (xah-fly-keys-set-layout "workman") ; required if you use workman
 ;; ;; (xah-fly-keys-set-layout "dvorak") ; by default, it's dvorak
 ;; (xah-fly-keys 1)
@@ -564,14 +565,14 @@ Version 2017-07-02"
       (delete-char -1)))))
 
 (defun xah-delete-backward-bracket-text ()
-  "Delete the matching brackets/quotes to the left of `point', including the inner text.
+  "Delete the matching brackets/quotes to the left of cursor, including the inner text.
 
-This command assumes the left of point is a right bracket, and there's a matching one before it.
+This command assumes the left of cursor is a right bracket, and there's a matching one before it.
 
 What char is considered bracket or quote is determined by current syntax table.
 
 URL `http://ergoemacs.org/emacs/emacs_delete_backward_char_or_bracket_text.html'
-Version 2017-07-02"
+Version 2017-09-21"
   (interactive)
   (progn
     (forward-sexp -1)
@@ -579,7 +580,7 @@ Version 2017-07-02"
     (kill-region (region-beginning) (region-end))))
 
 (defun xah-delete-backward-bracket-pair ()
-  "Delete the matching brackets/quotes to the left of `point'.
+  "Delete the matching brackets/quotes to the left of cursor.
 
 After the command, mark is set at the left matching bracket position, so you can `exchange-point-and-mark' to select it.
 
@@ -601,7 +602,7 @@ Version 2017-07-02"
     (goto-char (- $p0 2))))
 
 (defun xah-delete-forward-bracket-pairs ( &optional @delete-inner-text-p)
-  "Delete the matching brackets/quotes to the right of `point'.
+  "Delete the matching brackets/quotes to the right of cursor.
 If @delete-inner-text-p is true, also delete the inner text.
 
 After the command, mark is set at the left matching bracket position, so you can `exchange-point-and-mark' to select it.
@@ -2098,7 +2099,7 @@ File suffix is used to determine what program to run.
 If the file is modified or not saved, save it automatically before run.
 
 URL `http://ergoemacs.org/emacs/elisp_run_current_file.html'
-Version 2017-08-07"
+Version 2017-09-24"
   (interactive)
   (let (
         ($suffix-map
@@ -2115,7 +2116,7 @@ Version 2017-08-07"
            ("ts" . "tsc --alwaysStrict --lib DOM,ES2015,DOM.Iterable,ScriptHost --target ES6") ; TypeScript
            ;; ("ts" . "tsc --alwaysStrict --lib DOM,ES2015,DOM.Iterable,ScriptHost --target ES5") ; TypeScript
            ("sh" . "bash")
-           ("clj" . "java -cp /home/xah/apps/clojure-1.6.0/clojure-1.6.0.jar clojure.main")
+           ("clj" . "java -cp ~/apps/clojure-1.6.0/clojure-1.6.0.jar clojure.main")
            ("rkt" . "racket")
            ("ml" . "ocaml")
            ("vbs" . "cscript")
@@ -2137,9 +2138,8 @@ Version 2017-08-07"
     (cond
      ((string-equal $fSuffix "el") (load $fname))
      ((string-equal $fSuffix "go")
-      (when (fboundp 'gofmt)
-        (gofmt)
-        (shell-command $cmd-str "*xah-run-current-file output*" )))
+      (when (fboundp 'gofmt) (gofmt) )
+      (shell-command $cmd-str "*xah-run-current-file output*" ))
      ((string-equal $fSuffix "java")
       (progn
         (shell-command $cmd-str "*xah-run-current-file output*" )
@@ -2151,55 +2151,53 @@ Version 2017-08-07"
               (shell-command $cmd-str "*xah-run-current-file output*" ))
           (message "No recognized program file suffix for this file."))))))
 
-(defun xah-clean-empty-lines (&optional @begin @end @n)
+(defun xah-clean-empty-lines ()
   "Replace repeated blank lines to just 1.
 Works on whole buffer or text selection, respects `narrow-to-region'.
 
-@N is the number of newline chars to use in replacement.
-If 0, it means lines will be joined.
-By befault, @N is 2. It means, 1 visible blank line.
-
 URL `http://ergoemacs.org/emacs/elisp_compact_empty_lines.html'
-Version 2017-01-27"
-  (interactive
-   (if (region-active-p)
-       (list (region-beginning) (region-end))
-     (list (point-min) (point-max))))
-  (when (not @begin)
-    (setq @begin (point-min) @end (point-max)))
-  (save-excursion
-    (save-restriction
-      (narrow-to-region @begin @end)
-      (progn
-        (goto-char (point-min))
-        (while (re-search-forward "\n\n\n+" nil "move")
-          (replace-match (make-string (if @n @n 2) 10)))))))
+Version 2017-09-22"
+  (interactive)
+  (let ($begin $end)
+    (if (region-active-p)
+        (setq $begin (region-beginning) $end (region-end))
+      (setq $begin (point-min) $end (point-max)))
+    (save-excursion
+      (save-restriction
+        (narrow-to-region $begin $end)
+        (progn
+          (goto-char (point-min))
+          (while (re-search-forward "\n\n\n+" nil "move")
+            (replace-match "\n\n")))))))
 
-(defun xah-clean-whitespace (&optional @begin @end)
+(defun xah-clean-whitespace ()
   "Delete trailing whitespace, and replace repeated blank lines to just 1.
 Only space and tab is considered whitespace here.
 Works on whole buffer or text selection, respects `narrow-to-region'.
 
 URL `http://ergoemacs.org/emacs/elisp_compact_empty_lines.html'
-Version 2016-10-15"
-  (interactive
-   (if (region-active-p)
-       (list (region-beginning) (region-end))
-     (list (point-min) (point-max))))
-  (when (not @begin)
-    (setq @begin (point-min) @end (point-max)))
-  (save-excursion
-    (save-restriction
-      (narrow-to-region @begin @end)
-      (progn
-        (goto-char (point-min))
-        (while (re-search-forward "[ \t]+\n" nil "move")
-          (replace-match "\n")))
-      (xah-clean-empty-lines (point-min) (point-max))
-      (progn
-        (goto-char (point-max))
-        (while (equal (char-before) 32) ; char 32 is space
-          (delete-char -1))))))
+Version 2017-09-22"
+  (interactive)
+  (let ($begin $end)
+    (if (region-active-p)
+        (setq $begin (region-beginning) $end (region-end))
+      (setq $begin (point-min) $end (point-max)))
+    (save-excursion
+      (save-restriction
+        (narrow-to-region $begin $end)
+        (progn
+          (goto-char (point-min))
+          (while (re-search-forward "[ \t]+\n" nil "move")
+            (replace-match "\n")))
+        (progn
+          (goto-char (point-min))
+          (while (re-search-forward "\n\n\n+" nil "move")
+            (replace-match "\n\n")))
+        (progn
+          (goto-char (point-max))
+          (while (equal (char-before) 32) ; char 32 is space
+            (delete-char -1))))
+      (message "white space cleaned"))))
 
 (defun xah-make-backup ()
   "Make a backup copy of current file or dired marked files.
@@ -2433,44 +2431,6 @@ Version 2017-01-29"
   (describe-function major-mode))
 
 
-(defvar xah--dvorak-to-qwertz-kmap
-  '(("." . "e")
-    ("," . "w")
-    ("'" . "q")
-    (";" . "y")
-    ("/" . "ü")
-	("[" . "ß")
-    ("]" . "´")
-	("=" . "+")
-    ("-" . "ä")
-
-    ("a" . "a")
-    ("b" . "n")
-    ("c" . "i")
-    ("d" . "h")
-    ("e" . "d")
-    ("f" . "z")
-    ("g" . "u")
-    ("h" . "j")
-    ("i" . "g")
-    ("j" . "c")
-    ("k" . "v")
-    ("l" . "p")
-    ("m" . "m")
-    ("n" . "l")
-    ("o" . "s")
-    ("p" . "r")
-    ("q" . "x")
-    ("r" . "o")
-    ("s" . "ö")
-    ("t" . "k")
-    ("u" . "f")
-    ("v" . ".")
-    ("w" . ",")
-    ("x" . "b")
-    ("y" . "t")
-    ("z" . "-"))
-    "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding qwertz. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
 
 (defvar xah--dvorak-to-qwerty-kmap
   '(("." . "e")
@@ -2511,6 +2471,45 @@ Version 2017-01-29"
     ("z" . "/"))
   "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding qwerty. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
 
+(defvar xah--dvorak-to-qwertz-kmap
+  '(("." . "e")
+    ("," . "w")
+    ("'" . "q")
+    (";" . "y")
+    ("/" . "ü")
+	("[" . "ß")
+    ("]" . "´")
+	("=" . "+")
+    ("-" . "ä")
+
+    ("a" . "a")
+    ("b" . "n")
+    ("c" . "i")
+    ("d" . "h")
+    ("e" . "d")
+    ("f" . "z")
+    ("g" . "u")
+    ("h" . "j")
+    ("i" . "g")
+    ("j" . "c")
+    ("k" . "v")
+    ("l" . "p")
+    ("m" . "m")
+    ("n" . "l")
+    ("o" . "s")
+    ("p" . "r")
+    ("q" . "x")
+    ("r" . "o")
+    ("s" . "ö")
+    ("t" . "k")
+    ("u" . "f")
+    ("v" . ".")
+    ("w" . ",")
+    ("x" . "b")
+    ("y" . "t")
+    ("z" . "-"))
+    "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding qwertz. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+
 (defvar xah--dvorak-to-workman-kmap
   '(("'" . "q")
     ("," . "d")
@@ -2545,7 +2544,7 @@ Version 2017-01-29"
   "A alist, each element is of the form(\"e\" . \"d\"). First char is dvorak, second is corresponding workman. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
 
 (defun xah--dvorak-to-qwertz (@charstr)
-  "Convert dvorak key to qwertz. @charstr is single char string.
+  "Convert dvorak key to qwertz. @charstr is a string of single char.
 For example, \"e\" becomes \"d\".
 If  length of @CHARSTR is greater than 1, such as \"TAB\", @CHARSTR is returned unchanged.
 Version 2017-09-13"
@@ -2559,7 +2558,7 @@ Version 2017-09-13"
         ))))
 
 (defun xah--dvorak-to-qwerty (@charstr)
-  "Convert dvorak key to qwerty. @charstr is single char string.
+  "Convert dvorak key to qwerty. @charstr is a string of single char.
 For example, \"e\" becomes \"d\".
 If  length of @CHARSTR is greater than 1, such as \"TAB\", @CHARSTR is returned unchanged.
 Version 2017-02-10"
@@ -2573,7 +2572,7 @@ Version 2017-02-10"
         ))))
 
 (defun xah--dvorak-to-workman (@charstr)
-  "Convert dvorak key to workman. @charstr is single char string.
+  "Convert dvorak key to workman. @charstr is a string of single char.
 For example, \"e\" becomes \"d\".
 If  length of @CHARSTR is greater than 1, such as \"TAB\", @CHARSTR is returned unchanged.
 Version 2017-07-27"
@@ -2592,10 +2591,10 @@ Version 2017-07-27"
 Version 2017-07-27"
   (interactive)
   (cond
-    ((string-equal xah-fly-key--current-layout "qwertz") (xah--dvorak-to-qwertz @charstr))
-    ((string-equal xah-fly-key--current-layout "qwerty") (xah--dvorak-to-qwerty @charstr))
-	((string-equal xah-fly-key--current-layout "workman") (xah--dvorak-to-workman @charstr))
-	(t @charstr)))
+   ((string-equal xah-fly-key--current-layout "qwerty") (xah--dvorak-to-qwerty @charstr))
+   ((string-equal xah-fly-key--current-layout "qwertz") (xah--dvorak-to-qwertz @charstr))
+   ((string-equal xah-fly-key--current-layout "workman") (xah--dvorak-to-workman @charstr))
+   (t @charstr)))
 
 (defun xah-fly--define-keys (@keymap-name @key-cmd-alist)
   "Map `define-key' over a alist @key-cmd-alist.
@@ -3102,7 +3101,7 @@ Version 2017-01-21"
     (define-key xah-fly-key-map (kbd "<f11>") 'xah-previous-user-buffer)
     (define-key xah-fly-key-map (kbd "<f12>") 'xah-next-user-buffer)
     (define-key xah-fly-key-map (kbd "<C-f11>") 'xah-previous-emacs-buffer)
-    (define-key xah-fly-key-map (kbd "<C-f22>") 'xah-next-emacs-buffer))
+    (define-key xah-fly-key-map (kbd "<C-f12>") 'xah-next-emacs-buffer))
 
   (progn
     ;; set arrow keys in isearch. left/right is backward/forward, up/down is history. press Return to exit
@@ -3122,10 +3121,14 @@ Version 2017-01-21"
       (define-key xah-fly-key-map (kbd "<C-prior>") 'xah-previous-user-buffer)
       (define-key xah-fly-key-map (kbd "<C-next>") 'xah-next-user-buffer)
 
+      (define-key xah-fly-key-map (kbd "C-2") 'xah-previous-user-buffer)
+      (define-key xah-fly-key-map (kbd "C-1") 'xah-next-user-buffer)
+
       (define-key xah-fly-key-map (kbd "<C-S-prior>") 'xah-previous-emacs-buffer)
       (define-key xah-fly-key-map (kbd "<C-S-next>") 'xah-next-emacs-buffer)
 
       (define-key xah-fly-key-map (kbd "<C-tab>") 'xah-next-user-buffer)
+      (define-key xah-fly-key-map (kbd "<C-S-tab>") 'xah-previous-user-buffer)
       (define-key xah-fly-key-map (kbd "<C-S-iso-lefttab>") 'xah-previous-user-buffer)
 
       (define-key xah-fly-key-map (kbd "C-9") 'scroll-down-command)
