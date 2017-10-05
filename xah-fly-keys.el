@@ -2820,6 +2820,7 @@ Version 2017-01-21"
    ("n" . repeat-complex-command)
    ("p" . query-replace-regexp)
    ("r" . copy-rectangle-to-register)
+   ("o" . swiper)
    ("t" . repeat)
    ("u" . delete-matching-lines)
    ("w" . xah-next-window-or-frame)
@@ -2918,7 +2919,7 @@ Version 2017-01-21"
    ("7" . nil)
    ("8" . nil)
    ("9" . ispell-word)
-   ("0" . nil)
+   ("0" . transpose-lines)
 
    ("a" . mark-whole-buffer)
    ("b" . end-of-buffer)
@@ -3209,7 +3210,7 @@ Version 2017-01-21"
      ("7" . xah-select-current-line)
      ("8" . xah-extend-selection)
      ("9" . xah-select-text-in-quote)
-     ("0" . nil)
+     ("0" . transpose-words)
 
      ("a" . execute-extended-command)
      ("b" . isearch-forward)
