@@ -2878,6 +2878,19 @@ Version 2017-01-21"
 ;;    ("x" . set-selection-coding-system)))
 
 (xah-fly--define-keys
+ ;; kinda replacement related
+ (define-prefix-command 'xah-fly-comma-keymap)
+ '(
+   ("i" . magit-status)
+   ("u" . projectile-find-file)
+   ("e" . projectile-find-dir)
+   ("t" . xref-find-definitions)
+   ("n" . xref-pop-marker-stack)
+   ("x" . compile)
+   ("p" . gdb)
+   ("y" . pdb)))
+
+(xah-fly--define-keys
  (define-prefix-command 'xah-fly-leader-key-map)
  '(
    ("SPC" . xah-fly-insert-mode-activate)
@@ -2887,7 +2900,7 @@ Version 2017-01-21"
 
    ("." . xah-fly-dot-keymap)
    ("'" . xah-fill-or-unfill)
-   ("," . nil)
+   ("," . xah-fly-comma-keymap)
    ("-" . xah-display-form-feed-as-line)
    ("/" . nil)
    (";" . nil)
