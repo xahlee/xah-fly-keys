@@ -1,0 +1,215 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Cheatsheet
+% LaTeX Template
+% Version 1.0 (12/12/15)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Original author:
+% Michael Müller (https://github.com/cmichi/latex-template-collection) with
+% extensive modifications by Vel (vel@LaTeXTemplates.com)
+%
+% License:
+% The MIT License (see included LICENSE file)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[11pt]{scrartcl} % 11pt font size
+
+\usepackage[utf8]{inputenc} % Required for inputting international characters
+\usepackage[T1]{fontenc} % Output font encoding for international characters
+
+\usepackage[margin=0pt, landscape]{geometry} % Page margins and orientation
+
+\usepackage{graphicx} % Required for including images
+
+\usepackage{color} % Required for color customization
+\definecolor{mygray}{gray}{.75} % Custom color
+
+\usepackage{url} % Required for the \url command to easily display URLs
+
+\usepackage[ % This block contains information used to annotate the PDF
+colorlinks=false, 
+pdftitle={Cheatsheet}, 
+pdfauthor={Raul Schmidlin}, 
+pdfsubject={Compilation of useful shortcuts}, 
+pdfkeywords={Emacs Xah-Fly-Keys, Cheatsheet}
+]{hyperref}
+
+\setlength{\unitlength}{1mm} % Set the length that numerical units are measured in
+\setlength{\parindent}{0pt} % Stop paragraph indentation
+
+\renewcommand{\dots}{\ \dotfill{}\ } % Fills in the right amount of dots
+
+\newcommand{\command}[2]{#1~\dotfill{}~#2\\} % Custom command for adding a shorcut
+
+\newcommand{\sectiontitle}[1]{\paragraph{#1} \ \\} % Custom command for subsection titles
+
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+\begin{picture}(297,210) % Create a container for the page content
+
+%----------------------------------------------------------------------------------------
+%	TITLE SECTION 
+%----------------------------------------------------------------------------------------
+
+\put(10,200){ % Position on the page to put the title
+\begin{minipage}[t]{210mm} % The size and alignment of the title
+\section*{Xah-Fly-Keys -- Emacs Shortcuts} % Title
+\end{minipage}
+}
+
+%----------------------------------------------------------------------------------------
+%	FIRST COLUMN SPECIFICATION
+%----------------------------------------------------------------------------------------
+
+\put(10,180){ % Divide the page
+\begin{minipage}[t]{85mm} % Create a box to house text
+
+\sectiontitle{Command mode}
+
+\command{b}{toggle-case}
+\command{1}{global-pop-mark}
+\command{2}{pop-mark}
+
+
+\sectiontitle{Leader key - Generic Control}
+			
+\command{SPC f}{buffer switch}
+\command{SPC n/h}{bottom/top}
+\command{SPC p}{recenter}
+\command{SPC r}{replace}
+\command{SPC m}{dired}
+\command{SPC 3}{delete-window}
+
+
+\sectiontitle{I Group - File Navigation}
+
+\command{SPC i e}{Find file}
+\command{SPC i d}{IBuffer}
+\command{SPC i l}{New buffer}
+\command{SPC i i/p}{Bookmark jump/set}
+
+
+\sectiontitle{K Group - Buffer Navigation}
+
+\command{SPC k s}{Swiper}
+\command{SPC k z}{go-to-line}
+\command{SPC k ,}{Next frame/window}
+\command{SPC k a/n}{Next/previous error}
+\command{SPC k j}{Close buffer}
+\command{SPC k r}{Query-replace-regexp}
+
+
+%----------------------------------------------------------------------------------------
+
+\end{minipage} % End the first column of text
+} % End the first division of the page
+
+%----------------------------------------------------------------------------------------
+%	SECOND COLUMN SPECIFICATION 
+%----------------------------------------------------------------------------------------
+
+\put(105,180){ % Divide the page
+\begin{minipage}[t]{85mm} % Create a box to house text
+
+
+\sectiontitle{L Group - Frame \& Applications}
+
+\command{SPC l d}{Eshell}
+\command{SPC l e}{Full screen}
+\command{SPC l g}{Make frame}
+\command{SPC l a}{Zooming}
+\command{SPC l ,}{Eww}
+\command{SPC l l}{narrow-region}
+\command{SPC l j}{widen}
+\command{SPC l b}{save-some-buffers}
+
+
+\sectiontitle{J Group - Help}
+
+\command{SPC j j}{describe function}
+\command{SPC j v}{describe key}
+\command{SPC j l}{describe variable}
+\command{SPC j g}{Info}
+\command{SPC j a}{Apropos}
+
+
+\sectiontitle{, Group - Executors}
+
+\command{SPC , m}{eval-last-sexp}
+\command{SPC , c}{load-file/Python execute}
+
+\command{SPC , ,}{delete-frame}
+\command{SPC , x}{quit}
+
+
+\sectiontitle{O Group - Macros/Rectangle}
+
+\command{SPC o e}{Macro-start}
+\command{SPC o r}{Macro-end}
+\command{SPC o d}{macro-execute}
+\command{SPC o SPC}{rectangle-mark}
+\command{SPC o i}{replace-rectangle}
+
+
+%----------------------------------------------------------------------------------------
+
+\end{minipage} % End the second column of text
+} % End the second division of the page
+
+%----------------------------------------------------------------------------------------
+%	THIRD COLUMN SPECIFICATION 
+%----------------------------------------------------------------------------------------
+
+\put(200,180){ % Divide the page
+\begin{minipage}[t]{85mm} % Create a box to house tex
+
+  
+\sectiontitle{W Group - Project}
+
+\command{SPC w k}{xref-find-definitions}
+\command{SPC w l}{xref-pop-marker-stack}
+
+  
+%----------------------------------------------------------------------------------------
+%	LINKS AND INFORMATION
+%----------------------------------------------------------------------------------------
+
+\sectiontitle{Links and information}
+
+\url{http://ergoemacs.org/misc/ergoemacs_vi_mode.html}
+
+\url{https:/github.com/xahlee/xah-fly-keys}
+
+%----------------------------------------------------------------------------------------
+%	FOOTNOTE
+%----------------------------------------------------------------------------------------
+
+\vspace{\baselineskip}
+\linethickness{0.5mm} % Thickness of the footer line
+{\color{mygray}\line(1,0){30}} % Print the line with a custom color
+
+\footnotesize{
+Created by Raul Schmidlin, 2017\\ 
+\url{https://github.com/rschmidlin}\\
+				
+Released under the MIT license.
+}
+
+%----------------------------------------------------------------------------------------
+
+\end{minipage} % End the third column of text
+} % End the third division of the page
+\end{picture} % End the container for the entire page
+
+%----------------------------------------------------------------------------------------
+
+\end{document}
