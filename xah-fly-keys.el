@@ -2430,6 +2430,14 @@ Version 2017-01-29"
   (interactive)
   (describe-function major-mode))
 
+(defun open-line-insert ()
+  "Opens a line below, moves the point and activate insert mode. 
+Version 2017-10-08"
+  (interactive)
+  (end-of-line)
+  (newline)
+  (xah-fly-insert-mode-activate))
+
 
 
 (defvar xah--dvorak-to-qwerty-kmap
@@ -3230,7 +3238,7 @@ Version 2017-01-21"
      ("l" . xah-fly-insert-mode-activate-space-before)
      ("m" . xah-backward-left-bracket)
      ("n" . forward-char)
-     ("o" . open-line)
+     ("o" . open-line-insert)
      ("p" . kill-word)
      ("q" . xah-cut-line-or-region)
      ("r" . forward-word)
