@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 8.3.20171021
+;; Version: 8.3.20171024
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -771,7 +771,7 @@ Repeated call toggles between formatting to 1 long line and multiple lines.
 If `universal-argument' is called first, use the number value for min length of line. By default, it's 70.
 
 URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
-Version 2017-07-15"
+Version 2017-10-22"
   (interactive)
   ;; This command symbol has a property “'is-longline-p”, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
   (let* (
@@ -834,8 +834,8 @@ When there is a text selection, act on the selection, else, act on a text block 
 If `universal-argument' is called first, use the number value for min length of line. By default, it's 70.
 
 URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
-Version 2017-07-06"
-  (interactive )
+Version 2017-10-22"
+  (interactive)
   (let (
         $p1 $p2
         ($blanks-regex "\n[ \t]*\n")
@@ -855,13 +855,14 @@ Version 2017-07-06"
               (progn (re-search-backward $blanks-regex)
                      (setq $p2 (point)))
             (setq $p2 (point))))))
-    (save-restriction
-      (narrow-to-region $p1 $p2)
-      (goto-char (point-min))
-      (while
-          (re-search-forward " +" nil "move")
-        (when (> (- (point) (line-beginning-position)) $minlen)
-          (replace-match "\n" ))))))
+    (save-excursion
+      (save-restriction
+        (narrow-to-region $p1 $p2)
+        (goto-char (point-min))
+        (while
+            (re-search-forward " +" nil "move")
+          (when (> (- (point) (line-beginning-position)) $minlen)
+            (replace-match "\n" )))))))
 
 (defun xah-space-to-newline ()
   "Replace space sequence to a newline char.
@@ -2343,22 +2344,26 @@ Version 2015-04-09"
 
 (defun xah-open-in-desktop ()
   "Show current file in desktop (OS's file manager).
+
 URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
-Version 2015-11-30"
+Version 2017-10-24"
   (interactive)
-  (cond
-   ((string-equal system-type "windows-nt")
-    (w32-shell-execute "explore" (replace-regexp-in-string "/" "\\" default-directory t t)))
-   ((string-equal system-type "darwin") (shell-command "open ."))
-   ((string-equal system-type "gnu/linux")
-    (let (
-          (process-connection-type nil)
-          (openFileProgram (if (file-exists-p "/usr/bin/gvfs-open")
-                               "/usr/bin/gvfs-open"
-                             "/usr/bin/xdg-open")))
-      (start-process "" nil openFileProgram "."))
-    ;; (shell-command "xdg-open .") ;; 2013-02-10 this sometimes froze emacs till the folder is closed. eg with nautilus
-    )))
+  (let (($path (if (buffer-file-name) (buffer-file-name) default-directory )))
+    (cond
+     ((string-equal system-type "windows-nt")
+      (w32-shell-execute "explore" (replace-regexp-in-string "/" "\\" $path t t)))
+     ((string-equal system-type "darwin")
+      (shell-command
+       (concat "open -R " $path)))
+     ((string-equal system-type "gnu/linux")
+      (let (
+            (process-connection-type nil)
+            (openFileProgram (if (file-exists-p "/usr/bin/gvfs-open")
+                                 "/usr/bin/gvfs-open"
+                               "/usr/bin/xdg-open")))
+        (start-process "" nil openFileProgram $path))
+      ;; (shell-command "xdg-open .") ;; 2013-02-10 this sometimes froze emacs till the folder is closed. eg with nautilus
+      ))))
 
 (defun xah-open-in-external-app ()
   "Open the current file or dired marked files in external app.
