@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 8.3.20171024
+;; Version: 8.3.20171026
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1036,7 +1036,7 @@ URL `http://ergoemacs.org/emacs/elisp_dired_rename_space_to_underscore.html'
 Version 2017-01-02"
   (interactive)
   (require 'dired-aux)
-  (if (equal major-mode 'dired-mode)
+  (if (eq major-mode 'dired-mode)
       (progn
         (mapc (lambda (x)
                 (when (string-match " " x )
@@ -1052,7 +1052,7 @@ URL `http://ergoemacs.org/emacs/elisp_dired_rename_space_to_underscore.html'
 Version 2016-12-22"
   (interactive)
   (require 'dired-aux)
-  (if (equal major-mode 'dired-mode)
+  (if (eq major-mode 'dired-mode)
       (progn
         (mapc (lambda (x)
                 (when (string-match " " x )
@@ -2342,19 +2342,23 @@ Version 2015-04-09"
     (isearch-mode t)
     (isearch-yank-string (buffer-substring-no-properties $p1 $p2))))
 
-(defun xah-open-in-desktop ()
-  "Show current file in desktop (OS's file manager).
+(defun xah-show-in-desktop ()
+  "Show current file in desktop.
+ (Mac Finder, Windows Explorer, Linux file manager)
 
 URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
-Version 2017-10-24"
+Version 2017-10-26"
   (interactive)
   (let (($path (if (buffer-file-name) (buffer-file-name) default-directory )))
     (cond
      ((string-equal system-type "windows-nt")
       (w32-shell-execute "explore" (replace-regexp-in-string "/" "\\" $path t t)))
      ((string-equal system-type "darwin")
-      (shell-command
-       (concat "open -R " $path)))
+      (if (eq major-mode 'dired-mode)
+          (shell-command
+           (concat "open -R " (car (dired-get-marked-files ))))
+        (shell-command
+         (concat "open -R " $path))))
      ((string-equal system-type "gnu/linux")
       (let (
             (process-connection-type nil)
@@ -2692,7 +2696,7 @@ Version 2017-01-21"
    ("h" . recentf-open-files)
    ("l" . bookmark-set)
    ("n" . xah-new-empty-buffer)
-   ("o" . xah-open-in-desktop)
+   ("o" . xah-show-in-desktop)
    ("p" . xah-open-last-closed)
    ("f" . xah-open-recently-closed)
    ("y" . xah-list-recently-closed)
