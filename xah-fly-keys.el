@@ -75,7 +75,7 @@
 
 ;; globally, the leader key is the 【f9】 key. 【f9】 is leader key regardless it's in command mode or insert mode.
 
-;; the following stardard keys with Control are supported:
+;; the following standard keys with Control are supported:
 
  ;; 【Ctrl+tab】 'xah-next-user-buffer
  ;; 【Ctrl+shift+tab】 'xah-previous-user-buffer
@@ -86,7 +86,7 @@
  ;; 【Ctrl+o】 open
  ;; 【Ctrl+s】 save
  ;; 【Ctrl+shift+s】 save as
- ;; 【Ctrl+shift+t】 open last clased
+ ;; 【Ctrl+shift+t】 open last closed
  ;; 【Ctrl++】 'text-scale-increase
  ;; 【Ctrl+-】 'text-scale-decrease
  ;; 【Ctrl+0】 (lambda () (interactive) (text-scale-set 0))))
@@ -1062,7 +1062,7 @@ Version 2016-12-22"
     (user-error "Not in dired")))
 
 (defun xah-cycle-hyphen-underscore-space ( &optional @begin @end )
-  "Cycle {underscore, space, hypen} chars in selection or inside quote/bracket or line.
+  "Cycle {underscore, space, hyphen} chars in selection or inside quote/bracket or line.
 When called repeatedly, this command cycles the {“_”, “-”, “ ”} characters, in that order.
 
 The region to work on is by this order:
@@ -1935,7 +1935,7 @@ Version 2016-06-19"
   "Create a new empty buffer.
 New buffer will be named “untitled” or “untitled<2>”, “untitled<3>”, etc.
 
-It returns the buffer (for elisp programing).
+It returns the buffer (for elisp programming).
 
 URL `http://ergoemacs.org/emacs/emacs_new_empty_buffer.html'
 Version 2017-11-01"
@@ -2039,7 +2039,7 @@ If there is text selection, uses the text selection for path.
 If the path starts with “http://”, open the URL in browser.
 Input path can be {relative, full path, URL}.
 Path may have a trailing “:‹n›” that indicates line number. If so, jump to that line number.
-If path does not have a file extention, automatically try with “.el” for elisp files.
+If path does not have a file extension, automatically try with “.el” for elisp files.
 This command is similar to `find-file-at-point' but without prompting for confirmation.
 
 URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'
@@ -2048,7 +2048,7 @@ Version 2017-09-01"
   (let* (($inputStr (if (use-region-p)
                         (buffer-substring-no-properties (region-beginning) (region-end))
                       (let ($p0 $p1 $p2
-                                ;; chars that are likely to be delimiters of file path or url, e.g. space, tabs, brakets. The colon is a problem. cuz it's in url, but not in file name. Don't want to use just space as delimiter because path or url are often in brackets or quotes as in markdown or html
+                                ;; chars that are likely to be delimiters of file path or url, e.g. space, tabs, brackets. The colon is a problem. cuz it's in url, but not in file name. Don't want to use just space as delimiter because path or url are often in brackets or quotes as in markdown or html
                                 ($pathStops "^  \t\n\"`'‘’“”|()[]{}「」<>〔〕〈〉《》【】〖〗«»‹›❮❯❬❭·。\\"))
                         (setq $p0 (point))
                         (skip-chars-backward $pathStops)
