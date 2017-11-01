@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 8.3.20171026
+;; Version: 8.3.20171101
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1935,13 +1935,17 @@ Version 2016-06-19"
   "Create a new empty buffer.
 New buffer will be named “untitled” or “untitled<2>”, “untitled<3>”, etc.
 
+It returns the buffer (for elisp programing).
+
 URL `http://ergoemacs.org/emacs/emacs_new_empty_buffer.html'
-Version 2016-12-27"
+Version 2017-11-01"
   (interactive)
   (let (($buf (generate-new-buffer "untitled")))
     (switch-to-buffer $buf)
     (funcall initial-major-mode)
-    (setq buffer-offer-save t)))
+    (setq buffer-offer-save t)
+    $buf
+    ))
 
 (defvar xah-recently-closed-buffers nil "alist of recently closed buffers. Each element is (buffer name, file path). The max number to track is controlled by the variable `xah-recently-closed-buffers-max'.")
 
@@ -2100,7 +2104,7 @@ File suffix is used to determine what program to run.
 If the file is modified or not saved, save it automatically before run.
 
 URL `http://ergoemacs.org/emacs/elisp_run_current_file.html'
-Version 2017-09-24"
+Version 2017-10-27"
   (interactive)
   (let (
         ($suffix-map
@@ -2114,8 +2118,8 @@ Version 2017-09-24"
            ("go" . "go run")
            ("hs" . "runhaskell")
            ("js" . "node")
-           ("ts" . "tsc --alwaysStrict --lib DOM,ES2015,DOM.Iterable,ScriptHost --target ES6") ; TypeScript
-           ;; ("ts" . "tsc --alwaysStrict --lib DOM,ES2015,DOM.Iterable,ScriptHost --target ES5") ; TypeScript
+           ;; ("ts" . "tsc --alwaysStrict --lib DOM,ES2015,DOM.Iterable,ScriptHost --target ES6") ; TypeScript
+           ("ts" . "tsc --alwaysStrict --lib DOM,ES2015,DOM.Iterable,ScriptHost --target ES5") ; TypeScript
            ("sh" . "bash")
            ("clj" . "java -cp ~/apps/clojure-1.6.0/clojure-1.6.0.jar clojure.main")
            ("rkt" . "racket")
@@ -2345,6 +2349,7 @@ Version 2015-04-09"
 (defun xah-show-in-desktop ()
   "Show current file in desktop.
  (Mac Finder, Windows Explorer, Linux file manager)
+ This command be called when in a file or in `dired'.
 
 URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
 Version 2017-10-26"
