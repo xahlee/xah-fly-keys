@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 8.3.20171101
+;; Version: 8.4.20171101
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1700,11 +1700,16 @@ Version 2017-07-02"
 If region is active, extend selection downward by block.
 
 URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
-Version 2017-05-27"
+Version 2017-11-01"
   (interactive)
   (if (region-active-p)
       (re-search-forward "\n[ \t]*\n" nil "move")
-    (xah-select-current-block)))
+    (progn
+      (skip-chars-forward " \n\t")
+      (when (re-search-backward "\n[ \t]*\n" nil "move")
+        (re-search-forward "\n[ \t]*\n"))
+      (push-mark (point) t t)
+      (re-search-forward "\n[ \t]*\n" nil "move"))))
 
 (defun xah-select-current-line ()
   "Select current line.
@@ -1717,13 +1722,15 @@ Version 2016-07-22"
 (defun xah-select-line ()
   "Select current line. If region is active, extend selection downward by line.
 URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
-Version 2016-07-22"
+Version 2017-11-01"
   (interactive)
   (if (region-active-p)
       (progn
         (forward-line 1)
         (end-of-line))
-    (xah-select-current-line)))
+    (progn
+      (end-of-line)
+      (set-mark (line-beginning-position)))))
 
 (defun xah-extend-selection ()
   "Select the current word, bracket/quote expression, or expand selection.
@@ -1935,7 +1942,7 @@ Version 2016-06-19"
   "Create a new empty buffer.
 New buffer will be named “untitled” or “untitled<2>”, “untitled<3>”, etc.
 
-It returns the buffer (for elisp programming).
+It returns the buffer (for elisp programing).
 
 URL `http://ergoemacs.org/emacs/emacs_new_empty_buffer.html'
 Version 2017-11-01"
@@ -2048,7 +2055,7 @@ Version 2017-09-01"
   (let* (($inputStr (if (use-region-p)
                         (buffer-substring-no-properties (region-beginning) (region-end))
                       (let ($p0 $p1 $p2
-                                ;; chars that are likely to be delimiters of file path or url, e.g. space, tabs, brackets. The colon is a problem. cuz it's in url, but not in file name. Don't want to use just space as delimiter because path or url are often in brackets or quotes as in markdown or html
+                                ;; chars that are likely to be delimiters of file path or url, e.g. space, tabs, brakets. The colon is a problem. cuz it's in url, but not in file name. Don't want to use just space as delimiter because path or url are often in brackets or quotes as in markdown or html
                                 ($pathStops "^  \t\n\"`'‘’“”|()[]{}「」<>〔〕〈〉《》【】〖〗«»‹›❮❯❬❭·。\\"))
                         (setq $p0 (point))
                         (skip-chars-backward $pathStops)
@@ -3219,7 +3226,7 @@ Version 2017-01-21"
      ("4" . split-window-below)
      ("5" . delete-char)
      ("6" . xah-select-block)
-     ("7" . xah-select-current-line)
+     ("7" . xah-select-line)
      ("8" . xah-extend-selection)
      ("9" . xah-select-text-in-quote)
      ("0" . nil)
@@ -3258,7 +3265,7 @@ Version 2017-01-21"
      '(
        ("8" . pop-global-mark)
        ("7" . xah-pop-local-mark-ring)
-       ("2" . xah-select-current-line)
+       ("2" . xah-select-line)
        ("1" . xah-extend-selection))))
 
   (progn
