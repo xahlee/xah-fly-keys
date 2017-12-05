@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 8.4.20171101
+;; Version: 8.4.20171204
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -400,40 +400,35 @@ When called repeatedly, append copy subsequent lines.
 When `universal-argument' is called first, copy whole buffer (respects `narrow-to-region').
 
 URL `http://ergoemacs.org/emacs/emacs_copy_cut_current_line.html'
-Version 2017-07-08"
+Version 2017-12-04"
   (interactive)
   (if current-prefix-arg
       (progn
-        (kill-ring-save (point-min) (point-max))
-        (message "All visible buffer text copied"))
+        (kill-ring-save (point-min) (point-max)))
     (if (use-region-p)
         (progn
-          (kill-ring-save (region-beginning) (region-end))
-          (message "Active region copied"))
+          (kill-ring-save (region-beginning) (region-end)))
       (if (eq last-command this-command)
           (if (eobp)
-              (progn (message "empty line at end of buffer." ))
+              (progn )
             (progn
               (kill-append "\n" nil)
               (kill-append
                (buffer-substring-no-properties (line-beginning-position) (line-end-position))
                nil)
-              (message "Line copy appended")
               (progn
                 (end-of-line)
                 (forward-char))))
         (if (eobp)
             (if (eq (char-before) 10 )
-                (progn (message "empty line at end of buffer." ))
+                (progn )
               (progn
                 (kill-ring-save (line-beginning-position) (line-end-position))
-                (end-of-line)
-                (message "line copied")))
+                (end-of-line)))
           (progn
             (kill-ring-save (line-beginning-position) (line-end-position))
             (end-of-line)
-            (forward-char)
-            (message "line copied")))))))
+            (forward-char)))))))
 
 (defun xah-cut-line-or-region ()
   "Cut current line, or text selection.
@@ -1030,10 +1025,10 @@ Version 2017-01-11"
         (replace-match "\"" "FIXEDCASE" "LITERAL")))))
 
 (defun xah-dired-rename-space-to-underscore ()
-  "In dired, rename current or marked files by replacing space to underscore _.
+  "In dired, rename current or marked files by replacing space to lowline _.
 If not in `dired', do nothing.
 URL `http://ergoemacs.org/emacs/elisp_dired_rename_space_to_underscore.html'
-Version 2017-01-02"
+Version 2017-11-12"
   (interactive)
   (require 'dired-aux)
   (if (eq major-mode 'dired-mode)
@@ -2384,6 +2379,7 @@ Version 2017-10-26"
 (defun xah-open-in-external-app ()
   "Open the current file or dired marked files in external app.
 The app is chosen from your OS's preference.
+
 URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
 Version 2016-10-15"
   (interactive)
