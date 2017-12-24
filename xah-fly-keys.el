@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 8.4.20171204
+;; Version: 8.4.20171223
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1028,7 +1028,7 @@ Version 2017-01-11"
   "In dired, rename current or marked files by replacing space to lowline _.
 If not in `dired', do nothing.
 URL `http://ergoemacs.org/emacs/elisp_dired_rename_space_to_underscore.html'
-Version 2017-11-12"
+Version 2017-12-13"
   (interactive)
   (require 'dired-aux)
   (if (eq major-mode 'dired-mode)
@@ -2354,7 +2354,7 @@ Version 2015-04-09"
  This command be called when in a file or in `dired'.
 
 URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
-Version 2017-10-26"
+Version 2017-12-23"
   (interactive)
   (let (($path (if (buffer-file-name) (buffer-file-name) default-directory )))
     (cond
@@ -2362,8 +2362,12 @@ Version 2017-10-26"
       (w32-shell-execute "explore" (replace-regexp-in-string "/" "\\" $path t t)))
      ((string-equal system-type "darwin")
       (if (eq major-mode 'dired-mode)
-          (shell-command
-           (concat "open -R " (car (dired-get-marked-files ))))
+          (let (($files (dired-get-marked-files )))
+            (if (eq (length $files) 0)
+                (shell-command
+                 (concat "open " default-directory ))
+              (shell-command
+               (concat "open -R " (car (dired-get-marked-files ))))))
         (shell-command
          (concat "open -R " $path))))
      ((string-equal system-type "gnu/linux")
