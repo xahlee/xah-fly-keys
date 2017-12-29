@@ -31,6 +31,7 @@
 ;; (xah-fly-keys-set-layout "qwerty") ; required if you use qwerty
 ;; (xah-fly-keys-set-layout "qwertz") ; required if you use qwertz (Germany, etc.)
 ;; ;; (xah-fly-keys-set-layout "workman") ; required if you use workman
+;; ;; (xah-fly-keys-set-layout "dvp") ; required if you use Programmer Dvorak
 ;; ;; (xah-fly-keys-set-layout "dvorak") ; by default, it's dvorak
 ;; (xah-fly-keys 1)
 
@@ -2565,6 +2566,51 @@ Version 2017-01-29"
     ("z" . "/"))
   "A alist, each element is of the form(\"e\" . \"d\"). First char is dvorak, second is corresponding workman. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
 
+(defvar xah--dvorak-to-dvp-kmap
+  '(
+    ;; number row
+    ("`" . "$")
+    ("1" . "&")
+    ("2" . "[")
+    ("3" . "{")
+    ("4" . "}")
+    ("5" . "(")
+    ("6" . "=")
+    ("7" . "*")
+    ("8" . ")")
+    ("9" . "+")
+    ("0" . "]")
+    ("[" . "!")
+    ("]" . "#")
+
+    ;; number row, shifted
+    ("!" . "%")
+    ("@" . "7")
+    ("#" . "5")
+    ("$" . "3")
+    ("%" . "1")
+    ("^" . "9")
+    ("&" . "0")
+    ("*" . "2")
+    ("(" . "4")
+    (")" . "6")
+    ("{" . "8")
+    ("}" . "`")
+
+    ;; left pinky outwards
+    ("'" . ";")
+    ("\"" . ":")
+
+    ;; left pinky inwards
+    (";" . "'")
+    (":" . "\"")
+
+    ;; right pinky outwards-sideways
+    ("=" . "@")
+    ("+" . "^")
+    )
+  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding Programmer Dvorak. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+
 (defun xah--dvorak-to-qwertz (@charstr)
   "Convert dvorak key to qwertz. @charstr is a string of single char.
 For example, \"e\" becomes \"d\".
@@ -2607,15 +2653,30 @@ Version 2017-07-27"
         @charstr
         ))))
 
+(defun xah--dvorak-to-dvp (@charstr)
+  "Convert dvorak key to Programmer Dvorak. @charstr is a string of single char.
+For example, \"e\" becomes \"d\".
+If  length of @CHARSTR is greater than 1, such as \"TAB\", @CHARSTR is returned unchanged.
+Version 2017-12-29"
+  (interactive)
+  (if (> (length @charstr) 1)
+      @charstr
+    (let (($result (assoc @charstr xah--dvorak-to-dvp-kmap)))
+      (if $result
+          (cdr $result)
+        @charstr
+        ))))
+
 (defun xah-fly--key-char (@charstr)
   "Return the corresponding char @CHARSTR according to current `xah-fly-key--current-layout'.
 @CHARSTR must be a string of single char. Default layout is dvorak.
-Version 2017-07-27"
+Version 2017-12-29"
   (interactive)
   (cond
    ((string-equal xah-fly-key--current-layout "qwerty") (xah--dvorak-to-qwerty @charstr))
    ((string-equal xah-fly-key--current-layout "qwertz") (xah--dvorak-to-qwertz @charstr))
    ((string-equal xah-fly-key--current-layout "workman") (xah--dvorak-to-workman @charstr))
+   ((string-equal xah-fly-key--current-layout "dvp") (xah--dvorak-to-dvp @charstr))
    (t @charstr)))
 
 (defun xah-fly--define-keys (@keymap-name @key-cmd-alist)
@@ -3186,8 +3247,8 @@ Version 2017-01-21"
 
 (defun xah-fly-keys-set-layout (@layout)
   "Set a keyboard layout.
-Possible value should be \"qwerty\", \"dvorak\" or \"workman\"
-Version 2017-01-21"
+Possible value should be \"qwerty\", \"dvorak\", \"workman\" or \"dvp\"
+Version 2017-12-29"
   (interactive)
   (setq xah-fly-key--current-layout @layout)
   (load "xah-fly-keys"))
