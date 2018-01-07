@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 8.5.20171229
+;; Version: 8.5.20180107
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2146,7 +2146,7 @@ Version 2017-10-27"
     (cond
      ((string-equal $fSuffix "el") (load $fname))
      ((string-equal $fSuffix "go")
-      (when (fboundp 'gofmt) (gofmt) )
+      ;; (when (fboundp 'gofmt) (gofmt) )
       (shell-command $cmd-str "*xah-run-current-file output*" ))
      ((string-equal $fSuffix "java")
       (progn
@@ -2611,20 +2611,6 @@ Version 2017-01-29"
     )
   "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding Programmer Dvorak. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
 
-(defun xah--dvorak-to-qwertz (@charstr)
-  "Convert dvorak key to qwertz. @charstr is a string of single char.
-For example, \"e\" becomes \"d\".
-If length of @charstr is greater than 1, such as \"TAB\", @charstr is returned unchanged.
-Version 2017-09-13"
-  (interactive)
-  (if (> (length @charstr) 1)
-      @charstr
-    (let (($result (assoc @charstr xah--dvorak-to-qwertz-kmap)))
-      (if $result
-          (cdr $result)
-        @charstr
-        ))))
-
 (defun xah--dvorak-to-qwerty (@charstr)
   "Convert dvorak key to qwerty. @charstr is a string of single char.
 For example, \"e\" becomes \"d\".
@@ -2639,9 +2625,23 @@ Version 2017-02-10"
         @charstr
         ))))
 
+(defun xah--dvorak-to-qwertz (@charstr)
+  "Convert dvorak key to qwertz. @charstr is a string of single char.
+For example, \"e\" becomes \"d\".
+If length of @charstr is greater than 1, such as \"TAB\", @charstr is returned unchanged.
+Version 2017-09-13"
+  (interactive)
+  (if (> (length @charstr) 1)
+      @charstr
+    (let (($result (assoc @charstr xah--dvorak-to-qwertz-kmap)))
+      (if $result
+          (cdr $result)
+        @charstr
+        ))))
+
 (defun xah--dvorak-to-workman (@charstr)
   "Convert dvorak key to workman. @charstr is a string of single char.
-For example, \"e\" becomes \"d\".
+For example, \"e\" becomes \"h\".
 If length of @charstr is greater than 1, such as \"TAB\", @charstr is returned unchanged.
 Version 2017-07-27"
   (interactive)
@@ -2701,13 +2701,7 @@ Version 2017-01-21"
 
 (defvar xah-fly-swapped-1-8-and-2-7-p nil "If non-nil, it means keys 1 and 8 are swapped, and 2 and 7 are swapped. See: http://xahlee.info/kbd/best_number_key_layout.html")
 
-(defvar xah-fly-command-map (make-sparse-keymap) "Keybinding for `xah-fly-keys' command mode.")
-(defvar xah-fly-generic-map (make-sparse-keymap) "Keybinding for `xah-fly-keys' mode.")
-(defvar xah-fly-insert-map (make-sparse-keymap) "Keybinding for `xah-fly-keys' insert mode.")
-
-(defvar xah-fly-key-map-alist (list (cons 'xah-fly-keys xah-fly-generic-map)
-									(cons 'xah-fly-command-state-q xah-fly-command-map)
-									(cons 'xah-fly-insert-state-q  xah-fly-insert-map)))
+(defvar xah-fly-key-map (make-sparse-keymap) "Keybinding for `xah-fly-keys' minor mode.")
 
 ;; commands in search-map and facemenu-keymap
 (xah-fly--define-keys
@@ -3174,16 +3168,16 @@ Version 2017-01-21"
 (progn
 
   (progn
-    (define-key xah-fly-generic-map (kbd "<home>") 'xah-fly-command-mode-activate)
-    (define-key xah-fly-generic-map (kbd "<menu>") 'xah-fly-command-mode-activate)
-    (define-key xah-fly-generic-map (kbd "<f8>") 'xah-fly-command-mode-activate-no-hook)
+    (define-key xah-fly-key-map (kbd "<home>") 'xah-fly-command-mode-activate)
+    (define-key xah-fly-key-map (kbd "<menu>") 'xah-fly-command-mode-activate)
+    (define-key xah-fly-key-map (kbd "<f8>") 'xah-fly-command-mode-activate-no-hook)
 
-    (define-key xah-fly-generic-map (kbd "<f9>") xah-fly-leader-key-map)
+    (define-key xah-fly-key-map (kbd "<f9>") xah-fly-leader-key-map)
 
-    (define-key xah-fly-generic-map (kbd "<f11>") 'xah-previous-user-buffer)
-    (define-key xah-fly-generic-map (kbd "<f12>") 'xah-next-user-buffer)
-    (define-key xah-fly-generic-map (kbd "<C-f11>") 'xah-previous-emacs-buffer)
-    (define-key xah-fly-generic-map (kbd "<C-f12>") 'xah-next-emacs-buffer))
+    (define-key xah-fly-key-map (kbd "<f11>") 'xah-previous-user-buffer)
+    (define-key xah-fly-key-map (kbd "<f12>") 'xah-next-user-buffer)
+    (define-key xah-fly-key-map (kbd "<C-f11>") 'xah-previous-emacs-buffer)
+    (define-key xah-fly-key-map (kbd "<C-f12>") 'xah-next-emacs-buffer))
 
   (progn
     ;; set arrow keys in isearch. left/right is backward/forward, up/down is history. press Return to exit
@@ -3200,49 +3194,49 @@ Version 2017-01-21"
   ;;
   (when xah-fly-use-control-key
     (progn
-      (define-key xah-fly-generic-map (kbd "<C-prior>") 'xah-previous-user-buffer)
-      (define-key xah-fly-generic-map (kbd "<C-next>") 'xah-next-user-buffer)
+      (define-key xah-fly-key-map (kbd "<C-prior>") 'xah-previous-user-buffer)
+      (define-key xah-fly-key-map (kbd "<C-next>") 'xah-next-user-buffer)
 
-      (define-key xah-fly-generic-map (kbd "C-2") 'xah-previous-user-buffer)
-      (define-key xah-fly-generic-map (kbd "C-1") 'xah-next-user-buffer)
+      (define-key xah-fly-key-map (kbd "C-2") 'xah-previous-user-buffer)
+      (define-key xah-fly-key-map (kbd "C-1") 'xah-next-user-buffer)
 
-      (define-key xah-fly-generic-map (kbd "<C-S-prior>") 'xah-previous-emacs-buffer)
-      (define-key xah-fly-generic-map (kbd "<C-S-next>") 'xah-next-emacs-buffer)
+      (define-key xah-fly-key-map (kbd "<C-S-prior>") 'xah-previous-emacs-buffer)
+      (define-key xah-fly-key-map (kbd "<C-S-next>") 'xah-next-emacs-buffer)
 
-      (define-key xah-fly-generic-map (kbd "<C-tab>") 'xah-next-user-buffer)
-      (define-key xah-fly-generic-map (kbd "<C-S-tab>") 'xah-previous-user-buffer)
-      (define-key xah-fly-generic-map (kbd "<C-S-iso-lefttab>") 'xah-previous-user-buffer)
+      (define-key xah-fly-key-map (kbd "<C-tab>") 'xah-next-user-buffer)
+      (define-key xah-fly-key-map (kbd "<C-S-tab>") 'xah-previous-user-buffer)
+      (define-key xah-fly-key-map (kbd "<C-S-iso-lefttab>") 'xah-previous-user-buffer)
 
-      (define-key xah-fly-generic-map (kbd "C-9") 'scroll-down-command)
-      (define-key xah-fly-generic-map (kbd "C-0") 'scroll-up-command)
+      (define-key xah-fly-key-map (kbd "C-9") 'scroll-down-command)
+      (define-key xah-fly-key-map (kbd "C-0") 'scroll-up-command)
 
-      (define-key xah-fly-generic-map (kbd "C-SPC") 'xah-fly-leader-key-map)
+      (define-key xah-fly-key-map (kbd "C-SPC") 'xah-fly-leader-key-map)
 
-      (define-key xah-fly-generic-map (kbd "C-a") 'mark-whole-buffer)
-      (define-key xah-fly-generic-map (kbd "C-n") 'xah-new-empty-buffer)
-      (define-key xah-fly-generic-map (kbd "C-S-n") 'make-frame-command)
-      (define-key xah-fly-generic-map (kbd "C-o") 'find-file)
-      (define-key xah-fly-generic-map (kbd "C-s") 'save-buffer)
-      (define-key xah-fly-generic-map (kbd "C-S-s") 'write-file)
-      (define-key xah-fly-generic-map (kbd "C-S-t") 'xah-open-last-closed)
-      (define-key xah-fly-generic-map (kbd "C-v") 'yank)
-      (define-key xah-fly-generic-map (kbd "C-w") 'xah-close-current-buffer)
-      (define-key xah-fly-generic-map (kbd "C-z") 'undo)
+      (define-key xah-fly-key-map (kbd "C-a") 'mark-whole-buffer)
+      (define-key xah-fly-key-map (kbd "C-n") 'xah-new-empty-buffer)
+      (define-key xah-fly-key-map (kbd "C-S-n") 'make-frame-command)
+      (define-key xah-fly-key-map (kbd "C-o") 'find-file)
+      (define-key xah-fly-key-map (kbd "C-s") 'save-buffer)
+      (define-key xah-fly-key-map (kbd "C-S-s") 'write-file)
+      (define-key xah-fly-key-map (kbd "C-S-t") 'xah-open-last-closed)
+      (define-key xah-fly-key-map (kbd "C-v") 'yank)
+      (define-key xah-fly-key-map (kbd "C-w") 'xah-close-current-buffer)
+      (define-key xah-fly-key-map (kbd "C-z") 'undo)
 
-      (define-key xah-fly-generic-map (kbd "C-3") 'previous-error)
-      (define-key xah-fly-generic-map (kbd "C-4") 'next-error)
+      (define-key xah-fly-key-map (kbd "C-3") 'previous-error)
+      (define-key xah-fly-key-map (kbd "C-4") 'next-error)
 
-      (define-key xah-fly-generic-map (kbd "C-+") 'text-scale-increase)
-      (define-key xah-fly-generic-map (kbd "C--") 'text-scale-decrease)
+      (define-key xah-fly-key-map (kbd "C-+") 'text-scale-increase)
+      (define-key xah-fly-key-map (kbd "C--") 'text-scale-decrease)
 
-      (define-key xah-fly-generic-map (kbd "C-t") nil) ; never do transpose-chars
+      (define-key xah-fly-key-map (kbd "C-t") nil) ; never do transpose-chars
 
       ;;
       ))
 
   (progn
     (when xah-fly-use-meta-key
-      (define-key xah-fly-generic-map (kbd "M-SPC") 'xah-fly-command-mode-activate-no-hook)))
+      (define-key xah-fly-key-map (kbd "M-SPC") 'xah-fly-command-mode-activate-no-hook)))
   ;;
   )
 
@@ -3251,24 +3245,20 @@ Version 2017-01-21"
 (defvar xah-fly-insert-state-q t "Boolean value. true means insertion mode is on.")
 (setq xah-fly-insert-state-q t)
 
-(defvar xah-fly-command-state-q t "Boolean value. true means command mode is on.")
-
 (defun xah-fly-keys-set-layout (@layout)
   "Set a keyboard layout.
 Argument should be one of:  \"qwerty\", \"dvorak\", \"workman\", \"programer-dvorak\"
 Version 2017-12-29"
-  (interactive "M")
+  (interactive)
   (setq xah-fly-key--current-layout @layout)
-  (load "xah-fly-keys")
-  (xah-fly-command-mode-init)
-  (xah-fly-insert-mode-init))
+  (load "xah-fly-keys"))
 
 (defun xah-fly-command-mode-init ()
   "Set command mode keys.
 Version 2017-01-21"
   (interactive)
   (xah-fly--define-keys
-   xah-fly-command-map
+   xah-fly-key-map
    '(
      ("~" . nil)
      (":" . nil)
@@ -3329,26 +3319,34 @@ Version 2017-01-21"
      ("y" . set-mark-command)
      ("z" . xah-goto-matching-bracket)))
 
-  (define-key xah-fly-command-map (kbd "a") (if (fboundp 'smex) 'smex 'execute-extended-command ))
+  (define-key xah-fly-key-map (kbd "a") (if (fboundp 'smex) 'smex 'execute-extended-command ))
   (when xah-fly-swapped-1-8-and-2-7-p
     (xah-fly--define-keys
-     xah-fly-command-map
+     xah-fly-key-map
      '(
        ("8" . pop-global-mark)
        ("7" . xah-pop-local-mark-ring)
        ("2" . xah-select-line)
        ("1" . xah-extend-selection))))
+
+  (progn
+    (setq xah-fly-insert-state-q nil )
+    (modify-all-frames-parameters (list (cons 'cursor-type 'box))))
+
+  (setq mode-line-front-space "C")
+  (force-mode-line-update)
+
   ;;
   )
 
 (defun xah-fly-insert-mode-init ()
   "Set insertion mode keys"
   (interactive)
-  ;; (setq xah-fly-key-insert-map (make-sparse-keymap))
-  ;; (setq xah-fly-key-insert-map (make-keymap))
+  ;; (setq xah-fly-key-map (make-sparse-keymap))
+  ;; (setq xah-fly-key-map (make-keymap))
 
   (xah-fly--define-keys
-   xah-fly-insert-map
+   xah-fly-key-map
    '(
 
      ("SPC" . nil)
@@ -3410,14 +3408,16 @@ Version 2017-01-21"
 
      ;;
      ))
+
+  (progn
+    (setq xah-fly-insert-state-q t )
+    (modify-all-frames-parameters (list (cons 'cursor-type 'bar))))
+
+(setq mode-line-front-space "I")
+(force-mode-line-update)
+
   ;;
   )
-
-(defun xah-fly-set-state (state)
-  "Set the state of xah-fly-keys."
-  (setq xah-fly-insert-state-q nil)
-  (setq xah-fly-command-state-q nil)
-  (set state t))
 
 (defun xah-fly-mode-toggle ()
   "Switch between {insertion, command} modes."
@@ -3436,26 +3436,20 @@ Version 2017-01-21"
   "Activate command mode and run `xah-fly-command-mode-activate-hook'
 Version 2017-07-07"
   (interactive)
-  (xah-fly-command-mode-activate-no-hook)
+  (xah-fly-command-mode-init)
   (run-hooks 'xah-fly-command-mode-activate-hook))
 
 (defun xah-fly-command-mode-activate-no-hook ()
   "Activate command mode. Does not run `xah-fly-command-mode-activate-hook'
 Version 2017-07-07"
   (interactive)
-  (xah-fly-set-state 'xah-fly-command-state-q)
-  (modify-all-frames-parameters (list (cons 'cursor-type 'box)))
-  (setq mode-line-front-space "C")
-  (force-mode-line-update))
+  (xah-fly-command-mode-init))
 
 (defun xah-fly-insert-mode-activate ()
   "Activate insertion mode.
 Version 2017-07-07"
   (interactive)
-  (xah-fly-set-state 'xah-fly-insert-state-q)
-  (modify-all-frames-parameters (list (cons 'cursor-type 'bar)))
-  (setq mode-line-front-space "I")
-  (force-mode-line-update)
+  (xah-fly-insert-mode-init)
   (run-hooks 'xah-fly-insert-mode-activate-hook))
 
 (defun xah-fly-insert-mode-activate-newline ()
@@ -3491,20 +3485,15 @@ Version 2017-07-07"
 (define-minor-mode xah-fly-keys
   "A modal keybinding set, like vim, but based on ergonomic principles, like Dvorak layout.
 URL `http://ergoemacs.org/misc/ergoemacs_vi_mode.html'"
-  t "∑flykeys"
+  t "∑flykeys" xah-fly-key-map
   (progn
-	;; Push mode map-alist
-	(push 'xah-fly-key-map-alist emulation-mode-map-alists)
-	;; initialize keymaps
-	(xah-fly-command-mode-init)
-	(xah-fly-insert-mode-init)
     ;; when going into minibuffer, switch to insertion mode.
     (add-hook 'minibuffer-setup-hook 'xah-fly-insert-mode-activate)
     (add-hook 'minibuffer-exit-hook 'xah-fly-command-mode-activate)
     ;; (add-hook 'xah-fly-command-mode-activate-hook 'xah-fly-save-buffer-if-file)
     ;; when in shell mode, switch to insertion mode.
-    (add-hook 'shell-mode-hook 'xah-fly-insert-mode-activate)
-	(xah-fly-command-mode-activate))
+    (add-hook 'shell-mode-hook 'xah-fly-insert-mode-activate))
+  (xah-fly-command-mode-activate)
   ;; (add-to-list 'emulation-mode-map-alists (list (cons 'xah-fly-keys xah-fly-key-map )))
   ;; (add-to-list 'emulation-mode-map-alists '((cons xah-fly-keys xah-fly-key-map )))
 )
@@ -3513,7 +3502,6 @@ URL `http://ergoemacs.org/misc/ergoemacs_vi_mode.html'"
   "Turn off xah-fly-keys minor mode."
   (interactive)
   (progn
-	(setq emulation-mode-map-alists (delete 'xah-fly-key-map-alist emulation-mode-map-alists))
     (remove-hook 'minibuffer-setup-hook 'xah-fly-insert-mode-activate)
     (remove-hook 'minibuffer-exit-hook 'xah-fly-command-mode-activate)
     (remove-hook 'xah-fly-command-mode-activate-hook 'xah-fly-save-buffer-if-file)
