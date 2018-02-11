@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 8.6.20180206
+;; Version: 8.6.20180211
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2117,7 +2117,8 @@ Version 2017-09-01"
 
 (defun xah-run-current-file ()
   "Execute the current file.
-For example, if the current buffer is x.py, then it'll call 「python x.py」 in a shell. Output is printed to message buffer.
+For example, if the current buffer is x.py, then it'll call 「python x.py」 in a shell.
+Output is printed to buffer “*xah-run output*”.
 
 The file can be Emacs Lisp, PHP, Perl, Python, Ruby, JavaScript, TypeScript, golang, Bash, Ocaml, Visual Basic, TeX, Java, Clojure.
 File suffix is used to determine what program to run.
@@ -2125,9 +2126,10 @@ File suffix is used to determine what program to run.
 If the file is modified or not saved, save it automatically before run.
 
 URL `http://ergoemacs.org/emacs/elisp_run_current_file.html'
-Version 2018-01-12"
+Version 2018-02-11"
   (interactive)
   (let (
+        ($outputb "*xah-run output*")
         ($suffix-map
          ;; (‹extension› . ‹shell program name›)
          `(
@@ -2139,8 +2141,8 @@ Version 2018-01-12"
            ("go" . "go run")
            ("hs" . "runhaskell")
            ("js" . "node")
-           ("ts" . "tsc --alwaysStrict --lib DOM,ES2015,DOM.Iterable,ScriptHost --target ES5") ; TypeScript
-           ;; ("ts" . "tsc --alwaysStrict --lib DOM,ES2015,DOM.Iterable,ScriptHost --target ES6") ; TypeScript
+           ;; ("ts" . "tsc --alwaysStrict --lib DOM,ES2015,DOM.Iterable,ScriptHost --target ES5") ; TypeScript
+           ("ts" . "tsc --alwaysStrict --lib DOM,ES2015,DOM.Iterable,ScriptHost --target ES2015") ; TypeScript
            ("sh" . "bash")
            ("clj" . "java -cp ~/apps/clojure-1.6.0/clojure-1.6.0.jar clojure.main")
            ("rkt" . "racket")
@@ -2165,17 +2167,21 @@ Version 2018-01-12"
      ((string-equal $fSuffix "el") (load $fname))
      ((string-equal $fSuffix "go")
       ;; (when (fboundp 'gofmt) (gofmt) )
-      (shell-command $cmd-str "*xah-run-current-file output*" ))
+      (shell-command $cmd-str $outputb ))
      ((string-equal $fSuffix "java")
       (progn
-        (shell-command $cmd-str "*xah-run-current-file output*" )
+        (shell-command $cmd-str $outputb )
         (shell-command
          (format "java %s" (file-name-sans-extension (file-name-nondirectory $fname))))))
      (t (if $prog-name
             (progn
-              (message "Running…")
-              (shell-command $cmd-str "*xah-run-current-file output*" ))
-          (message "No recognized program file suffix for this file."))))))
+              (message "\n" "Running")
+              (shell-command $cmd-str $outputb ))
+          (message "No recognized program file suffix for this file."))))
+    (set-buffer $outputb)
+    (if (> (point-max) 1)
+        (switch-to-buffer-other-window $outputb)
+      (kill-buffer $outputb))))
 
 (defun xah-clean-empty-lines ()
   "Replace repeated blank lines to just 1.
