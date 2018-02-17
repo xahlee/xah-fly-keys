@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 8.6.20180211
+;; Version: 8.6.20180217
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2126,7 +2126,7 @@ File suffix is used to determine what program to run.
 If the file is modified or not saved, save it automatically before run.
 
 URL `http://ergoemacs.org/emacs/elisp_run_current_file.html'
-Version 2018-02-11"
+Version 2018-02-17"
   (interactive)
   (let (
         ($outputb "*xah-run output*")
@@ -2175,13 +2175,15 @@ Version 2018-02-11"
          (format "java %s" (file-name-sans-extension (file-name-nondirectory $fname))))))
      (t (if $prog-name
             (progn
-              (message "\n" "Running")
+              (message "Running")
               (shell-command $cmd-str $outputb ))
           (message "No recognized program file suffix for this file."))))
-    (set-buffer $outputb)
-    (if (> (point-max) 1)
-        (switch-to-buffer-other-window $outputb)
-      (kill-buffer $outputb))))
+
+    (when (get-buffer $outputb)
+      (set-buffer $outputb)
+      (if (> (point-max) 1)
+          (switch-to-buffer-other-window $outputb)
+        (kill-buffer $outputb)))))
 
 (defun xah-clean-empty-lines ()
   "Replace repeated blank lines to just 1.
