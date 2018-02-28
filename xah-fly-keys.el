@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 8.6.20180221
+;; Version: 8.6.20180227
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2064,7 +2064,7 @@ If path does not have a file extension, automatically try with “.el” for eli
 This command is similar to `find-file-at-point' but without prompting for confirmation.
 
 URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'
-Version 2017-09-01"
+Version 2018-02-21"
   (interactive)
   (let* (($inputStr (if (use-region-p)
                         (buffer-substring-no-properties (region-beginning) (region-end))
@@ -2091,27 +2091,30 @@ Version 2017-09-01"
                   (browse-url $x)
                 (find-file $x)))
           (progn (browse-url $path)))
-      (progn ; not starting “http://”
-        (if (string-match "^\\`\\(.+?\\):\\([0-9]+\\)\\'" $path)
-            (progn
-              (let (
-                    ($fpath (match-string 1 $path))
-                    ($line-num (string-to-number (match-string 2 $path))))
-                (if (file-exists-p $fpath)
-                    (progn
-                      (find-file $fpath)
-                      (goto-char 1)
-                      (forward-line (1- $line-num)))
-                  (progn
-                    (when (y-or-n-p (format "file doesn't exist: 「%s」. Create?" $fpath))
-                      (find-file $fpath))))))
-          (progn
-            (if (file-exists-p $path)
-                (find-file $path)
-              (if (file-exists-p (concat $path ".el"))
-                  (find-file (concat $path ".el"))
-                (when (y-or-n-p (format "file doesn't exist: 「%s」. Create?" $path))
-                  (find-file $path ))))))))))
+      (if ; not starting “http://”
+          (string-match "^\\`\\(.+?\\):\\([0-9]+\\)\\'" $path)
+          (let (
+                ($fpath (match-string 1 $path))
+                ($line-num (string-to-number (match-string 2 $path))))
+            (if (file-exists-p $fpath)
+                (progn
+                  (find-file $fpath)
+                  (goto-char 1)
+                  (forward-line (1- $line-num)))
+              (when (y-or-n-p (format "file no exist: 「%s」. Create?" $fpath))
+                (find-file $fpath))))
+        (if (file-exists-p $path)
+            (progn ; open f.ts instead of f.js
+              (let (($ext (file-name-extension $path))
+                    ($fnamecore (file-name-sans-extension $path)))
+                (if (and (string-equal $ext "js")
+                         (file-exists-p (concat $fnamecore ".ts")))
+                    (find-file (concat $fnamecore ".ts"))
+                  (find-file $path))))
+          (if (file-exists-p (concat $path ".el"))
+              (find-file (concat $path ".el"))
+            (when (y-or-n-p (format "file no exist: 「%s」. Create?" $path))
+              (find-file $path ))))))))
 
 
 
@@ -2126,7 +2129,7 @@ File suffix is used to determine what program to run.
 If the file is modified or not saved, save it automatically before run.
 
 URL `http://ergoemacs.org/emacs/elisp_run_current_file.html'
-Version 2018-02-21"
+Version 2018-02-27"
   (interactive)
   (let (
         ($outputb "*xah-run output*")
@@ -2164,10 +2167,11 @@ Version 2018-02-21"
     (setq $prog-name (cdr (assoc $fSuffix $suffix-map)))
     (setq $cmd-str (concat $prog-name " \""   $fname "\""))
     (cond
-     ((string-equal $fSuffix "el") (load $fname))
+     ((string-equal $fSuffix "el")
+      (load $fname))
      ((or (string-equal $fSuffix "ts") (string-equal $fSuffix "tsx"))
       (if (fboundp 'xah-ts-compile-file)
-          (xah-ts-compile-file)
+          (xah-ts-compile-file current-prefix-arg)
         (if $prog-name
             (progn
               (message "Running")
