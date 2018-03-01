@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 8.6.20180228
+;; Version: 8.6.20180301
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2129,12 +2129,11 @@ File suffix is used to determine what program to run.
 If the file is modified or not saved, save it automatically before run.
 
 URL `http://ergoemacs.org/emacs/elisp_run_current_file.html'
-Version 2018-02-28"
+Version 2018-03-01"
   (interactive)
   (let (
-        ($outputb (if (get-buffer "*xah-run output*")
-                      (kill-buffer "*xah-run output*")
-                    (get-buffer-create "*xah-run output*")))
+        ($outputb "*xah-run output*")
+        (resize-mini-windows nil)
         ($suffix-map
          ;; (‹extension› . ‹shell program name›)
          `(
@@ -2184,19 +2183,12 @@ Version 2018-02-28"
       (shell-command $cmd-str $outputb ))
      ((string-equal $fSuffix "java")
       (progn
-        (shell-command $cmd-str $outputb )
-        (shell-command
-         (format "java %s" (file-name-sans-extension (file-name-nondirectory $fname))))))
+        (shell-command (format "java %s" (file-name-sans-extension (file-name-nondirectory $fname))) $outputb )))
      (t (if $prog-name
             (progn
               (message "Running")
               (shell-command $cmd-str $outputb ))
-          (message "No recognized program file suffix for this file."))))
-    (when (get-buffer $outputb)
-      (set-buffer $outputb)
-      (if (> (point-max) 1)
-          (switch-to-buffer-other-window $outputb)
-        (kill-buffer $outputb)))))
+          (message "No recognized program file suffix for this file."))))))
 
 (defun xah-clean-empty-lines ()
   "Replace repeated blank lines to just 1.
