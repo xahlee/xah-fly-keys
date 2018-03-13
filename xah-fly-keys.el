@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 8.6.20180301
+;; Version: 8.6.20180313
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2766,6 +2766,10 @@ Version 2017-01-21"
 
 (xah-fly--define-keys
  (define-prefix-command 'xah-fly--tab-key-map)
+ ;; this keymap i've not used. things are here experimentally
+ ;; because the tab key is not in a very good ergo position on average keyboards, so 【leader tab ‹somekey›】 probably should not be used much
+ ;; currently (2018-03-13), they are commands related to completion or indent, and i basically never use any of these except complete-symbol sometimes
+ ;; for average emacs use, the way it is now is probably justified, because most emacs uses don't use these commands. for example, company mode or or just pressing tab in a major mode, takes care of it.
  '(
    ("TAB" . indent-for-tab-command)
 
@@ -2836,7 +2840,7 @@ Version 2017-01-21"
    ("z" . describe-coding-system)))
 
 (xah-fly--define-keys
- ;; commands here are harmless (safe). They don't modify text.
+ ;; commands here are “harmless”, they don't modify text etc.
  ;; they turn on minor/major mode, change display, prompt, start shell, etc.
  (define-prefix-command 'xah-fly-n-keymap)
  '(
