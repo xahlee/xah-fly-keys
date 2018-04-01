@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 8.6.20180331
+;; Version: 8.7.20180331
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -737,7 +737,7 @@ Version 2018-03-31"
             (progn
               (setq $toLeft (substring @to-chars 0 2))
               (setq $toRight (substring @to-chars -2))))
-           ((string-match "delete brackets" @to-chars)
+           ((string-match "none" @to-chars)
             (progn
               (setq $toLeft "")
               (setq $toRight "")))
