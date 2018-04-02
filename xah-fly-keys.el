@@ -851,21 +851,18 @@ Version 2018-04-02"
   "Remove whitespaces around cursor to just one, or none.
 
 Shrink any neighboring space tab newline characters to 1 or none.
-If cursor neighbor has space/tab, shrink them to just 1.
+If cursor neighbor has space/tab, toggle between 1 or 0 space.
 If cursor neighbor are newline, shrink them to just 1.
 If already has just 1 whitespace, delete it.
 
 URL `http://ergoemacs.org/emacs/emacs_shrink_whitespace.html'
-Version 2018-04-02"
+Version 2018-04-02T14:38:04-07:00"
   (interactive)
   (let* (
+         ($eol-count 0)
          ($p0 (point))
          $p1 ; whitespace begin
          $p2 ; whitespace end
-         $ws-region
-         $only-1-eol-p
-         $multi-eols-p
-         $no-eol-p
          ($charBefore (char-before))
          ($charAfter (char-after ))
          ($space-neighbor-p (or (eq $charBefore 32) (eq $charBefore 9) (eq $charAfter 32) (eq $charAfter 9)))
@@ -876,26 +873,34 @@ Version 2018-04-02"
     (goto-char $p0)
     (skip-chars-forward " \n\t")
     (setq $p2 (point))
-    (setq $ws-region (buffer-substring-no-properties $p1 $p2))
-    (setq $only-1-eol-p (string-match "\\`\t* *\n\t* *\\'" $ws-region ))
-    (setq $multi-eols-p (string-match "\n\t* *\n" $ws-region ))
-    (setq $no-eol-p (not (string-match "\n" $ws-region )))
-    (setq $just-1-space-p (eq (length $ws-region) 1))
+    (goto-char $p1)
+    (while (search-forward "\n" $p2 t )
+      (setq $eol-count (1+ $eol-count)))
+    (setq $just-1-space-p (eq (- $p2 $p1) 1))
     (goto-char $p0)
     (cond
-     ($no-eol-p
+     ((eq $eol-count 0)
       (if $just-1-space-p
-          (delete-region $p1 $p2)
-        (progn (delete-region $p1 $p2) (insert " "))))
-     ($only-1-eol-p
+          (delete-horizontal-space)
+        (progn (delete-horizontal-space)
+               (insert " "))))
+     ((eq $eol-count 1)
       (if $space-neighbor-p
           (delete-horizontal-space)
-        (xah-delete-blank-lines)))
-     ($multi-eols-p
+        (progn (xah-delete-blank-lines) (insert " "))))
+     ((eq $eol-count 2)
       (if $space-neighbor-p
           (delete-horizontal-space)
         (progn
           (xah-delete-blank-lines)
+          (insert "\n"))))
+     ((> $eol-count 2)
+      (if $space-neighbor-p
+          (delete-horizontal-space)
+        (progn
+          (goto-char $p2)
+          (search-backward "\n" )
+          (delete-region $p1 (point))
           (insert "\n"))))
      (t (progn
           (message "nothing done. logir error 40873. shouldn't reach here" ))))))
