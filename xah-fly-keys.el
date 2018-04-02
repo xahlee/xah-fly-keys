@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 8.7.20180331
+;; Version: 8.8.20180402
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -834,39 +834,71 @@ Version 2015-12-22"
      ((looking-at "[[:upper:]]") (downcase-region (point) (1+ (point)))))
     (right-char)))
 
-(defun xah-shrink-whitespaces ()
-  "Remove whitespaces around cursor to just one or none.
-Call this command again to shrink more. 3 calls will remove all whitespaces.
+(defun xah-delete-blank-lines ()
+  "Delete all newline around cursor.
+
 URL `http://ergoemacs.org/emacs/emacs_shrink_whitespace.html'
-Version 2017-07-15"
+Version 2018-04-02"
   (interactive)
-  (let (($p0 (point))
-        $line-has-char-p ; current line contains non-white space chars
-        ($has-space-tab-neighbor-p (or (looking-at " \\|\t") (looking-back " \\|\t" 1)))
-        $space-or-tab-begin $space-or-tab-end
-        )
-    (save-excursion
-      (beginning-of-line)
-      (setq $line-has-char-p (re-search-forward "[[:graph:]]" (line-end-position) t))
-      (goto-char $p0)
-      (skip-chars-backward "\t ")
-      (setq $space-or-tab-begin (point))
-      (goto-char $p0)
-      (skip-chars-forward "\t ")
-      (setq $space-or-tab-end (point)))
-    (if $line-has-char-p
-        (if $has-space-tab-neighbor-p
-            (let ($deleted-text)
-              ;; remove all whitespaces in the range
-              (setq $deleted-text
-                    (delete-and-extract-region $space-or-tab-begin $space-or-tab-end))
-              ;; insert a whitespace only if we have removed something different than a simple whitespace
-              (when (not (string= $deleted-text " "))
-                (insert " ")))
-          (progn
-            (when (equal (char-before) 10) (delete-char -1))
-            (when (equal (char-after) 10) (delete-char 1))))
-      (progn (delete-blank-lines)))))
+  (let ($p3 $p4)
+          (skip-chars-backward "\n")
+          (setq $p3 (point))
+          (skip-chars-forward "\n")
+          (setq $p4 (point))
+          (delete-region $p3 $p4)))
+
+(defun xah-shrink-whitespaces ()
+  "Remove whitespaces around cursor to just one, or none.
+
+Shrink any neighboring space tab newline characters to 1 or none.
+If cursor neighbor has space/tab, shrink them to just 1.
+If cursor neighbor are newline, shrink them to just 1.
+If already has just 1 whitespace, delete it.
+
+URL `http://ergoemacs.org/emacs/emacs_shrink_whitespace.html'
+Version 2018-04-02"
+  (interactive)
+  (let* (
+         ($p0 (point))
+         $p1 ; whitespace begin
+         $p2 ; whitespace end
+         $ws-region
+         $only-1-eol-p
+         $multi-eols-p
+         $no-eol-p
+         ($charBefore (char-before))
+         ($charAfter (char-after ))
+         ($space-neighbor-p (or (eq $charBefore 32) (eq $charBefore 9) (eq $charAfter 32) (eq $charAfter 9)))
+         $just-1-space-p
+         )
+    (skip-chars-backward " \n\t")
+    (setq $p1 (point))
+    (goto-char $p0)
+    (skip-chars-forward " \n\t")
+    (setq $p2 (point))
+    (setq $ws-region (buffer-substring-no-properties $p1 $p2))
+    (setq $only-1-eol-p (string-match "\\`\t* *\n\t* *\\'" $ws-region ))
+    (setq $multi-eols-p (string-match "\n\t* *\n" $ws-region ))
+    (setq $no-eol-p (not (string-match "\n" $ws-region )))
+    (setq $just-1-space-p (eq (length $ws-region) 1))
+    (goto-char $p0)
+    (cond
+     ($no-eol-p
+      (if $just-1-space-p
+          (delete-region $p1 $p2)
+        (progn (delete-region $p1 $p2) (insert " "))))
+     ($only-1-eol-p
+      (if $space-neighbor-p
+          (delete-horizontal-space)
+        (xah-delete-blank-lines)))
+     ($multi-eols-p
+      (if $space-neighbor-p
+          (delete-horizontal-space)
+        (progn
+          (xah-delete-blank-lines)
+          (insert "\n"))))
+     (t (progn
+          (message "nothing done. logir error 40873. shouldn't reach here" ))))))
 
 (defun xah-fill-or-unfill ()
   "Reformat current paragraph or region to `fill-column', like `fill-paragraph' or “unfill”.
