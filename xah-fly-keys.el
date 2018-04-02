@@ -903,7 +903,7 @@ Version 2018-04-02T14:38:04-07:00"
           (delete-region $p1 (point))
           (insert "\n"))))
      (t (progn
-          (message "nothing done. logir error 40873. shouldn't reach here" ))))))
+          (message "nothing done. logic error 40873. shouldn't reach here" ))))))
 
 (defun xah-fill-or-unfill ()
   "Reformat current paragraph or region to `fill-column', like `fill-paragraph' or “unfill”.
