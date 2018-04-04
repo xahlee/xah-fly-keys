@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 8.8.20180402
+;; Version: 8.8.20180403
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2924,29 +2924,30 @@ Version 2017-01-21"
  (define-prefix-command 'xah-fly-dot-keymap)
  '(
 
-   ("b" . facemenu-set-bold)
-   ("f" . font-lock-fontify-block)
-   ("c" . center-line)
-   ("d" . facemenu-set-default)
+   ("." . highlight-symbol-at-point)
+   ("p" . highlight-regexp)
+   ("t" . highlight-phrase)
+   ("e" . unhighlight-regexp)
+   ("u" . highlight-lines-matching-regexp)
 
-   ("h" . highlight-symbol-at-point)
+   ("g" . isearch-forward-symbol-at-point)
+   ("h" . isearch-forward-word)
+   ("t" . isearch-forward-symbol)
+
    ;; temp
-   ("." . isearch-forward-symbol-at-point)
-   ("1" . hi-lock-find-patterns)
-   ("2" . highlight-lines-matching-regexp)
-   ("3" . highlight-phrase)
-   ("4" . highlight-regexp)
-   ("5" . unhighlight-regexp)
+   ("b" . facemenu-set-bold)
+   ("d" . facemenu-set-default)
+   ("1" . facemenu-set-italic)
+   ("2" . facemenu-set-bold-italic)
+   ("3" . facemenu-set-face)
+   ("4" . facemenu-set-underline)
+   ("5" . center-paragraph)
+   ("c" . center-line)
+   ("f" . font-lock-fontify-block)
+   ("7" . hi-lock-find-patterns)
    ("6" . hi-lock-write-interactive-patterns)
-   ("s" . isearch-forward-symbol)
-   ("w" . isearch-forward-word)
 
-   ("i" . facemenu-set-italic)
-   ("l" . facemenu-set-bold-italic)
-   ("o" . facemenu-set-face)
-   ("p" . center-paragraph)
-
-   ("u" . facemenu-set-underline)
+   ;;
    ))
 
 (xah-fly--define-keys
