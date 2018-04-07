@@ -2919,7 +2919,7 @@ Version 2017-01-21"
 
 (defvar xah-fly-key-map (make-sparse-keymap) "Keybinding for `xah-fly-keys' minor mode.")
 
-;; commands in search-map and facemenu-keymap
+;; commands related to highlight
 (xah-fly--define-keys
  (define-prefix-command 'xah-fly-dot-keymap)
  '(
@@ -2928,25 +2928,10 @@ Version 2017-01-21"
    ("p" . highlight-regexp)
    ("e" . unhighlight-regexp)
    ("u" . highlight-lines-matching-regexp)
-
    ("t" . highlight-phrase)
    ("g" . isearch-forward-symbol-at-point)
    ("c" . isearch-forward-symbol)
    ("h" . isearch-forward-word)
-
-   ;; temp
-   ("b" . facemenu-set-bold)
-   ("d" . facemenu-set-default)
-   ("1" . facemenu-set-italic)
-   ("2" . facemenu-set-bold-italic)
-   ("3" . facemenu-set-face)
-   ("4" . facemenu-set-underline)
-   ("5" . center-paragraph)
-   ("c" . center-line)
-   ("f" . font-lock-fontify-block)
-   ("7" . hi-lock-find-patterns)
-   ("6" . hi-lock-write-interactive-patterns)
-
    ;;
    ))
 
