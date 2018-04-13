@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 8.8.20180412225302
+;; Version: 8.8.20180412230025
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1606,12 +1606,12 @@ version 2018-04-12"
                 "Style:"
                 '(
                   "1 → 2018-04-12 Thursday"
-                  "2 → 20180412224015"
-                  "3 → 2018-04-12T22:41:49-07:00"
+                  "2 → 20180412224611"
+                  "3 → 2018-04-12T22:46:11-07:00"
                   "4 → 2018-04-12 22:46:11-07:00"
                   "5 → Thursday, April 12, 2018"
                   "6 → Thu, Apr 12, 2018"
-                  "7 → Oct 10, 2016"
+                  "7 → April 12, 2018"
                   "8 → Apr 12, 2018"
                   )) 0 1))
            0
