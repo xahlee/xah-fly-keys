@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 8.8.20180412230025
+;; Version: 8.8.20180421045736
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -856,7 +856,7 @@ If cursor neighbor are newline, shrink them to just 1.
 If already has just 1 whitespace, delete it.
 
 URL `http://ergoemacs.org/emacs/emacs_shrink_whitespace.html'
-Version 2018-04-02T14:38:04-07:00"
+Version 2018-04-20"
   (interactive)
   (let* (
          ($eol-count 0)
@@ -2928,13 +2928,14 @@ Version 2017-01-21"
  '(
 
    ("." . highlight-symbol-at-point)
-   ("p" . highlight-regexp)
-   ("e" . unhighlight-regexp)
-   ("u" . highlight-lines-matching-regexp)
+   ("g" . unhighlight-regexp)
+   ("c" . highlight-lines-matching-regexp)
+   ("h" . highlight-regexp)
    ("t" . highlight-phrase)
-   ("g" . isearch-forward-symbol-at-point)
-   ("c" . isearch-forward-symbol)
-   ("h" . isearch-forward-word)
+   ("p" . isearch-forward-symbol-at-point)
+   ;; ("c" . isearch-forward-symbol)
+   ;; ("h" . isearch-forward-word)
+
    ;;
    ))
 
