@@ -2659,7 +2659,7 @@ Version 2017-01-27"
         (other-frame 1)
       (other-window 1))))
 
-(defun xah-unplit-window-or-next-frame ()
+(defun xah-unsplit-window-or-next-frame ()
   "Unsplit window. If current frame has only one window, switch to next frame.
 Version 2017-01-29"
   (interactive)
