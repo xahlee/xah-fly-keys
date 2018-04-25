@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 8.8.20180421045736
+;; Version: 9.0.20180425161740
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -34,6 +34,8 @@
 ;; ;; "workman"
 ;; ;; "programer-dvorak"
 ;; ;; "dvorak"
+;; ;; "colemak"
+;; ;; "colemak-mod-dh"
 ;; ;; default is dvorak
 ;; (xah-fly-keys 1)
 
@@ -2711,7 +2713,7 @@ Version 2017-01-29"
     ("x" . "b")
     ("y" . "t")
     ("z" . "/"))
-  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding qwerty. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding QWERTY. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
 
 (defvar xah--dvorak-to-qwertz-kmap
   '(("." . "e")
@@ -2750,7 +2752,7 @@ Version 2017-01-29"
     ("x" . "b")
     ("y" . "t")
     ("z" . "-"))
-    "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding qwertz. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+    "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding QWERTZ. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
 
 (defvar xah--dvorak-to-workman-kmap
   '(("'" . "q")
@@ -2783,7 +2785,7 @@ Version 2017-01-29"
     ("w" . ",")
     ("v" . ".")
     ("z" . "/"))
-  "A alist, each element is of the form(\"e\" . \"d\"). First char is dvorak, second is corresponding workman. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding Workman layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
 
 (defvar xah--dvorak-to-colemak-mod-dh-kmap
   '(("'" . "q")
@@ -2816,7 +2818,7 @@ Version 2017-01-29"
     ("w" . ",")
     ("v" . ".")
     ("z" . "/"))
-  "A alist, each element is of the form(\"e\" . \"d\"). First char is dvorak, second is corresponding Colemak Mod-DH. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding Colemak Mod-DH layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
 
 (defvar xah--dvorak-to-programer-dvorak-kmap
   '(
@@ -2861,7 +2863,7 @@ Version 2017-01-29"
     ("=" . "@")
     ("+" . "^")
     )
-  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding Programmer Dvorak. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding Programmer Dvorak layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
 
 (defun xah--dvorak-to-qwerty (@charstr)
   "Convert dvorak key to qwerty. @charstr is a string of single char.
@@ -3514,8 +3516,8 @@ Version 2017-01-21"
 
 (defun xah-fly-keys-set-layout (@layout)
   "Set a keyboard layout.
-Argument should be one of:  \"qwerty\", \"dvorak\", \"workman\", \"Colemak Mod-DH\", \"programer-dvorak\"
-Version 2018-01-25"
+Argument should be one of:  \"qwerty\", \"dvorak\", \"workman\", \"colemak-mod-dh\", \"programer-dvorak\"
+Version 2018-04-25"
   (interactive)
   (setq xah-fly-key--current-layout @layout)
   (load "xah-fly-keys"))
