@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 9.0.20180425161740
+;; Version: 10.0.20180511134516
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2977,7 +2977,7 @@ Version 2017-01-21"
  (define-prefix-command 'xah-fly-dot-keymap)
  '(
 
-   ("." . highlight-symbol-at-point)
+   ;; ("." . highlight-symbol-at-point)
    ("g" . unhighlight-regexp)
    ("c" . highlight-lines-matching-regexp)
    ("h" . highlight-regexp)
@@ -3027,6 +3027,7 @@ Version 2017-01-21"
    ("e" . ibuffer)
    ("u" . xah-open-file-at-cursor)
    ("h" . recentf-open-files)
+   ("i" . xah-copy-file-path)
    ("l" . bookmark-set)
    ("n" . xah-new-empty-buffer)
    ("o" . xah-show-in-desktop)
@@ -3036,6 +3037,30 @@ Version 2017-01-21"
    ("r" . xah-open-file-fast)
    ("s" . write-file)
    ))
+
+(xah-fly--define-keys
+ (define-prefix-command 'xah-fly-e-keymap)
+ '(
+   ("RET" . insert-char)
+   ("SPC" . xah-insert-unicode)
+   ("b" . xah-insert-black-lenticular-bracket【】)
+   ("c" . xah-insert-ascii-single-quote)
+   ("d" . xah-insert-double-curly-quote“”)
+   ("f" . xah-insert-emacs-quote)
+   ("g" . xah-insert-ascii-double-quote)
+   ("h" . xah-insert-brace) ; {}
+   ("i" . xah-insert-curly-single-quote‘’)
+   ("l" . xah-insert-form-feed)
+   ("m" . xah-insert-corner-bracket「」)
+   ("n" . xah-insert-square-bracket) ; []
+   ("p" . xah-insert-single-angle-quote‹›)
+   ("r" . xah-insert-tortoise-shell-bracket〔〕 )
+   ("s" . xah-insert-string-assignment)
+   ("t" . xah-insert-paren)
+   ("u" . xah-insert-date)
+   ("w" . xah-insert-angle-bracket〈〉)
+   ("W" . xah-insert-double-angle-bracket《》)
+   ("y" . xah-insert-double-angle-quote«»)))
 
 (xah-fly--define-keys
  (define-prefix-command 'xah-fly-h-keymap)
@@ -3070,9 +3095,9 @@ Version 2017-01-21"
  (define-prefix-command 'xah-fly-n-keymap)
  '(
    ("SPC" . whitespace-mode)
-   ("RET" . nil)
-   ("TAB" . nil)
-   ("DEL" . nil)
+   ;; RET
+   ;; TAB
+   ;; DEL
    ("," . abbrev-mode)
    ("." . toggle-frame-fullscreen)
    ("'" . frame-configuration-to-register)
@@ -3083,7 +3108,7 @@ Version 2017-01-21"
    ("5" . visual-line-mode)
    ("6" . calendar)
    ("7" . calc)
-   ("8" . nil)
+   ;; 8
    ("9" . shell-command)
    ("0" . shell-command-on-region)
    ("a" . text-scale-adjust)
@@ -3091,26 +3116,26 @@ Version 2017-01-21"
    ("c" . toggle-case-fold-search)
    ("d" . narrow-to-page)
    ("e" . eshell)
-   ("f" . nil)
-   ("g" . nil)
+   ;; f
+   ;; g
    ("h" . widen)
    ("i" . make-frame-command)
    ("j" . flyspell-buffer)
    ("k" . menu-bar-open)
    ("l" . toggle-word-wrap)
-   ("m" . nil)
+   ;; m
    ("n" . narrow-to-region)
    ("o" . variable-pitch-mode)
    ("p" . read-only-mode)
-   ("q" . nil)
-   ("r" . nil)
-   ("s" . nil)
+   ;; q
+   ;; r
+   ;; s
    ("t" . narrow-to-defun)
    ("u" . shell)
-   ("v" . nil)
+   ;; v
    ("w" . eww)
    ("x" . save-some-buffers)
-   ("y" . nil)
+   ;; y
    ("z" . abort-recursive-edit)))
 
 (xah-fly--define-keys
@@ -3148,12 +3173,13 @@ Version 2017-01-21"
    ("." . sort-lines)
    ("," . sort-numeric-fields)
    ("'" . reverse-region)
-   ("a" . nil)
-   ("b" . nil)
+   ;; a
+   ;; b
    ("c" . goto-char)
    ("d" . mark-defun)
    ("e" . list-matching-lines)
    ("f" . goto-line )
+   ;; g
    ("h" . xah-close-current-buffer )
    ("i" . delete-non-matching-lines)
    ("j" . copy-to-register)
@@ -3161,13 +3187,19 @@ Version 2017-01-21"
    ("l" . xah-escape-quotes)
    ("m" . xah-make-backup-and-save)
    ("n" . repeat-complex-command)
+   ;; o
    ("p" . query-replace-regexp)
+   ;; q
    ("r" . copy-rectangle-to-register)
+   ;; s
    ("t" . repeat)
    ("u" . delete-matching-lines)
+   ;; v
    ("w" . xah-next-window-or-frame)
+   ;; x
    ("y" . delete-duplicate-lines)
-   ("z" . nil)))
+   ;; z
+))
 
 (xah-fly--define-keys
  (define-prefix-command 'xah-fly-w-keymap)
@@ -3182,29 +3214,7 @@ Version 2017-01-21"
    ("w" . delete-frame)
    ("j" . xah-run-current-file)))
 
-(xah-fly--define-keys
- (define-prefix-command 'xah-fly-e-keymap)
- '(
-   ("RET" . insert-char)
-   ("SPC" . xah-insert-unicode)
-   ("b" . xah-insert-black-lenticular-bracket【】)
-   ("c" . xah-insert-ascii-single-quote)
-   ("d" . xah-insert-double-curly-quote“”)
-   ("f" . xah-insert-emacs-quote)
-   ("g" . xah-insert-ascii-double-quote)
-   ("h" . xah-insert-brace) ; {}
-   ("i" . xah-insert-curly-single-quote‘’)
-   ("l" . xah-insert-form-feed)
-   ("m" . xah-insert-corner-bracket「」)
-   ("n" . xah-insert-square-bracket) ; []
-   ("p" . xah-insert-single-angle-quote‹›)
-   ("r" . xah-insert-tortoise-shell-bracket〔〕 )
-   ("s" . xah-insert-string-assignment)
-   ("t" . xah-insert-paren)
-   ("u" . xah-insert-date)
-   ("w" . xah-insert-angle-bracket〈〉)
-   ("W" . xah-insert-double-angle-bracket《》)
-   ("y" . xah-insert-double-angle-quote«»)))
+
 
 ;; (xah-fly--define-keys
 ;;  (define-prefix-command 'xah-coding-system-keymap)
@@ -3231,31 +3241,30 @@ Version 2017-01-21"
  (define-prefix-command 'xah-fly-leader-key-map)
  '(
    ("SPC" . xah-fly-insert-mode-activate)
-   ("DEL" . xah-fly-insert-mode-activate)
+   ;; DEL
    ("RET" . execute-extended-command)
    ("TAB" . xah-fly--tab-key-map)
-
    ("." . xah-fly-dot-keymap)
    ("'" . xah-fill-or-unfill)
    ("," . xah-fly-comma-keymap)
    ("-" . xah-display-form-feed-as-line)
-   ("/" . nil)
-   (";" . nil)
-   ("=" . nil)
-   ("[" . nil)
+   ;; /
+   ;; ;
+   ;; =
+   ;; [
    ("\\" . toggle-input-method)
-   ("`" . nil)
+   ;; `
 
-   ("1" . nil)
-   ("2" . nil)
+   ;; 1
+   ;; 2
    ("3" . delete-window)
    ("4" . split-window-right)
    ("5" . balance-windows)
-   ("6" . nil)
-   ("7" . nil)
-   ("8" . nil)
+   ("6" . highlight-symbol-at-point)
+   ;; 7
+   ;; 8
    ("9" . ispell-word)
-   ("0" . nil)
+   ;; 0
 
    ("a" . mark-whole-buffer)
    ("b" . end-of-buffer)
@@ -3265,7 +3274,7 @@ Version 2017-01-21"
    ("f" . xah-search-current-word)
    ("g" . isearch-forward)
    ("h" . xah-fly-h-keymap)
-   ("i" . xah-copy-file-path)
+   ("i" . kill-line)
    ("j" . xah-copy-all-or-region)
    ("k" . xah-paste-or-paste-previous)
    ("l" . recenter-top-bottom)
@@ -3278,11 +3287,11 @@ Version 2017-01-21"
    ("s" . save-buffer)
    ("t" . xah-fly-t-keymap)
    ("u" . switch-to-buffer)
-   ("v" . nil)
+   ;; v
    ("w" . xah-fly-w-keymap)
-   ("x" . nil)
+   ;; x
    ("y" . xah-show-kill-ring)
-   ("z" . nil)
+   ;; z
    ;;
    ))
 
@@ -3533,7 +3542,7 @@ Version 2017-01-21"
      (":" . nil)
 
      ("SPC" . xah-fly-leader-key-map)
-     ("DEL" . xah-fly-leader-key-map)
+     ;; DEL
 
      ("'" . xah-reformat-lines)
      ("," . xah-shrink-whitespaces)
@@ -3608,6 +3617,15 @@ Version 2017-01-21"
   ;;
   )
 
+(defun xah-fly-space-key ()
+  "switch to command mode if the char before cursor is a space.
+experimental
+Version 2018-05-07"
+  (interactive)
+  (if (eq (char-before ) 32)
+      (xah-fly-command-mode-activate)
+    (insert " ")))
+
 (defun xah-fly-insert-mode-init ()
   "Set insertion mode keys"
   (interactive)
@@ -3619,6 +3637,8 @@ Version 2017-01-21"
    '(
 
      ("SPC" . nil)
+     ;; ("SPC" . xah-fly-space-key)
+
      ("DEL" . nil)
 
      ("'" . nil)
