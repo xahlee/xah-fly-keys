@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 10.0.20180511143632
+;; Version: 10.1.20180512125609
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2976,8 +2976,7 @@ Version 2017-01-21"
 (xah-fly--define-keys
  (define-prefix-command 'xah-fly-dot-keymap)
  '(
-
-   ;; ("." . highlight-symbol-at-point)
+   ("." . highlight-symbol-at-point)
    ("g" . unhighlight-regexp)
    ("c" . highlight-lines-matching-regexp)
    ("h" . highlight-regexp)
@@ -3147,7 +3146,6 @@ Version 2017-01-21"
    ("." . kmacro-start-macro)
    ("3" . number-to-register)
    ("4" . increment-register)
-   ("a" . xah-upcase-sentence)
    ("c" . replace-rectangle)
    ("d" . delete-rectangle)
    ("e" . call-last-kbd-macro)
@@ -3260,7 +3258,7 @@ Version 2017-01-21"
    ("3" . delete-window)
    ("4" . split-window-right)
    ("5" . balance-windows)
-   ("6" . highlight-symbol-at-point)
+   ("6" . xah-upcase-sentence)
    ;; 7
    ;; 8
    ("9" . ispell-word)
