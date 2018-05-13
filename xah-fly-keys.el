@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 10.1.20180512125609
+;; Version: 10.1.20180512175559
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2968,7 +2968,7 @@ Version 2017-01-21"
 
 ;; keymaps
 
-(defvar xah-fly-swapped-1-8-and-2-7-p nil "If non-nil, it means keys 1 and 8 are swapped, and 2 and 7 are swapped. See: http://xahlee.info/kbd/best_number_key_layout.html")
+;; (defvar xah-fly-swapped-1-8-and-2-7-p nil "If non-nil, it means keys 1 and 8 are swapped, and 2 and 7 are swapped. See: http://xahlee.info/kbd/best_number_key_layout.html")
 
 (defvar xah-fly-key-map (make-sparse-keymap) "Keybinding for `xah-fly-keys' minor mode.")
 
@@ -3164,10 +3164,16 @@ Version 2017-01-21"
  '(
    ("SPC" . xah-clean-whitespace)
    ("TAB" . move-to-column)
+
    ("1" . xah-clear-register-1)
    ("2" . xah-append-to-register-1)
+
    ("3" . xah-copy-to-register-1)
    ("4" . xah-paste-from-register-1)
+
+   ("8" . xah-clear-register-1)
+   ("7" . xah-append-to-register-1)
+
    ("." . sort-lines)
    ("," . sort-numeric-fields)
    ("'" . reverse-region)
@@ -3212,8 +3218,6 @@ Version 2017-01-21"
    ("w" . delete-frame)
    ("j" . xah-run-current-file)))
 
-
-
 ;; (xah-fly--define-keys
 ;;  (define-prefix-command 'xah-coding-system-keymap)
 ;;  '(
@@ -3239,7 +3243,7 @@ Version 2017-01-21"
  (define-prefix-command 'xah-fly-leader-key-map)
  '(
    ("SPC" . xah-fly-insert-mode-activate)
-   ;; DEL
+   ("DEL" . xah-fly-insert-mode-activate)
    ("RET" . execute-extended-command)
    ("TAB" . xah-fly--tab-key-map)
    ("." . xah-fly-dot-keymap)
@@ -3462,25 +3466,6 @@ Version 2017-01-21"
   ;;
   (when xah-fly-use-control-key
     (progn
-      (define-key xah-fly-key-map (kbd "<C-prior>") 'xah-previous-user-buffer)
-      (define-key xah-fly-key-map (kbd "<C-next>") 'xah-next-user-buffer)
-
-      (define-key xah-fly-key-map (kbd "C-9") 'scroll-down-command)
-      (define-key xah-fly-key-map (kbd "C-0") 'scroll-up-command)
-
-      (if xah-fly-swapped-1-8-and-2-7-p
-          (progn
-            (define-key xah-fly-key-map (kbd "C-2") 'xah-previous-user-buffer)
-            (define-key xah-fly-key-map (kbd "C-1") 'xah-next-user-buffer))
-        (progn
-          (define-key xah-fly-key-map (kbd "C-7") 'xah-previous-user-buffer)
-          (define-key xah-fly-key-map (kbd "C-8") 'xah-next-user-buffer)))
-
-      (define-key xah-fly-key-map (kbd "C-5") 'xah-previous-emacs-buffer)
-      (define-key xah-fly-key-map (kbd "C-6") 'xah-next-emacs-buffer)
-
-      (define-key xah-fly-key-map (kbd "C-3") 'previous-error)
-      (define-key xah-fly-key-map (kbd "C-4") 'next-error)
 
       (define-key xah-fly-key-map (kbd "<C-S-prior>") 'xah-previous-emacs-buffer)
       (define-key xah-fly-key-map (kbd "<C-S-next>") 'xah-next-emacs-buffer)
@@ -3490,6 +3475,31 @@ Version 2017-01-21"
       (define-key xah-fly-key-map (kbd "<C-S-iso-lefttab>") 'xah-previous-user-buffer)
 
       (define-key xah-fly-key-map (kbd "C-SPC") 'xah-fly-leader-key-map)
+
+      (define-key xah-fly-key-map (kbd "<C-prior>") 'xah-previous-user-buffer)
+      (define-key xah-fly-key-map (kbd "<C-next>") 'xah-next-user-buffer)
+
+      ;; (if xah-fly-swapped-1-8-and-2-7-p
+      ;;     (progn
+      ;;       (define-key xah-fly-key-map (kbd "C-2") 'xah-previous-user-buffer)
+      ;;       (define-key xah-fly-key-map (kbd "C-1") 'xah-next-user-buffer))
+      ;;   (progn
+      ;;     (define-key xah-fly-key-map (kbd "C-7") 'xah-previous-user-buffer)
+      ;;     (define-key xah-fly-key-map (kbd "C-8") 'xah-next-user-buffer)))
+
+      (define-key xah-fly-key-map (kbd "C-9") 'scroll-down-command)
+      (define-key xah-fly-key-map (kbd "C-0") 'scroll-up-command)
+
+      (define-key xah-fly-key-map (kbd "C-1") 'xah-next-user-buffer)
+      (define-key xah-fly-key-map (kbd "C-2") 'xah-previous-user-buffer)
+      (define-key xah-fly-key-map (kbd "C-7") 'xah-previous-user-buffer)
+      (define-key xah-fly-key-map (kbd "C-8") 'xah-next-user-buffer)
+
+      (define-key xah-fly-key-map (kbd "C-5") 'xah-previous-emacs-buffer)
+      (define-key xah-fly-key-map (kbd "C-6") 'xah-next-emacs-buffer)
+
+      (define-key xah-fly-key-map (kbd "C-3") 'previous-error)
+      (define-key xah-fly-key-map (kbd "C-4") 'next-error)
 
       (define-key xah-fly-key-map (kbd "C-a") 'mark-whole-buffer)
       (define-key xah-fly-key-map (kbd "C-n") 'xah-new-empty-buffer)
@@ -3505,14 +3515,19 @@ Version 2017-01-21"
       (define-key xah-fly-key-map (kbd "C-+") 'text-scale-increase)
       (define-key xah-fly-key-map (kbd "C--") 'text-scale-decrease)
 
-      (define-key xah-fly-key-map (kbd "C-t") nil) ; never do transpose-chars
+      (define-key xah-fly-key-map (kbd "C-d") 'pop-global-mark)
+      (define-key xah-fly-key-map (kbd "C-t") 'xah-pop-local-mark-ring)
 
       ;;
       ))
 
   (progn
     (when xah-fly-use-meta-key
-      (define-key xah-fly-key-map (kbd "M-SPC") 'xah-fly-command-mode-activate-no-hook)))
+      (define-key xah-fly-key-map (kbd "M-SPC") 'xah-fly-command-mode-activate-no-hook)
+
+      ;; 
+
+))
   ;;
   )
 
@@ -3557,8 +3572,9 @@ Version 2017-01-21"
      ;; ("#" . xah-backward-quote)
      ;; ("$" . xah-forward-punct)
 
-     ("1" . pop-global-mark)
-     ("2" . xah-pop-local-mark-ring)
+     ("0" . pop-global-mark)
+     ("1" . xah-extend-selection)
+     ("2" . xah-select-line)
      ("3" . delete-other-windows)
      ("4" . split-window-below)
      ("5" . delete-char)
@@ -3566,7 +3582,7 @@ Version 2017-01-21"
      ("7" . xah-select-line)
      ("8" . xah-extend-selection)
      ("9" . xah-select-text-in-quote)
-     ("0" . nil)
+     ("0" . xah-pop-local-mark-ring)
 
      ("a" . execute-extended-command)
      ("b" . isearch-forward)
@@ -3596,14 +3612,15 @@ Version 2017-01-21"
      ("z" . xah-goto-matching-bracket)))
 
   (define-key xah-fly-key-map (kbd "a") (if (fboundp 'smex) 'smex 'execute-extended-command ))
-  (when xah-fly-swapped-1-8-and-2-7-p
-    (xah-fly--define-keys
-     xah-fly-key-map
-     '(
-       ("8" . pop-global-mark)
-       ("7" . xah-pop-local-mark-ring)
-       ("2" . xah-select-line)
-       ("1" . xah-extend-selection))))
+
+;; (when xah-fly-swapped-1-8-and-2-7-p
+;;     (xah-fly--define-keys
+;;      xah-fly-key-map
+;;      '(
+;;        ("8" . pop-global-mark)
+;;        ("7" . xah-pop-local-mark-ring)
+;;        ("2" . xah-select-line)
+;;        ("1" . xah-extend-selection))))
 
   (progn
     (setq xah-fly-insert-state-q nil )
