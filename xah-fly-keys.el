@@ -2820,6 +2820,39 @@ Version 2017-01-29"
     ("z" . "/"))
   "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding Colemak Mod-DH layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
 
+(defvar xah--dvorak-to-colemak-kmap
+  '(("'" . "q")
+    ("," . "w")
+    ("." . "f")
+    ("p" . "p")
+    ("y" . "g")
+    ("f" . "j")
+    ("g" . "l")
+    ("c" . "u")
+    ("r" . "y")
+    ("l" . ";")
+    ("a" . "a")
+    ("o" . "r")
+    ("e" . "s")
+    ("u" . "t")
+    ("i" . "d")
+    ("d" . "h")
+    ("h" . "n")
+    ("t" . "e")
+    ("n" . "i")
+    ("s" . "o")
+    (";" . "z")
+    ("q" . "x")
+    ("j" . "c")
+    ("k" . "v")
+    ("x" . "b")
+    ("b" . "k")
+    ("m" . "m")
+    ("w" . ",")
+    ("v" . ".")
+    ("z" . "/"))
+  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding Colemak layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+
 (defvar xah--dvorak-to-programer-dvorak-kmap
   '(
     ;; number row
@@ -2921,6 +2954,20 @@ Version 2018-01-25"
         @charstr
         ))))
 
+(defun xah--dvorak-to-colemak (@charstr)
+  "Convert dvorak key to Colemak. @charstr is a string of single char.
+For example, \"e\" becomes \"s\".
+If length of @charstr is greater than 1, such as \"TAB\", @charstr is returned unchanged.
+Version 2018-05-21"
+  (interactive)
+  (if (> (length @charstr) 1)
+      @charstr
+    (let (($result (assoc @charstr xah--dvorak-to-colemak-kmap)))
+      (if $result
+          (cdr $result)
+        @charstr
+        ))))
+
 (defun xah--dvorak-to-programer-dvorak (@charstr)
   "Convert dvorak key to Programmer Dvorak. @charstr is a string of single char.
 For example, \"e\" becomes \"d\".
@@ -2944,6 +2991,7 @@ Version 2017-12-29"
    ((string-equal xah-fly-key--current-layout "qwerty") (xah--dvorak-to-qwerty @charstr))
    ((string-equal xah-fly-key--current-layout "qwertz") (xah--dvorak-to-qwertz @charstr))
    ((string-equal xah-fly-key--current-layout "workman") (xah--dvorak-to-workman @charstr))
+   ((string-equal xah-fly-key--current-layout "colemak") (xah--dvorak-to-colemak @charstr))
    ((string-equal xah-fly-key--current-layout "colemak-mod-dh") (xah--dvorak-to-colemak-mod-dh @charstr))
    ((string-equal xah-fly-key--current-layout "programer-dvorak") (xah--dvorak-to-programer-dvorak @charstr))
    (t @charstr)))
@@ -3538,7 +3586,7 @@ Version 2017-01-21"
 
 (defun xah-fly-keys-set-layout (@layout)
   "Set a keyboard layout.
-Argument should be one of:  \"qwerty\", \"dvorak\", \"workman\", \"colemak-mod-dh\", \"programer-dvorak\"
+Argument should be one of:  \"qwerty\", \"dvorak\", \"workman\", \"colemak\", \"colemak-mod-dh\", \"programer-dvorak\"
 Version 2018-04-25"
   (interactive)
   (setq xah-fly-key--current-layout @layout)
