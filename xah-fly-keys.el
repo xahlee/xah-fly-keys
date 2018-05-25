@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 10.2.20180525123348
+;; Version: 10.2.20180525124016
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1347,7 +1347,7 @@ If in dired, copy the file/dir cursor is on, or marked files.
 If a buffer is not file and not dired, copy value of `default-directory' (which is usually the “current” dir when that buffer was created)
 
 URL `http://ergoemacs.org/emacs/emacs_copy_file_path.html'
-Version 2017-09-01"
+Version 2018-05-16"
   (interactive "P")
   (let (($fpath
          (if (string-equal major-mode 'dired-mode)
@@ -1362,10 +1362,10 @@ Version 2017-09-01"
     (kill-new
      (if @dir-path-only-p
          (progn
-           (message "Directory path copied: 「%s」" (file-name-directory $fpath))
+           (message "Directory path copied")
            (file-name-directory $fpath))
        (progn
-         (message "File path copied: 「%s」" $fpath)
+         (message "File path copied")
          $fpath )))))
 
 ;; (defun xah-delete-text-block ()
@@ -2431,26 +2431,27 @@ Version 2017-09-22"
 (defun xah-make-backup ()
   "Make a backup copy of current file or dired marked files.
 If in dired, backup current file or marked files.
-The backup file name is
- ‹name›~‹timestamp›~
-example:
- file.html~20150721T014457~
+The backup file name is in this format
+ x.html~2018-05-15_133429~
+ The last part is hour, minutes, seconds.
 in the same dir. If such a file already exist, it's overwritten.
 If the current buffer is not associated with a file, nothing's done.
+
 URL `http://ergoemacs.org/emacs/elisp_make-backup.html'
-Version 2015-10-14"
+Version 2018-05-15"
   (interactive)
-  (let (($fname (buffer-file-name)))
+  (let (($fname (buffer-file-name))
+        ($date-time-format "%Y-%m-%d_%H%M%S"))
     (if $fname
         (let (($backup-name
-               (concat $fname "~" (format-time-string "%Y%m%dT%H%M%S") "~")))
+               (concat $fname "~" (format-time-string $date-time-format) "~")))
           (copy-file $fname $backup-name t)
           (message (concat "Backup saved at: " $backup-name)))
       (if (string-equal major-mode "dired-mode")
           (progn
             (mapc (lambda ($x)
                     (let (($backup-name
-                           (concat $x "~" (format-time-string "%Y%m%dT%H%M%S") "~")))
+                           (concat $x "~" (format-time-string $date-time-format) "~")))
                       (copy-file $x $backup-name t)))
                   (dired-get-marked-files))
             (message "marked files backed up"))
@@ -2479,12 +2480,14 @@ Backup filename is “‹name›~‹date time stamp›~”. Existing file of the
 When `universal-argument' is called first, don't create backup.
 
 URL `http://ergoemacs.org/emacs/elisp_delete-current-file.html'
-Version 2016-07-20"
+Version 2018-05-15"
   (interactive "P")
   (let* (
          ($fname (buffer-file-name))
          ($buffer-is-file-p $fname)
-         ($backup-suffix (concat "~" (format-time-string "%Y%m%dT%H%M%S") "~")))
+         ($date-time-format "%Y-%m-%d_%H%M%S")
+         ($backup-suffix
+          (concat "~" (format-time-string $date-time-format) "~")))
     (if $buffer-is-file-p
         (progn
           (save-buffer $fname)
