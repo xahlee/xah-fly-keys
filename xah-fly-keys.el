@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 10.2.20180525124016
+;; Version: 10.3.20180604131652
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -150,11 +150,11 @@ version 2016-04-04"
 • When called again, move cursor backward by jumping over any sequence of whitespaces containing 2 blank lines.
 
 URL `http://ergoemacs.org/emacs/emacs_keybinding_design_beginning-of-line-or-block.html'
-Version 2017-06-26"
+Version 2018-06-04"
   (interactive)
   (let (($p (point)))
     (if (or (equal (point) (line-beginning-position))
-            (equal last-command this-command ))
+            (eq last-command this-command))
         (if (re-search-backward "\n[\t\n ]*\n+" nil "move")
             (progn
               (skip-chars-backward "\n\t ")
@@ -173,10 +173,10 @@ Version 2017-06-26"
 • When called again, move cursor forward by jumping over any sequence of whitespaces containing 2 blank lines.
 
 URL `http://ergoemacs.org/emacs/emacs_keybinding_design_beginning-of-line-or-block.html'
-Version 2017-05-30"
+Version 2018-06-04"
   (interactive)
   (if (or (equal (point) (line-end-position))
-          (equal last-command this-command ))
+          (eq last-command this-command))
       (progn
         (re-search-forward "\n[\t\n ]*\n+" nil "move" ))
     (end-of-line)))
@@ -812,7 +812,7 @@ Version 2017-04-19"
      ((equal 0 (get this-command 'state))
       (upcase-initials-region $p1 $p2)
       (put this-command 'state 1))
-     ((equal 1  (get this-command 'state))
+     ((equal 1 (get this-command 'state))
       (upcase-region $p1 $p2)
       (put this-command 'state 2))
      ((equal 2 (get this-command 'state))
@@ -1271,7 +1271,7 @@ The region to work on is by this order:
  ③ else, work on current line.
 
 URL `http://ergoemacs.org/emacs/elisp_change_space-hyphen_underscore.html'
-Version 2017-01-27"
+Version 2018-06-04"
   (interactive)
   ;; this function sets a property 「'state」. Possible values are 0 to length of -charArray.
   (let ($p1 $p2)
@@ -1300,7 +1300,7 @@ Version 2017-01-27"
            ($length (length $charArray))
            ($regionWasActive-p (region-active-p))
            ($nowState
-            (if (equal last-command this-command )
+            (if (eq last-command this-command)
                 (get 'xah-cycle-hyphen-underscore-space 'state)
               0 ))
            ($changeTo (elt $charArray $nowState)))
@@ -3664,14 +3664,14 @@ Version 2017-01-21"
 
   (define-key xah-fly-key-map (kbd "a") (if (fboundp 'smex) 'smex 'execute-extended-command ))
 
-;; (when xah-fly-swapped-1-8-and-2-7-p
-;;     (xah-fly--define-keys
-;;      xah-fly-key-map
-;;      '(
-;;        ("8" . pop-global-mark)
-;;        ("7" . xah-pop-local-mark-ring)
-;;        ("2" . xah-select-line)
-;;        ("1" . xah-extend-selection))))
+  ;; (when xah-fly-swapped-1-8-and-2-7-p
+  ;;     (xah-fly--define-keys
+  ;;      xah-fly-key-map
+  ;;      '(
+  ;;        ("8" . pop-global-mark)
+  ;;        ("7" . xah-pop-local-mark-ring)
+  ;;        ("2" . xah-select-line)
+  ;;        ("1" . xah-extend-selection))))
 
   (progn
     (setq xah-fly-insert-state-q nil )
@@ -3767,8 +3767,8 @@ Version 2018-05-07"
     (setq xah-fly-insert-state-q t )
     (modify-all-frames-parameters (list (cons 'cursor-type 'bar))))
 
-(setq mode-line-front-space "I")
-(force-mode-line-update)
+  (setq mode-line-front-space "I")
+  (force-mode-line-update)
 
   ;;
   )
