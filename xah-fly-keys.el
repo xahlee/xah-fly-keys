@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 10.3.20180604131652
+;; Version: 10.3.20180606201948
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2438,7 +2438,7 @@ in the same dir. If such a file already exist, it's overwritten.
 If the current buffer is not associated with a file, nothing's done.
 
 URL `http://ergoemacs.org/emacs/elisp_make-backup.html'
-Version 2018-05-15"
+Version 2018-06-06"
   (interactive)
   (let (($fname (buffer-file-name))
         ($date-time-format "%Y-%m-%d_%H%M%S"))
@@ -2447,14 +2447,14 @@ Version 2018-05-15"
                (concat $fname "~" (format-time-string $date-time-format) "~")))
           (copy-file $fname $backup-name t)
           (message (concat "Backup saved at: " $backup-name)))
-      (if (string-equal major-mode "dired-mode")
+      (if (eq major-mode 'dired-mode)
           (progn
             (mapc (lambda ($x)
                     (let (($backup-name
                            (concat $x "~" (format-time-string $date-time-format) "~")))
                       (copy-file $x $backup-name t)))
                   (dired-get-marked-files))
-            (message "marked files backed up"))
+            (revert-buffer))
         (user-error "buffer not file nor dired")))))
 
 (defun xah-make-backup-and-save ()
@@ -3623,7 +3623,6 @@ Version 2017-01-21"
      ;; ("#" . xah-backward-quote)
      ;; ("$" . xah-forward-punct)
 
-     ("0" . pop-global-mark)
      ("1" . xah-extend-selection)
      ("2" . xah-select-line)
      ("3" . delete-other-windows)
