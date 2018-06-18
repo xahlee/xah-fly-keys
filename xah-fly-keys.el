@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 10.3.20180606201948
+;; Version: 10.3.20180618151900
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1347,7 +1347,7 @@ If in dired, copy the file/dir cursor is on, or marked files.
 If a buffer is not file and not dired, copy value of `default-directory' (which is usually the “current” dir when that buffer was created)
 
 URL `http://ergoemacs.org/emacs/emacs_copy_file_path.html'
-Version 2018-05-16"
+Version 2018-06-18"
   (interactive "P")
   (let (($fpath
          (if (string-equal major-mode 'dired-mode)
@@ -1362,10 +1362,10 @@ Version 2018-05-16"
     (kill-new
      (if @dir-path-only-p
          (progn
-           (message "Directory path copied")
+           (message "Directory copied: %s" (file-name-directory $fpath))
            (file-name-directory $fpath))
        (progn
-         (message "File path copied")
+         (message "File path copied: %s" $fpath)
          $fpath )))))
 
 ;; (defun xah-delete-text-block ()
@@ -2172,7 +2172,7 @@ Similar to `kill-buffer', with the following addition:
 • If it is the minibuffer, exit the minibuffer
 
 URL `http://ergoemacs.org/emacs/elisp_close_buffer_open_last_closed.html'
-Version 2017-05-15"
+Version 2018-06-11"
   (interactive)
   (let (($org-p (string-match "^*Org Src" (buffer-name))))
     (if (string= major-mode "minibuffer-inactive-mode")
