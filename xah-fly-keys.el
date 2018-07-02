@@ -54,8 +54,8 @@
 ;; 【f】 (or Dvorak 【u】) activates insertion mode.
 ;; 【Space】 is a leader key. For example, 【SPACE r】 (Dvorak 【SPACE p】) calls query-replace. Press 【SPACE C-h】 to see the full list.
 ;; 【Space Space】 also activates insertion mode.
-;; 【Space Enter】 calls execute-extended-command or smex (if smex is installed).
-;; 【a】 calls execute-extended-command or smex (if smex is installed).
+;; 【Space Enter】 calls execute-extended-command or smex or helm (if they are installed).
+;; 【a】 calls execute-extended-command or smex or helm (if they are installed).
 
 ;; The leader key sequence basically replace ALL emacs commands that starts with C-x key.
 
@@ -3662,6 +3662,7 @@ Version 2017-01-21"
      ("z" . xah-goto-matching-bracket)))
 
   (define-key xah-fly-key-map (kbd "a") (if (fboundp 'smex) 'smex 'execute-extended-command ))
+  (define-key xah-fly-key-map (kbd "a") (if (fboundp 'helm-mode) 'helm-M-x ))
 
   ;; (when xah-fly-swapped-1-8-and-2-7-p
   ;;     (xah-fly--define-keys
