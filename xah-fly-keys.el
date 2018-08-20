@@ -2718,15 +2718,54 @@ Version 2017-01-29"
     ("z" . "/"))
   "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding QWERTY. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
 
+(defvar xah--dvorak-to-qwerty-abnt-kmap
+  '(("." . "e")
+    ("," . "w")
+    ("'" . "q")
+    (";" . "z")
+    ("/" . "'")
+    ("[" . "-")
+    ("]" . "=")
+    ("=" . "[")
+    ("-" . "~")
+
+    ("a" . "a")
+    ("b" . "n")
+    ("c" . "i")
+    ("d" . "h")
+    ("e" . "d")
+    ("f" . "y")
+    ("g" . "u")
+    ("h" . "j")
+    ("i" . "g")
+    ("j" . "c")
+    ("k" . "v")
+    ("l" . "p")
+    ("m" . "m")
+    ("n" . "l")
+    ("o" . "s")
+    ("p" . "r")
+    ("q" . "x")
+    ("r" . "o")
+    ("s" . "ç")
+    ("t" . "k")
+    ("u" . "f")
+    ("v" . ".")
+    ("w" . ",")
+    ("x" . "b")
+    ("y" . "t")
+    ("z" . ";"))
+  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding ABNT. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+
 (defvar xah--dvorak-to-qwertz-kmap
   '(("." . "e")
     ("," . "w")
     ("'" . "q")
     (";" . "y")
     ("/" . "ü")
-	("[" . "ß")
+    ("[" . "ß")
     ("]" . "´")
-	("=" . "+")
+    ("=" . "+")
     ("-" . "ä")
 
     ("a" . "a")
@@ -2755,7 +2794,7 @@ Version 2017-01-29"
     ("x" . "b")
     ("y" . "t")
     ("z" . "-"))
-    "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding QWERTZ. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding QWERTZ. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
 
 (defvar xah--dvorak-to-workman-kmap
   '(("'" . "q")
@@ -2915,6 +2954,20 @@ Version 2017-02-10"
         @charstr
         ))))
 
+(defun xah--dvorak-to-qwerty-abnt (@charstr)
+  "Convert dvorak key to qwerty0abnt (Brazilian Portuguese). @charstr is a string of single char.
+For example, \"e\" becomes \"d\".
+If length of @charstr is greater than 1, such as \"TAB\", @charstr is returned unchanged.
+Version 2017-02-10"
+  (interactive)
+  (if (> (length @charstr) 1)
+      @charstr
+    (let (($result (assoc @charstr xah--dvorak-to-qwerty-abnt-kmap)))
+      (if $result
+          (cdr $result)
+        @charstr
+        ))))
+
 (defun xah--dvorak-to-qwertz (@charstr)
   "Convert dvorak key to qwertz. @charstr is a string of single char.
 For example, \"e\" becomes \"d\".
@@ -2992,6 +3045,7 @@ Version 2017-12-29"
   (interactive)
   (cond
    ((string-equal xah-fly-key--current-layout "qwerty") (xah--dvorak-to-qwerty @charstr))
+   ((string-equal xah-fly-key--current-layout "qwerty-abnt") (xah--dvorak-to-qwerty-abnt @charstr))
    ((string-equal xah-fly-key--current-layout "qwertz") (xah--dvorak-to-qwertz @charstr))
    ((string-equal xah-fly-key--current-layout "workman") (xah--dvorak-to-workman @charstr))
    ((string-equal xah-fly-key--current-layout "colemak") (xah--dvorak-to-colemak @charstr))
