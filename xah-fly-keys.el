@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 10.4.20180702151750
+;; Version: 10.4.20180820233230
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -206,7 +206,7 @@ Version 2018-06-04"
   (setq xah-right-brackets (reverse xah-right-brackets)))
 
 (defvar xah-punctuation-regex nil "A regex string for the purpose of moving cursor to a punctuation.")
-(setq xah-punctuation-regex "[\\!\?\"\.'#$%&*+,/:;<=>@^`|~]+")
+(setq xah-punctuation-regex "[!\?\"\.,`'#$%&*+:;=@^|~]+")
 
 (defun xah-forward-punct (&optional n)
   "Move cursor to the next occurrence of punctuation.
@@ -1597,9 +1597,8 @@ When called with `universal-argument', prompt for a format to use.
 If there's text selection, delete it first.
 
 URL `http://ergoemacs.org/emacs/elisp_insert-date-time.html'
-version 2018-04-12"
+version 2018-07-03"
   (interactive)
-  (when (use-region-p) (delete-region (region-beginning) (region-end)))
   (let (($style
          (if current-prefix-arg
              (string-to-number
@@ -1618,6 +1617,7 @@ version 2018-04-12"
                   )) 0 1))
            0
            )))
+    (when (use-region-p) (delete-region (region-beginning) (region-end)))
     (insert
      (cond
       ((= $style 0)
@@ -2307,6 +2307,10 @@ Version 2018-02-21"
 
 
 
+(defvar xah-run-current-file-before-hook nil "Hook for `xah-run-current-file'. Before the file is run.")
+
+(defvar xah-run-current-file-after-hook nil "Hook for `xah-run-current-file'. After the file is run.")
+
 (defun xah-run-current-file ()
   "Execute the current file.
 For example, if the current buffer is x.py, then it'll call 「python x.py」 in a shell.
@@ -2357,19 +2361,21 @@ Version 2018-07-01"
     (setq $fSuffix (file-name-extension $fname))
     (setq $prog-name (cdr (assoc $fSuffix $suffix-map)))
     (setq $cmd-str (concat $prog-name " \""   $fname "\""))
+    (run-hooks 'xah-run-current-file-before-hook)
     (cond
      ((string-equal $fSuffix "el")
       (load $fname))
      ((or (string-equal $fSuffix "ts") (string-equal $fSuffix "tsx"))
       (if (fboundp 'xah-ts-compile-file)
-          (xah-ts-compile-file current-prefix-arg)
+          (progn
+            (xah-ts-compile-file current-prefix-arg))
         (if $prog-name
             (progn
               (message "Running")
               (shell-command $cmd-str $outputb ))
-          (message "No recognized program file suffix for this file."))))
+          (error "No recognized program file suffix for this file."))))
      ((string-equal $fSuffix "go")
-      ;; (when (fboundp 'gofmt) (gofmt) )
+      (when (fboundp 'gofmt) (gofmt) )
       (shell-command $cmd-str $outputb ))
      ((string-equal $fSuffix "java")
       (progn
@@ -2378,7 +2384,8 @@ Version 2018-07-01"
             (progn
               (message "Running")
               (shell-command $cmd-str $outputb ))
-          (message "No recognized program file suffix for this file."))))))
+          (error "No recognized program file suffix for this file."))))
+    (run-hooks 'xah-run-current-file-after-hook)))
 
 (defun xah-clean-empty-lines ()
   "Replace repeated blank lines to just 1.
@@ -3093,9 +3100,13 @@ Version 2017-01-21"
  '(
    ("RET" . insert-char)
    ("SPC" . xah-insert-unicode)
+
+   ("." . xah-insert-square-bracket)
+   ("W" . xah-insert-double-angle-bracket《》)
    ("b" . xah-insert-black-lenticular-bracket【】)
    ("c" . xah-insert-ascii-single-quote)
    ("d" . xah-insert-double-curly-quote“”)
+   ("e" . xah-insert-paren)
    ("f" . xah-insert-emacs-quote)
    ("g" . xah-insert-ascii-double-quote)
    ("h" . xah-insert-brace) ; {}
@@ -3103,14 +3114,17 @@ Version 2017-01-21"
    ("l" . xah-insert-form-feed)
    ("m" . xah-insert-corner-bracket「」)
    ("n" . xah-insert-square-bracket) ; []
+   ("o" . xah-insert-brace) ; {}
    ("p" . xah-insert-single-angle-quote‹›)
    ("r" . xah-insert-tortoise-shell-bracket〔〕 )
    ("s" . xah-insert-string-assignment)
    ("t" . xah-insert-paren)
    ("u" . xah-insert-date)
    ("w" . xah-insert-angle-bracket〈〉)
-   ("W" . xah-insert-double-angle-bracket《》)
-   ("y" . xah-insert-double-angle-quote«»)))
+   ("y" . xah-insert-double-angle-quote«»)
+   ;;
+
+   ))
 
 (xah-fly--define-keys
  (define-prefix-command 'xah-fly-h-keymap)
@@ -3216,8 +3230,8 @@ Version 2017-01-21"
    ("SPC" . xah-clean-whitespace)
    ("TAB" . move-to-column)
 
-   ("1" . xah-clear-register-1)
-   ("2" . xah-append-to-register-1)
+   ("1" . xah-append-to-register-1)
+   ("2" . xah-clear-register-1)
 
    ("3" . xah-copy-to-register-1)
    ("4" . xah-paste-from-register-1)
@@ -3645,7 +3659,8 @@ Version 2017-01-21"
      ("i" . xah-delete-current-text-block)
      ("j" . xah-copy-line-or-region)
      ("k" . xah-paste-or-paste-previous)
-     ("l" . xah-fly-insert-mode-activate-space-before)
+     ;; ("l" . xah-fly-insert-mode-activate-space-before)
+     ("l" . xah-insert-space-before)
      ("m" . xah-backward-left-bracket)
      ("n" . forward-char)
      ("o" . open-line)
