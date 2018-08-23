@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 10.4.20180820233230
+;; Version: 10.5.20180822220231
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2696,7 +2696,6 @@ Version 2017-01-29"
     ("]" . "=")
     ("=" . "]")
     ("-" . "'")
-
     ("a" . "a")
     ("b" . "n")
     ("c" . "i")
@@ -2735,7 +2734,6 @@ Version 2017-01-29"
     ("]" . "=")
     ("=" . "[")
     ("-" . "~")
-
     ("a" . "a")
     ("b" . "n")
     ("c" . "i")
@@ -2774,7 +2772,6 @@ Version 2017-01-29"
     ("]" . "´")
     ("=" . "+")
     ("-" . "ä")
-
     ("a" . "a")
     ("b" . "n")
     ("c" . "i")
@@ -3642,13 +3639,7 @@ Version 2017-01-21"
 
   (progn
     (when xah-fly-use-meta-key
-      (define-key xah-fly-key-map (kbd "M-SPC") 'xah-fly-command-mode-activate-no-hook)
-
-      ;; 
-
-))
-  ;;
-  )
+      (define-key xah-fly-key-map (kbd "M-SPC") 'xah-fly-command-mode-activate-no-hook))))
 
 
 
