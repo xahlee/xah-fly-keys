@@ -31,6 +31,7 @@
 ;; (xah-fly-keys-set-layout "qwerty") ; required if you use qwerty
 ;; for other layout, use one of
 ;; ;; "qwertz"
+;; ;; "qwerty-abnt"
 ;; ;; "workman"
 ;; ;; "programer-dvorak"
 ;; ;; "dvorak"
