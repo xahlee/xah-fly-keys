@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 10.5.20180822220231
+;; Version: 10.6.20180830063023
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -29,15 +29,19 @@
 ;; (add-to-list 'load-path "~/.emacs.d/lisp/")
 ;; (require 'xah-fly-keys)
 ;; (xah-fly-keys-set-layout "qwerty") ; required if you use qwerty
-;; for other layout, use one of
-;; ;; "qwertz"
-;; ;; "qwerty-abnt"
-;; ;; "workman"
-;; ;; "programer-dvorak"
-;; ;; "dvorak"
-;; ;; "colemak"
-;; ;; "colemak-mod-dh"
-;; ;; default is dvorak
+
+;; possible layout values:
+;; "qwerty"
+;; "qwerty-abnt"
+;; "qwertz"
+;; "dvorak"
+;; "programer-dvorak"
+;; "colemak"
+;; "colemak-mod-dh"
+;; "workman"
+
+;; dvorak is the default
+
 ;; (xah-fly-keys 1)
 
 ;; --------------------------------------------------
@@ -2361,7 +2365,7 @@ Version 2018-07-01"
     (setq $fname (buffer-file-name))
     (setq $fSuffix (file-name-extension $fname))
     (setq $prog-name (cdr (assoc $fSuffix $suffix-map)))
-    (setq $cmd-str (concat $prog-name " \""   $fname "\""))
+    (setq $cmd-str (concat $prog-name " \""   $fname "\" &"))
     (run-hooks 'xah-run-current-file-before-hook)
     (cond
      ((string-equal $fSuffix "el")
@@ -2375,9 +2379,9 @@ Version 2018-07-01"
               (message "Running")
               (shell-command $cmd-str $outputb ))
           (error "No recognized program file suffix for this file."))))
-     ((string-equal $fSuffix "go")
-      (when (fboundp 'gofmt) (gofmt) )
-      (shell-command $cmd-str $outputb ))
+     ;; ((string-equal $fSuffix "go")
+     ;;  (when (fboundp 'gofmt) (gofmt) )
+     ;;  (shell-command $cmd-str $outputb ))
      ((string-equal $fSuffix "java")
       (progn
         (shell-command (format "java %s" (file-name-sans-extension (file-name-nondirectory $fname))) $outputb )))
