@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 10.6.20180830063023
+;; Version: 10.7.20180830070926
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1811,10 +1811,23 @@ Version 2017-01-17"
   (insert " ")
   (left-char))
 
-(defun xah-insert-form-feed ()
+(defun xah-insert-formfeed ()
   "Insert a form feed char (codepoint 12)"
   (interactive)
   (insert "\n\n"))
+
+(defun xah-show-formfeed-as-line ()
+  "Display the formfeed ^L char as line.
+URL `http://ergoemacs.org/emacs/emacs_form_feed_section_paging.html'
+Version 2018-08-30"
+  (interactive)
+  ;; 2016-10-11 thanks to Steve Purcell's page-break-lines.el
+  (progn
+    (when (not buffer-display-table)
+      (setq buffer-display-table (make-display-table)))
+    (aset buffer-display-table ?\^L
+          (vconcat (make-list 70 (make-glyph-code ?─ 'font-lock-comment-face))))
+    (redraw-frame)))
 
 (defun xah-insert-column-counter (@n)
   "Insert a sequence of numbers vertically.
@@ -3167,7 +3180,7 @@ Version 2017-01-21"
    ("g" . xah-insert-ascii-double-quote)
    ("h" . xah-insert-brace) ; {}
    ("i" . xah-insert-curly-single-quote‘’)
-   ("l" . xah-insert-form-feed)
+   ("l" . xah-insert-formfeed)
    ("m" . xah-insert-corner-bracket「」)
    ("n" . xah-insert-square-bracket) ; []
    ("o" . xah-insert-brace) ; {}
