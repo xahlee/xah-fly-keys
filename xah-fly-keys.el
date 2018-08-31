@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 10.7.20180830133130
+;; Version: 10.7.20180831060417
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -535,17 +535,17 @@ Version 2017-06-19"
 
 (defun xah-kill-word ()
   "Like `kill-word', but delete selection first if there's one.
-Version 2018-02-06"
+Version 2018-08-31"
   (interactive)
-  (when mark-active
+  (when (use-region-p)
     (delete-region (region-beginning) (region-end)))
   (kill-word 1))
 
 (defun xah-backward-kill-word ()
   "Like `backward-kill-word', but delete selection first if there's one.
-Version 2018-02-06"
+Version 2018-08-31"
   (interactive)
-  (when mark-active
+  (when (use-region-p)
     (delete-region (region-beginning) (region-end)))
   (backward-kill-word 1))
 
