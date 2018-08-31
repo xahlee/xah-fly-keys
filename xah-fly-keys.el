@@ -967,13 +967,17 @@ Version 2016-07-13"
 
 (defun xah-reformat-lines ( &optional @length)
   "Reformat current text block into 1 long line or multiple short lines.
-When there is a text selection, act on the selection, else, act on a text block separated by blank lines.
+When there is a text selection, act on the selection, else, act on a text
+block separated by blank lines.
 
-When the command is called for the first time, it checks the current line's length to decide to go into 1 line or multiple lines. If current line is short, it'll reformat to 1 long lines. And vice versa.
+When the command is called for the first time, it checks the current line's
+length to decide to go into 1 line or multiple lines. If current line is
+short, it'll reformat to 1 long lines. And vice versa.
 
 Repeated call toggles between formatting to 1 long line and multiple lines.
 
-If `universal-argument' is called first, use the number value for min length of line. By default, it's 70.
+If `universal-argument' is called first, use the number value for min length
+of line. The default is to use `fill-colum
 
 URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
 Version 2017-10-22"
@@ -982,7 +986,7 @@ Version 2017-10-22"
   (let* (
          (@length (if @length
                       @length
-                    (if current-prefix-arg (prefix-numeric-value current-prefix-arg) 70 )))
+                    (if current-prefix-arg (prefix-numeric-value current-prefix-arg) fill-column )))
          (is-longline-p
           (if (eq last-command this-command)
               (get this-command 'is-longline-p)
