@@ -454,6 +454,14 @@ Version 2015-06-10"
                (kill-region (region-beginning) (region-end) t)
              (kill-region (line-beginning-position) (line-beginning-position 2))))))
 
+(defun xah-quit-or-cut-line-or-region ()
+  "Allows q to be used for quitting read-only buffers (help buffers, etc.).
+When in a normal buffer, q calls `xah-cut-line-or-region'"
+  (interactive)
+  (if (eval buffer-read-only)
+      (quit-window)
+    (kbd "q")))
+
 (defun xah-copy-all-or-region ()
   "Put the whole buffer content to `kill-ring', or text selection if there's one.
 Respects `narrow-to-region'.
@@ -3730,7 +3738,7 @@ Version 2017-01-21"
      ("n" . forward-char)
      ("o" . open-line)
      ("p" . xah-kill-word)
-     ("q" . xah-cut-line-or-region)
+     ("q" . xah-quit-or-cut-line-or-region)
      ("r" . forward-word)
      ("s" . xah-end-of-line-or-block)
      ("t" . next-line)
