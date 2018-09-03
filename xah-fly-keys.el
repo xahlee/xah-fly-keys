@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 10.7.20180831060417
+;; Version: 10.7.20180903083503
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -967,20 +967,16 @@ Version 2016-07-13"
 
 (defun xah-reformat-lines ( &optional @length)
   "Reformat current text block into 1 long line or multiple short lines.
-When there is a text selection, act on the selection, else, act on a text
-block separated by blank lines.
+When there is a text selection, act on the selection, else, act on a text block separated by blank lines.
 
-When the command is called for the first time, it checks the current line's
-length to decide to go into 1 line or multiple lines. If current line is
-short, it'll reformat to 1 long lines. And vice versa.
+When the command is called for the first time, it checks the current line's length to decide to go into 1 line or multiple lines. If current line is short, it'll reformat to 1 long lines. And vice versa.
 
 Repeated call toggles between formatting to 1 long line and multiple lines.
 
-If `universal-argument' is called first, use the number value for min length
-of line. The default is to use `fill-colum
+If `universal-argument' is called first, use the number value for min length of line. By default, it's 70.
 
 URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
-Version 2017-10-22"
+Version 2018-09-01"
   (interactive)
   ;; This command symbol has a property “'is-longline-p”, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
   (let* (
@@ -1043,14 +1039,14 @@ When there is a text selection, act on the selection, else, act on a text block 
 If `universal-argument' is called first, use the number value for min length of line. By default, it's 70.
 
 URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
-Version 2017-10-22"
+Version 2018-09-01"
   (interactive)
   (let (
         $p1 $p2
         ($blanks-regex "\n[ \t]*\n")
         ($minlen (if @min-length
                      @min-length
-                   (if current-prefix-arg (prefix-numeric-value current-prefix-arg) 70 ))))
+                   (if current-prefix-arg (prefix-numeric-value current-prefix-arg) fill-column))))
     (if (and  @begin @end)
         (setq $p1 @begin $p2 @end)
       (if (region-active-p)
@@ -2063,7 +2059,7 @@ Version 2017-09-01"
 
 (defun xah-select-text-in-quote ()
   "Select text between the nearest left and right delimiters.
-Delimiters here includes the following chars: \"<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕（）
+Delimiters here includes the following chars: '\"<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕（）
 This command select between any bracket chars, not the inner text of a bracket. For example, if text is
 
  (a(b)c▮)
@@ -2071,13 +2067,15 @@ This command select between any bracket chars, not the inner text of a bracket. 
  the selected char is “c”, not “a(b)c”.
 
 URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
-Version 2016-12-18"
+Version 2018-09-03"
   (interactive)
   (let (
         ($skipChars
-         (if (boundp 'xah-brackets)
-             (concat "^\"" xah-brackets)
-           "^\"<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕（）"))
+         "^'\"<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕（）")
+        ;; ($skipChars
+        ;;  (if (boundp 'xah-brackets)
+        ;;      (concat "^\"" xah-brackets)
+        ;;    "^\"<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕（）"))
         $pos
         )
     (skip-chars-backward $skipChars)
@@ -3696,7 +3694,7 @@ Version 2017-01-21"
      (";" . xah-comment-dwim)
      ("/" . hippie-expand)
      ("\\" . nil)
-     ("=" . xah-forward-equal-sign)
+     ;; ("=" . xah-forward-equal-sign)
      ("[" . xah-backward-punct )
      ("]" . xah-forward-punct)
      ("`" . other-frame)
