@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 10.7.20180903083503
+;; Version: 10.7.20180910223220
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -409,14 +409,14 @@ When called repeatedly, append copy subsequent lines.
 When `universal-argument' is called first, copy whole buffer (respects `narrow-to-region').
 
 URL `http://ergoemacs.org/emacs/emacs_copy_cut_current_line.html'
-Version 2017-12-04"
+Version 2018-09-10"
   (interactive)
   (if current-prefix-arg
       (progn
-        (kill-ring-save (point-min) (point-max)))
+        (copy-region-as-kill (point-min) (point-max)))
     (if (use-region-p)
         (progn
-          (kill-ring-save (region-beginning) (region-end)))
+          (copy-region-as-kill (region-beginning) (region-end)))
       (if (eq last-command this-command)
           (if (eobp)
               (progn )
@@ -432,10 +432,10 @@ Version 2017-12-04"
             (if (eq (char-before) 10 )
                 (progn )
               (progn
-                (kill-ring-save (line-beginning-position) (line-end-position))
+                (copy-region-as-kill (line-beginning-position) (line-end-position))
                 (end-of-line)))
           (progn
-            (kill-ring-save (line-beginning-position) (line-end-position))
+            (copy-region-as-kill (line-beginning-position) (line-end-position))
             (end-of-line)
             (forward-char)))))))
 
