@@ -1482,7 +1482,7 @@ version 2016-07-17"
   "Upcase first letters of sentences of current text block or selection.
 
 URL `http://ergoemacs.org/emacs/emacs_upcase_sentence.html'
-Version 2017-04-30"
+Version 2018-09-25"
   (interactive)
   (let ($p1 $p2)
     (if (region-active-p)
@@ -1506,30 +1506,25 @@ Version 2017-04-30"
           (while (re-search-forward "\\. \\{1,2\\}\\([a-z]\\)" nil "move") ; after period
             (upcase-region (match-beginning 1) (match-end 1))
             ;; (overlay-put (make-overlay (match-beginning 1) (match-end 1)) 'face '((t :background "red" :foreground "white")))
-            (overlay-put (make-overlay (match-beginning 1) (match-end 1)) 'face 'highlight)
+            (overlay-put (make-overlay (match-beginning 1) (match-end 1)) 'face 'highlight))
 
-            ;;
-            )
+          ;;  new line after period
           (goto-char (point-min))
-          (while (re-search-forward "\\. ?\n *\\([a-z]\\)" nil "move") ; new line after period
+          (while (re-search-forward "\\. ?\n *\\([a-z]\\)" nil "move")
             (upcase-region (match-beginning 1) (match-end 1))
-            (overlay-put (make-overlay (match-beginning 1) (match-end 1)) 'face 'highlight)
-            ;;
-            )
-          (goto-char (point-min))
-          (while (re-search-forward "\\(\\`\\|\n\n\\)\\([a-z]\\)" nil "move") ; after a blank line, or beginning of buffer
-            (upcase-region (match-beginning 2) (match-end 2))
-            (overlay-put (make-overlay (match-beginning 2) (match-end 2)) 'face 'highlight)
-            ;;
-            )
+            (overlay-put (make-overlay (match-beginning 1) (match-end 1)) 'face 'highlight))
 
+          ;; after a blank line, after a bullet, or beginning of buffer
+          (goto-char (point-min))
+          (while (re-search-forward "\\(\\`\\|• \\|\n\n\\)\\([a-z]\\)" nil "move")
+            (upcase-region (match-beginning 2) (match-end 2))
+            (overlay-put (make-overlay (match-beginning 2) (match-end 2)) 'face 'highlight))
+
+          ;; for HTML. first letter after tag
           (goto-char (point-min))
           (while (re-search-forward "\\(<p>\\|<li>\\|<td>\\|<figcaption>\\)\\([a-z]\\)" nil "move")
-            ;; for HTML. first letter after tag
             (upcase-region (match-beginning 2) (match-end 2))
-            (overlay-put (make-overlay (match-beginning 2) (match-end 2)) 'face 'highlight)
-            ;;
-            )
+            (overlay-put (make-overlay (match-beginning 2) (match-end 2)) 'face 'highlight))
 
           (goto-char (point-min)))))))
 
@@ -2606,7 +2601,7 @@ Version 2015-04-09"
  This command can be called when in a file or in `dired'.
 
 URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
-Version 2018-01-13"
+Version 2018-09-29"
   (interactive)
   (let (($path (if (buffer-file-name) (buffer-file-name) default-directory )))
     (cond
@@ -2616,10 +2611,12 @@ Version 2018-01-13"
       (if (eq major-mode 'dired-mode)
           (let (($files (dired-get-marked-files )))
             (if (eq (length $files) 0)
+                (progn
+                  (shell-command
+                   (concat "open " default-directory)))
+              (progn
                 (shell-command
-                 (concat "open " (shell-quote-argument default-directory)))
-              (shell-command
-               (concat "open -R " (shell-quote-argument (car (dired-get-marked-files )))))))
+                 (concat "open -R " (shell-quote-argument (car (dired-get-marked-files ))))))))
         (shell-command
          (concat "open -R " $path))))
      ((string-equal system-type "gnu/linux")
