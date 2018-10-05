@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 10.7.20180910223220
+;; Version: 10.7.20181005032727
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -519,19 +519,21 @@ Version 2017-07-25"
         (yank)))))
 
 (defun xah-show-kill-ring ()
-  "Insert all `kill-ring' content in a new buffer.
+  "Insert all `kill-ring' content in a new buffer named *copy history*.
 
 URL `http://ergoemacs.org/emacs/emacs_show_kill_ring.html'
-Version 2017-06-19"
+Version 2018-10-05"
   (interactive)
-  (let (($buf (generate-new-buffer "untitled")))
+  (let (($buf (generate-new-buffer "*copy history*")))
     (progn
       (switch-to-buffer $buf)
       (funcall 'fundamental-mode)
       (setq buffer-offer-save t)
       (dolist (x kill-ring )
-        (insert x "\n--------------------------------------------------\n\n"))
-      (goto-char (point-min)))))
+        (insert x "\n\u000cttt\n\n"))
+      (goto-char (point-min)))
+    (when (fboundp 'xah-show-formfeed-as-line)
+      (xah-show-formfeed-as-line))))
 
 (defun xah-kill-word ()
   "Like `kill-word', but delete selection first if there's one.
@@ -1809,7 +1811,7 @@ Version 2017-01-17"
 (defun xah-insert-formfeed ()
   "Insert a form feed char (codepoint 12)"
   (interactive)
-  (insert "\n\n"))
+  (insert "\n\u000c\n"))
 
 (defun xah-show-formfeed-as-line ()
   "Display the formfeed ^L char as line.
