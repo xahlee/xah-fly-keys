@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 10.7.20181005032727
+;; Version: 10.7.20181014011851
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2064,21 +2064,16 @@ This command select between any bracket chars, not the inner text of a bracket. 
  the selected char is “c”, not “a(b)c”.
 
 URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
-Version 2018-09-03"
+Version 2018-10-11"
   (interactive)
   (let (
-        ($skipChars
-         "^'\"<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕（）")
-        ;; ($skipChars
-        ;;  (if (boundp 'xah-brackets)
-        ;;      (concat "^\"" xah-brackets)
-        ;;    "^\"<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕（）"))
-        $pos
+        ($skipChars "^'\"<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕（）〘〙")
+        $p1
         )
     (skip-chars-backward $skipChars)
-    (setq $pos (point))
+    (setq $p1 (point))
     (skip-chars-forward $skipChars)
-    (set-mark $pos)))
+    (set-mark $p1)))
 
 
 ;; misc
@@ -2270,13 +2265,13 @@ If path does not have a file extension, automatically try with “.el” for eli
 This command is similar to `find-file-at-point' but without prompting for confirmation.
 
 URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'
-Version 2018-02-21"
+Version 2018-10-08"
   (interactive)
   (let* (($inputStr (if (use-region-p)
                         (buffer-substring-no-properties (region-beginning) (region-end))
                       (let ($p0 $p1 $p2
                                 ;; chars that are likely to be delimiters of file path or url, e.g. space, tabs, brakets. The colon is a problem. cuz it's in url, but not in file name. Don't want to use just space as delimiter because path or url are often in brackets or quotes as in markdown or html
-                                ($pathStops "^  \t\n\"`'‘’“”|()[]{}「」<>〔〕〈〉《》【】〖〗«»‹›❮❯❬❭·。\\"))
+                                ($pathStops "^  \t\n\"`'‘’“”|()[]{}「」<>〔〕〈〉《》【】〖〗«»‹›❮❯❬❭〘〙·。\\")) 
                         (setq $p0 (point))
                         (skip-chars-backward $pathStops)
                         (setq $p1 (point))
@@ -2328,6 +2323,35 @@ Version 2018-02-21"
 
 (defvar xah-run-current-file-after-hook nil "Hook for `xah-run-current-file'. After the file is run.")
 
+(defun xah-run-current-go-file ()
+  "Run or build current golang file.
+
+To build, call `universal-argument' first.
+
+Version 2018-10-12"
+  (interactive)
+  (when (not (buffer-file-name)) (save-buffer))
+  (when (buffer-modified-p) (save-buffer))
+  (let* (
+         ($outputb "*xah-run output*")
+         (resize-mini-windows nil)
+         ($fname (buffer-file-name))
+         ($fSuffix (file-name-extension $fname))
+         ($prog-name "go")
+         $cmd-str)
+    (setq $cmd-str (concat $prog-name " \""   $fname "\" &"))
+    (if current-prefix-arg
+        (progn
+          (setq $cmd-str (format "%s build \"%s\" " $prog-name $fname)))
+      (progn
+        (setq $cmd-str (format "%s run \"%s\" &" $prog-name $fname))))
+    (progn
+      (message "running %s" $fname)
+      (message "%s" $cmd-str)
+      (shell-command $cmd-str $outputb )
+      ;;
+      )))
+
 (defun xah-run-current-file ()
   "Execute the current file.
 For example, if the current buffer is x.py, then it'll call 「python x.py」 in a shell.
@@ -2339,7 +2363,7 @@ File suffix is used to determine what program to run.
 If the file is modified or not saved, save it automatically before run.
 
 URL `http://ergoemacs.org/emacs/elisp_run_current_file.html'
-Version 2018-07-01"
+Version 2018-10-12"
   (interactive)
   (let (
         ($outputb "*xah-run output*")
@@ -2391,9 +2415,8 @@ Version 2018-07-01"
               (message "Running")
               (shell-command $cmd-str $outputb ))
           (error "No recognized program file suffix for this file."))))
-     ;; ((string-equal $fSuffix "go")
-     ;;  (when (fboundp 'gofmt) (gofmt) )
-     ;;  (shell-command $cmd-str $outputb ))
+     ((string-equal $fSuffix "go")
+      (xah-run-current-go-file))
      ((string-equal $fSuffix "java")
       (progn
         (shell-command (format "java %s" (file-name-sans-extension (file-name-nondirectory $fname))) $outputb )))
