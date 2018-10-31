@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 10.7.20181014011851
+;; Version: 10.7.20181031111709
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -712,9 +712,7 @@ Version 2018-03-31"
       (ido-completing-read "To:" $bracketsList ))))
   (let ( $p1 $p2 )
     (if (use-region-p)
-        (progn
-          (setq $p1 (region-beginning))
-          (setq $p2 (region-end)))
+        (setq $p1 (region-beginning) $p2 (region-end))
       (save-excursion
         (if (re-search-backward "\n[ \t]*\n" nil "move")
             (progn (re-search-forward "\n[ \t]*\n")
@@ -806,8 +804,7 @@ Version 2017-04-19"
         (deactivate-mark nil)
         $p1 $p2)
     (if (use-region-p)
-        (setq $p1 (region-beginning)
-              $p2 (region-end))
+        (setq $p1 (region-beginning) $p2 (region-end))
       (save-excursion
         (skip-chars-backward "[:alnum:]-_")
         (setq $p1 (point))
@@ -930,8 +927,7 @@ Version 2017-01-08"
          $p1 $p2
          )
     (if (use-region-p)
-        (progn (setq $p1 (region-beginning))
-               (setq $p2 (region-end)))
+         (setq $p1 (region-beginning) $p2 (region-end))
       (save-excursion
         (if (re-search-backward $blanks-regex nil "move")
             (progn (re-search-forward $blanks-regex)
@@ -993,8 +989,7 @@ Version 2018-09-01"
          $p1 $p2
          )
     (if (use-region-p)
-        (progn (setq $p1 (region-beginning))
-               (setq $p2 (region-end)))
+         (setq $p1 (region-beginning) $p2 (region-end))
       (save-excursion
         (if (re-search-backward $blanks-regex nil "move")
             (progn (re-search-forward $blanks-regex)
@@ -1080,9 +1075,7 @@ Version 2017-08-19"
   (interactive)
   (let* ( $p1 $p2 )
     (if (use-region-p)
-        (progn
-          (setq $p1 (region-beginning))
-          (setq $p2 (region-end)))
+        (setq $p1 (region-beginning) $p2 (region-end))
       (save-excursion
         (if (re-search-backward "\n[ \t]*\n" nil "move")
             (progn (re-search-forward "\n[ \t]*\n")
@@ -1176,9 +1169,7 @@ Version 2017-01-11"
               $quoteToUse
               ))))
     (if (use-region-p)
-        (progn
-          (setq $p1 (region-beginning))
-          (setq $p2 (region-end)))
+        (setq $p1 (region-beginning) $p2 (region-end))
       (progn
         (if (re-search-backward "\n[ \t]*\n" nil "move")
             (progn (re-search-forward "\n[ \t]*\n")
@@ -1434,10 +1425,8 @@ Version 2017-01-23"
   (interactive)
   (let ($p1 $p2)
     (if (region-active-p)
-        (progn (setq $p1 (region-beginning))
-               (setq $p2 (region-end)))
-      (progn (setq $p1 (line-beginning-position))
-             (setq $p2 (line-end-position))))
+         (setq $p1 (region-beginning) $p2 (region-end))
+      (setq $p1 (line-beginning-position) $p2 (line-end-position)))
     (copy-to-register ?1 $p1 $p2)
     (message "Copied to register 1: 「%s」." (buffer-substring-no-properties $p1 $p2))))
 
@@ -1451,10 +1440,8 @@ Version 2015-12-08"
   (interactive)
   (let ($p1 $p2)
     (if (region-active-p)
-        (progn (setq $p1 (region-beginning))
-               (setq $p2 (region-end)))
-      (progn (setq $p1 (line-beginning-position))
-             (setq $p2 (line-end-position))))
+         (setq $p1 (region-beginning) $p2 (region-end))
+      (setq $p1 (line-beginning-position) $p2 (line-end-position)))
     (append-to-register ?1 $p1 $p2)
     (with-temp-buffer (insert "\n")
                       (append-to-register ?1 (point-min) (point-max)))
@@ -1488,9 +1475,7 @@ Version 2018-09-25"
   (interactive)
   (let ($p1 $p2)
     (if (region-active-p)
-        (progn
-          (setq $p1 (region-beginning))
-          (setq $p2 (region-end)))
+        (setq $p1 (region-beginning) $p2 (region-end))
       (save-excursion
         (if (re-search-backward "\n[ \t]*\n" nil "move")
             (progn
@@ -2605,9 +2590,7 @@ Version 2015-04-09"
   (interactive)
   (let ( $p1 $p2 )
     (if (use-region-p)
-        (progn
-          (setq $p1 (region-beginning))
-          (setq $p2 (region-end)))
+        (setq $p1 (region-beginning) $p2 (region-end))
       (save-excursion
         (skip-chars-backward "-_A-Za-z0-9")
         (setq $p1 (point))
