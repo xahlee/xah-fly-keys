@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 10.7.20181031111709
+;; Version: 10.7.20181124003757
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2063,17 +2063,7 @@ Version 2018-10-11"
 
 ;; misc
 
-(defun xah-display-form-feed-as-line ()
-  "Display the formfeed ^L char as line.
-Version 2016-10-11"
-  (interactive)
-  ;; 2016-10-11 thanks to Steve Purcell's page-break-lines.el
-  (progn
-    (when (not buffer-display-table)
-      (setq buffer-display-table (make-display-table)))
-    (aset buffer-display-table ?\^L
-          (vconcat (make-list 70 (make-glyph-code ?─ 'font-lock-comment-face))))
-    (redraw-frame)))
+
 
 (defun xah-user-buffer-q ()
   "Return t if current buffer is a user buffer, else nil.
@@ -3390,7 +3380,7 @@ Version 2017-01-21"
    ("." . xah-fly-dot-keymap)
    ("'" . xah-fill-or-unfill)
    ("," . xah-fly-comma-keymap)
-   ("-" . xah-display-form-feed-as-line)
+   ("-" . xah-show-formfeed-as-line)
    ;; /
    ;; ;
    ;; =
