@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 10.7.20181124003757
+;; Version: 10.7.20181129005700
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -840,6 +840,113 @@ Version 2015-12-22"
      ((looking-at "[[:upper:]]") (downcase-region (point) (1+ (point)))))
     (right-char)))
 
+(defun xah-upcase-sentence ()
+  "Upcase first letters of sentences of current text block or selection.
+
+URL `http://ergoemacs.org/emacs/emacs_upcase_sentence.html'
+Version 2018-09-25"
+  (interactive)
+  (let ($p1 $p2)
+    (if (region-active-p)
+        (setq $p1 (region-beginning) $p2 (region-end))
+      (save-excursion
+        (if (re-search-backward "\n[ \t]*\n" nil "move")
+            (progn
+              (setq $p1 (point))
+              (re-search-forward "\n[ \t]*\n"))
+          (setq $p1 (point)))
+        (progn
+          (re-search-forward "\n[ \t]*\n" nil "move")
+          (setq $p2 (point)))))
+    (save-excursion
+      (save-restriction
+        (narrow-to-region $p1 $p2)
+        (let ((case-fold-search nil))
+          (goto-char (point-min))
+          (while (re-search-forward "\\. \\{1,2\\}\\([a-z]\\)" nil "move") ; after period
+            (upcase-region (match-beginning 1) (match-end 1))
+            ;; (overlay-put (make-overlay (match-beginning 1) (match-end 1)) 'face '((t :background "red" :foreground "white")))
+            (overlay-put (make-overlay (match-beginning 1) (match-end 1)) 'face 'highlight))
+
+          ;;  new line after period
+          (goto-char (point-min))
+          (while (re-search-forward "\\. ?\n *\\([a-z]\\)" nil "move")
+            (upcase-region (match-beginning 1) (match-end 1))
+            (overlay-put (make-overlay (match-beginning 1) (match-end 1)) 'face 'highlight))
+
+          ;; after a blank line, after a bullet, or beginning of buffer
+          (goto-char (point-min))
+          (while (re-search-forward "\\(\\`\\|• \\|\n\n\\)\\([a-z]\\)" nil "move")
+            (upcase-region (match-beginning 2) (match-end 2))
+            (overlay-put (make-overlay (match-beginning 2) (match-end 2)) 'face 'highlight))
+
+          ;; for HTML. first letter after tag
+          (goto-char (point-min))
+          (while (re-search-forward "\\(<p>\\|<li>\\|<td>\\|<figcaption>\\)\\([a-z]\\)" nil "move")
+            (upcase-region (match-beginning 2) (match-end 2))
+            (overlay-put (make-overlay (match-beginning 2) (match-end 2)) 'face 'highlight))
+
+          (goto-char (point-min)))))))
+
+(defun xah-title-case-region-or-line (@begin @end)
+  "Title case text between nearest brackets, or current line, or text selection.
+Capitalize first letter of each word, except words like {to, of, the, a, in, or, and, …}. If a word already contains cap letters such as HTTP, URL, they are left as is.
+
+When called in a elisp program, @begin @end are region boundaries.
+URL `http://ergoemacs.org/emacs/elisp_title_case_text.html'
+Version 2017-01-11"
+  (interactive
+   (if (use-region-p)
+       (list (region-beginning) (region-end))
+     (let (
+           $p1
+           $p2
+           ($skipChars "^\"<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕"))
+       (progn
+         (skip-chars-backward $skipChars (line-beginning-position))
+         (setq $p1 (point))
+         (skip-chars-forward $skipChars (line-end-position))
+         (setq $p2 (point)))
+       (list $p1 $p2))))
+  (let* (
+         ($strPairs [
+                     [" A " " a "]
+                     [" And " " and "]
+                     [" At " " at "]
+                     [" As " " as "]
+                     [" By " " by "]
+                     [" Be " " be "]
+                     [" Into " " into "]
+                     [" In " " in "]
+                     [" Is " " is "]
+                     [" It " " it "]
+                     [" For " " for "]
+                     [" Of " " of "]
+                     [" Or " " or "]
+                     [" On " " on "]
+                     [" Via " " via "]
+                     [" The " " the "]
+                     [" That " " that "]
+                     [" To " " to "]
+                     [" Vs " " vs "]
+                     [" With " " with "]
+                     [" From " " from "]
+                     ["'S " "'s "]
+                     ["'T " "'t "]
+                     ]))
+    (save-excursion
+      (save-restriction
+        (narrow-to-region @begin @end)
+        (upcase-initials-region (point-min) (point-max))
+        (let ((case-fold-search nil))
+          (mapc
+           (lambda ($x)
+             (goto-char (point-min))
+             (while
+                 (search-forward (aref $x 0) nil t)
+               (replace-match (aref $x 1) "FIXEDCASE" "LITERAL")))
+           $strPairs))))))
+
 (defun xah-delete-blank-lines ()
   "Delete all newline around cursor.
 
@@ -1467,112 +1574,7 @@ version 2016-07-17"
   (require 'rect)
   (kill-new (mapconcat 'identity (extract-rectangle @begin @end) "\n")))
 
-(defun xah-upcase-sentence ()
-  "Upcase first letters of sentences of current text block or selection.
 
-URL `http://ergoemacs.org/emacs/emacs_upcase_sentence.html'
-Version 2018-09-25"
-  (interactive)
-  (let ($p1 $p2)
-    (if (region-active-p)
-        (setq $p1 (region-beginning) $p2 (region-end))
-      (save-excursion
-        (if (re-search-backward "\n[ \t]*\n" nil "move")
-            (progn
-              (setq $p1 (point))
-              (re-search-forward "\n[ \t]*\n"))
-          (setq $p1 (point)))
-        (progn
-          (re-search-forward "\n[ \t]*\n" nil "move")
-          (setq $p2 (point)))))
-    (save-excursion
-      (save-restriction
-        (narrow-to-region $p1 $p2)
-        (let ((case-fold-search nil))
-          (goto-char (point-min))
-          (while (re-search-forward "\\. \\{1,2\\}\\([a-z]\\)" nil "move") ; after period
-            (upcase-region (match-beginning 1) (match-end 1))
-            ;; (overlay-put (make-overlay (match-beginning 1) (match-end 1)) 'face '((t :background "red" :foreground "white")))
-            (overlay-put (make-overlay (match-beginning 1) (match-end 1)) 'face 'highlight))
-
-          ;;  new line after period
-          (goto-char (point-min))
-          (while (re-search-forward "\\. ?\n *\\([a-z]\\)" nil "move")
-            (upcase-region (match-beginning 1) (match-end 1))
-            (overlay-put (make-overlay (match-beginning 1) (match-end 1)) 'face 'highlight))
-
-          ;; after a blank line, after a bullet, or beginning of buffer
-          (goto-char (point-min))
-          (while (re-search-forward "\\(\\`\\|• \\|\n\n\\)\\([a-z]\\)" nil "move")
-            (upcase-region (match-beginning 2) (match-end 2))
-            (overlay-put (make-overlay (match-beginning 2) (match-end 2)) 'face 'highlight))
-
-          ;; for HTML. first letter after tag
-          (goto-char (point-min))
-          (while (re-search-forward "\\(<p>\\|<li>\\|<td>\\|<figcaption>\\)\\([a-z]\\)" nil "move")
-            (upcase-region (match-beginning 2) (match-end 2))
-            (overlay-put (make-overlay (match-beginning 2) (match-end 2)) 'face 'highlight))
-
-          (goto-char (point-min)))))))
-
-(defun xah-title-case-region-or-line (@begin @end)
-  "Title case text between nearest brackets, or current line, or text selection.
-Capitalize first letter of each word, except words like {to, of, the, a, in, or, and, …}. If a word already contains cap letters such as HTTP, URL, they are left as is.
-
-When called in a elisp program, @begin @end are region boundaries.
-URL `http://ergoemacs.org/emacs/elisp_title_case_text.html'
-Version 2017-01-11"
-  (interactive
-   (if (use-region-p)
-       (list (region-beginning) (region-end))
-     (let (
-           $p1
-           $p2
-           ($skipChars "^\"<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕"))
-       (progn
-         (skip-chars-backward $skipChars (line-beginning-position))
-         (setq $p1 (point))
-         (skip-chars-forward $skipChars (line-end-position))
-         (setq $p2 (point)))
-       (list $p1 $p2))))
-  (let* (
-         ($strPairs [
-                     [" A " " a "]
-                     [" And " " and "]
-                     [" At " " at "]
-                     [" As " " as "]
-                     [" By " " by "]
-                     [" Be " " be "]
-                     [" Into " " into "]
-                     [" In " " in "]
-                     [" Is " " is "]
-                     [" It " " it "]
-                     [" For " " for "]
-                     [" Of " " of "]
-                     [" Or " " or "]
-                     [" On " " on "]
-                     [" Via " " via "]
-                     [" The " " the "]
-                     [" That " " that "]
-                     [" To " " to "]
-                     [" Vs " " vs "]
-                     [" With " " with "]
-                     [" From " " from "]
-                     ["'S " "'s "]
-                     ["'T " "'t "]
-                     ]))
-    (save-excursion
-      (save-restriction
-        (narrow-to-region @begin @end)
-        (upcase-initials-region (point-min) (point-max))
-        (let ((case-fold-search nil))
-          (mapc
-           (lambda ($x)
-             (goto-char (point-min))
-             (while
-                 (search-forward (aref $x 0) nil t)
-               (replace-match (aref $x 1) "FIXEDCASE" "LITERAL")))
-           $strPairs))))))
 
 
 ;; insertion commands
@@ -3117,7 +3119,7 @@ Version 2017-01-21"
  ;; This keymap I've not used. things are here experimentally.
  ;; The TAB key is not in a very good ergonomic position on average keyboards, so 【leader tab ‹somekey›】 probably should not be used much.
  ;; Currently (2018-03-13), these are commands related to completion or indent, and I basically never use any of these (except sometimes complete-symbol).
- ;; For average use, the way it is now is probably justified, because most emacs users don't use these commands.
+ ;; For average user, the way it is now is probably justified, because most emacs users don't use these commands.
  ;; To customize this keymap see http://ergoemacs.org/misc/xah-fly-keys_customization.html.
  '(
    ("TAB" . indent-for-tab-command)
