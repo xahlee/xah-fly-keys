@@ -100,6 +100,10 @@
  ;; 【Ctrl++】 'text-scale-increase
  ;; 【Ctrl+-】 'text-scale-decrease
 
+;; To disable both Control and Meta shortcut keys, add the following lines to you init.el before (require 'xah-fly-keys):
+;; (setq xah-fly-use-control-key nil)
+;; (setq xah-fly-use-meta-key nil)
+
 ;; I highly recommend setting 【capslock】 to send 【Home】. So that it acts as `xah-fly-command-mode-activate'.
 ;; see
 ;; How to Make the CapsLock Key do Home Key
@@ -134,7 +138,6 @@
 (defvar xah-fly-insert-mode-activate-hook nil "Hook for `xah-fly-insert-mode-activate'")
 
 (defvar xah-fly-use-control-key t "if nil, do not bind any control key. When t, standard keys for open, close, paste, are bound.")
-
 (defvar xah-fly-use-meta-key t "if nil, do not bind any meta key.")
 
 
