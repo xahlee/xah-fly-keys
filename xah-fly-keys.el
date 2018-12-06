@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 10.7.20181129005700
+;; Version: 10.7.20181206052525
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -3428,7 +3428,7 @@ Version 2017-01-21"
    ("u" . switch-to-buffer)
    ;; v
    ("w" . xah-fly-w-keymap)
-   ;; x
+   ("x" . xah-toggle-previous-letter-case)
    ("y" . xah-show-kill-ring)
    ;; z
    ;;
