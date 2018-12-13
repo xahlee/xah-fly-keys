@@ -2704,38 +2704,24 @@ Version 2017-01-29"
   (interactive)
   (describe-function major-mode))
 
+
+
 ;;; input method handler
 
-(defcustom my-prefered-IMs '("none")
-  "List of preferred input methods as strings."
-  :type 'list)
-
 ;; TODO make this always buffer local?
-(defcustom my-input nil
-  "Currently chosen input method."
-  :type 'string)
+(defvar xah-input-method nil "Currently chosen input method.")
 
 (defun xah-set-input-method ()
-  "Choose from a list of preferred input methods.
-If an input method is already set, disable it.
-
-With prefix arg, prompt user for IM."
   (interactive)
-  (if (not current-prefix-arg)
-      (let* ((choice (ido-completing-read "IM:" my-prefered-IMs nil nil))
-             (new-IM choice))
-        (if (string= new-IM "none")
-            (setq my-input nil)
-          (set-input-method new-IM))
-        (setq my-input current-input-method)
-        (xah-fly-command-mode-activate))
-    ;; with prefix arg, prompt for IM
-    (set-input-method (completing-read "Input method: " input-method-alist))
-    (setq my-input current-input-method)
+  (let* ((IMs (mapcar 'car input-method-alist))
+         (choice (if (not xah-input-method)
+                     (command-execute 'set-input-method)
+                   nil)))
+    (setq xah-input-method choice)
+    (if xah-input-method
+        (message "Current IM set to \"%s\"" xah-input-method)
+      (message "IM turned off"))
     (xah-fly-command-mode-activate)))
-
-
-
 
 
 
@@ -3959,12 +3945,9 @@ URL `http://ergoemacs.org/misc/ergoemacs_vi_mode.html'"
     (add-hook 'minibuffer-setup-hook 'xah-fly-insert-mode-activate)
     (add-hook 'minibuffer-exit-hook 'xah-fly-command-mode-activate)
 
-    ;; hooks for handling IMs with `my-input-set'
     (add-hook 'xah-fly-command-mode-activate-hook (lambda () (set-input-method nil)))
-    (add-hook 'xah-fly-insert-mode-activate-hook (lambda () (set-input-method my-input)))
-    (add-hook 'minibuffer-setup-hook (lambda () (if (not (or (string= my-input "none")
-                                                       (null my-input)))
-                                               (set-input-method nil))) t)
+    (add-hook 'xah-fly-insert-mode-activate-hook (lambda () (set-input-method xah-input-method)))
+    (add-hook 'minibuffer-setup-hook (lambda () (if xah-input-method (set-input-method nil)) t))
     
     ;; (add-hook 'xah-fly-command-mode-activate-hook 'xah-fly-save-buffer-if-file)
     ;; when in shell mode, switch to insertion mode.
@@ -3982,9 +3965,10 @@ URL `http://ergoemacs.org/misc/ergoemacs_vi_mode.html'"
     (remove-hook 'minibuffer-setup-hook 'xah-fly-insert-mode-activate)
     (remove-hook 'minibuffer-exit-hook 'xah-fly-command-mode-activate)
     (remove-hook 'xah-fly-command-mode-activate-hook 'xah-fly-save-buffer-if-file)
-    (remove-hook 'shell-mode-hook 'xah-fly-insert-mode-activate))
+    (remove-hook 'shell-mode-hook 'xah-fly-insert-mode-activate)
+    (remove-hook 'minibuffer-setup-hook (lambda () (if xah-input-method (set-input-method nil))) t)
   (xah-fly-insert-mode-activate)
-  (xah-fly-keys 0))
+  (xah-fly-keys 0)))
 
 (provide 'xah-fly-keys)
 
