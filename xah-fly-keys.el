@@ -2704,6 +2704,39 @@ Version 2017-01-29"
   (interactive)
   (describe-function major-mode))
 
+;;; input method handler
+
+(defcustom my-prefered-IMs '("none")
+  "List of preferred input methods as strings."
+  :type 'list)
+
+;; TODO make this always buffer local?
+(defcustom my-input nil
+  "Currently chosen input method."
+  :type 'string)
+
+(defun xah-set-input-method ()
+  "Choose from a list of preferred input methods.
+If an input method is already set, disable it.
+
+With prefix arg, prompt user for IM."
+  (interactive)
+  (if (not current-prefix-arg)
+      (let* ((choice (ido-completing-read "IM:" my-prefered-IMs nil nil))
+             (new-IM choice))
+        (if (string= new-IM "none")
+            (setq my-input nil)
+          (set-input-method new-IM))
+        (setq my-input current-input-method)
+        (xah-fly-command-mode-activate))
+    ;; with prefix arg, prompt for IM
+    (set-input-method (completing-read "Input method: " input-method-alist))
+    (setq my-input current-input-method)
+    (xah-fly-command-mode-activate)))
+
+
+
+
 
 
 (defvar xah--dvorak-to-qwerty-kmap
@@ -3238,7 +3271,7 @@ Version 2017-01-21"
    ("." . toggle-frame-fullscreen)
    ("'" . frame-configuration-to-register)
    (";" . window-configuration-to-register)
-   ("1" . set-input-method)
+   ("1" . xah-set-input-method)
    ("2" . global-hl-line-mode)
    ("4" . global-display-line-numbers-mode)
    ("5" . visual-line-mode)
@@ -3391,7 +3424,7 @@ Version 2017-01-21"
    ;; ;
    ;; =
    ;; [
-   ("\\" . toggle-input-method)
+   ("\\" . xah-set-input-method)
    ;; `
 
    ;; 1
@@ -3925,6 +3958,14 @@ URL `http://ergoemacs.org/misc/ergoemacs_vi_mode.html'"
     ;; when going into minibuffer, switch to insertion mode.
     (add-hook 'minibuffer-setup-hook 'xah-fly-insert-mode-activate)
     (add-hook 'minibuffer-exit-hook 'xah-fly-command-mode-activate)
+
+    ;; hooks for handling IMs with `my-input-set'
+    (add-hook 'xah-fly-command-mode-activate-hook (lambda () (set-input-method nil)))
+    (add-hook 'xah-fly-insert-mode-activate-hook (lambda () (set-input-method my-input)))
+    (add-hook 'minibuffer-setup-hook (lambda () (if (not (or (string= my-input "none")
+                                                       (null my-input)))
+                                               (set-input-method nil))) t)
+    
     ;; (add-hook 'xah-fly-command-mode-activate-hook 'xah-fly-save-buffer-if-file)
     ;; when in shell mode, switch to insertion mode.
     ;; (add-hook 'shell-mode-hook 'xah-fly-insert-mode-activate)
