@@ -533,7 +533,7 @@ Version 2018-10-05"
       (funcall 'fundamental-mode)
       (setq buffer-offer-save t)
       (dolist (x kill-ring )
-        (insert x "\n\u000cttt\n\n"))
+        (insert x "\n\u000c\n\n"))
       (goto-char (point-min)))
     (when (fboundp 'xah-show-formfeed-as-line)
       (xah-show-formfeed-as-line))))
