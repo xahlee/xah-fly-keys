@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 10.7.20181206052525
+;; Version: 10.7.20190116003039
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -650,6 +650,7 @@ Version 2017-07-02"
       (goto-char $pt)
       (delete-char 1))))
 
+
 (defun xah-change-bracket-pairs ( @from-chars @to-chars)
   "Change bracket pairs from one type to another.
 
@@ -665,7 +666,7 @@ If @to-chars is equal to string “none”, the brackets are deleted.
  If the string has length greater than 2, the rest are ignored.
 
 URL `http://ergoemacs.org/emacs/elisp_change_brackets.html'
-Version 2018-03-31"
+Version 2018-12-29"
   (interactive
    (let (($bracketsList
           '("(paren)"
@@ -686,28 +687,29 @@ Version 2018-03-31"
             "『white corner』"
             "【LENTICULAR】"
             "〖white LENTICULAR〗"
-            "〈angle bracket〉"
-            "《double angle bracket》"
+            "〈angle〉"
+            "《double angle》"
             "〔TORTOISE〕"
+            "〘WHITE TORTOISE SHELL〙"
             "⦅white paren⦆"
             "〚white square〛"
-            "⦃white curly bracket⦄"
-            "〈angle bracket〉"
-            "⦑ANGLE BRACKET WITH DOT⦒"
-            "⧼CURVED ANGLE BRACKET⧽"
+            "⦃white curly⦄"
+            "〈angle〉"
+            "⦑ANGLE WITH DOT⦒"
+            "⧼CURVED ANGLE⧽"
             "⟦math square⟧"
             "⟨math angle⟩"
-            "⟪math DOUBLE ANGLE BRACKET⟫"
+            "⟪math DOUBLE ANGLE⟫"
             "⟮math FLATTENED PARENTHESIS⟯"
-            "⟬math WHITE TORTOISE SHELL BRACKET⟭"
+            "⟬math WHITE TORTOISE SHELL⟭"
             "❛HEAVY SINGLE QUOTATION MARK ORNAMENT❜"
             "❝HEAVY DOUBLE TURNED COMMA QUOTATION MARK ORNAMENT❞"
             "❨MEDIUM LEFT PARENTHESIS ORNAMENT❩"
             "❪MEDIUM FLATTENED LEFT PARENTHESIS ORNAMENT❫"
-            "❴MEDIUM LEFT CURLY BRACKET ORNAMENT❵"
-            "❬MEDIUM LEFT-POINTING ANGLE BRACKET ORNAMENT❭"
+            "❴MEDIUM LEFT CURLY ORNAMENT❵"
+            "❬MEDIUM LEFT-POINTING ANGLE ORNAMENT❭"
             "❮HEAVY LEFT-POINTING ANGLE QUOTATION MARK ORNAMENT❯"
-            "❰HEAVY LEFT-POINTING ANGLE BRACKET ORNAMENT❱"
+            "❰HEAVY LEFT-POINTING ANGLE ORNAMENT❱"
             "none"
             )))
      (list
@@ -1146,7 +1148,7 @@ When there is a text selection, act on the selection, else, act on a text block 
 If `universal-argument' is called first, use the number value for min length of line. By default, it's 70.
 
 URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
-Version 2018-09-01"
+Version 2018-12-16"
   (interactive)
   (let (
         $p1 $p2
@@ -3173,12 +3175,10 @@ Version 2017-01-21"
    ("RET" . insert-char)
    ("SPC" . xah-insert-unicode)
 
-   ("." . xah-insert-square-bracket)
    ("W" . xah-insert-double-angle-bracket《》)
    ("b" . xah-insert-black-lenticular-bracket【】)
    ("c" . xah-insert-ascii-single-quote)
    ("d" . xah-insert-double-curly-quote“”)
-   ("e" . xah-insert-paren)
    ("f" . xah-insert-emacs-quote)
    ("g" . xah-insert-ascii-double-quote)
    ("h" . xah-insert-brace) ; {}
@@ -3186,7 +3186,6 @@ Version 2017-01-21"
    ("l" . xah-insert-formfeed)
    ("m" . xah-insert-corner-bracket「」)
    ("n" . xah-insert-square-bracket) ; []
-   ("o" . xah-insert-brace) ; {}
    ("p" . xah-insert-single-angle-quote‹›)
    ("r" . xah-insert-tortoise-shell-bracket〔〕 )
    ("s" . xah-insert-string-assignment)
