@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 10.7.20190116003039
+;; Version: 10.7.20190116005358
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -525,15 +525,14 @@ Version 2017-07-25"
   "Insert all `kill-ring' content in a new buffer named *copy history*.
 
 URL `http://ergoemacs.org/emacs/emacs_show_kill_ring.html'
-Version 2018-10-05"
+Version 2019-01-16"
   (interactive)
   (let (($buf (generate-new-buffer "*copy history*")))
     (progn
       (switch-to-buffer $buf)
       (funcall 'fundamental-mode)
-      (setq buffer-offer-save t)
       (dolist (x kill-ring )
-        (insert x "\n\u000cttt\n\n"))
+        (insert x "\n\n\u000cttt\n\n"))
       (goto-char (point-min)))
     (when (fboundp 'xah-show-formfeed-as-line)
       (xah-show-formfeed-as-line))))
