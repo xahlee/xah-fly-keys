@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 10.7.20190124133000
+;; Version: 10.8.20190130151324
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -190,7 +190,7 @@ Version 2018-06-04"
     (end-of-line)))
 
 (defvar xah-brackets nil "string of left/right brackets pairs.")
-(setq xah-brackets "()[]{}<>（）［］｛｝⦅⦆〚〛⦃⦄“”‘’‹›«»「」〈〉《》【】〔〕⦗⦘『』〖〗〘〙｢｣⟦⟧⟨⟩⟪⟫⟮⟯⟬⟭⌈⌉⌊⌋⦇⦈⦉⦊❛❜❝❞❨❩❪❫❴❵❬❭❮❯❰❱❲❳〈〉⦑⦒⧼⧽﹙﹚﹛﹜﹝﹞⁽⁾₍₎⦋⦌⦍⦎⦏⦐⁅⁆⸢⸣⸤⸥⟅⟆⦓⦔⦕⦖⸦⸧⸨⸩｟｠⧘⧙⧚⧛⸜⸝⸌⸍⸂⸃⸄⸅⸉⸊᚛᚜༺༻༼༽⏜⏝⎴⎵⏞⏟⏠⏡﹁﹂﹃﹄︹︺︻︼︗︘︿﹀︽︾﹇﹈︷︸")
+(setq xah-brackets "()[]{}<>＜＞（）［］｛｝⦅⦆〚〛⦃⦄“”‘’‹›«»「」〈〉《》【】〔〕⦗⦘『』〖〗〘〙｢｣⟦⟧⟨⟩⟪⟫⟮⟯⟬⟭⌈⌉⌊⌋⦇⦈⦉⦊❛❜❝❞❨❩❪❫❴❵❬❭❮❯❰❱❲❳〈〉⦑⦒⧼⧽﹙﹚﹛﹜﹝﹞⁽⁾₍₎⦋⦌⦍⦎⦏⦐⁅⁆⸢⸣⸤⸥⟅⟆⦓⦔⦕⦖⸦⸧⸨⸩｟｠⧘⧙⧚⧛⸜⸝⸌⸍⸂⸃⸄⸅⸉⸊᚛᚜༺༻༼༽⏜⏝⎴⎵⏞⏟⏠⏡﹁﹂﹃﹄︹︺︻︼︗︘︿﹀︽︾﹇﹈︷︸")
 
 (defvar xah-left-brackets '("(" "{" "[" "<" "〔" "【" "〖" "〈" "《" "「" "『" "“" "‘" "‹" "«" )
   "List of left bracket chars.")
@@ -1021,6 +1021,38 @@ Version 2018-04-20"
           (insert "\n"))))
      (t (progn
           (message "nothing done. logic error 40873. shouldn't reach here" ))))))
+
+(defun xah-toggle-read-novel-mode ()
+  "Setup current frame to be suitable for reading long novel/article text.
+
+• Set frame width to 70
+• Line wrap at word boundaries.
+• Line spacing is increased.
+• Proportional width font is used.
+
+Call again to toggle back.
+URL `http://ergoemacs.org/emacs/emacs_novel_reading_mode.html'
+Version 2019-01-30"
+  (interactive)
+  (let ()
+    (if (eq (frame-parameter (selected-frame) 'width) 70)
+        (progn
+          (set-frame-parameter (selected-frame) 'width 106)
+          (variable-pitch-mode 0)
+          (setq line-spacing nil)
+          (setq word-wrap nil)
+          ;;
+          )
+      (progn
+        (set-frame-parameter (selected-frame) 'width 70)
+        (variable-pitch-mode 1)
+        (setq line-spacing 0.4)
+        (setq word-wrap t)
+        ;;
+        ))
+    ;;
+    )
+  (redraw-frame (selected-frame)))
 
 (defun xah-fill-or-unfill ()
   "Reformat current paragraph or region to `fill-column', like `fill-paragraph' or “unfill”.
