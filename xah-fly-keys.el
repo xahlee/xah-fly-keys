@@ -1,9 +1,9 @@
 ;;; xah-fly-keys.el --- ergonomic modal keybinding minor mode. -*- coding: utf-8; lexical-binding: t; -*-
 
-;; Copyright © 2013-2017, by Xah Lee
+;; Copyright © 2013-2019, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 10.8.20190130151324
+;; Version: 10.8.20190201091151
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -3287,7 +3287,7 @@ Version 2017-01-21"
    ("d" . narrow-to-page)
    ("e" . eshell)
    ;; f
-   ;; g
+   ("g" . xah-toggle-read-novel-mode)
    ("h" . widen)
    ("i" . make-frame-command)
    ("j" . flyspell-buffer)
