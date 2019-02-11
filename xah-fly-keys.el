@@ -37,7 +37,7 @@
 ;; "azerty"
 ;; "azerty-be"
 ;; "dvorak"
-;; "programer-dvorak"
+;; "programmer-dvorak"
 ;; "colemak"
 ;; "colemak-mod-dh"
 ;; "workman"
@@ -3103,131 +3103,40 @@ Version 2017-01-29"
     )
   "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding Programmer Dvorak layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
 
-(defun xah--dvorak-to-qwerty (@charstr)
-  "Convert dvorak key to qwerty. @charstr is a string of single char.
-For example, \"e\" becomes \"d\".
-If length of @charstr is greater than 1, such as \"TAB\", @charstr is returned unchanged.
-Version 2017-02-10"
-  (interactive)
-  (if (> (length @charstr) 1)
-      @charstr
-    (let (($result (assoc @charstr xah--dvorak-to-qwerty-kmap)))
-      (if $result
-          (cdr $result)
-        @charstr
-        ))))
+(defmacro xah--generate-keymap-function (to)
+  "Generate a xan--dvorak-to-{to} functions using xah--dvorak-to-{to}-kmap
+  The generated function will convert a dvorak key to a {to} key.
+  For example in the case of dvorak to qwerty \"e\" becomes \"d\".
+  If the lenght is exactly 2 and the @charstr starts with \"?-\" we attempt to
+  convert the character after \"?-\".
+  If the lenght of @charstr is greater than 1, such as \"TAB\", @charstr is returned unchanged.
+  Version 2019-02-11"
+  `(defun ,(intern (format "xah--dvorak-to-%s" to)) (@charstr)
+    (interactive)
+    (cond
+     ((= (length @charstr) 1)
+      (let (($result (assoc @charstr ,(intern (format "xah--dvorak-to-%s-kmap" to)))))
+       (if $result
+        (cdr $result)
+        @charstr)))
+     ((and
+       (= (length @charstr) 3)
+       (string-equal "-" (substring @charstr 1 2)))
+      (let (($result (assoc (substring @charstr -1) ,(intern (format "xah--dvorak-to-%s-kmap" to)))))
+       (if $result
+        (concat (substring @charstr 0 1) "-" (cdr $result))
+        @charstr)))
+     (t @charstr))))
 
-(defun xah--dvorak-to-qwerty-abnt (@charstr)
-  "Convert dvorak key to qwerty0abnt (Brazilian Portuguese). @charstr is a string of single char.
-For example, \"e\" becomes \"d\".
-If length of @charstr is greater than 1, such as \"TAB\", @charstr is returned unchanged.
-Version 2017-02-10"
-  (interactive)
-  (if (> (length @charstr) 1)
-      @charstr
-    (let (($result (assoc @charstr xah--dvorak-to-qwerty-abnt-kmap)))
-      (if $result
-          (cdr $result)
-        @charstr
-        ))))
-
-(defun xah--dvorak-to-qwertz (@charstr)
-  "Convert dvorak key to qwertz. @charstr is a string of single char.
-For example, \"e\" becomes \"d\".
-If length of @charstr is greater than 1, such as \"TAB\", @charstr is returned unchanged.
-Version 2017-09-13"
-  (interactive)
-  (if (> (length @charstr) 1)
-      @charstr
-    (let (($result (assoc @charstr xah--dvorak-to-qwertz-kmap)))
-      (if $result
-          (cdr $result)
-        @charstr
-        ))))
-
-(defun xah--dvorak-to-azerty(@charstr)
-  "Convert dvorak key to azerty. @charstr is a string of single char.
-For example, \"e\" becomes \"d\".
-If length of @charstr is greater than 1, such as \"TAB\", @charstr is returned unchanged.
-Version 2017-09-13"
-  (interactive)
-  (if (> (length @charstr) 1)
-      @charstr
-    (let (($result (assoc @charstr xah--dvorak-to-azerty-kmap)))
-      (if $result
-          (cdr $result)
-        @charstr
-        ))))
-
-(defun xah--dvorak-to-azerty-be (@charstr)
-  "Convert dvorak key to azerty-be. @charstr is a string of single char.
-For example, \"e\" becomes \"d\".
-If length of @charstr is greater than 1, such as \"TAB\", @charstr is returned unchanged.
-Version 2017-09-13"
-  (interactive)
-  (if (> (length @charstr) 1)
-      @charstr
-    (let (($result (assoc @charstr xah--dvorak-to-azerty-be-kmap)))
-      (if $result
-          (cdr $result)
-        @charstr
-        ))))
-
-(defun xah--dvorak-to-workman (@charstr)
-  "Convert dvorak key to workman. @charstr is a string of single char.
-For example, \"e\" becomes \"h\".
-If length of @charstr is greater than 1, such as \"TAB\", @charstr is returned unchanged.
-Version 2017-07-27"
-  (interactive)
-  (if (> (length @charstr) 1)
-      @charstr
-    (let (($result (assoc @charstr xah--dvorak-to-workman-kmap)))
-      (if $result
-          (cdr $result)
-        @charstr
-        ))))
-
-(defun xah--dvorak-to-colemak-mod-dh (@charstr)
-  "Convert dvorak key to Colemak Mod-DH. @charstr is a string of single char.
-For example, \"e\" becomes \"s\".
-If length of @charstr is greater than 1, such as \"TAB\", @charstr is returned unchanged.
-Version 2018-01-25"
-  (interactive)
-  (if (> (length @charstr) 1)
-      @charstr
-    (let (($result (assoc @charstr xah--dvorak-to-colemak-mod-dh-kmap)))
-      (if $result
-          (cdr $result)
-        @charstr
-        ))))
-
-(defun xah--dvorak-to-colemak (@charstr)
-  "Convert dvorak key to Colemak. @charstr is a string of single char.
-For example, \"e\" becomes \"s\".
-If length of @charstr is greater than 1, such as \"TAB\", @charstr is returned unchanged.
-Version 2018-05-21"
-  (interactive)
-  (if (> (length @charstr) 1)
-      @charstr
-    (let (($result (assoc @charstr xah--dvorak-to-colemak-kmap)))
-      (if $result
-          (cdr $result)
-        @charstr
-        ))))
-
-(defun xah--dvorak-to-programer-dvorak (@charstr)
-  "Convert dvorak key to Programmer Dvorak. @charstr is a string of single char.
-For example, \"e\" becomes \"d\".
-If length of @charstr is greater than 1, such as \"TAB\", @charstr is returned unchanged.
-Version 2017-12-29"
-  (interactive)
-  (if (> (length @charstr) 1)
-      @charstr
-    (let (($result (assoc @charstr xah--dvorak-to-programer-dvorak-kmap)))
-      (if $result
-          (cdr $result)
-        @charstr
-        ))))
+(xah--generate-keymap-function "qwerty")
+(xah--generate-keymap-function "qwerty-abnt")
+(xah--generate-keymap-function "qwertz")
+(xah--generate-keymap-function "azerty")
+(xah--generate-keymap-function "azerty-be")
+(xah--generate-keymap-function "workman")
+(xah--generate-keymap-function "colemak-mod-dh")
+(xah--generate-keymap-function "colemak")
+(xah--generate-keymap-function "programmer-dvorak")
 
 (defun xah-fly--key-char (@charstr)
   "Return the corresponding char @charstr according to current `xah-fly-key--current-layout'.
@@ -3243,7 +3152,7 @@ Version 2017-12-29"
    ((string-equal xah-fly-key--current-layout "workman") (xah--dvorak-to-workman @charstr))
    ((string-equal xah-fly-key--current-layout "colemak") (xah--dvorak-to-colemak @charstr))
    ((string-equal xah-fly-key--current-layout "colemak-mod-dh") (xah--dvorak-to-colemak-mod-dh @charstr))
-   ((string-equal xah-fly-key--current-layout "programer-dvorak") (xah--dvorak-to-programer-dvorak @charstr))
+   ((string-equal xah-fly-key--current-layout "programmer-dvorak") (xah--dvorak-to-programer-dvorak @charstr))
    (t @charstr)))
 
 (defun xah-fly--define-keys (@keymap-name @key-cmd-alist)
@@ -3260,7 +3169,7 @@ Version 2017-01-21"
   (interactive)
   (mapc
    (lambda ($pair)
-     (define-key @keymap-name (xah-fly--key-char (kbd (car $pair))) (cdr $pair)))
+     (define-key @keymap-name (kbd (xah-fly--key-char (car $pair))) (cdr $pair)))
    @key-cmd-alist))
 
 
@@ -3784,26 +3693,27 @@ Version 2017-01-21"
 
       ;; (if xah-fly-swapped-1-8-and-2-7-p
       ;;     (progn
-      ;;       (define-key xah-fly-key-map (kbd "C-2") 'xah-previous-user-buffer)
-      ;;       (define-key xah-fly-key-map (kbd "C-1") 'xah-next-user-buffer))
+      ;;       (define-key xah-fly-key-map (kbd (xah-fly--key-char "C-2")) 'xah-previous-user-buffer)
+      ;;       (define-key xah-fly-key-map (kbd (xah-fly--key-char "C-1")) 'xah-next-user-buffer))
       ;;   (progn
-      ;;     (define-key xah-fly-key-map (kbd "C-7") 'xah-previous-user-buffer)
-      ;;     (define-key xah-fly-key-map (kbd "C-8") 'xah-next-user-buffer)))
+      ;;     (define-key xah-fly-key-map (kbd (xah-fly--key-char "C-7")) 'xah-previous-user-buffer)
+      ;;     (define-key xah-fly-key-map (kbd (xah-fly--key-char "C-8")) 'xah-next-user-buffer)))
 
-      (define-key xah-fly-key-map (kbd "C-9") 'scroll-down-command)
-      (define-key xah-fly-key-map (kbd "C-0") 'scroll-up-command)
+      (define-key xah-fly-key-map (kbd (xah-fly--key-char "C-9")) 'scroll-down-command)
+      (define-key xah-fly-key-map (kbd (xah-fly--key-char "C-0")) 'scroll-up-command)
 
-      (define-key xah-fly-key-map (kbd "C-1") 'xah-next-user-buffer)
-      (define-key xah-fly-key-map (kbd "C-2") 'xah-previous-user-buffer)
-      (define-key xah-fly-key-map (kbd "C-7") 'xah-previous-user-buffer)
-      (define-key xah-fly-key-map (kbd "C-8") 'xah-next-user-buffer)
+      (define-key xah-fly-key-map (kbd (xah-fly--key-char "C-1")) 'xah-next-user-buffer)
+      (define-key xah-fly-key-map (kbd (xah-fly--key-char "C-2")) 'xah-previous-user-buffer)
+      (define-key xah-fly-key-map (kbd (xah-fly--key-char "C-7")) 'xah-previous-user-buffer)
+      (define-key xah-fly-key-map (kbd (xah-fly--key-char "C-8")) 'xah-next-user-buffer)
 
-      (define-key xah-fly-key-map (kbd "C-5") 'xah-previous-emacs-buffer)
-      (define-key xah-fly-key-map (kbd "C-6") 'xah-next-emacs-buffer)
+      (define-key xah-fly-key-map (kbd (xah-fly--key-char "C-5")) 'xah-previous-emacs-buffer)
+      (define-key xah-fly-key-map (kbd (xah-fly--key-char "C-6")) 'xah-next-emacs-buffer)
 
-      (define-key xah-fly-key-map (kbd "C-3") 'previous-error)
-      (define-key xah-fly-key-map (kbd "C-4") 'next-error)
+      (define-key xah-fly-key-map (kbd (xah-fly--key-char "C-3")) 'previous-error)
+      (define-key xah-fly-key-map (kbd (xah-fly--key-char "C-4")) 'next-error)
 
+      ;; No xan-fly--keychar here as these are based on common shortcuts
       (define-key xah-fly-key-map (kbd "C-a") 'mark-whole-buffer)
       (define-key xah-fly-key-map (kbd "C-n") 'xah-new-empty-buffer)
       (define-key xah-fly-key-map (kbd "C-S-n") 'make-frame-command)
@@ -3835,7 +3745,7 @@ Version 2017-01-21"
 
 (defun xah-fly-keys-set-layout (@layout)
   "Set a keyboard layout.
-Argument should be one of:  \"qwerty\", \"qwerty-abnt\", \"qwertz\", \"azerty\", \"azerty-be\", \"dvorak\", \"workman\", \"colemak\", \"colemak-mod-dh\", \"programer-dvorak\"
+Argument should be one of:  \"qwerty\", \"qwerty-abnt\", \"qwertz\", \"azerty\", \"azerty-be\", \"dvorak\", \"workman\", \"colemak\", \"colemak-mod-dh\", \"programmer-dvorak\"
 Version 2018-04-25"
   (interactive)
   (setq xah-fly-key--current-layout @layout)
@@ -3908,7 +3818,7 @@ Version 2017-01-21"
      ("y" . set-mark-command)
      ("z" . xah-goto-matching-bracket)))
 
-  (define-key xah-fly-key-map (kbd "a")
+  (define-key xah-fly-key-map (kbd (xah-fly--key-char "a"))
     (if (fboundp 'smex) 'smex (if (fboundp 'helm-M-x) 'helm-M-x 'execute-extended-command)))
 
   ;; (when xah-fly-swapped-1-8-and-2-7-p
