@@ -34,6 +34,8 @@
 ;; "qwerty"
 ;; "qwerty-abnt"
 ;; "qwertz"
+;; "azerty"
+;; "azerty-be"
 ;; "dvorak"
 ;; "programer-dvorak"
 ;; "colemak"
@@ -2857,6 +2859,106 @@ Version 2017-01-29"
     ("z" . "-"))
   "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding QWERTZ. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
 
+(defvar xah--dvorak-to-azerty-kmap
+  '(("." . "e")
+    ("," . "z")
+    ("'" . "a")
+    (";" . "w")
+    ("/" . "^") ; NOTE: this is a dead key
+    ("[" . ")")
+    ("]" . "=")
+    ("=" . "$")
+    ("-" . "ù")
+    ("a" . "q")
+    ("b" . "n")
+    ("c" . "i")
+    ("d" . "h")
+    ("e" . "d")
+    ("f" . "y")
+    ("g" . "u")
+    ("h" . "j")
+    ("i" . "g")
+    ("j" . "c")
+    ("k" . "v")
+    ("l" . "p")
+    ("m" . ",")
+    ("n" . "l")
+    ("o" . "s")
+    ("p" . "r")
+    ("q" . "x")
+    ("r" . "o")
+    ("s" . "m")
+    ("t" . "k")
+    ("u" . "f")
+    ("v" . ":")
+    ("w" . ";")
+    ("x" . "b")
+    ("y" . "t")
+    ("z" . "!")
+    ("1" . "&")
+    ("2" . "é")
+    ("3" . "\"")
+    ("4" . "'")
+    ("5" . "(")
+    ("6" . "-")
+    ("7" . "è")
+    ("8" . "_")
+    ("9" . "ç")
+    ("0" . "à")
+    ("\\" . "*")
+    ("`" . "²"))
+  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding AZERTY. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+
+(defvar xah--dvorak-to-azerty-be-kmap
+  '(("." . "e")
+    ("," . "z")
+    ("'" . "a")
+    (";" . "w")
+    ("/" . "^") ; NOTE: this is a dead key
+    ("[" . ")")
+    ("]" . "-")
+    ("=" . "$")
+    ("-" . "ù")
+    ("a" . "q")
+    ("b" . "n")
+    ("c" . "i")
+    ("d" . "h")
+    ("e" . "d")
+    ("f" . "y")
+    ("g" . "u")
+    ("h" . "j")
+    ("i" . "g")
+    ("j" . "c")
+    ("k" . "v")
+    ("l" . "p")
+    ("m" . ",")
+    ("n" . "l")
+    ("o" . "s")
+    ("p" . "r")
+    ("q" . "x")
+    ("r" . "o")
+    ("s" . "m")
+    ("t" . "k")
+    ("u" . "f")
+    ("v" . ":")
+    ("w" . ";")
+    ("x" . "b")
+    ("y" . "t")
+    ("z" . "=")
+    ("1" . "&")
+    ("2" . "é")
+    ("3" . "\"")
+    ("4" . "'")
+    ("5" . "(")
+    ("6" . "§")
+    ("7" . "è")
+    ("8" . "!")
+    ("9" . "ç")
+    ("0" . "à")
+    ("\\" . "µ")
+    ("`" . "²"))
+  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding AZERTY-BE. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+
 (defvar xah--dvorak-to-workman-kmap
   '(("'" . "q")
     ("," . "d")
@@ -3043,6 +3145,34 @@ Version 2017-09-13"
         @charstr
         ))))
 
+(defun xah--dvorak-to-azerty(@charstr)
+  "Convert dvorak key to azerty. @charstr is a string of single char.
+For example, \"e\" becomes \"d\".
+If length of @charstr is greater than 1, such as \"TAB\", @charstr is returned unchanged.
+Version 2017-09-13"
+  (interactive)
+  (if (> (length @charstr) 1)
+      @charstr
+    (let (($result (assoc @charstr xah--dvorak-to-azerty-kmap)))
+      (if $result
+          (cdr $result)
+        @charstr
+        ))))
+
+(defun xah--dvorak-to-azerty-be (@charstr)
+  "Convert dvorak key to azerty-be. @charstr is a string of single char.
+For example, \"e\" becomes \"d\".
+If length of @charstr is greater than 1, such as \"TAB\", @charstr is returned unchanged.
+Version 2017-09-13"
+  (interactive)
+  (if (> (length @charstr) 1)
+      @charstr
+    (let (($result (assoc @charstr xah--dvorak-to-azerty-be-kmap)))
+      (if $result
+          (cdr $result)
+        @charstr
+        ))))
+
 (defun xah--dvorak-to-workman (@charstr)
   "Convert dvorak key to workman. @charstr is a string of single char.
 For example, \"e\" becomes \"h\".
@@ -3108,6 +3238,8 @@ Version 2017-12-29"
    ((string-equal xah-fly-key--current-layout "qwerty") (xah--dvorak-to-qwerty @charstr))
    ((string-equal xah-fly-key--current-layout "qwerty-abnt") (xah--dvorak-to-qwerty-abnt @charstr))
    ((string-equal xah-fly-key--current-layout "qwertz") (xah--dvorak-to-qwertz @charstr))
+   ((string-equal xah-fly-key--current-layout "azerty") (xah--dvorak-to-azerty @charstr))
+   ((string-equal xah-fly-key--current-layout "azerty-be") (xah--dvorak-to-azerty-be @charstr))
    ((string-equal xah-fly-key--current-layout "workman") (xah--dvorak-to-workman @charstr))
    ((string-equal xah-fly-key--current-layout "colemak") (xah--dvorak-to-colemak @charstr))
    ((string-equal xah-fly-key--current-layout "colemak-mod-dh") (xah--dvorak-to-colemak-mod-dh @charstr))
@@ -3703,7 +3835,7 @@ Version 2017-01-21"
 
 (defun xah-fly-keys-set-layout (@layout)
   "Set a keyboard layout.
-Argument should be one of:  \"qwerty\", \"dvorak\", \"workman\", \"colemak\", \"colemak-mod-dh\", \"programer-dvorak\"
+Argument should be one of:  \"qwerty\", \"qwerty-abnt\", \"qwertz\", \"azerty\", \"azerty-be\", \"dvorak\", \"workman\", \"colemak\", \"colemak-mod-dh\", \"programer-dvorak\"
 Version 2018-04-25"
   (interactive)
   (setq xah-fly-key--current-layout @layout)
