@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2019, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 10.8.20190201091151
+;; Version: 10.9.20190212191118
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -28,21 +28,20 @@
 
 ;; (add-to-list 'load-path "~/.emacs.d/lisp/")
 ;; (require 'xah-fly-keys)
-;; (xah-fly-keys-set-layout "qwerty") ; required if you use qwerty
+;; (xah-fly-keys-set-layout "qwerty") ; required
 
 ;; possible layout values:
+
+;; "azerty"
+;; "azerty-be"
+;; "colemak"
+;; "colemak-mod-dh"
+;; "dvorak"
+;; "programer-dvorak"
 ;; "qwerty"
 ;; "qwerty-abnt"
 ;; "qwertz"
-;; "azerty"
-;; "azerty-be"
-;; "dvorak"
-;; "programmer-dvorak"
-;; "colemak"
-;; "colemak-mod-dh"
 ;; "workman"
-
-;; dvorak is the default
 
 ;; (xah-fly-keys 1)
 
@@ -61,7 +60,7 @@
 ;; 【f】 (or Dvorak 【u】) activates insertion mode.
 ;; 【Space】 is a leader key. For example, 【SPACE r】 (Dvorak 【SPACE p】) calls query-replace. Press 【SPACE C-h】 to see the full list.
 ;; 【Space Space】 also activates insertion mode.
-;; 【Space Enter】 calls execute-extended-command or smex or helm (if they are installed).
+;; 【Space Enter】 calls execute-extended-command.
 ;; 【a】 calls execute-extended-command or smex or helm (if they are installed).
 
 ;; The leader key sequence basically replace ALL emacs commands that starts with C-x key.
@@ -111,7 +110,7 @@
 ;; How to Make the CapsLock Key do Home Key
 ;; http://ergoemacs.org/misc/capslock_do_home_key.html
 
-;; If you have a bug, post on github. Or post comment xah-fly-keys home page for small questions.
+;; If you have a bug, post on github.
 
 ;; For detail about design and other info, see home page at
 ;; http://ergoemacs.org/misc/ergoemacs_vi_mode.html
@@ -129,12 +128,6 @@
 
 (when (version<= emacs-version "26.0.50"  )
   (defalias 'global-display-line-numbers-mode 'linum-mode ))
-
-(defvar
-  xah-fly-key--current-layout
-  nil
-  "The current keyboard layout. Use `xah-fly-keys-set-layout' to set the layout."
-  )
 
 (defvar xah-fly-command-mode-activate-hook nil "Hook for `xah-fly-command-mode-activate'")
 (defvar xah-fly-insert-mode-activate-hook nil "Hook for `xah-fly-insert-mode-activate'")
@@ -651,7 +644,6 @@ Version 2017-07-02"
       (goto-char $pt)
       (delete-char 1))))
 
-
 (defun xah-change-bracket-pairs ( @from-chars @to-chars)
   "Change bracket pairs from one type to another.
 
@@ -660,14 +652,12 @@ For example, change all parenthesis () to square brackets [].
 Works on selected text, or current text block.
 
 When called in lisp program, @from-chars or @to-chars is a string of bracket pair. eg \"(paren)\",  \"[bracket]\", etc.
-The first and last characters are used.
+The first and last characters are used. (the middle is for convenience in ido selection.)
 If the string contains “,2”, then the first 2 chars and last 2 chars are used, for example  \"[[bracket,2]]\".
 If @to-chars is equal to string “none”, the brackets are deleted.
 
- If the string has length greater than 2, the rest are ignored.
-
 URL `http://ergoemacs.org/emacs/elisp_change_brackets.html'
-Version 2018-12-29"
+Version 2019-02-12"
   (interactive
    (let (($bracketsList
           '("(paren)"
@@ -1414,9 +1404,9 @@ The region to work on is by this order:
  ③ else, work on current line.
 
 URL `http://ergoemacs.org/emacs/elisp_change_space-hyphen_underscore.html'
-Version 2018-06-04"
+Version 2019-02-12"
   (interactive)
-  ;; this function sets a property 「'state」. Possible values are 0 to length of -charArray.
+  ;; this function sets a property 「'state」. Possible values are 0 to length of $charArray.
   (let ($p1 $p2)
     (if (and @begin @end)
         (progn (setq $p1 @begin $p2 @end))
@@ -1611,8 +1601,6 @@ version 2016-07-17"
   (interactive "r")
   (require 'rect)
   (kill-new (mapconcat 'identity (extract-rectangle @begin @end) "\n")))
-
-
 
 
 ;; insertion commands
@@ -2102,8 +2090,6 @@ Version 2018-10-11"
 
 
 ;; misc
-
-
 
 (defun xah-user-buffer-q ()
   "Return t if current buffer is a user buffer, else nil.
@@ -2744,6 +2730,218 @@ Version 2017-01-29"
   (describe-function major-mode))
 
 
+;; key maps for conversion
+
+(defvar xah--dvorak-to-azerty-kmap
+  '(("." . "e")
+    ("," . "z")
+    ("'" . "a")
+    (";" . "w")
+    ("/" . "^") ; NOTE: this is a dead key
+    ("[" . ")")
+    ("]" . "=")
+    ("=" . "$")
+    ("-" . "ù")
+    ("a" . "q")
+    ("b" . "n")
+    ("c" . "i")
+    ("d" . "h")
+    ("e" . "d")
+    ("f" . "y")
+    ("g" . "u")
+    ("h" . "j")
+    ("i" . "g")
+    ("j" . "c")
+    ("k" . "v")
+    ("l" . "p")
+    ("m" . ",")
+    ("n" . "l")
+    ("o" . "s")
+    ("p" . "r")
+    ("q" . "x")
+    ("r" . "o")
+    ("s" . "m")
+    ("t" . "k")
+    ("u" . "f")
+    ("v" . ":")
+    ("w" . ";")
+    ("x" . "b")
+    ("y" . "t")
+    ("z" . "!")
+    ("1" . "&")
+    ("2" . "é")
+    ("3" . "\"")
+    ("4" . "'")
+    ("5" . "(")
+    ("6" . "-")
+    ("7" . "è")
+    ("8" . "_")
+    ("9" . "ç")
+    ("0" . "à")
+    ("\\" . "*")
+    ("`" . "²"))
+  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding AZERTY. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+
+(defvar xah--dvorak-to-azerty-be-kmap
+  '(("." . "e")
+    ("," . "z")
+    ("'" . "a")
+    (";" . "w")
+    ("/" . "^") ; NOTE: this is a dead key
+    ("[" . ")")
+    ("]" . "-")
+    ("=" . "$")
+    ("-" . "ù")
+    ("a" . "q")
+    ("b" . "n")
+    ("c" . "i")
+    ("d" . "h")
+    ("e" . "d")
+    ("f" . "y")
+    ("g" . "u")
+    ("h" . "j")
+    ("i" . "g")
+    ("j" . "c")
+    ("k" . "v")
+    ("l" . "p")
+    ("m" . ",")
+    ("n" . "l")
+    ("o" . "s")
+    ("p" . "r")
+    ("q" . "x")
+    ("r" . "o")
+    ("s" . "m")
+    ("t" . "k")
+    ("u" . "f")
+    ("v" . ":")
+    ("w" . ";")
+    ("x" . "b")
+    ("y" . "t")
+    ("z" . "=")
+    ("1" . "&")
+    ("2" . "é")
+    ("3" . "\"")
+    ("4" . "'")
+    ("5" . "(")
+    ("6" . "§")
+    ("7" . "è")
+    ("8" . "!")
+    ("9" . "ç")
+    ("0" . "à")
+    ("\\" . "µ")
+    ("`" . "²"))
+  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding AZERTY-BE. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+
+(defvar xah--dvorak-to-colemak-kmap
+  '(("'" . "q")
+    ("," . "w")
+    ("." . "f")
+    ("p" . "p")
+    ("y" . "g")
+    ("f" . "j")
+    ("g" . "l")
+    ("c" . "u")
+    ("r" . "y")
+    ("l" . ";")
+    ("a" . "a")
+    ("o" . "r")
+    ("e" . "s")
+    ("u" . "t")
+    ("i" . "d")
+    ("d" . "h")
+    ("h" . "n")
+    ("t" . "e")
+    ("n" . "i")
+    ("s" . "o")
+    (";" . "z")
+    ("q" . "x")
+    ("j" . "c")
+    ("k" . "v")
+    ("x" . "b")
+    ("b" . "k")
+    ("m" . "m")
+    ("w" . ",")
+    ("v" . ".")
+    ("z" . "/"))
+  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding Colemak layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+
+(defvar xah--dvorak-to-colemak-mod-dh-kmap
+  '(("'" . "q")
+    ("," . "w")
+    ("." . "f")
+    ("p" . "p")
+    ("y" . "b")
+    ("f" . "j")
+    ("g" . "l")
+    ("c" . "u")
+    ("r" . "y")
+    ("l" . ";")
+    ("a" . "a")
+    ("o" . "r")
+    ("e" . "s")
+    ("u" . "t")
+    ("i" . "g")
+    ("d" . "k")
+    ("h" . "n")
+    ("t" . "e")
+    ("n" . "i")
+    ("s" . "o")
+    (";" . "z")
+    ("q" . "q")
+    ("j" . "c")
+    ("k" . "d")
+    ("x" . "v")
+    ("b" . "m")
+    ("m" . "h")
+    ("w" . ",")
+    ("v" . ".")
+    ("z" . "/"))
+  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding Colemak Mod-DH layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+
+(defvar xah--dvorak-to-dvorak-kmap
+  '()
+  "A alist, dvorak to dvorak.")
+
+(defvar xah--dvorak-to-programer-dvorak-kmap
+  '(
+    ;; number row
+    ("`" . "$")
+    ("1" . "&")
+    ("2" . "[")
+    ("3" . "{")
+    ("4" . "}")
+    ("5" . "(")
+    ("6" . "=")
+    ("7" . "*")
+    ("8" . ")")
+    ("9" . "+")
+    ("0" . "]")
+    ("[" . "!")
+    ("]" . "#")
+    ;; number row, shifted
+    ("!" . "%")
+    ("@" . "7")
+    ("#" . "5")
+    ("$" . "3")
+    ("%" . "1")
+    ("^" . "9")
+    ("&" . "0")
+    ("*" . "2")
+    ("(" . "4")
+    (")" . "6")
+    ("{" . "8")
+    ("}" . "`")
+    ;; left pinky outwards
+    ("'" . ";")
+    ("\"" . ":")
+    ;; left pinky inwards
+    (";" . "'")
+    (":" . "\"")
+    ;; right pinky outwards-sideways
+    ("=" . "@")
+    ("+" . "^")
+    )
+  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding Programer Dvorak layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
 
 (defvar xah--dvorak-to-qwerty-kmap
   '(("." . "e")
@@ -2859,106 +3057,6 @@ Version 2017-01-29"
     ("z" . "-"))
   "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding QWERTZ. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
 
-(defvar xah--dvorak-to-azerty-kmap
-  '(("." . "e")
-    ("," . "z")
-    ("'" . "a")
-    (";" . "w")
-    ("/" . "^") ; NOTE: this is a dead key
-    ("[" . ")")
-    ("]" . "=")
-    ("=" . "$")
-    ("-" . "ù")
-    ("a" . "q")
-    ("b" . "n")
-    ("c" . "i")
-    ("d" . "h")
-    ("e" . "d")
-    ("f" . "y")
-    ("g" . "u")
-    ("h" . "j")
-    ("i" . "g")
-    ("j" . "c")
-    ("k" . "v")
-    ("l" . "p")
-    ("m" . ",")
-    ("n" . "l")
-    ("o" . "s")
-    ("p" . "r")
-    ("q" . "x")
-    ("r" . "o")
-    ("s" . "m")
-    ("t" . "k")
-    ("u" . "f")
-    ("v" . ":")
-    ("w" . ";")
-    ("x" . "b")
-    ("y" . "t")
-    ("z" . "!")
-    ("1" . "&")
-    ("2" . "é")
-    ("3" . "\"")
-    ("4" . "'")
-    ("5" . "(")
-    ("6" . "-")
-    ("7" . "è")
-    ("8" . "_")
-    ("9" . "ç")
-    ("0" . "à")
-    ("\\" . "*")
-    ("`" . "²"))
-  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding AZERTY. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
-
-(defvar xah--dvorak-to-azerty-be-kmap
-  '(("." . "e")
-    ("," . "z")
-    ("'" . "a")
-    (";" . "w")
-    ("/" . "^") ; NOTE: this is a dead key
-    ("[" . ")")
-    ("]" . "-")
-    ("=" . "$")
-    ("-" . "ù")
-    ("a" . "q")
-    ("b" . "n")
-    ("c" . "i")
-    ("d" . "h")
-    ("e" . "d")
-    ("f" . "y")
-    ("g" . "u")
-    ("h" . "j")
-    ("i" . "g")
-    ("j" . "c")
-    ("k" . "v")
-    ("l" . "p")
-    ("m" . ",")
-    ("n" . "l")
-    ("o" . "s")
-    ("p" . "r")
-    ("q" . "x")
-    ("r" . "o")
-    ("s" . "m")
-    ("t" . "k")
-    ("u" . "f")
-    ("v" . ":")
-    ("w" . ";")
-    ("x" . "b")
-    ("y" . "t")
-    ("z" . "=")
-    ("1" . "&")
-    ("2" . "é")
-    ("3" . "\"")
-    ("4" . "'")
-    ("5" . "(")
-    ("6" . "§")
-    ("7" . "è")
-    ("8" . "!")
-    ("9" . "ç")
-    ("0" . "à")
-    ("\\" . "µ")
-    ("`" . "²"))
-  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding AZERTY-BE. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
-
 (defvar xah--dvorak-to-workman-kmap
   '(("'" . "q")
     ("," . "d")
@@ -2992,168 +3090,27 @@ Version 2017-01-29"
     ("z" . "/"))
   "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding Workman layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
 
-(defvar xah--dvorak-to-colemak-mod-dh-kmap
-  '(("'" . "q")
-    ("," . "w")
-    ("." . "f")
-    ("p" . "p")
-    ("y" . "b")
-    ("f" . "j")
-    ("g" . "l")
-    ("c" . "u")
-    ("r" . "y")
-    ("l" . ";")
-    ("a" . "a")
-    ("o" . "r")
-    ("e" . "s")
-    ("u" . "t")
-    ("i" . "g")
-    ("d" . "k")
-    ("h" . "n")
-    ("t" . "e")
-    ("n" . "i")
-    ("s" . "o")
-    (";" . "z")
-    ("q" . "q")
-    ("j" . "c")
-    ("k" . "d")
-    ("x" . "v")
-    ("b" . "m")
-    ("m" . "h")
-    ("w" . ",")
-    ("v" . ".")
-    ("z" . "/"))
-  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding Colemak Mod-DH layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+(defvar xah-fly-key--current-layout nil
+  "The current keyboard layout. Use `xah-fly-keys-set-layout' to set the layout.
+If the value is nil, it's automatically set to \"dvorak\"."
+  )
+(if xah-fly-key--current-layout nil (setq xah-fly-key--current-layout "dvorak"))
 
-(defvar xah--dvorak-to-colemak-kmap
-  '(("'" . "q")
-    ("," . "w")
-    ("." . "f")
-    ("p" . "p")
-    ("y" . "g")
-    ("f" . "j")
-    ("g" . "l")
-    ("c" . "u")
-    ("r" . "y")
-    ("l" . ";")
-    ("a" . "a")
-    ("o" . "r")
-    ("e" . "s")
-    ("u" . "t")
-    ("i" . "d")
-    ("d" . "h")
-    ("h" . "n")
-    ("t" . "e")
-    ("n" . "i")
-    ("s" . "o")
-    (";" . "z")
-    ("q" . "x")
-    ("j" . "c")
-    ("k" . "v")
-    ("x" . "b")
-    ("b" . "k")
-    ("m" . "m")
-    ("w" . ",")
-    ("v" . ".")
-    ("z" . "/"))
-  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding Colemak layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
-
-(defvar xah--dvorak-to-programer-dvorak-kmap
-  '(
-    ;; number row
-    ("`" . "$")
-    ("1" . "&")
-    ("2" . "[")
-    ("3" . "{")
-    ("4" . "}")
-    ("5" . "(")
-    ("6" . "=")
-    ("7" . "*")
-    ("8" . ")")
-    ("9" . "+")
-    ("0" . "]")
-    ("[" . "!")
-    ("]" . "#")
-
-    ;; number row, shifted
-    ("!" . "%")
-    ("@" . "7")
-    ("#" . "5")
-    ("$" . "3")
-    ("%" . "1")
-    ("^" . "9")
-    ("&" . "0")
-    ("*" . "2")
-    ("(" . "4")
-    (")" . "6")
-    ("{" . "8")
-    ("}" . "`")
-
-    ;; left pinky outwards
-    ("'" . ";")
-    ("\"" . ":")
-
-    ;; left pinky inwards
-    (";" . "'")
-    (":" . "\"")
-
-    ;; right pinky outwards-sideways
-    ("=" . "@")
-    ("+" . "^")
-    )
-  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding Programmer Dvorak layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
-
-(defmacro xah--generate-keymap-function (to)
-  "Generate a xan--dvorak-to-{to} functions using xah--dvorak-to-{to}-kmap
-  The generated function will convert a dvorak key to a {to} key.
-  For example in the case of dvorak to qwerty \"e\" becomes \"d\".
-  If the lenght is exactly 2 and the @charstr starts with \"?-\" we attempt to
-  convert the character after \"?-\".
-  If the lenght of @charstr is greater than 1, such as \"TAB\", @charstr is returned unchanged.
-  Version 2019-02-11"
-  `(defun ,(intern (format "xah--dvorak-to-%s" to)) (@charstr)
-    (interactive)
-    (cond
-     ((= (length @charstr) 1)
-      (let (($result (assoc @charstr ,(intern (format "xah--dvorak-to-%s-kmap" to)))))
-       (if $result
-        (cdr $result)
-        @charstr)))
-     ((and
-       (= (length @charstr) 3)
-       (string-equal "-" (substring @charstr 1 2)))
-      (let (($result (assoc (substring @charstr -1) ,(intern (format "xah--dvorak-to-%s-kmap" to)))))
-       (if $result
-        (concat (substring @charstr 0 1) "-" (cdr $result))
-        @charstr)))
-     (t @charstr))))
-
-(xah--generate-keymap-function "qwerty")
-(xah--generate-keymap-function "qwerty-abnt")
-(xah--generate-keymap-function "qwertz")
-(xah--generate-keymap-function "azerty")
-(xah--generate-keymap-function "azerty-be")
-(xah--generate-keymap-function "workman")
-(xah--generate-keymap-function "colemak-mod-dh")
-(xah--generate-keymap-function "colemak")
-(xah--generate-keymap-function "programmer-dvorak")
+(defvar xah-fly--current-layout-kmap nil
+  "The current keyboard layout key map. Value is a alist. e.g. the value of `xah--dvorak-to-qwerty-kmap'.
+Value is automatically set from value of `xah-fly-key--current-layout'. Do not manually set this variable. Version 2019-02-12."
+  )
+(setq xah-fly--current-layout-kmap (eval (intern (concat "xah--dvorak-to-" xah-fly-key--current-layout "-kmap"))))
 
 (defun xah-fly--key-char (@charstr)
-  "Return the corresponding char @charstr according to current `xah-fly-key--current-layout'.
-@charstr must be a string of single char. Default layout is dvorak.
-Version 2017-12-29"
+  "Return the corresponding char @charstr according to xah-fly--current-layout-kmap.
+@charstr must be a string of single char.
+Version 2019-02-12"
   (interactive)
-  (cond
-   ((string-equal xah-fly-key--current-layout "qwerty") (xah--dvorak-to-qwerty @charstr))
-   ((string-equal xah-fly-key--current-layout "qwerty-abnt") (xah--dvorak-to-qwerty-abnt @charstr))
-   ((string-equal xah-fly-key--current-layout "qwertz") (xah--dvorak-to-qwertz @charstr))
-   ((string-equal xah-fly-key--current-layout "azerty") (xah--dvorak-to-azerty @charstr))
-   ((string-equal xah-fly-key--current-layout "azerty-be") (xah--dvorak-to-azerty-be @charstr))
-   ((string-equal xah-fly-key--current-layout "workman") (xah--dvorak-to-workman @charstr))
-   ((string-equal xah-fly-key--current-layout "colemak") (xah--dvorak-to-colemak @charstr))
-   ((string-equal xah-fly-key--current-layout "colemak-mod-dh") (xah--dvorak-to-colemak-mod-dh @charstr))
-   ((string-equal xah-fly-key--current-layout "programmer-dvorak") (xah--dvorak-to-programer-dvorak @charstr))
-   (t @charstr)))
+  (if (> (length @charstr) 1)
+      @charstr
+    (let (($result (assoc @charstr xah-fly--current-layout-kmap)))
+      (if $result (cdr $result) @charstr ))))
 
 (defun xah-fly--define-keys (@keymap-name @key-cmd-alist)
   "Map `define-key' over a alist @key-cmd-alist.
@@ -3165,7 +3122,7 @@ Example usage:
 ;;    (\".\" . isearch-forward-symbol-at-point)
 ;;    (\"1\" . hi-lock-find-patterns)
 ;;    (\"w\" . isearch-forward-word)))
-Version 2017-01-21"
+Version 2019-02-12"
   (interactive)
   (mapc
    (lambda ($pair)
@@ -3693,27 +3650,26 @@ Version 2017-01-21"
 
       ;; (if xah-fly-swapped-1-8-and-2-7-p
       ;;     (progn
-      ;;       (define-key xah-fly-key-map (kbd (xah-fly--key-char "C-2")) 'xah-previous-user-buffer)
-      ;;       (define-key xah-fly-key-map (kbd (xah-fly--key-char "C-1")) 'xah-next-user-buffer))
+      ;;       (define-key xah-fly-key-map (kbd "C-2") 'xah-previous-user-buffer)
+      ;;       (define-key xah-fly-key-map (kbd "C-1") 'xah-next-user-buffer))
       ;;   (progn
-      ;;     (define-key xah-fly-key-map (kbd (xah-fly--key-char "C-7")) 'xah-previous-user-buffer)
-      ;;     (define-key xah-fly-key-map (kbd (xah-fly--key-char "C-8")) 'xah-next-user-buffer)))
+      ;;     (define-key xah-fly-key-map (kbd "C-7") 'xah-previous-user-buffer)
+      ;;     (define-key xah-fly-key-map (kbd "C-8") 'xah-next-user-buffer)))
 
-      (define-key xah-fly-key-map (kbd (xah-fly--key-char "C-9")) 'scroll-down-command)
-      (define-key xah-fly-key-map (kbd (xah-fly--key-char "C-0")) 'scroll-up-command)
+      (define-key xah-fly-key-map (kbd "C-9") 'scroll-down-command)
+      (define-key xah-fly-key-map (kbd "C-0") 'scroll-up-command)
 
-      (define-key xah-fly-key-map (kbd (xah-fly--key-char "C-1")) 'xah-next-user-buffer)
-      (define-key xah-fly-key-map (kbd (xah-fly--key-char "C-2")) 'xah-previous-user-buffer)
-      (define-key xah-fly-key-map (kbd (xah-fly--key-char "C-7")) 'xah-previous-user-buffer)
-      (define-key xah-fly-key-map (kbd (xah-fly--key-char "C-8")) 'xah-next-user-buffer)
+      (define-key xah-fly-key-map (kbd "C-1") 'xah-next-user-buffer)
+      (define-key xah-fly-key-map (kbd "C-2") 'xah-previous-user-buffer)
+      (define-key xah-fly-key-map (kbd "C-7") 'xah-previous-user-buffer)
+      (define-key xah-fly-key-map (kbd "C-8") 'xah-next-user-buffer)
 
-      (define-key xah-fly-key-map (kbd (xah-fly--key-char "C-5")) 'xah-previous-emacs-buffer)
-      (define-key xah-fly-key-map (kbd (xah-fly--key-char "C-6")) 'xah-next-emacs-buffer)
+      (define-key xah-fly-key-map (kbd "C-5") 'xah-previous-emacs-buffer)
+      (define-key xah-fly-key-map (kbd "C-6") 'xah-next-emacs-buffer)
 
-      (define-key xah-fly-key-map (kbd (xah-fly--key-char "C-3")) 'previous-error)
-      (define-key xah-fly-key-map (kbd (xah-fly--key-char "C-4")) 'next-error)
+      (define-key xah-fly-key-map (kbd "C-3") 'previous-error)
+      (define-key xah-fly-key-map (kbd "C-4") 'next-error)
 
-      ;; No xan-fly--keychar here as these are based on common shortcuts
       (define-key xah-fly-key-map (kbd "C-a") 'mark-whole-buffer)
       (define-key xah-fly-key-map (kbd "C-n") 'xah-new-empty-buffer)
       (define-key xah-fly-key-map (kbd "C-S-n") 'make-frame-command)
@@ -3745,8 +3701,20 @@ Version 2017-01-21"
 
 (defun xah-fly-keys-set-layout (@layout)
   "Set a keyboard layout.
-Argument should be one of:  \"qwerty\", \"qwerty-abnt\", \"qwertz\", \"azerty\", \"azerty-be\", \"dvorak\", \"workman\", \"colemak\", \"colemak-mod-dh\", \"programmer-dvorak\"
-Version 2018-04-25"
+Argument must be one of:
+
+ \"azerty\"
+ \"azerty-be\"
+ \"colemak\"
+ \"colemak-mod-dh\"
+ \"dvorak\"
+ \"programer-dvorak\"
+ \"qwerty\"
+ \"qwerty-abnt\"
+ \"qwertz\"
+ \"workman\"
+
+Version 2019-02-12"
   (interactive)
   (setq xah-fly-key--current-layout @layout)
   (load "xah-fly-keys"))
