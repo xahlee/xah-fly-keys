@@ -3140,7 +3140,8 @@ Version 2019-02-12"
 (xah-fly--define-keys
  (define-prefix-command 'xah-fly-dot-keymap)
  ;; 2019-02-22 experiment. this is now empty. so you can use this key space for all major mode custom keys or personal keys. These highlight command isn't used much in my experience
- ;; '(
+ '()
+;; '(
  ;;   ("." . highlight-symbol-at-point)
  ;;   ("g" . unhighlight-regexp)
  ;;   ("c" . highlight-lines-matching-regexp)
