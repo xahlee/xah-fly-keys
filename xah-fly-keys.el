@@ -1891,7 +1891,7 @@ Version 2015-11-06"
         ("◆" . "4" )
         ("¤" . "2" )
         ("…" . "...ellipsis" )
-        (" " . "nbsp" )
+        (" " . "nbsp" )
         ("、" . "," )
         ("⭑" . "9" )
         ("🎶" . "5" )
@@ -2273,7 +2273,7 @@ Version 2019-01-16"
                         (buffer-substring-no-properties (region-beginning) (region-end))
                       (let ($p0 $p1 $p2
                                 ;; chars that are likely to be delimiters of file path or url, e.g. whitespace, comma. The colon is a problem. cuz it's in url, but not in file name. Don't want to use just space as delimiter because path or url are often in brackets or quotes as in markdown or html
-                                ($pathStops "^  \t\n\"`'‘’“”|[]{}「」<>〔〕〈〉《》【】〖〗«»‹›❮❯❬❭〘〙·。\\"))
+                                ($pathStops "^  \t\n\"`'‘’“”|[]{}「」<>〔〕〈〉《》【】〖〗«»‹›❮❯❬❭〘〙·。\\"))
                         (setq $p0 (point))
                         (skip-chars-backward $pathStops)
                         (setq $p1 (point))
@@ -3768,7 +3768,7 @@ Version 2017-01-21"
 ;;     ("9" . xah-select-text-in-quote)
 ;;     ("0" . xah-pop-local-mark-ring)
 
-;;     ("a" . execute-extended-command)
+;;     ("a" . xah-fly-execute-extended-command)
 ;;     ("b" . isearch-forward)
 ;;     ("c" . previous-line)       
 ;;     ("d" . xah-beginning-of-line-or-block)
@@ -3797,8 +3797,8 @@ Version 2017-01-21"
 ;;     ("z" . xah-goto-matching-bracket)
 ))
 
-  (define-key xah-fly-key-map (kbd (xah-fly--key-char "a"))
-    (if (fboundp 'smex) 'smex (if (fboundp 'helm-M-x) 'helm-M-x 'execute-extended-command)))
+;;  (define-key xah-fly-key-map (kbd (xah-fly--key-char "a"))
+;;    (if (fboundp 'smex) 'smex (if (fboundp 'helm-M-x) 'helm-M-x 'execute-extended-command)))
 
   ;; (when xah-fly-swapped-1-8-and-2-7-p
   ;;     (xah-fly--define-keys
@@ -3829,6 +3829,13 @@ Version 2017-01-21"
   ;;
   )
 
+  
+(defun xah-fly-execute-extended-command ()
+"experimental 
+Version 3/6/2019"
+(interactive)
+    (if (fboundp 'smex) 'smex (if (fboundp 'helm-M-x) 'helm-M-x 'execute-extended-command)))
+  
 (defun xah-fly-space-key ()
   "switch to command mode if the char before cursor is a space.
 experimental
