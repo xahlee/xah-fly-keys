@@ -3119,8 +3119,8 @@ Version 2019-02-12"
     (let (($result (assoc @charstr xah-fly--current-layout-kmap)))
       (if $result (cdr $result) @charstr ))))
 
-(defun xah-fly--define-keys (@keymap-name @key-cmd-alist)
-  "Map `define-key' over a alist @key-cmd-alist.
+(defun xah-fly--define-keys-for-local-keyboard-layout (@keymap-name @key-cmd-alist)
+  "Map `define-key' over a alist @key-cmd-alist, correcting for local keyboard layout.
 Example usage:
 ;; (xah-fly--define-keys
 ;;  (define-prefix-command 'xah-fly-dot-keymap)
@@ -3135,6 +3135,25 @@ Version 2019-02-12"
    (lambda ($pair)
      (define-key @keymap-name (kbd (xah-fly--key-char (car $pair))) (cdr $pair)))
    @key-cmd-alist))
+   
+(defun xah-fly--define-keys (@keymap-name @key-cmd-alist)
+  "Map `define-key' over a alist @key-cmd-alist. This is the naive version 
+   of the function, which preserves mnemonics irrespective of local keyboard layout. 
+Example usage:
+;; (xah-fly--define-keys
+;;  (define-prefix-command 'xah-fly-dot-keymap)
+;;  '(
+;;    (\"h\" . highlight-symbol-at-point)
+;;    (\".\" . isearch-forward-symbol-at-point)
+;;    (\"1\" . hi-lock-find-patterns)
+;;    (\"w\" . isearch-forward-word)))
+Version 2019-02-12"
+  (interactive)
+  (mapc
+   (lambda ($pair)
+     (define-key @keymap-name (kbd (car $pair)) (cdr $pair)))   
+    ;; (define-key @keymap-name (kbd (xah-fly--key-char (car $pair))) (cdr $pair)))
+   @key-cmd-alist))   
 
 
 ;; keymaps
@@ -3417,8 +3436,8 @@ Version 2019-02-12"
  '(
    ("t" . xref-find-definitions)
    ("n" . xref-pop-marker-stack)))
-
-(xah-fly--define-keys
+ 
+ (xah-fly--define-keys
  (define-prefix-command 'xah-fly-leader-key-map)
  '(
    ("SPC" . xah-fly-insert-mode-activate)
@@ -3475,7 +3494,11 @@ Version 2019-02-12"
    ;; z
    ;;
    ))
+ 
+ 
+	  
 
+   
 
 ;;;; misc
 
@@ -3733,7 +3756,7 @@ Version 2019-02-12"
   "Set command mode keys.
 Version 2017-01-21"
   (interactive)
-  (xah-fly--define-keys
+  (xah-fly--define-keys-for-local-keyboard-layout
    xah-fly-key-map
    '(
 ;;     ("~" . nil)
@@ -3830,11 +3853,7 @@ Version 2017-01-21"
   )
 
   
-(defun xah-fly-execute-extended-command ()
-"experimental 
-Version 3/6/2019"
-(interactive)
-    (if (fboundp 'smex) 'smex (if (fboundp 'helm-M-x) 'helm-M-x 'execute-extended-command)))
+
   
 (defun xah-fly-space-key ()
   "switch to command mode if the char before cursor is a space.
@@ -3851,7 +3870,7 @@ Version 2018-05-07"
   ;; (setq xah-fly-key-map (make-sparse-keymap))
   ;; (setq xah-fly-key-map (make-keymap))
 
-  (xah-fly--define-keys
+  (xah-fly--define-keys-for-local-keyboard-layout
    xah-fly-key-map
    '(
 
