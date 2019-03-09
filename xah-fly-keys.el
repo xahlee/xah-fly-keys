@@ -3260,7 +3260,7 @@ Version 2019-02-12"
    ))
 
 (xah-fly--define-keys
- (define-prefix-command 'xah-fly-h-keymap)
+ (define-prefix-command 'help)
  '(
    (";" . Info-goto-emacs-command-node)
    ("a" . apropos-command)
@@ -3473,7 +3473,7 @@ Version 2019-02-12"
    ("e" . xah-fly-e-keymap)
    ("f" . xah-search-current-word)
    ("g" . isearch-forward)
-   ("h" . xah-fly-h-keymap)
+   ("h" . help)
    ("i" . kill-line)
    ("j" . xah-copy-all-or-region)
    ("k" . xah-paste-or-paste-previous)
