@@ -3756,9 +3756,9 @@ Version 2019-02-12"
   "Set command mode keys.
 Version 2017-01-21"
   (interactive)
-  (xah-fly--define-keys-for-local-keyboard-layout
-   xah-fly-key-map
-   '(
+;;  (xah-fly--define-keys-for-local-keyboard-layout
+;;   xah-fly-key-map
+;;   '(
 ;;     ("~" . nil)
 ;;     (":" . nil)
 
@@ -3818,7 +3818,7 @@ Version 2017-01-21"
 ;;     ("x" . xah-toggle-letter-case)
 ;;     ("y" . set-mark-command)
 ;;     ("z" . xah-goto-matching-bracket)
-))
+;;))
 
 ;;  (define-key xah-fly-key-map (kbd (xah-fly--key-char "a"))
 ;;    (if (fboundp 'smex) 'smex (if (fboundp 'helm-M-x) 'helm-M-x 'execute-extended-command)))
@@ -3870,9 +3870,9 @@ Version 2018-05-07"
   ;; (setq xah-fly-key-map (make-sparse-keymap))
   ;; (setq xah-fly-key-map (make-keymap))
 
-  (xah-fly--define-keys-for-local-keyboard-layout
-   xah-fly-key-map
-   '(
+ ;; (xah-fly--define-keys-for-local-keyboard-layout
+;;   xah-fly-key-map
+;;   '(
 
 ;;     ("SPC" . nil)
 ;;     ;; ("SPC" . xah-fly-space-key)
@@ -3933,7 +3933,7 @@ Version 2018-05-07"
 ;;     ("z" . nil)
 
      ;;
-     ))
+ ;;    ))
 
   (setq xah-fly-insert-state t)
   (setq xah-fly-command-state nil)
@@ -4021,7 +4021,7 @@ Version 2017-07-07"
 
 (defvar xah-fly-manage-insert-mode-map  (make-sparse-keymap) "")  
   
-(xah-fly--define-keys
+(xah-fly--define-keys-for-local-keyboard-layout
     xah-fly-manage-insert-mode-map  
    '(
 
@@ -4093,7 +4093,7 @@ Version 2017-07-07"
   
 (defvar xah-fly-manage-command-mode-map  (make-sparse-keymap) "")  
   
-(xah-fly--define-keys
+(xah-fly--define-keys-for-local-keyboard-layout
     xah-fly-manage-command-mode-map  
    '(
      ("~" . nil)
