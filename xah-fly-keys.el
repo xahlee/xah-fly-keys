@@ -2705,22 +2705,22 @@ Version 2017-10-09"
       (start-process "" nil "x-terminal-emulator"
                      (concat "--working-directory=" default-directory))))))
 
-;;(defun xah-next-window-or-frame ()
-;;  "Switch to next window or frame.
-;;If current frame has only one window, switch to next frame.
-;;If `universal-argument' is called first, do switch frame.
-;;Version 2017-01-27"
-;;  (interactive)
-;;  (if current-prefix-arg
-;;      (other-frame 1)
-;;    (if (one-window-p)
-;;        (other-frame 1)
-;;      (other-window 1))))
-
 (defun xah-next-window-or-frame ()
+  "Switch to next window or frame.
+If current frame has only one window, switch to next frame.
+If `universal-argument' is called first, do switch frame.
+Version 2017-01-27"
   (interactive)
-  (ace-window())
-)
+  (if current-prefix-arg
+      (other-frame 1)
+    (if (one-window-p)
+        (other-frame 1)
+      (other-window 1))))
+
+;(defun xah-next-window-or-frame ()
+;  (interactive)
+;  (ace-window())
+;)
 
 
 (defun xah-unsplit-window-or-next-frame ()
