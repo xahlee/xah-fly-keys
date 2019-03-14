@@ -4226,11 +4226,7 @@ URL `http://ergoemacs.org/misc/ergoemacs_vi_mode.html'"
     (remove-hook 'xah-fly-command-mode-activate-hook 'xah-fly-save-buffer-if-file)
     (remove-hook 'shell-mode-hook 'xah-fly-insert-mode-activate))
   (xah-fly-insert-mode-activate)
-  (xah-fly-keys 0)
-  (setq xah-fly-key-map nil)
-  (setq xah-fly-manage-command-mode-map  nil)
-  (setq xah-fly-manage-insert-mode-map  nil)
-  )
+  (xah-fly-keys 0))
 
 
   
