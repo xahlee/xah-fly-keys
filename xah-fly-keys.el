@@ -4199,9 +4199,9 @@ URL `http://ergoemacs.org/misc/ergoemacs_vi_mode.html'"
    (add-to-list 'emulation-mode-map-alists (list (cons 'xah-fly-keys xah-fly-key-map )))
    (add-to-list 'emulation-mode-map-alists '((cons xah-fly-keys xah-fly-key-map )))
   
-  (mapc #'kill-local-variable
-          xah-fly-command-state
-          xah-fly-insert-state)
+  ;;(mapc #'kill-local-variable)
+         (kill-local-variable xah-fly-command-state)
+         (kill-local-variable xah-fly-insert-state)
  
 )
 
@@ -4226,7 +4226,11 @@ URL `http://ergoemacs.org/misc/ergoemacs_vi_mode.html'"
     (remove-hook 'xah-fly-command-mode-activate-hook 'xah-fly-save-buffer-if-file)
     (remove-hook 'shell-mode-hook 'xah-fly-insert-mode-activate))
   (xah-fly-insert-mode-activate)
-  (xah-fly-keys 0))
+  (xah-fly-insert-state 0)
+  (xah-fly-command-state 0)
+  (xah-fly-keys 0)
+
+  )
 
 
   
