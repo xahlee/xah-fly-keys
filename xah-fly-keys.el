@@ -3729,8 +3729,8 @@ Version 2019-02-12"
 
 
 
-(defvar xah-fly-insert-state-q t "Boolean value. true means insertion mode is on.")
-(setq xah-fly-insert-state-q t)
+(defvar xah-fly-insert-state t "Boolean value. true means insertion mode is on.")
+(setq xah-fly-insert-state t)
 
 (defun xah-fly-keys-set-layout (@layout)
   "Set a keyboard layout.
@@ -3756,87 +3756,12 @@ Version 2019-02-12"
   "Set command mode keys.
 Version 2017-01-21"
   (interactive)
-;;  (xah-fly--define-keys-for-local-keyboard-layout
-;;   xah-fly-key-map
-;;   '(
-;;     ("~" . nil)
-;;     (":" . nil)
 
-;;     ("SPC" . xah-fly-leader-key-map)
-;;     ("DEL" . xah-fly-leader-key-map)
-
-;;     ("'" . xah-reformat-lines)
-;;     ("," . xah-shrink-whitespaces)
-;;     ("-" . xah-cycle-hyphen-underscore-space)
-;;     ("." . xah-backward-kill-word)
-;;     (";" . xah-comment-dwim)
-;;     ("/" . hippie-expand)
-;;     ("\\" . nil)
-;;     ;; ("=" . xah-forward-equal-sign)
-;;     ("[" . xah-backward-punct )
-;;     ("]" . xah-forward-punct)
-;;     ("`" . other-frame)
-
-;;     ;; ("#" . xah-backward-quote)
-;;     ;; ("$" . xah-forward-punct)
-
-;;     ("1" . xah-extend-selection)
-;;     ("2" . xah-select-line)
-;;     ("3" . delete-other-windows)
-;;     ("4" . split-window-below)
-;;     ("5" . delete-char)
-;;     ("6" . xah-select-block)
-;;     ("7" . xah-select-line)
-;;     ("8" . xah-extend-selection)
-;;     ("9" . xah-select-text-in-quote)
-;;     ("0" . xah-pop-local-mark-ring)
-
-;;     ("a" . xah-fly-execute-extended-command)
-;;     ("b" . isearch-forward)
-;;     ("c" . previous-line)       
-;;     ("d" . xah-beginning-of-line-or-block)
-;;     ("e" . xah-delete-backward-char-or-bracket-text)
-;;     ("f" . undo)
-;;     ("g" . backward-word)
-;;     ("h" . backward-char)
-;;     ("i" . xah-delete-current-text-block)
-;;     ("j" . xah-copy-line-or-region)
-;;     ("k" . xah-paste-or-paste-previous)
-;;     ;; ("l" . xah-fly-insert-mode-activate-space-before)
-;;     ("l" . xah-insert-space-before)
-;;     ("m" . xah-backward-left-bracket)
-;;     ("n" . forward-char)
-;;     ("o" . open-line)
-;;     ("p" . xah-kill-word)
-;;     ("q" . xah-cut-line-or-region)
-;;     ("r" . forward-word)
-;;     ("s" . xah-end-of-line-or-block)
-;;     ("t" . next-line)
-;;     ("u" . xah-fly-insert-mode-activate)
-;;     ("v" . xah-forward-right-bracket)
-;;     ("w" . xah-next-window-or-frame)
-;;     ("x" . xah-toggle-letter-case)
-;;     ("y" . set-mark-command)
-;;     ("z" . xah-goto-matching-bracket)
-;;))
-
-;;  (define-key xah-fly-key-map (kbd (xah-fly--key-char "a"))
-;;    (if (fboundp 'smex) 'smex (if (fboundp 'helm-M-x) 'helm-M-x 'execute-extended-command)))
-
-  ;; (when xah-fly-swapped-1-8-and-2-7-p
-  ;;     (xah-fly--define-keys
-  ;;      xah-fly-key-map
-  ;;      '(
-  ;;        ("8" . pop-global-mark)
-  ;;        ("7" . xah-pop-local-mark-ring)
-  ;;        ("2" . xah-select-line)
-  ;;        ("1" . xah-extend-selection))))
 
   (setq xah-fly-insert-state nil)
   (setq xah-fly-command-state t)
  
   (progn
-    (setq xah-fly-insert-state-q nil )
     (modify-all-frames-parameters (list (cons 'cursor-type 'box))))
 	
 	
@@ -3867,79 +3792,11 @@ Version 2018-05-07"
 (defun xah-fly-insert-mode-init ()
   "Set insertion mode keys"
   (interactive)
-  ;; (setq xah-fly-key-map (make-sparse-keymap))
-  ;; (setq xah-fly-key-map (make-keymap))
-
- ;; (xah-fly--define-keys-for-local-keyboard-layout
-;;   xah-fly-key-map
-;;   '(
-
-;;     ("SPC" . nil)
-;;     ;; ("SPC" . xah-fly-space-key)
-;;     ("DEL" . nil)
-
-;;     ("'" . nil)
-;;     ("," . nil)
-;;     ("-" . nil)
-;;     ("." . nil)
-;;     ("/" . nil)
-;;     (";" . nil)
-;;     ("=" . nil)
-;;     ("[" . nil)
-;;     ("\\" . nil)
-;;     ("]" . nil)
-;;     ("`" . nil)
-;;     ("~" . nil)
-
-;;     ;; ("#" . nil)
-;;     ;; ("$" . nil)
-
-;;     ("1" . nil)
-;;     ("2" . nil)
-;;     ("3" . nil)
-;;     ("4" . nil)
-;;     ("5" . nil)
-;;     ("6" . nil)
-;;     ("7" . nil)
-;;     ("8" . nil)
-;;     ("9" . nil)
-;;     ("0" . nil)
-
-;;     ("a" . nil)
-;;     ("b" . nil)
-;;     ("c" . nil)
-;;     ("d" . nil)
-;;     ("e" . nil)
-;;     ("f" . nil)
-;;     ("g" . nil)
-;;     ("h" . nil)
-;;     ("i" . nil)
-;;     ("j" . nil)
-;;     ("k" . nil)
-;;     ("l" . nil)
-;;     ("m" . nil)
-;;     ("n" . nil)
-;;     ("o" . nil)
-;;     ("p" . nil)
-;;     ("q" . nil)
-;;     ("r" . nil)
-;;     ("s" . nil)
-;;     ("t" . nil)
-;;     ("u" . nil)
-;;     ("v" . nil)
-;;     ("w" . nil)
-;;     ("x" . nil)
-;;     ("y" . nil)
-;;     ("z" . nil)
-
-     ;;
- ;;    ))
 
   (setq xah-fly-insert-state t)
   (setq xah-fly-command-state nil)
   
   (progn
-    (setq xah-fly-insert-state-q t )
     (modify-all-frames-parameters (list (cons 'cursor-type 'bar))))
 	 
 (progn
@@ -3949,7 +3806,10 @@ Version 2018-05-07"
  (set-face-foreground 'mode-line "black"))
 		   
 
-  (setq mode-line-front-space "I")
+(setq mode-line-front-space "I")
+
+
+
   (force-mode-line-update)
 
   ;;
@@ -3958,7 +3818,7 @@ Version 2018-05-07"
 (defun xah-fly-mode-toggle ()
   "Switch between {insertion, command} modes."
   (interactive)
-  (if xah-fly-insert-state-q
+  (if xah-fly-insert-state
       (xah-fly-command-mode-activate)
     (xah-fly-insert-mode-activate)))
 
@@ -4086,10 +3946,6 @@ Version 2017-07-07"
      ;;
      ))
 
-;;(define-minor-mode xah-fly-insert-mode-experiment-D
-;;  "Get your foos in the right places"
-;;  :keymap xah-fly-manage-insert-mode-map) 
-
   
 (defvar xah-fly-manage-command-mode-map  (make-sparse-keymap) "")  
   
@@ -4157,10 +4013,7 @@ Version 2017-07-07"
      ("z" . xah-goto-matching-bracket)))  
   
   
-  
-;;(define-minor-mode xah-fly-command-mode-experiment-D
-;;  "Get your foos in the right places"
-;;  :keymap xah-fly-manage-command-mode-map) 
+ 
  
 
 (defvar-local xah-fly-command-state nil)
@@ -4179,14 +4032,12 @@ Version 2017-07-07"
         (cons xah-fly-mode-map-alist emulation-mode-map-alists))	
 	
   
-;;(defun xah-fly--switch-state (state)
-;;  "Switch xah-fly state to STATE.
-;;We also have to think about changing cursor type and so forth."  )
+
   
-(define-minor-mode xah-fly-keys
+(define-minor-mode xah-fly-keys-mode
   "A modal keybinding set, like vim, but based on ergonomic principles, like Dvorak layout.
 URL `http://ergoemacs.org/misc/ergoemacs_vi_mode.html'"
-  t "∑flykeys" xah-fly-key-map
+  nil "∑flykeys" xah-fly-key-map
   (progn
     ;; when going into minibuffer, switch to insertion mode.
     (add-hook 'minibuffer-setup-hook 'xah-fly-insert-mode-activate)
@@ -4195,43 +4046,33 @@ URL `http://ergoemacs.org/misc/ergoemacs_vi_mode.html'"
     ;; when in shell mode, switch to insertion mode.
     ;; (add-hook 'shell-mode-hook 'xah-fly-insert-mode-activate)
     )
-  (xah-fly-command-mode-activate)
-   (add-to-list 'emulation-mode-map-alists (list (cons 'xah-fly-keys xah-fly-key-map )))
-   (add-to-list 'emulation-mode-map-alists '((cons xah-fly-keys xah-fly-key-map )))
-  
-  ;;(mapc #'kill-local-variable)
+  (xah-fly-insert-mode-activate)
+(setq mode-line-front-space "")
          (kill-local-variable xah-fly-command-state)
          (kill-local-variable xah-fly-insert-state)
  
 )
 
-;;(defun xah-fly-modes-off ()
-;;  ""
-;;  (interactive)
-;;  (progn
-;;    (remove-hook 'minibuffer-setup-hook 'xah-fly-insert-mode-activate)
-;;    (remove-hook 'minibuffer-exit-hook 'xah-fly-command-mode-activate)
-;;    (remove-hook 'xah-fly-command-mode-activate-hook 'xah-fly-save-buffer-if-file)
-;;    (remove-hook 'shell-mode-hook 'xah-fly-insert-mode-activate))
-;;  (xah-fly-insert-mode-activate)
-;;  (xah-fly-insert-mode-experiment-D 0)
-;;  (xah-fly-command-mode-experiment-D 0))
-  
-(defun xah-fly-keys-off ()
+
+(defun xah-fly-keys-mode-off ()
   "Turn off xah-fly-keys minor mode."
   (interactive)
-  (progn
-    (remove-hook 'minibuffer-setup-hook 'xah-fly-insert-mode-activate)
-    (remove-hook 'minibuffer-exit-hook 'xah-fly-command-mode-activate)
-    (remove-hook 'xah-fly-command-mode-activate-hook 'xah-fly-save-buffer-if-file)
-    (remove-hook 'shell-mode-hook 'xah-fly-insert-mode-activate))
-  (xah-fly-insert-mode-activate)
-  (xah-fly-keys 0))
+  ;(xah-fly-insert-mode-activate)
+  (remove-hook 'minibuffer-exit-hook 'xah-fly-command-mode-activate)
+  (xah-fly-keys-mode -1))
 
-
+(defun xah-fly-keys-mode-on ()
+ "Turn on xah-fly-keys in the current buffer if conditions are satisfied."
   
-
+   (xah-fly-keys-mode 1))
   
+;;(define-globalized-minor-mode xah-fly-keys-global-mode xah-fly-keys-mode xah-fly-keys-mode-on
+;;  :require 'xah-fly-keys)  
+  (define-globalized-minor-mode xah-fly-keys xah-fly-keys-mode xah-fly-keys-mode-on
+  :require 'xah-fly-keys) 
+
+    (xah-fly-keys 1)  
+;;    (xah-fly-keys-global-mode 1)
   
 (provide 'xah-fly-keys)
 
