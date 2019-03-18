@@ -3729,8 +3729,8 @@ Version 2019-02-12"
 
 
 
-(defvar xah-fly-insert-state t "Boolean value. true means insertion mode is on.")
-(setq xah-fly-insert-state t)
+;(defvar xah-fly-insert-state t "Boolean value. true means insertion mode is on.")
+;(setq xah-fly-insert-state t)
 
 (defun xah-fly-keys-set-layout (@layout)
   "Set a keyboard layout.
@@ -3761,9 +3761,10 @@ Version 2017-01-21"
   (setq xah-fly-insert-state nil)
   (setq xah-fly-command-state t)
  
-  (progn
-    (modify-all-frames-parameters (list (cons 'cursor-type 'box))))
+  ;;(progn
+    (modify-all-frames-parameters (list (cons 'cursor-type 'box)))
 	
+	;(setq cursor-type 'box)
 	
 (progn
  (set-face-background 'mode-line "red4")
@@ -3796,8 +3797,10 @@ Version 2018-05-07"
   (setq xah-fly-insert-state t)
   (setq xah-fly-command-state nil)
   
-  (progn
-    (modify-all-frames-parameters (list (cons 'cursor-type 'bar))))
+  ;(progn
+    (modify-all-frames-parameters (list (cons 'cursor-type 'bar)))
+	
+	;(setq cursor-type 'bar)	 
 	 
 (progn
  (set-face-background 'mode-line-inactive "gray30")
@@ -4016,8 +4019,8 @@ Version 2017-07-07"
  
  
 
-(defvar-local xah-fly-command-state nil)
-(defvar-local xah-fly-insert-state nil)
+(defvar xah-fly-command-state nil)
+(defvar xah-fly-insert-state nil)
  
 (defvar xah-fly-mode-map-alist
   (list
@@ -4030,7 +4033,18 @@ Version 2017-07-07"
 	
   (setq emulation-mode-map-alists
         (cons xah-fly-mode-map-alist emulation-mode-map-alists))	
-	
+	(setq testvarEntering  0)
+		(setq testvarExiting  0)
+
+;(defun Dan/exitedMinibuffer ()
+
+ ; )  
+  
+(defun Dan/enteredMinibuffer ()
+           (make-local-variable 'xah-fly-insert-state) 
+		            (make-local-variable 'xah-fly-command-state) 
+  )    
+  
   
 
   
@@ -4039,25 +4053,25 @@ Version 2017-07-07"
 URL `http://ergoemacs.org/misc/ergoemacs_vi_mode.html'"
   t "∑flykeys" xah-fly-key-map
   (progn
-    ;; when going into minibuffer, switch to insertion mode.
-    (add-hook 'minibuffer-setup-hook 'xah-fly-insert-mode-activate)
-    (add-hook 'minibuffer-exit-hook 'xah-fly-command-mode-activate)
-    ;; (add-hook 'xah-fly-command-mode-activate-hook 'xah-fly-save-buffer-if-file)
-    ;; when in shell mode, switch to insertion mode.
-    ;; (add-hook 'shell-mode-hook 'xah-fly-insert-mode-activate)
+
+    (add-hook 'minibuffer-setup-hook 'Dan/enteredMinibuffer)
+;    (add-hook 'minibuffer-exit-hook 'Dan/exitedMinibuffer)
+
     )
-  (xah-fly-insert-mode-activate)
-(setq mode-line-front-space "")
-         (kill-local-variable xah-fly-command-state)
-         (kill-local-variable xah-fly-insert-state)
+	(setq testvarEntering (1+ testvarEntering))
+
+	 (make-local-variable 'xah-fly-insert-state) 
+	 	 (make-local-variable 'xah-fly-command-state) 
+
  
 )
 
+(xah-fly-insert-mode-activate)
 
 (defun xah-fly-keys-mode-off ()
   "Turn off xah-fly-keys minor mode."
   (interactive)
-  ;(xah-fly-insert-mode-activate)
+  (xah-fly-insert-mode-activate)
   (remove-hook 'minibuffer-exit-hook 'xah-fly-command-mode-activate)
   (xah-fly-keys-mode -1))
 
