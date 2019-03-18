@@ -4037,7 +4037,7 @@ Version 2017-07-07"
 (define-minor-mode xah-fly-keys-mode
   "A modal keybinding set, like vim, but based on ergonomic principles, like Dvorak layout.
 URL `http://ergoemacs.org/misc/ergoemacs_vi_mode.html'"
-  nil "∑flykeys" xah-fly-key-map
+  t "∑flykeys" xah-fly-key-map
   (progn
     ;; when going into minibuffer, switch to insertion mode.
     (add-hook 'minibuffer-setup-hook 'xah-fly-insert-mode-activate)
