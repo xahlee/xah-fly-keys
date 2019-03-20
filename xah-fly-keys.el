@@ -4073,6 +4073,8 @@ URL `http://ergoemacs.org/misc/ergoemacs_vi_mode.html'"
   (interactive)
   (xah-fly-insert-mode-activate)
   (remove-hook 'minibuffer-exit-hook 'xah-fly-command-mode-activate)
+  (setq mode-line-front-space "")
+  (force-mode-line-update)
   (xah-fly-keys-mode -1))
 
 (defun xah-fly-keys-mode-on ()
