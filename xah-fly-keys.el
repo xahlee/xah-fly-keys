@@ -4031,18 +4031,19 @@ Version 2017-07-07"
   '(xah-fly-command-state
     xah-fly-insert-state))   
 	
-  (setq emulation-mode-map-alists
+(setq emulation-mode-map-alists
         (cons xah-fly-mode-map-alist emulation-mode-map-alists))	
-	(setq testvarEntering  0)
+(setq testvarEntering  0)
 		(setq testvarExiting  0)
 
-;(defun Dan/exitedMinibuffer ()
 
- ; )  
+
+  
   
 (defun Dan/enteredMinibuffer ()
            (make-local-variable 'xah-fly-insert-state) 
-		            (make-local-variable 'xah-fly-command-state) 
+	       (make-local-variable 'xah-fly-command-state) 
+		   (make-local-variable 'mode-line-front-space)
   )    
   
   
@@ -4053,18 +4054,9 @@ Version 2017-07-07"
 URL `http://ergoemacs.org/misc/ergoemacs_vi_mode.html'"
   t "∑flykeys" xah-fly-key-map
   (progn
-
     (add-hook 'minibuffer-setup-hook 'Dan/enteredMinibuffer)
-;    (add-hook 'minibuffer-exit-hook 'Dan/exitedMinibuffer)
-
-    )
-	(setq testvarEntering (1+ testvarEntering))
-
-	 (make-local-variable 'xah-fly-insert-state) 
-	 	 (make-local-variable 'xah-fly-command-state) 
-
- 
-)
+	(make-local-variable 'xah-fly-insert-state) 
+	(make-local-variable 'xah-fly-command-state)))
 
 (xah-fly-insert-mode-activate)
 
@@ -4072,15 +4064,19 @@ URL `http://ergoemacs.org/misc/ergoemacs_vi_mode.html'"
   "Turn off xah-fly-keys minor mode."
   (interactive)
   (xah-fly-insert-mode-activate)
-  (remove-hook 'minibuffer-exit-hook 'xah-fly-command-mode-activate)
+  (remove-hook 'minibuffer-setup-hook 'Dan/enteredMinibuffer)  
   (setq mode-line-front-space "")
   (force-mode-line-update)
   (xah-fly-keys-mode -1))
 
 (defun xah-fly-keys-mode-on ()
  "Turn on xah-fly-keys in the current buffer if conditions are satisfied."
-  
-   (xah-fly-keys-mode 1))
+      (interactive)
+  (when (and (not (minibufferp))
+             (not (eq (aref (buffer-name) 0) ?\s))
+      (xah-fly-keys-mode 1)
+      (xah-fly-insert-mode-activate)))
+   )
   
 ;;(define-globalized-minor-mode xah-fly-keys-global-mode xah-fly-keys-mode xah-fly-keys-mode-on
 ;;  :require 'xah-fly-keys)  
