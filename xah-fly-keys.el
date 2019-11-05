@@ -407,35 +407,36 @@ When called repeatedly, append copy subsequent lines.
 When `universal-argument' is called first, copy whole buffer (respects `narrow-to-region').
 
 URL `http://ergoemacs.org/emacs/emacs_copy_cut_current_line.html'
-Version 2018-09-10"
+Version 2019-10-30"
   (interactive)
-  (if current-prefix-arg
-      (progn
-        (copy-region-as-kill (point-min) (point-max)))
-    (if (use-region-p)
+  (let ((inhibit-field-text-motion nil))
+    (if current-prefix-arg
         (progn
-          (copy-region-as-kill (region-beginning) (region-end)))
-      (if (eq last-command this-command)
-          (if (eobp)
-              (progn )
-            (progn
-              (kill-append "\n" nil)
-              (kill-append
-               (buffer-substring-no-properties (line-beginning-position) (line-end-position))
-               nil)
-              (progn
-                (end-of-line)
-                (forward-char))))
-        (if (eobp)
-            (if (eq (char-before) 10 )
+          (copy-region-as-kill (point-min) (point-max)))
+      (if (use-region-p)
+          (progn
+            (copy-region-as-kill (region-beginning) (region-end)))
+        (if (eq last-command this-command)
+            (if (eobp)
                 (progn )
               (progn
-                (copy-region-as-kill (line-beginning-position) (line-end-position))
-                (end-of-line)))
-          (progn
-            (copy-region-as-kill (line-beginning-position) (line-end-position))
-            (end-of-line)
-            (forward-char)))))))
+                (kill-append "\n" nil)
+                (kill-append
+                 (buffer-substring-no-properties (line-beginning-position) (line-end-position))
+                 nil)
+                (progn
+                  (end-of-line)
+                  (forward-char))))
+          (if (eobp)
+              (if (eq (char-before) 10 )
+                  (progn )
+                (progn
+                  (copy-region-as-kill (line-beginning-position) (line-end-position))
+                  (end-of-line)))
+            (progn
+              (copy-region-as-kill (line-beginning-position) (line-end-position))
+              (end-of-line)
+              (forward-char))))))))
 
 (defun xah-cut-line-or-region ()
   "Cut current line, or text selection.
@@ -840,7 +841,7 @@ Version 2015-12-22"
   "Upcase first letters of sentences of current text block or selection.
 
 URL `http://ergoemacs.org/emacs/emacs_upcase_sentence.html'
-Version 2018-09-25"
+Version 2019-06-21"
   (interactive)
   (let ($p1 $p2)
     (if (region-active-p)
@@ -878,7 +879,7 @@ Version 2018-09-25"
 
           ;; for HTML. first letter after tag
           (goto-char (point-min))
-          (while (re-search-forward "\\(<p>\\|<li>\\|<td>\\|<figcaption>\\)\\([a-z]\\)" nil "move")
+          (while (re-search-forward "\\(<p>\n?\\|<li>\\|<td>\n?\\|<figcaption>\n?\\)\\([a-z]\\)" nil "move")
             (upcase-region (match-beginning 2) (match-end 2))
             (overlay-put (make-overlay (match-beginning 2) (match-end 2)) 'face 'highlight))
 
@@ -956,6 +957,17 @@ Version 2018-04-02"
           (setq $p4 (point))
           (delete-region $p3 $p4)))
 
+(defun xah-fly-delete-spaces ()
+  "Delete space, tab, IDEOGRAPHIC SPACE (U+3000) around cursor.
+Version 2019-06-13"
+  (interactive)
+  (let (p1 p2)
+    (skip-chars-forward " \t　")
+    (setq p2 (point))
+    (skip-chars-backward " \t　")
+    (setq p1 (point))
+    (delete-region p1 p2)))
+
 (defun xah-shrink-whitespaces ()
   "Remove whitespaces around cursor to just one, or none.
 
@@ -965,7 +977,7 @@ If cursor neighbor are newline, shrink them to just 1.
 If already has just 1 whitespace, delete it.
 
 URL `http://ergoemacs.org/emacs/emacs_shrink_whitespace.html'
-Version 2018-04-20"
+Version 2019-06-13"
   (interactive)
   (let* (
          ($eol-count 0)
@@ -977,10 +989,10 @@ Version 2018-04-20"
          ($space-neighbor-p (or (eq $charBefore 32) (eq $charBefore 9) (eq $charAfter 32) (eq $charAfter 9)))
          $just-1-space-p
          )
-    (skip-chars-backward " \n\t")
+    (skip-chars-backward " \n\t　")
     (setq $p1 (point))
     (goto-char $p0)
-    (skip-chars-forward " \n\t")
+    (skip-chars-forward " \n\t　")
     (setq $p2 (point))
     (goto-char $p1)
     (while (search-forward "\n" $p2 t )
@@ -990,22 +1002,23 @@ Version 2018-04-20"
     (cond
      ((eq $eol-count 0)
       (if $just-1-space-p
-          (delete-horizontal-space)
-        (progn (delete-horizontal-space)
-               (insert " "))))
+          (xah-fly-delete-spaces)
+        (progn (xah-fly-delete-spaces)
+               (insert " ")))
+      )
      ((eq $eol-count 1)
       (if $space-neighbor-p
-          (delete-horizontal-space)
+          (xah-fly-delete-spaces)
         (progn (xah-delete-blank-lines) (insert " "))))
      ((eq $eol-count 2)
       (if $space-neighbor-p
-          (delete-horizontal-space)
+          (xah-fly-delete-spaces)
         (progn
           (xah-delete-blank-lines)
           (insert "\n"))))
      ((> $eol-count 2)
       (if $space-neighbor-p
-          (delete-horizontal-space)
+          (xah-fly-delete-spaces)
         (progn
           (goto-char $p2)
           (search-backward "\n" )
@@ -1109,7 +1122,7 @@ Repeated call toggles between formatting to 1 long line and multiple lines.
 If `universal-argument' is called first, use the number value for min length of line. By default, it's 70.
 
 URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
-Version 2018-09-01"
+Version 2019-06-09"
   (interactive)
   ;; This command symbol has a property “'is-longline-p”, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
   (let* (
@@ -1839,46 +1852,23 @@ Version 2018-08-30"
           (vconcat (make-list 70 (make-glyph-code ?─ 'font-lock-comment-face))))
     (redraw-frame)))
 
-(defun xah-insert-column-counter (@n)
-  "Insert a sequence of numbers vertically.
-
- (this command is similar to emacs 24.x's `rectangle-number-lines'.)
-
-For example, if your text is:
-
-a b
-c d
-e f
-
-and your cursor is after “a”, then calling this function with argument
-3 will change it to become:
-
-a1 b
-c2 d
-e3 f
-
-If there are not enough existing lines after the cursor
-when this function is called, it aborts at the last line.
-
-This command is conveniently used together with `kill-rectangle' and `string-rectangle'."
-  (interactive "nEnter the max integer: ")
-  (let (($i 1) $colpos )
-    (setq $colpos (- (point) (line-beginning-position)))
-    (while (<= $i @n)
-      (insert (number-to-string $i))
-      (forward-line) (beginning-of-line) (forward-char $colpos)
-      (setq $i (1+ $i)))))
-
-(defun xah-insert-alphabets-az (&optional @use-uppercase-p)
-  "Insert letters a to z vertically.
-If `universal-argument' is called first, use CAPITAL letters.
-
+(defun xah-insert-column-az ()
+  "Insert letters A to Z vertically, similar to `rectangle-number-lines'.
+The commpand will prompt for a start char, and number of chars to insert.
+The start char can be any char in Unicode.
 URL `http://ergoemacs.org/emacs/emacs_insert-alphabets.html'
-Version 2015-11-06"
-  (interactive "P")
-  (let (($startChar (if @use-uppercase-p 65 97 )))
-    (dotimes ($i 26)
-      (insert (format "%c\n" (+ $startChar $i))))))
+Version 2019-03-07"
+  (interactive)
+  (let (
+        ($startChar (string-to-char (read-string "Start char: " "a")))
+        ($howmany (string-to-number (read-string "How many: " "26")))
+        ($colpos (- (point) (line-beginning-position))))
+    (dotimes ($i $howmany )
+      (progn
+        (insert-char (+ $i $startChar))
+        (forward-line)
+        (beginning-of-line)
+        (forward-char $colpos)))))
 
 (defvar xah-unicode-list nil "Associative list of Unicode symbols. First element is a Unicode character, second element is a string used as key shortcut in `ido-completing-read'")
 (setq xah-unicode-list
@@ -2246,7 +2236,7 @@ Version 2016-06-19"
 This command is similar to `bookmark-jump', but use `ido-mode' interface, and ignore cursor position in bookmark.
 
 URL `http://ergoemacs.org/emacs/emacs_hotkey_open_file_fast.html'
-Version 2017-04-26"
+Version 2019-02-26"
   (interactive)
   (require 'bookmark)
   (bookmark-maybe-load-default-file)
@@ -2261,26 +2251,28 @@ Version 2017-04-26"
 If there is text selection, uses the text selection for path.
 If the path starts with “http://”, open the URL in browser.
 Input path can be {relative, full path, URL}.
-Path may have a trailing “:‹n›” that indicates line number. If so, jump to that line number.
+Path may have a trailing “:‹n›” that indicates line number, or “:‹n›:‹m›” with line and column number. If so, jump to that line number.
 If path does not have a file extension, automatically try with “.el” for elisp files.
 This command is similar to `find-file-at-point' but without prompting for confirmation.
 
 URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'
-Version 2019-01-16"
+Version 2019-07-16"
   (interactive)
-  (let* (($inputStr (if (use-region-p)
-                        (buffer-substring-no-properties (region-beginning) (region-end))
-                      (let ($p0 $p1 $p2
-                                ;; chars that are likely to be delimiters of file path or url, e.g. whitespace, comma. The colon is a problem. cuz it's in url, but not in file name. Don't want to use just space as delimiter because path or url are often in brackets or quotes as in markdown or html
-                                ($pathStops "^  \t\n\"`'‘’“”|[]{}「」<>〔〕〈〉《》【】〖〗«»‹›❮❯❬❭〘〙·。\\"))
-                        (setq $p0 (point))
-                        (skip-chars-backward $pathStops)
-                        (setq $p1 (point))
-                        (goto-char $p0)
-                        (skip-chars-forward $pathStops)
-                        (setq $p2 (point))
-                        (goto-char $p0)
-                        (buffer-substring-no-properties $p1 $p2))))
+  (let* (
+         ($inputStr
+          (if (use-region-p)
+              (buffer-substring-no-properties (region-beginning) (region-end))
+            (let ($p0 $p1 $p2
+                      ;; chars that are likely to be delimiters of file path or url, e.g. whitespace, comma. The colon is a problem. cuz it's in url, but not in file name. Don't want to use just space as delimiter because path or url are often in brackets or quotes as in markdown or html
+                      ($pathStops "^  \t\n\"`'‘’“”|[]{}「」<>〔〕〈〉《》【】〖〗«»‹›❮❯❬❭〘〙·。\\"))
+              (setq $p0 (point))
+              (skip-chars-backward $pathStops)
+              (setq $p1 (point))
+              (goto-char $p0)
+              (skip-chars-forward $pathStops)
+              (setq $p2 (point))
+              (goto-char $p0)
+              (buffer-substring-no-properties $p1 $p2))))
          ($path
           (replace-regexp-in-string
            "^file:///" "/"
@@ -2293,30 +2285,41 @@ Version 2019-01-16"
                   (browse-url $x)
                 (find-file $x)))
           (progn (browse-url $path)))
-      (if ; not starting “http://”
-          (string-match "^\\`\\(.+?\\):\\([0-9]+\\)\\'" $path)
-          (let (
-                ($fpath (match-string 1 $path))
-                ($line-num (string-to-number (match-string 2 $path))))
-            (if (file-exists-p $fpath)
-                (progn
-                  (find-file $fpath)
-                  (goto-char 1)
-                  (forward-line (1- $line-num)))
-              (when (y-or-n-p (format "file no exist: 「%s」. Create?" $fpath))
-                (find-file $fpath))))
-        (if (file-exists-p $path)
-            (progn ; open f.ts instead of f.js
-              (let (($ext (file-name-extension $path))
-                    ($fnamecore (file-name-sans-extension $path)))
-                (if (and (string-equal $ext "js")
-                         (file-exists-p (concat $fnamecore ".ts")))
-                    (find-file (concat $fnamecore ".ts"))
-                  (find-file $path))))
-          (if (file-exists-p (concat $path ".el"))
-              (find-file (concat $path ".el"))
-            (when (y-or-n-p (format "file no exist: 「%s」. Create?" $path))
-              (find-file $path ))))))))
+      (progn ; not starting “http://”
+        (if (string-match "#" $path )
+            (let (
+                  ( $fpath (substring $path 0 (match-beginning 0)))
+                  ( $fractPart (substring $path (match-beginning 0))))
+              (if (file-exists-p $fpath)
+                  (progn
+                    (find-file $fpath)
+                    (goto-char 1)
+                    (search-forward $fractPart ))
+                (when (y-or-n-p (format "file no exist: 「%s」. Create?" $fpath))
+                  (find-file $fpath))))
+          (if (string-match "^\\`\\(.+?\\):\\([0-9]+\\)\\(:[0-9]+\\)?\\'" $path)
+              (let (
+                    ($fpath (match-string 1 $path))
+                    ($line-num (string-to-number (match-string 2 $path))))
+                (if (file-exists-p $fpath)
+                    (progn
+                      (find-file $fpath)
+                      (goto-char 1)
+                      (forward-line (1- $line-num)))
+                  (when (y-or-n-p (format "file no exist: 「%s」. Create?" $fpath))
+                    (find-file $fpath))))
+            (if (file-exists-p $path)
+                (progn ; open f.ts instead of f.js
+                  (let (($ext (file-name-extension $path))
+                        ($fnamecore (file-name-sans-extension $path)))
+                    (if (and (string-equal $ext "js")
+                             (file-exists-p (concat $fnamecore ".ts")))
+                        (find-file (concat $fnamecore ".ts"))
+                      (find-file $path))))
+              (if (file-exists-p (concat $path ".el"))
+                  (find-file (concat $path ".el"))
+                (when (y-or-n-p (format "file no exist: 「%s」. Create?" $path))
+                  (find-file $path ))))))))))
 
 
 
@@ -2364,7 +2367,7 @@ File suffix is used to determine what program to run.
 If the file is modified or not saved, save it automatically before run.
 
 URL `http://ergoemacs.org/emacs/elisp_run_current_file.html'
-Version 2018-10-12"
+Version 2019-11-05"
   (interactive)
   (let (
         ($outputb "*xah-run output*")
@@ -2553,14 +2556,19 @@ Version 2018-05-15"
     (kill-buffer (current-buffer))))
 
 (defun xah-delete-current-file-copy-to-kill-ring ()
-  "Delete current buffer/file and close the buffer, push content to `kill-ring'.
+  "Delete current buffer/file and close the buffer, push content to `kill-ring',
+unless buffer is greater than 1 mega bytes.
+
 URL `http://ergoemacs.org/emacs/elisp_delete-current-file.html'
-Version 2016-09-03"
+Version 2019-03-22"
   (interactive)
   (let (($bstr (buffer-string)))
     (when (> (length $bstr) 0)
-      (kill-new $bstr)
-      (message "Buffer content copied to kill-ring."))
+      (if (< (point-max) 1000000)
+          (progn
+            (kill-new $bstr)
+            (message "Content copied to kill-ring."))
+        (message "Content not copied. buffer size is greater than 1 megabytes.")))
     (when (buffer-file-name)
       (when (file-exists-p (buffer-file-name))
         (progn
@@ -2571,30 +2579,38 @@ Version 2016-09-03"
       (kill-buffer (current-buffer)))))
 
 (defun xah-delete-current-file (&optional @no-backup-p)
-  "Delete current buffer/file.
-If buffer is a file, makes a backup~, else, push file content to `kill-ring'.
+  "Delete current file or directory of dired.
+If buffer is dired, prompt to ask you to delete the dir.
+If buffer is a file, make a backup~, push content to `kill-ring' (unless buffer is greater than 1 mega bytes.), then delete it.
+If buffer is not associate with a file, push content to `kill-ring' (unless buffer is greater than 1 mega bytes.), then kill it.
 
-If buffer is dired, go up a dir and mark it for delete  (by `dired-flag-file-deletion').
- (press 【x】 to call `dired-do-flagged-delete'  to actually delete it)
-
-This commands calls `xah-delete-current-file-make-backup' or
- `xah-delete-current-file-copy-to-kill-ring'.
+This commands may call `xah-delete-current-file-make-backup'.
 
 If next buffer is dired, refresh it.
 
 URL `http://ergoemacs.org/emacs/elisp_delete-current-file.html'
-Version 2017-08-27"
+Version 2019-03-22"
   (interactive "P")
   (if (eq major-mode 'dired-mode)
       (progn (dired-up-directory)
              (dired-flag-file-deletion 1)
+             (dired-do-flagged-delete)
              (revert-buffer))
-    (progn
+    (let (($bstr (buffer-string)))
+      (when (> (length $bstr) 0)
+        (if (< (point-max) 1000000)
+            (kill-new $bstr)
+          (message "Content not copied. buffer size is greater than 1 megabytes.")))
       (if (buffer-file-name)
           (xah-delete-current-file-make-backup @no-backup-p)
-        (xah-delete-current-file-copy-to-kill-ring)))
-    (when (eq major-mode 'dired-mode)
-      (revert-buffer))))
+        (when (buffer-file-name)
+          (when (file-exists-p (buffer-file-name))
+            (progn
+              (delete-file (buffer-file-name))
+              (message "Deleted file: 「%s」." (buffer-file-name)))))
+        (let ((buffer-offer-save nil))
+          (set-buffer-modified-p nil)
+          (kill-buffer (current-buffer)))))))
 
 
 
