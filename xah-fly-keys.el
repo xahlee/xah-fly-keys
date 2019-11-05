@@ -2630,7 +2630,7 @@ Version 2018-09-29"
   (let (($path (if (buffer-file-name) (buffer-file-name) default-directory )))
     (cond
      ((string-equal system-type "windows-nt")
-      (w32-shell-execute "explore" (replace-regexp-in-string "/" "\\" $path t t)))
+      (w32-shell-execute "open" (replace-regexp-in-string "/" "\\" $path t t)))
      ((string-equal system-type "darwin")
       (if (eq major-mode 'dired-mode)
           (let (($files (dired-get-marked-files )))
