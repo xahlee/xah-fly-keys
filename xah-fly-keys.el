@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2019, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 10.9.20190222215802
+;; Version: 10.10.20191105024920
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2625,22 +2625,18 @@ Version 2015-04-09"
  This command can be called when in a file or in `dired'.
 
 URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
-Version 2018-09-29"
+Version 2019-11-04"
   (interactive)
   (let (($path (if (buffer-file-name) (buffer-file-name) default-directory )))
     (cond
      ((string-equal system-type "windows-nt")
-      (w32-shell-execute "open" (replace-regexp-in-string "/" "\\" $path t t)))
+      (w32-shell-execute "open" default-directory))
      ((string-equal system-type "darwin")
       (if (eq major-mode 'dired-mode)
           (let (($files (dired-get-marked-files )))
             (if (eq (length $files) 0)
-                (progn
-                  (shell-command
-                   (concat "open " default-directory)))
-              (progn
-                (shell-command
-                 (concat "open -R " (shell-quote-argument (car (dired-get-marked-files ))))))))
+                (shell-command (concat "open " default-directory))
+              (shell-command (concat "open -R " (shell-quote-argument (car (dired-get-marked-files )))))))
         (shell-command
          (concat "open -R " $path))))
      ((string-equal system-type "gnu/linux")
@@ -2653,6 +2649,21 @@ Version 2018-09-29"
       ;; (shell-command "xdg-open .") ;; 2013-02-10 this sometimes froze emacs till the folder is closed. eg with nautilus
       ))))
 
+(defun xah-open-in-vscode ()
+  "Open current file or dir in vscode.
+
+URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
+Version 2019-11-04"
+  (interactive)
+  (let (($path (if (buffer-file-name) (buffer-file-name) default-directory )))
+    (cond
+     ((string-equal system-type "darwin")
+      (shell-command (format "open -a Visual\\ Studio\\ Code.app \"%s\"" $path)))
+     ((string-equal system-type "windows-nt")
+      (shell-command (format "Code \"%s\"" $path)))
+     ((string-equal system-type "gnu/linux")
+      (shell-command (format "code \"%s\"" $path))))))
+
 (defun xah-open-in-external-app (&optional @fname)
   "Open the current file or dired marked files in external app.
 The app is chosen from your OS's preference.
@@ -2660,7 +2671,7 @@ The app is chosen from your OS's preference.
 When called in emacs lisp, if @fname is given, open that.
 
 URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
-Version 2019-01-18"
+Version 2019-11-04"
   (interactive)
   (let* (
          ($file-list
@@ -2677,7 +2688,7 @@ Version 2019-01-18"
        ((string-equal system-type "windows-nt")
         (mapc
          (lambda ($fpath)
-           (w32-shell-execute "open" (replace-regexp-in-string "/" "\\" $fpath t t))) $file-list))
+           (w32-shell-execute "open" $fpath)) $file-list))
        ((string-equal system-type "darwin")
         (mapc
          (lambda ($fpath)
@@ -2691,11 +2702,12 @@ Version 2019-01-18"
 (defun xah-open-in-terminal ()
   "Open the current dir in a new terminal window.
 URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
-Version 2017-10-09"
+Version 2019-11-04"
   (interactive)
   (cond
    ((string-equal system-type "windows-nt")
-    (message "Microsoft Windows not supported. File a bug report or pull request."))
+    (let ((process-connection-type nil))
+      (start-process "" nil "powershell" "start-process" "powershell"  "-workingDirectory" default-directory)))
    ((string-equal system-type "darwin")
     (let ((process-connection-type nil))
       (start-process "" nil "/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal" default-directory)))
