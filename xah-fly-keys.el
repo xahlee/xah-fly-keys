@@ -132,8 +132,8 @@
 (defvar xah-fly-command-mode-activate-hook nil "Hook for `xah-fly-command-mode-activate'")
 (defvar xah-fly-insert-mode-activate-hook nil "Hook for `xah-fly-insert-mode-activate'")
 
-(defvar xah-fly-use-control-key t "if nil, do not bind any control key. When t, standard keys for open, close, paste, are bound.")
-(defvar xah-fly-use-meta-key t "if nil, do not bind any meta key.")
+(defvar xah-fly-use-control-key nil "if nil, do not bind any control key. When t, standard keys for open, close, paste, are bound.")
+(defvar xah-fly-use-meta-key nil "if nil, do not bind any meta key.")
 
 
 ;; cursor movement
