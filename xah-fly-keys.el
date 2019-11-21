@@ -1402,7 +1402,7 @@ Version 2016-12-22"
       (progn
         (mapc (lambda (x)
                 (when (string-match " " x )
-                  (dired-rename-file x (replace-regexp-in-string " " "_" x) nil)))
+                  (dired-rename-file x (replace-regexp-in-string " " "-" x) nil)))
               (dired-get-marked-files ))
         (revert-buffer))
     (user-error "Not in dired")))
