@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2019, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 10.10.20191105032347
+;; Version: 10.10.20191120013645
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2915,7 +2915,7 @@ Version 2017-01-29"
     ("n" . "i")
     ("s" . "o")
     (";" . "z")
-    ("q" . "q")
+    ("q" . "x")
     ("j" . "c")
     ("k" . "d")
     ("x" . "v")
