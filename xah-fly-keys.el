@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2019, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 10.10.20191120013645
+;; Version: 10.11.20191124211453
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -42,6 +42,7 @@
 ;; "qwerty-abnt"
 ;; "qwertz"
 ;; "workman"
+;; "norman"
 
 ;; (xah-fly-keys 1)
 
@@ -795,7 +796,7 @@ Version 2019-02-12"
 Always cycle in this order: Init Caps, ALL CAPS, all lower.
 
 URL `http://ergoemacs.org/emacs/modernization_upcase-word.html'
-Version 2017-04-19"
+Version 2019-11-24"
   (interactive)
   (let (
         (deactivate-mark nil)
@@ -803,9 +804,9 @@ Version 2017-04-19"
     (if (use-region-p)
         (setq $p1 (region-beginning) $p2 (region-end))
       (save-excursion
-        (skip-chars-backward "[:alnum:]-_")
+        (skip-chars-backward "0-9A-Za-z")
         (setq $p1 (point))
-        (skip-chars-forward "[:alnum:]-_")
+        (skip-chars-forward "0-9A-Za-z")
         (setq $p2 (point))))
     (when (not (eq last-command this-command))
       (put this-command 'state 0))
@@ -1395,7 +1396,7 @@ Version 2017-12-13"
   "In dired, rename current or marked files by replacing space to hyphen -.
 If not in `dired', do nothing.
 URL `http://ergoemacs.org/emacs/elisp_dired_rename_space_to_underscore.html'
-Version 2016-12-22"
+Version 2019-11-24"
   (interactive)
   (require 'dired-aux)
   (if (eq major-mode 'dired-mode)
@@ -3118,6 +3119,45 @@ Version 2017-01-29"
     ("z" . "/"))
   "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding Workman layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
 
+(defvar xah--dvorak-to-norman-kmap
+  '(
+    ("'" . "q")
+    ("," . "w")
+    ("." . "d")
+    ("p" . "f")
+    ("y" . "k")
+
+    ("f" . "j")
+    ("g" . "u")
+    ("c" . "r")
+    ("r" . "l")
+    ("l" . ";")
+
+    ("a" . "a")
+    ("o" . "s")
+    ("e" . "e")
+    ("u" . "t")
+    ("i" . "g")
+
+    ("d" . "y")
+    ("h" . "n")
+    ("t" . "i")
+    ("n" . "o")
+    ("s" . "h")
+
+    (";" . "z")
+    ("q" . "x")
+    ("j" . "c")
+    ("k" . "v")
+    ("x" . "b")
+
+    ("b" . "p")
+    ("m" . "m")
+    ("w" . ",")
+    ("v" . ".")
+    ("z" . "/"))
+  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding Norman layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+
 (defvar xah-fly-key--current-layout nil
   "The current keyboard layout. Use `xah-fly-keys-set-layout' to set the layout.
 If the value is nil, it's automatically set to \"dvorak\"."
@@ -3128,7 +3168,8 @@ If the value is nil, it's automatically set to \"dvorak\"."
   "The current keyboard layout key map. Value is a alist. e.g. the value of `xah--dvorak-to-qwerty-kmap'.
 Value is automatically set from value of `xah-fly-key--current-layout'. Do not manually set this variable. Version 2019-02-12."
   )
-(setq xah-fly--current-layout-kmap (eval (intern (concat "xah--dvorak-to-" xah-fly-key--current-layout "-kmap"))))
+(setq xah-fly--current-layout-kmap
+(eval (intern (concat "xah--dvorak-to-" xah-fly-key--current-layout "-kmap"))))
 
 (defun xah-fly--key-char (@charstr)
   "Return the corresponding char @charstr according to xah-fly--current-layout-kmap.
@@ -3744,6 +3785,7 @@ Argument must be one of:
  \"qwerty-abnt\"
  \"qwertz\"
  \"workman\"
+ \"norman\"
 
 Version 2019-02-12"
   (interactive)
