@@ -3831,8 +3831,8 @@ Version 2017-01-21"
      ("9" . xah-select-text-in-quote)
      ("0" . xah-pop-local-mark-ring)
 
-     ("a" . execute-extended-command)
-     ("b" . isearch-forward)
+     ("a" . xah-fly-keys-M-x)
+     ("b" . xah-fly-keys-isearch)
      ("c" . previous-line)
      ("d" . xah-beginning-of-line-or-block)
      ("e" . xah-delete-backward-char-or-bracket-text)
@@ -3858,12 +3858,6 @@ Version 2017-01-21"
      ("x" . xah-toggle-letter-case)
      ("y" . set-mark-command)
      ("z" . xah-goto-matching-bracket)))
-
-  (define-key xah-fly-key-map (kbd (xah-fly--key-char "a"))
-    (cond ((fboundp 'smex) 'smex)
-	  ((fboundp 'helm-M-x) 'helm-M-x)
-	  ((fboundp 'counsel-M-x) 'counsel-M-x)
-	  (t 'execute-extended-command)))
 
   ;; (when xah-fly-swapped-1-8-and-2-7-p
   ;;     (xah-fly--define-keys
@@ -3892,6 +3886,30 @@ Version 2018-05-07"
   (if (eq (char-before ) 32)
       (xah-fly-command-mode-activate)
     (insert " ")))
+
+(defun xah-fly-keys-init-search ()
+  (setq-default xah-fly-keys-search-function
+                (cond ((fboundp 'swiper) 'swiper)
+                      (t 'isearch-forward))))
+
+(defvar xah-fly-keys-search-function (xah-fly-keys-init-search)
+  "Set to preferred incremental search command. Uses Ivy's `swiper' if available.")
+
+(defun xah-fly-keys-isearch ()
+  (interactive) (command-execute xah-fly-keys-search-function))
+
+(defun xah-fly-keys-init-M-x ()
+  (setq-default xah-fly-keys-M-x-function
+                (cond ((fboundp 'helm-M-x) 'helm-M-x)
+	                    ((fboundp 'counsel-M-x) 'counsel-M-x)
+                      ((fboundp 'smex) 'smex)
+	                    (t 'execute-extended-command))))
+
+(defvar xah-fly-keys-M-x-function (xah-fly-keys-init-M-x)
+  "Set to preferred M-x function. Uses `smex',`helm-M-x', or `counsel-M-x' if available.")
+
+(defun xah-fly-keys-M-x ()
+  (interactive) (command-execute xah-fly-keys-M-x-function))
 
 (defun xah-fly-insert-mode-init ()
   "Set insertion mode keys"
