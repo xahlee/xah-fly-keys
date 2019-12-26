@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2019, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 10.11.20191124211453
+;; Version: 10.11.20191226132140
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -522,17 +522,15 @@ Version 2017-07-25"
   "Insert all `kill-ring' content in a new buffer named *copy history*.
 
 URL `http://ergoemacs.org/emacs/emacs_show_kill_ring.html'
-Version 2019-01-16"
+Version 2019-12-02"
   (interactive)
   (let (($buf (generate-new-buffer "*copy history*")))
     (progn
       (switch-to-buffer $buf)
       (funcall 'fundamental-mode)
       (dolist (x kill-ring )
-        (insert x "\n\n\u000cttt\n\n"))
-      (goto-char (point-min)))
-    (when (fboundp 'xah-show-formfeed-as-line)
-      (xah-show-formfeed-as-line))))
+        (insert x "\n\nhh=============================================================================\n\n"))
+      (goto-char (point-min)))))
 
 (defun xah-kill-word ()
   "Like `kill-word', but delete selection first if there's one.
@@ -1922,16 +1920,16 @@ Version 2017-07-02"
 If region is active, extend selection downward by block.
 
 URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
-Version 2017-11-01"
+Version 2019-12-26"
   (interactive)
   (if (region-active-p)
-      (re-search-forward "\n[ \t]*\n" nil "move")
+      (re-search-forward "\n[ \t]*\n+" nil "move")
     (progn
       (skip-chars-forward " \n\t")
       (when (re-search-backward "\n[ \t]*\n" nil "move")
         (re-search-forward "\n[ \t]*\n"))
       (push-mark (point) t t)
-      (re-search-forward "\n[ \t]*\n" nil "move"))))
+      (re-search-forward "\n[ \t]*\n+" nil "move"))))
 
 (defun xah-select-current-line ()
   "Select current line.
@@ -2652,7 +2650,7 @@ Version 2019-11-04"
       (if (eq major-mode 'dired-mode)
           (let (($files (dired-get-marked-files )))
             (if (eq (length $files) 0)
-                (shell-command (concat "open " default-directory))
+                (shell-command (concat "open " (shell-quote-argument default-directory)))
               (shell-command (concat "open -R " (shell-quote-argument (car (dired-get-marked-files )))))))
         (shell-command
          (concat "open -R " $path))))
@@ -4060,7 +4058,6 @@ URL `http://ergoemacs.org/misc/ergoemacs_vi_mode.html'"
   (progn
     (remove-hook 'minibuffer-setup-hook 'xah-fly-insert-mode-activate)
     (remove-hook 'minibuffer-exit-hook 'xah-fly-command-mode-activate)
-    (remove-hook 'xah-fly-command-mode-activate-hook 'xah-fly-save-buffer-if-file)
     (remove-hook 'shell-mode-hook 'xah-fly-insert-mode-activate))
   (xah-fly-insert-mode-activate)
   (xah-fly-keys 0))
