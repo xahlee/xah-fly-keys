@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2019, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 10.11.20191226132140
+;; Version: 10.11.20191226154754
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1923,13 +1923,13 @@ URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
 Version 2019-12-26"
   (interactive)
   (if (region-active-p)
-      (re-search-forward "\n[ \t]*\n+" nil "move")
+      (re-search-forward "\n[ \t]*\n" nil "move")
     (progn
       (skip-chars-forward " \n\t")
       (when (re-search-backward "\n[ \t]*\n" nil "move")
         (re-search-forward "\n[ \t]*\n"))
       (push-mark (point) t t)
-      (re-search-forward "\n[ \t]*\n+" nil "move"))))
+      (re-search-forward "\n[ \t]*\n" nil "move"))))
 
 (defun xah-select-current-line ()
   "Select current line.
