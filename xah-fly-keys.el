@@ -1,9 +1,9 @@
 ;;; xah-fly-keys.el --- ergonomic modal keybinding minor mode. -*- coding: utf-8; lexical-binding: t; -*-
 
-;; Copyright © 2013-2019, by Xah Lee
+;; Copyright © 2013-2020, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 10.11.20191226154754
+;; Version: 10.11.20200213182800
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1957,13 +1957,13 @@ Version 2017-11-01"
 Subsequent calls expands the selection.
 
 when there's no selection,
-• if cursor is on a any type of bracket (parenthesis, quote), select whole bracketed thing including bracket
+• if cursor is on a any type of bracket (including parenthesis, quotation mark), select whole bracketed thing including bracket
 • else, select current word.
 
 when there's a selection, the selection extension behavior is still experimental. But when cursor is on a any type of bracket (parenthesis, quote), it extends selection to outer bracket.
 
 URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
-Version 2017-09-01"
+Version 2020-02-04"
   (interactive)
   (if (region-active-p)
       (progn
@@ -2640,9 +2640,9 @@ Version 2015-04-09"
  This command can be called when in a file or in `dired'.
 
 URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
-Version 2019-11-04"
+Version 2020-02-13"
   (interactive)
-  (let (($path (if (buffer-file-name) (buffer-file-name) default-directory )))
+  (let (($path (if (buffer-file-name) (buffer-file-name) (shell-quote-argument default-directory))))
     (cond
      ((string-equal system-type "windows-nt")
       (w32-shell-execute "open" default-directory))
@@ -2668,9 +2668,10 @@ Version 2019-11-04"
   "Open current file or dir in vscode.
 
 URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
-Version 2019-11-04"
+Version 2020-02-13"
   (interactive)
-  (let (($path (if (buffer-file-name) (buffer-file-name) default-directory )))
+  (let (($path (if (buffer-file-name) (buffer-file-name) (expand-file-name default-directory ) )))
+    (message "path is %s" $path)
     (cond
      ((string-equal system-type "darwin")
       (shell-command (format "open -a Visual\\ Studio\\ Code.app \"%s\"" $path)))
