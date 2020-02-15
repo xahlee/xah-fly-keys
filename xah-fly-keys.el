@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2020, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 10.11.20200213182800
+;; Version: 10.12.20200214172330
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2579,22 +2579,25 @@ Version 2019-03-22"
 
 (defun xah-delete-current-file (&optional @no-backup-p)
   "Delete current file or directory of dired.
-If buffer is dired, prompt to ask you to delete the dir.
 If buffer is a file, make a backup~, push content to `kill-ring' (unless buffer is greater than 1 mega bytes.), then delete it.
 If buffer is not associate with a file, push content to `kill-ring' (unless buffer is greater than 1 mega bytes.), then kill it.
+If buffer is dired, do nothing.
 
 This commands may call `xah-delete-current-file-make-backup'.
 
 If next buffer is dired, refresh it.
 
 URL `http://ergoemacs.org/emacs/elisp_delete-current-file.html'
-Version 2019-03-22"
+Version 2020-02-14"
   (interactive "P")
   (if (eq major-mode 'dired-mode)
-      (progn (dired-up-directory)
-             (dired-flag-file-deletion 1)
-             (dired-do-flagged-delete)
-             (revert-buffer))
+      (progn
+        (message "you in dired. nothing's done.")
+        ;; (dired-up-directory)
+        ;; (dired-flag-file-deletion 1)
+        ;; (dired-do-flagged-delete)
+        ;; (revert-buffer)
+        )
     (let (($bstr (buffer-string)))
       (when (> (length $bstr) 0)
         (if (< (point-max) 1000000)
