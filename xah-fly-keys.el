@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2020, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 10.12.20200302174031
+;; Version: 10.12.20200303145818
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1372,10 +1372,9 @@ Version 2017-01-11"
 (defun xah-dired-rename-space-to-underscore ()
   "In dired, rename current or marked files by replacing space to lowline _.
 If not in `dired', do nothing.
-move cursor down 1 line after operation. So you can hold shortcut key to repeat this command on files.
 
 URL `http://ergoemacs.org/emacs/elisp_dired_rename_space_to_underscore.html'
-Version 2020-02-28"
+Version 2020-03-03"
   (interactive)
   (require 'dired-aux)
   (if (eq major-mode 'dired-mode)
@@ -1384,8 +1383,8 @@ Version 2020-02-28"
                 (when (string-match " " x )
                   (dired-rename-file x (replace-regexp-in-string " " "_" x) nil)))
               markedFiles)
-        (dired-next-line 1)
-        ;; (revert-buffer)
+        ;; (dired-next-line 1)
+        (revert-buffer)
         )
     (user-error "Not in dired")))
 
