@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2020, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 10.12.20200214172330
+;; Version: 10.12.20200302174031
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -840,7 +840,7 @@ Version 2015-12-22"
   "Upcase first letters of sentences of current text block or selection.
 
 URL `http://ergoemacs.org/emacs/emacs_upcase_sentence.html'
-Version 2019-06-21"
+Version 2020-03-02"
   (interactive)
   (let ($p1 $p2)
     (if (region-active-p)
@@ -858,17 +858,12 @@ Version 2019-06-21"
       (save-restriction
         (narrow-to-region $p1 $p2)
         (let ((case-fold-search nil))
-          (goto-char (point-min))
-          (while (re-search-forward "\\. \\{1,2\\}\\([a-z]\\)" nil "move") ; after period
-            (upcase-region (match-beginning 1) (match-end 1))
-            ;; (overlay-put (make-overlay (match-beginning 1) (match-end 1)) 'face '((t :background "red" :foreground "white")))
-            (overlay-put (make-overlay (match-beginning 1) (match-end 1)) 'face 'highlight))
 
-          ;;  new line after period
+          ;; after period or question mark or exclamation
           (goto-char (point-min))
-          (while (re-search-forward "\\. ?\n *\\([a-z]\\)" nil "move")
-            (upcase-region (match-beginning 1) (match-end 1))
-            (overlay-put (make-overlay (match-beginning 1) (match-end 1)) 'face 'highlight))
+          (while (re-search-forward "\\(\\.\\|\\?\\|!\\) ?\n? *\\([a-z]\\)" nil "move")
+            (upcase-region (match-beginning 2) (match-end 2))
+            (overlay-put (make-overlay (match-beginning 2) (match-end 2)) 'face 'highlight))
 
           ;; after a blank line, after a bullet, or beginning of buffer
           (goto-char (point-min))
@@ -1377,17 +1372,21 @@ Version 2017-01-11"
 (defun xah-dired-rename-space-to-underscore ()
   "In dired, rename current or marked files by replacing space to lowline _.
 If not in `dired', do nothing.
+move cursor down 1 line after operation. So you can hold shortcut key to repeat this command on files.
+
 URL `http://ergoemacs.org/emacs/elisp_dired_rename_space_to_underscore.html'
-Version 2017-12-13"
+Version 2020-02-28"
   (interactive)
   (require 'dired-aux)
   (if (eq major-mode 'dired-mode)
-      (progn
+      (let ((markedFiles (dired-get-marked-files )))
         (mapc (lambda (x)
                 (when (string-match " " x )
                   (dired-rename-file x (replace-regexp-in-string " " "_" x) nil)))
-              (dired-get-marked-files ))
-        (revert-buffer))
+              markedFiles)
+        (dired-next-line 1)
+        ;; (revert-buffer)
+        )
     (user-error "Not in dired")))
 
 (defun xah-dired-rename-space-to-hyphen ()
