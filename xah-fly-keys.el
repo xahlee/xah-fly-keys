@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2020, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 10.12.20200303145818
+;; Version: 10.12.20200305171033
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2338,18 +2338,18 @@ Version 2018-10-12"
          (resize-mini-windows nil)
          ($fname (buffer-file-name))
          ($fSuffix (file-name-extension $fname))
-         ($prog-name "go")
-         $cmd-str)
-    (setq $cmd-str (concat $prog-name " \""   $fname "\" &"))
+         ($progName "go")
+         $cmdStr)
+    (setq $cmdStr (concat $progName " \""   $fname "\" &"))
     (if current-prefix-arg
         (progn
-          (setq $cmd-str (format "%s build \"%s\" " $prog-name $fname)))
+          (setq $cmdStr (format "%s build \"%s\" " $progName $fname)))
       (progn
-        (setq $cmd-str (format "%s run \"%s\" &" $prog-name $fname))))
+        (setq $cmdStr (format "%s run \"%s\" &" $progName $fname))))
     (progn
       (message "running %s" $fname)
-      (message "%s" $cmd-str)
-      (shell-command $cmd-str $outputb )
+      (message "%s" $cmdStr)
+      (shell-command $cmdStr $outputb )
       ;;
       )))
 
@@ -2364,12 +2364,12 @@ File suffix is used to determine what program to run.
 If the file is modified or not saved, save it automatically before run.
 
 URL `http://ergoemacs.org/emacs/elisp_run_current_file.html'
-Version 2019-11-05"
+Version 2020-03-05"
   (interactive)
   (let (
-        ($outputb "*xah-run output*")
+        ($outBuffer "*xah-run output*")
         (resize-mini-windows nil)
-        ($suffix-map
+        ($suffixMap
          ;; (‹extension› . ‹shell program name›)
          `(
            ("php" . "php")
@@ -2395,14 +2395,14 @@ Version 2019-11-05"
            ))
         $fname
         $fSuffix
-        $prog-name
-        $cmd-str)
+        $progName
+        $cmdStr)
     (when (not (buffer-file-name)) (save-buffer))
     (when (buffer-modified-p) (save-buffer))
     (setq $fname (buffer-file-name))
     (setq $fSuffix (file-name-extension $fname))
-    (setq $prog-name (cdr (assoc $fSuffix $suffix-map)))
-    (setq $cmd-str (concat $prog-name " \""   $fname "\" &"))
+    (setq $progName (cdr (assoc $fSuffix $suffixMap)))
+    (setq $cmdStr (concat $progName " \""   $fname "\" &"))
     (run-hooks 'xah-run-current-file-before-hook)
     (cond
      ((string-equal $fSuffix "el")
@@ -2411,20 +2411,22 @@ Version 2019-11-05"
       (if (fboundp 'xah-ts-compile-file)
           (progn
             (xah-ts-compile-file current-prefix-arg))
-        (if $prog-name
+        (if $progName
             (progn
               (message "Running")
-              (shell-command $cmd-str $outputb ))
+              (shell-command $cmdStr $outBuffer ))
           (error "No recognized program file suffix for this file."))))
      ((string-equal $fSuffix "go")
       (xah-run-current-go-file))
      ((string-equal $fSuffix "java")
       (progn
-        (shell-command (format "java %s" (file-name-sans-extension (file-name-nondirectory $fname))) $outputb )))
-     (t (if $prog-name
+        (shell-command (format "javac %s" $fname) $outBuffer )
+        (shell-command (format "java %s" (file-name-sans-extension
+                                          (file-name-nondirectory $fname))) $outBuffer )))
+     (t (if $progName
             (progn
               (message "Running")
-              (shell-command $cmd-str $outputb ))
+              (shell-command $cmdStr $outBuffer ))
           (error "No recognized program file suffix for this file."))))
     (run-hooks 'xah-run-current-file-after-hook)))
 
@@ -2719,7 +2721,7 @@ Version 2019-11-04"
 (defun xah-open-in-terminal ()
   "Open the current dir in a new terminal window.
 URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
-Version 2019-11-04"
+Version 2020-03-05"
   (interactive)
   (cond
    ((string-equal system-type "windows-nt")
@@ -2727,7 +2729,9 @@ Version 2019-11-04"
       (start-process "" nil "powershell" "start-process" "powershell"  "-workingDirectory" default-directory)))
    ((string-equal system-type "darwin")
     (let ((process-connection-type nil))
-      (start-process "" nil "/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal" default-directory)))
+      (if (file-exists-p "/System/Applications/")
+          (start-process "" nil "/System/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal" default-directory)
+        (start-process "" nil "/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal" default-directory))))
    ((string-equal system-type "gnu/linux")
     (let ((process-connection-type nil))
       (start-process "" nil "x-terminal-emulator"
