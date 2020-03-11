@@ -2056,7 +2056,7 @@ Version 2020-02-04"
 
 (defun xah-select-text-in-quote ()
   "Select text between the nearest left and right delimiters.
-Delimiters here includes the following chars: '\"<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕（）
+Delimiters here includes the following chars: '\"`<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕（）
 This command select between any bracket chars, not the inner text of a bracket. For example, if text is
 
  (a(b)c▮)
@@ -2067,7 +2067,7 @@ URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
 Version 2018-10-11"
   (interactive)
   (let (
-        ($skipChars "^'\"<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕（）〘〙")
+        ($skipChars "^'\"`<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕（）〘〙")
         $p1
         )
     (skip-chars-backward $skipChars)
