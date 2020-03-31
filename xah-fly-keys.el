@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2020, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 10.13.20200329225636
+;; Version: 10.14.20200330171143
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1789,20 +1789,20 @@ Version 2017-01-17"
 (defun xah-insert-square-bracket () (interactive) (xah-insert-bracket-pair "[" "]") )
 (defun xah-insert-brace () (interactive) (xah-insert-bracket-pair "{" "}") )
 
-(defun xah-insert-double-curly-quote“” () (interactive) (xah-insert-bracket-pair "“" "”") )
-(defun xah-insert-curly-single-quote‘’ () (interactive) (xah-insert-bracket-pair "‘" "’") )
-(defun xah-insert-single-angle-quote‹› () (interactive) (xah-insert-bracket-pair "‹" "›") )
-(defun xah-insert-double-angle-quote«» () (interactive) (xah-insert-bracket-pair "«" "»") )
+(defun xah-insert-double-curly-quote () (interactive) (xah-insert-bracket-pair "“" "”") )
+(defun xah-insert-curly-single-quote () (interactive) (xah-insert-bracket-pair "‘" "’") )
+(defun xah-insert-single-angle-quote () (interactive) (xah-insert-bracket-pair "‹" "›") )
+(defun xah-insert-double-angle-quote () (interactive) (xah-insert-bracket-pair "«" "»") )
 (defun xah-insert-ascii-double-quote () (interactive) (xah-insert-bracket-pair "\"" "\"") )
 (defun xah-insert-ascii-single-quote () (interactive) (xah-insert-bracket-pair "'" "'") )
 (defun xah-insert-emacs-quote () (interactive) (xah-insert-bracket-pair "`" "'") )
-(defun xah-insert-corner-bracket「」 () (interactive) (xah-insert-bracket-pair "「" "」" ) )
-(defun xah-insert-white-corner-bracket『』 () (interactive) (xah-insert-bracket-pair "『" "』") )
-(defun xah-insert-angle-bracket〈〉 () (interactive) (xah-insert-bracket-pair "〈" "〉") )
-(defun xah-insert-double-angle-bracket《》 () (interactive) (xah-insert-bracket-pair "《" "》") )
-(defun xah-insert-white-lenticular-bracket〖〗 () (interactive) (xah-insert-bracket-pair "〖" "〗") )
-(defun xah-insert-black-lenticular-bracket【】 () (interactive) (xah-insert-bracket-pair "【" "】") )
-(defun xah-insert-tortoise-shell-bracket〔〕 () (interactive) (xah-insert-bracket-pair "〔" "〕" ) )
+(defun xah-insert-corner-bracket () (interactive) (xah-insert-bracket-pair "「" "」" ) )
+(defun xah-insert-white-corner-bracket () (interactive) (xah-insert-bracket-pair "『" "』") )
+(defun xah-insert-angle-bracket () (interactive) (xah-insert-bracket-pair "〈" "〉") )
+(defun xah-insert-double-angle-bracket () (interactive) (xah-insert-bracket-pair "《" "》") )
+(defun xah-insert-white-lenticular-bracket () (interactive) (xah-insert-bracket-pair "〖" "〗") )
+(defun xah-insert-black-lenticular-bracket () (interactive) (xah-insert-bracket-pair "【" "】") )
+(defun xah-insert-tortoise-shell-bracket () (interactive) (xah-insert-bracket-pair "〔" "〕" ) )
 
 (defun xah-insert-hyphen ()
   "Insert a HYPHEN-MINUS character."
@@ -3284,24 +3284,24 @@ Version 2019-02-12"
    ("RET" . insert-char)
    ("SPC" . xah-insert-unicode)
 
-   ("W" . xah-insert-double-angle-bracket《》)
-   ("b" . xah-insert-black-lenticular-bracket【】)
+   ("W" . xah-insert-double-angle-bracket)
+   ("b" . xah-insert-black-lenticular-bracket)
    ("c" . xah-insert-ascii-single-quote)
-   ("d" . xah-insert-double-curly-quote“”)
+   ("d" . xah-insert-double-curly-quote)
    ("f" . xah-insert-emacs-quote)
    ("g" . xah-insert-ascii-double-quote)
    ("h" . xah-insert-brace) ; {}
-   ("i" . xah-insert-curly-single-quote‘’)
+   ("i" . xah-insert-curly-single-quote)
    ("l" . xah-insert-formfeed)
-   ("m" . xah-insert-corner-bracket「」)
+   ("m" . xah-insert-corner-bracket)
    ("n" . xah-insert-square-bracket) ; []
-   ("p" . xah-insert-single-angle-quote‹›)
-   ("r" . xah-insert-tortoise-shell-bracket〔〕 )
+   ("p" . xah-insert-single-angle-quote)
+   ("r" . xah-insert-tortoise-shell-bracket )
    ("s" . xah-insert-string-assignment)
    ("t" . xah-insert-paren)
    ("u" . xah-insert-date)
-   ("w" . xah-insert-angle-bracket〈〉)
-   ("y" . xah-insert-double-angle-quote«»)
+   ("w" . xah-insert-angle-bracket)
+   ("y" . xah-insert-double-angle-quote)
    ;;
 
    ))
