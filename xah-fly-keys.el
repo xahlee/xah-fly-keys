@@ -3201,10 +3201,10 @@ Version 2019-02-12"
    (lambda ($pair)
      (define-key @keymap-name (kbd (xah-fly--key-char (car $pair))) (cdr $pair)))
    @key-cmd-alist))
-   
+
 (defun xah-fly--define-keys (@keymap-name @key-cmd-alist)
-  "Map `define-key' over a alist @key-cmd-alist. This is the naive version 
-   of the function, which preserves mnemonics irrespective of local keyboard layout. 
+  "Map `define-key' over a alist @key-cmd-alist. This is the naive version
+   of the function, which preserves mnemonics irrespective of local keyboard layout.
 Example usage:
 ;; (xah-fly--define-keys
 ;;  (define-prefix-command 'xah-fly-dot-keymap)
@@ -3217,9 +3217,9 @@ Version 2019-02-12"
   (interactive)
   (mapc
    (lambda ($pair)
-     (define-key @keymap-name (kbd (car $pair)) (cdr $pair)))   
+     (define-key @keymap-name (kbd (car $pair)) (cdr $pair)))
     ;; (define-key @keymap-name (kbd (xah-fly--key-char (car $pair))) (cdr $pair)))
-   @key-cmd-alist))   
+   @key-cmd-alist))
 
 
 ;; keymaps
@@ -3502,8 +3502,8 @@ Version 2019-02-12"
  '(
    ("t" . xref-find-definitions)
    ("n" . xref-pop-marker-stack)))
- 
- (xah-fly--define-keys
+
+(xah-fly--define-keys
  (define-prefix-command 'xah-fly-leader-key-map)
  '(
    ("SPC" . xah-fly-insert-mode-activate)
@@ -3560,11 +3560,7 @@ Version 2019-02-12"
    ;; z
    ;;
    ))
- 
- 
-	  
 
-   
 
 ;;;; misc
 
@@ -3818,7 +3814,7 @@ Version 2019-02-12"
   (interactive)
   (setq xah-fly-key--current-layout @layout)
   (load "xah-fly-keys"))
-  
+
 (defun xah-fly-command-mode-init ()
   "Set command mode keys.
 Version 2017-01-21"
@@ -3827,17 +3823,17 @@ Version 2017-01-21"
 
   (setq xah-fly-insert-state nil)
   (setq xah-fly-command-state t)
- 
+
   ;;(progn
     (modify-all-frames-parameters (list (cons 'cursor-type 'box)))
-	
+
 	;(setq cursor-type 'box)
-	
+
 (progn
  (set-face-background 'mode-line "red4")
  (set-face-foreground 'mode-line "gray")
  (set-face-background 'mode-line-inactive "gray30")
-  (set-face-foreground 'mode-line-inactive "red"))	
+  (set-face-foreground 'mode-line-inactive "red"))
 
   (setq mode-line-front-space "C")
   (force-mode-line-update)
@@ -3845,9 +3841,6 @@ Version 2017-01-21"
   ;;
   )
 
-  
-
-  
 (defun xah-fly-space-key ()
   "switch to command mode if the char before cursor is a space.
 experimental
@@ -3863,18 +3856,18 @@ Version 2018-05-07"
 
   (setq xah-fly-insert-state t)
   (setq xah-fly-command-state nil)
-  
+
   ;(progn
     (modify-all-frames-parameters (list (cons 'cursor-type 'bar)))
-	
-	;(setq cursor-type 'bar)	 
-	 
+
+	;(setq cursor-type 'bar)
+
 (progn
  (set-face-background 'mode-line-inactive "gray30")
  (set-face-foreground 'mode-line-inactive "gray80")
  (set-face-background 'mode-line "gray75")
  (set-face-foreground 'mode-line "black"))
-		   
+
 
 (setq mode-line-front-space "I")
 
@@ -3949,10 +3942,10 @@ Version 2017-07-07"
 ;; (cancel-timer xah-fly-timer-id)
 
 
-(defvar xah-fly-manage-insert-mode-map  (make-sparse-keymap) "")  
-  
+(defvar xah-fly-manage-insert-mode-map  (make-sparse-keymap) "")
+
 (xah-fly--define-keys-for-local-keyboard-layout
-    xah-fly-manage-insert-mode-map  
+    xah-fly-manage-insert-mode-map
    '(
 
      ("SPC" . nil)
@@ -4016,11 +4009,11 @@ Version 2017-07-07"
      ;;
      ))
 
-  
-(defvar xah-fly-manage-command-mode-map  (make-sparse-keymap) "")  
-  
+
+(defvar xah-fly-manage-command-mode-map  (make-sparse-keymap) "")
+
 (xah-fly--define-keys-for-local-keyboard-layout
-    xah-fly-manage-command-mode-map  
+    xah-fly-manage-command-mode-map
    '(
      ("~" . nil)
      (":" . nil)
@@ -4080,49 +4073,49 @@ Version 2017-07-07"
      ("w" . xah-next-window-or-frame)
      ("x" . xah-toggle-letter-case)
      ("y" . set-mark-command)
-     ("z" . xah-goto-matching-bracket)))  
-  
-  
- 
- 
+     ("z" . xah-goto-matching-bracket)))
+
+
+
+
 
 (defvar xah-fly-command-state nil)
 (defvar xah-fly-insert-state nil)
- 
+
 (defvar xah-fly-mode-map-alist
   (list
    (cons 'xah-fly-command-state xah-fly-manage-command-mode-map)
-   (cons 'xah-fly-insert-state xah-fly-manage-insert-mode-map)))  
-   
+   (cons 'xah-fly-insert-state xah-fly-manage-insert-mode-map)))
+
 (defconst xah-fly--states
   '(xah-fly-command-state
-    xah-fly-insert-state))   
-	
+    xah-fly-insert-state))
+
 (setq emulation-mode-map-alists
-        (cons xah-fly-mode-map-alist emulation-mode-map-alists))	
+        (cons xah-fly-mode-map-alist emulation-mode-map-alists))
 (setq testvarEntering  0)
 		(setq testvarExiting  0)
 
 
 
-  
-  
-(defun Dan/enteredMinibuffer ()
-           (make-local-variable 'xah-fly-insert-state) 
-	       (make-local-variable 'xah-fly-command-state) 
-		   (make-local-variable 'mode-line-front-space)
-  )    
-  
-  
 
-  
+
+(defun Dan/enteredMinibuffer ()
+           (make-local-variable 'xah-fly-insert-state)
+	       (make-local-variable 'xah-fly-command-state)
+		   (make-local-variable 'mode-line-front-space)
+  )
+
+
+
+
 (define-minor-mode xah-fly-keys-mode
   "A modal keybinding set, like vim, but based on ergonomic principles, like Dvorak layout.
 URL `http://ergoemacs.org/misc/ergoemacs_vi_mode.html'"
   t "∑flykeys" xah-fly-key-map
   (progn
     (add-hook 'minibuffer-setup-hook 'Dan/enteredMinibuffer)
-	(make-local-variable 'xah-fly-insert-state) 
+	(make-local-variable 'xah-fly-insert-state)
 	(make-local-variable 'xah-fly-command-state)))
 
 (xah-fly-insert-mode-activate)
@@ -4131,7 +4124,7 @@ URL `http://ergoemacs.org/misc/ergoemacs_vi_mode.html'"
   "Turn off xah-fly-keys minor mode."
   (interactive)
   (xah-fly-insert-mode-activate)
-  (remove-hook 'minibuffer-setup-hook 'Dan/enteredMinibuffer)  
+  (remove-hook 'minibuffer-setup-hook 'Dan/enteredMinibuffer)
   (setq mode-line-front-space "")
   (force-mode-line-update)
   (xah-fly-keys-mode -1))
@@ -4144,15 +4137,15 @@ URL `http://ergoemacs.org/misc/ergoemacs_vi_mode.html'"
       (xah-fly-keys-mode 1)
       (xah-fly-insert-mode-activate)))
    )
-  
-;;(define-globalized-minor-mode xah-fly-keys-global-mode xah-fly-keys-mode xah-fly-keys-mode-on
-;;  :require 'xah-fly-keys)  
-  (define-globalized-minor-mode xah-fly-keys xah-fly-keys-mode xah-fly-keys-mode-on
-  :require 'xah-fly-keys) 
 
-    (xah-fly-keys 1)  
+;;(define-globalized-minor-mode xah-fly-keys-global-mode xah-fly-keys-mode xah-fly-keys-mode-on
+;;  :require 'xah-fly-keys)
+  (define-globalized-minor-mode xah-fly-keys xah-fly-keys-mode xah-fly-keys-mode-on
+  :require 'xah-fly-keys)
+
+    (xah-fly-keys 1)
 ;;    (xah-fly-keys-global-mode 1)
-  
+
 (provide 'xah-fly-keys)
 
 
