@@ -127,8 +127,6 @@
 
 
 
-(when (version<= emacs-version "26.0.50"  )
-  (defalias 'global-display-line-numbers-mode 'linum-mode ))
 
 (defvar xah-fly-command-mode-activate-hook nil "Hook for `xah-fly-command-mode-activate'")
 (defvar xah-fly-insert-mode-activate-hook nil "Hook for `xah-fly-insert-mode-activate'")
@@ -2317,6 +2315,10 @@ Version 2019-07-16"
                   (find-file (concat $path ".el"))
                 (when (y-or-n-p (format "file no exist: 「%s」. Create?" $path))
                   (find-file $path ))))))))))
+
+(if (version<= emacs-version "26.0.50")
+    (defalias 'xah-display-line-numbers-mode #'linum-mode)
+  (defalias 'xah-display-line-numbers-mode #'global-display-line-numbers-mode))
 
 
 
