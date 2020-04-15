@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2020, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 10.14.20200330171143
+;; Version: 10.15.20200414180512
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -3761,7 +3761,6 @@ Version 2019-02-12"
       (define-key xah-fly-key-map (kbd "C--") 'text-scale-decrease)
 
       (define-key xah-fly-key-map (kbd "C-d") 'pop-global-mark)
-      (define-key xah-fly-key-map (kbd "C-t") 'xah-pop-local-mark-ring)
 
       ;;
       ))
