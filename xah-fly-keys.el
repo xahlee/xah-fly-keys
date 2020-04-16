@@ -3288,7 +3288,8 @@ and points to `xah-fly-command-map' otherwise (which see).")
  'xah-fly-key-map
  "Put bindings for command mode in `xah-fly-command-map', bindings for
 insert mode in `xah-fly-insert-map' and bindings that are common to both
-command and insert modes in `xah-fly-shared-map'.")
+command and insert modes in `xah-fly-shared-map'."
+ "2020-04-16")
 
 (defvar xah-fly-shared-map (make-sparse-keymap)
   "Parent keymap of `xah-fly-command-map' and `xah-fly-insert-map'.
