@@ -91,18 +91,18 @@
 
 ;; the following standard keys with Control are supported:
 
-;; 【Ctrl+tab】 'xah-next-user-buffer
-;; 【Ctrl+shift+tab】 'xah-previous-user-buffer
-;; 【Ctrl+v】 paste
-;; 【Ctrl+w】 close
-;; 【Ctrl+z】 undo
-;; 【Ctrl+n】 new
-;; 【Ctrl+o】 open
-;; 【Ctrl+s】 save
-;; 【Ctrl+shift+s】 save as
-;; 【Ctrl+shift+t】 open last closed
-;; 【Ctrl++】 'text-scale-increase
-;; 【Ctrl+-】 'text-scale-decrease
+ ;; 【Ctrl+tab】 'xah-next-user-buffer
+ ;; 【Ctrl+shift+tab】 'xah-previous-user-buffer
+ ;; 【Ctrl+v】 paste
+ ;; 【Ctrl+w】 close
+ ;; 【Ctrl+z】 undo
+ ;; 【Ctrl+n】 new
+ ;; 【Ctrl+o】 open
+ ;; 【Ctrl+s】 save
+ ;; 【Ctrl+shift+s】 save as
+ ;; 【Ctrl+shift+t】 open last closed
+ ;; 【Ctrl++】 'text-scale-increase
+ ;; 【Ctrl+-】 'text-scale-decrease
 
 ;; To disable both Control and Meta shortcut keys, add the following lines to you init.el before (require 'xah-fly-keys):
 ;; (setq xah-fly-use-control-key nil)
