@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2020, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 11.1.20200418044532
+;; Version: 11.2.20200418075912
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2346,14 +2346,10 @@ Version 2019-07-16"
     (defalias 'xah-display-line-numbers-mode #'linum-mode)
   (defalias 'xah-display-line-numbers-mode #'global-display-line-numbers-mode))
 
-(defun xah-select-M-x ()
-  "Launches a suitable extended-command chooser.
+(defun xah-fly-M-x ()
+  "Calls `execute-extended-command' or an alternative.
 
-Try to launch, in order: `smex', `helm-M-x', `counsel-M-x', and finally
-launch the built-in `execute-extended-command' if none of the previous
-are bound. Users should rebind the \\<xah-fly-command-map>\\[xah-select-M-x]
-key in `xah-fly-command-map' if they prefer a different extended-command
-chooser.
+Calls one of the following, in order: `smex', `helm-M-x', `counsel-M-x', `execute-extended-command'.
 Version 2020-04-09"
   (interactive)
   (command-execute (cond ((fboundp 'smex) 'smex)
@@ -3368,7 +3364,7 @@ minor modes loaded later may override bindings in this map.")
    ("9" . xah-select-text-in-quote)
    ("0" . xah-pop-local-mark-ring)
 
-   ("a" . xah-select-M-x)
+   ("a" . xah-fly-M-x)
    ("b" . isearch-forward)
    ("c" . previous-line)
    ("d" . xah-beginning-of-line-or-block)
