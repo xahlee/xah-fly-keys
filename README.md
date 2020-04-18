@@ -8,18 +8,20 @@ This is the most efficient editing system in the universe.
 home page at
 http://ergoemacs.org/misc/ergoemacs_vi_mode.html
 
-Breaking news 2020-04-18.
-Major key engine rewrite by Dan Langlois and Will Dey. Much update will happen in next few days, here, and on my home page.
+2020-04-18 News: Key Engine Rewrite
+===================
+
+Major key engine rewrite by Dan Langlois and Will Dey. Much doc update will happen in next few days, on how to customize and how the new code works, at xah fly keys home page http://ergoemacs.org/misc/ergoemacs_vi_mode.html
 
 The old stable version is still available as xah-fly-keys_old_2020-04-18.el
 
 QWERTY layout
 -------------------
-![xah-fly-keys qwerty layout](https://cdn.rawgit.com/xahlee/xah-fly-keys/master/xah_fly_keys_layout_qwerty.svg "xah-fly-keys qwerty layout")
+![xah-fly-keys qwerty layout](https://cdn.rawgit.xah_fly_keys_qwerty_layout_2020-04-18_4fgyk.png "xah-fly-keys qwerty layout")
 
 DVORAK layout
 -------------------
-![xah-fly-keys dvorak layout](https://cdn.rawgit.com/xahlee/xah-fly-keys/master/xah_fly_keys_layout_dvorak.svg "xah-fly-keys dvorak layout")
+![xah-fly-keys dvorak layout](https://cdn.rawgit.xah_fly_keys_dvorak_layout_2020-04-18_3bn3f.png "xah-fly-keys dvorak layout")
 
 Setup
 -------------------
@@ -31,19 +33,17 @@ Add the following to `.emacs` after installing manually or via MELPA:
 
 The following keyboard layouts are supported:
 
-<table>
-<tr><td><code>'azerty</code></td></tr>
-<tr><td><code>'azerty-be</code></td></tr>
-<tr><td><code>'colemak</code></td></tr>
-<tr><td><code>'colemak-mod-dh</code></td></tr>
-<tr><td><code>'dvorak</code></td></tr>
-<tr><td><code>'programer-dvorak</code></td></tr>
-<tr><td><code>'qwerty</code></td></tr>
-<tr><td><code>'qwerty-abnt</code></td></tr>
-<tr><td><code>'qwertz</code></td></tr>
-<tr><td><code>'workman</code></td></tr>
-<tr><td><code>'norman</code></td></tr>
-</table>
+* 'azerty
+* 'azerty-be
+* 'colemak
+* 'colemak-mod-dh
+* 'dvorak
+* 'programer-dvorak
+* 'qwerty
+* 'qwerty-abnt
+* 'qwertz
+* 'workman
+* 'norman
 
 For backward compatibility, strings with the above names are also accepted.
 
