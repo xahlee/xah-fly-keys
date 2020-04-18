@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2020, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 11.1.20200418042348
+;; Version: 11.1.20200418044532
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -3244,17 +3244,19 @@ Value is automatically set from value of `xah-fly-key-current-layout'. Do not ma
 		"-kmap"))))
 
 (defun xah-fly--key-char (@charstr)
-  "Return the corresponding char @charstr according to xah-fly--current-layout-kmap.
-@charstr must be a string of single char.
-Version 2019-02-12"
+  "Return the corresponding char @charstr according to `xah-fly--current-layout-kmap'.
+@charstr must be a string of single char. If more than 1 char, return it unchanged.
+Version 2020-04-18"
   (interactive)
   (if (> (length @charstr) 1)
       @charstr
     (let (($result (assoc @charstr xah-fly--current-layout-kmap)))
       (if $result (cdr $result) @charstr ))))
 
-(defmacro xah-fly--define-keys (@keymap-name @key-cmd-alist &optional @direct)
-  "Map `define-key' over a alist @key-cmd-alist.
+(defmacro xah-fly--define-keys (@keymap-name @key-cmd-alist &optional @direct-q)
+  "Map `define-key' over a alist @key-cmd-alist, with key layout remap.
+The key is remapped by `xah-fly--key-char'.
+If @direct-q is t, do not remap key.
 Example usage:
 ;; (xah-fly--define-keys
 ;;  (define-prefix-command 'xah-fly-dot-keymap)
@@ -3263,14 +3265,14 @@ Example usage:
 ;;    (\".\" . isearch-forward-symbol-at-point)
 ;;    (\"1\" . hi-lock-find-patterns)
 ;;    (\"w\" . isearch-forward-word)))
-Version 2020-04-06"
+Version 2020-04-18"
   (let (($keymap-name (make-symbol "keymap-name")))
     `(let ((,$keymap-name , @keymap-name))
        ,@(mapcar
 	  (lambda ($pair)
 	    `(define-key
 	       ,$keymap-name
-	       (kbd (,(if @direct #'identity #'xah-fly--key-char) ,(car $pair)))
+	       (kbd (,(if @direct-q #'identity #'xah-fly--key-char) ,(car $pair)))
 	       ,(list 'quote (cdr $pair))))
 	  (cadr @key-cmd-alist)))))
 
