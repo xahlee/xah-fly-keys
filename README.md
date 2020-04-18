@@ -11,7 +11,7 @@ http://ergoemacs.org/misc/ergoemacs_vi_mode.html
 2020-04-18 News: Key Engine Rewrite
 ===================
 
-Major key engine rewrite by [Dan Langlois] (https://github.com/DanLanglois) and [Will Dey] (https://github.com/wi11dey) . Much doc update will happen in next few days, on how to customize and how the new code works, at xah fly keys home page http://ergoemacs.org/misc/ergoemacs_vi_mode.html
+Major key engine rewrite by Dan Langlois (https://github.com/DanLanglois) and Will Dey (https://github.com/wi11dey) . Much doc update will happen in next few days, on how to customize and how the new code works, at xah fly keys home page http://ergoemacs.org/misc/ergoemacs_vi_mode.html
 
 The old stable version is still available as xah-fly-keys_old_2020-04-18.el
 
