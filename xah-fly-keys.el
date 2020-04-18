@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2020, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 10.16.20200418023531
+;; Version: 11.1.20200418042348
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -3994,10 +3994,11 @@ Argument must be one of:
 For backwards compatibility, a string that is the name of one of the above symbols is also acceptable (case-sensitive).
 Version 2020-04-09"
   (interactive (list
-		(widget-prompt-value (get 'xah-fly-key-current-layout 'custom-type)
-				     "New keyboard layout:")))
+		        (widget-prompt-value (get 'xah-fly-key-current-layout 'custom-type)
+				                     "New keyboard layout:")))
   (setq xah-fly-key-current-layout @layout)
-  (load "xah-fly-keys"))
+  ;; (load "xah-fly-keys")
+  )
 
 (defun xah-fly-command-mode-init ()
   "Set command mode keys.
@@ -4104,18 +4105,20 @@ URL `http://ergoemacs.org/misc/ergoemacs_vi_mode.html'"
   (if xah-fly-keys
       ;; Construction:
       (progn
-	(add-hook 'minibuffer-setup-hook 'xah-fly-insert-mode-activate)
-	(add-hook 'minibuffer-exit-hook 'xah-fly-command-mode-activate)
-	(when (and (keymapp xah-fly-key-map)
-		   (not (memq xah-fly-key-map (list xah-fly-command-map
-						    xah-fly-insert-map))))
-	  (set-keymap-parent xah-fly-key-map xah-fly-command-map)
-	  (setq xah-fly-command-map xah-fly-key-map))
-	(xah-fly-command-mode-activate))
+	    (add-hook 'minibuffer-setup-hook 'xah-fly-insert-mode-activate)
+	    (add-hook 'minibuffer-exit-hook 'xah-fly-command-mode-activate)
+        (add-hook 'isearch-mode-end-hook 'xah-fly-command-mode-activate)
+	    (when (and (keymapp xah-fly-key-map)
+		           (not (memq xah-fly-key-map (list xah-fly-command-map
+						                            xah-fly-insert-map))))
+	      (set-keymap-parent xah-fly-key-map xah-fly-command-map)
+	      (setq xah-fly-command-map xah-fly-key-map))
+	    (xah-fly-command-mode-activate))
     ;; Teardown:
     (remove-hook 'minibuffer-setup-hook 'xah-fly-insert-mode-activate)
     (remove-hook 'minibuffer-exit-hook 'xah-fly-command-mode-activate)
     (remove-hook 'shell-mode-hook 'xah-fly-insert-mode-activate)
+    (remove-hook 'isearch-mode-end-hook 'xah-fly-command-mode-activate)
     (xah-fly-insert-mode-init :no-indication)
     (setq mode-line-front-space '(:eval (if (display-graphic-p) " " "-")))))
 

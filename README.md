@@ -8,6 +8,11 @@ This is the most efficient editing system in the universe.
 home page at
 http://ergoemacs.org/misc/ergoemacs_vi_mode.html
 
+Breaking news 2020-04-18.
+Major key engine rewrite by Dan Langlois and Will Dey. Much update will happen in next few days, here, and on my home page.
+
+The old stable version is still available as xah-fly-keys_old_2020-04-18.el
+
 QWERTY layout
 -------------------
 ![xah-fly-keys qwerty layout](https://cdn.rawgit.com/xahlee/xah-fly-keys/master/xah_fly_keys_layout_qwerty.svg "xah-fly-keys qwerty layout")
