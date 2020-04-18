@@ -17,11 +17,11 @@ The old stable version is still available as xah-fly-keys_old_2020-04-18.el
 
 QWERTY layout
 -------------------
-![xah-fly-keys qwerty layout](https://cdn.rawgit.xah_fly_keys_qwerty_layout_2020-04-18_4fgyk.png "xah-fly-keys qwerty layout")
+![xah-fly-keys qwerty layout](xah_fly_keys_qwerty_layout_2020-04-18_4fgyk.png)
 
 DVORAK layout
 -------------------
-![xah-fly-keys dvorak layout](https://cdn.rawgit.xah_fly_keys_dvorak_layout_2020-04-18_3bn3f.png "xah-fly-keys dvorak layout")
+![xah-fly-keys dvorak layout](xah_fly_keys_dvorak_layout_2020-04-18_3bn3f.png)
 
 Setup
 -------------------
