@@ -3295,6 +3295,7 @@ command and insert modes in `xah-fly-shared-map'."
 Define keys that are available in both command and insert modes here, like
 `xah-fly-mode-toggle'")
 
+;; (cons 'keymap xah-fly-shared-map) makes a new keymap with `xah-fly-shared-map' as its parent. See info node (elisp)Inheritance and Keymaps.
 (defvar xah-fly-command-map (cons 'keymap xah-fly-shared-map)
   "Keymap that takes precedence over all other keymaps in command mode.
 
