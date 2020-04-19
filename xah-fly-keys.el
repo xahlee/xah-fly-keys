@@ -3209,21 +3209,26 @@ Version 2017-01-29"
 (defcustom xah-fly-key-current-layout nil
   "The current keyboard layout. Use `xah-fly-keys-set-layout' to set the layout.
 If the value is nil, it's automatically set to \"dvorak\"."
-  :type '(choice  (const :tag "AZERTY" 'azerty)
-		  (const :tag "Belgian AZERTY" 'azerty-be)
-		  (const :tag "Colemak" 'colemak)
-		  (const :tag "Colemak Mod-DH" 'colemak-mod-dh)
-		  (const :tag "Dvorak" 'dvorak)
-		  (const :tag "Programmer Dvorak" 'programer-dvorak)
-		  (const :tag "QWERTY" 'qwerty)
-		  (const :tag "Portuguese QWERTY (ABNT)" 'qwerty-abnt)
-		  (const :tag "QWERTZ" 'qwertz)
-		  (const :tag "Workman" 'workman)
-		  (const :tag "Norman" 'norman))
-  :group 'xah-fly-keys)
-(put 'xah-fly-key-current-layout 'custom-set
-     (lambda (_ layout)
-       (xah-fly-keys-set-layout layout)))
+  :type '(choice  (const :tag "AZERTY" azerty)
+		  (const :tag "Belgian AZERTY" azerty-be)
+		  (const :tag "Colemak" colemak)
+		  (const :tag "Colemak Mod-DH" colemak-mod-dh)
+		  (const :tag "Dvorak" dvorak)
+		  (const :tag "Programmer Dvorak" programer-dvorak)
+		  (const :tag "QWERTY" qwerty)
+		  (const :tag "Portuguese QWERTY (ABNT)" qwerty-abnt)
+		  (const :tag "QWERTZ" qwertz)
+		  (const :tag "Workman" workman)
+		  (const :tag "Norman" norman))
+  :group 'xah-fly-keys
+  :set (lambda (@layout-var @new-layout)
+	 ;; Only reload xah-fly-keys if it was already loaded and the new layout is different:
+	 (if (and (featurep 'xah-fly-keys)
+		  (not (eq @new-layout (symbol-value @layout-var))))
+	     (progn
+	       (set @layout-var @new-layout)
+	       (load "xah-fly-keys"))
+	   (set @layout-var @new-layout))))
 (if xah-fly-key-current-layout nil (setq xah-fly-key-current-layout 'dvorak))
 
 (defvar xah-fly--current-layout-kmap nil
@@ -3295,6 +3300,7 @@ command and insert modes in `xah-fly-shared-map'."
 Define keys that are available in both command and insert modes here, like
 `xah-fly-mode-toggle'")
 
+;; (cons 'keymap xah-fly-shared-map) makes a new keymap with `xah-fly-shared-map' as its parent. See info node (elisp)Inheritance and Keymaps.
 (defvar xah-fly-command-map (cons 'keymap xah-fly-shared-map)
   "Keymap that takes precedence over all other keymaps in command mode.
 
@@ -3993,10 +3999,10 @@ For backwards compatibility, a string that is the name of one of the above symbo
 Version 2020-04-09"
   (interactive (list
 		        (widget-prompt-value (get 'xah-fly-key-current-layout 'custom-type)
-				                     "New keyboard layout:")))
-  (setq xah-fly-key-current-layout @layout)
-  ;; (load "xah-fly-keys")
-  )
+				                     "New keyboard layout: ")))
+  (funcall (get 'xah-fly-key-current-layout 'custom-set)
+	   'xah-fly-key-current-layout
+	   @layout))
 
 (defun xah-fly-command-mode-init ()
   "Set command mode keys.
