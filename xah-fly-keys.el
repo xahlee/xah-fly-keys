@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2020, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 11.2.20200418075912
+;; Version: 11.2.20200418235639
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2353,12 +2353,12 @@ Calls one of the following, in order: `smex', `helm-M-x', `counsel-M-x', `execut
 Version 2020-04-09"
   (interactive)
   (command-execute (cond ((fboundp 'smex) 'smex)
-			 ((fboundp 'helm-M-x) 'helm-M-x)
-			 ((fboundp 'counsel-M-x) 'counsel-M-x)
-			 (t 'execute-extended-command))
-		   nil
-		   nil
-		   :special))
+                         ((fboundp 'helm-M-x) 'helm-M-x)
+                         ((fboundp 'counsel-M-x) 'counsel-M-x)
+                         (t 'execute-extended-command))
+                   nil
+                   nil
+                   :special))
 
 
 
@@ -3210,25 +3210,25 @@ Version 2017-01-29"
   "The current keyboard layout. Use `xah-fly-keys-set-layout' to set the layout.
 If the value is nil, it's automatically set to \"dvorak\"."
   :type '(choice  (const :tag "AZERTY" azerty)
-		  (const :tag "Belgian AZERTY" azerty-be)
-		  (const :tag "Colemak" colemak)
-		  (const :tag "Colemak Mod-DH" colemak-mod-dh)
-		  (const :tag "Dvorak" dvorak)
-		  (const :tag "Programmer Dvorak" programer-dvorak)
-		  (const :tag "QWERTY" qwerty)
-		  (const :tag "Portuguese QWERTY (ABNT)" qwerty-abnt)
-		  (const :tag "QWERTZ" qwertz)
-		  (const :tag "Workman" workman)
-		  (const :tag "Norman" norman))
+                  (const :tag "Belgian AZERTY" azerty-be)
+                  (const :tag "Colemak" colemak)
+                  (const :tag "Colemak Mod-DH" colemak-mod-dh)
+                  (const :tag "Dvorak" dvorak)
+                  (const :tag "Programmer Dvorak" programer-dvorak)
+                  (const :tag "QWERTY" qwerty)
+                  (const :tag "Portuguese QWERTY (ABNT)" qwerty-abnt)
+                  (const :tag "QWERTZ" qwertz)
+                  (const :tag "Workman" workman)
+                  (const :tag "Norman" norman))
   :group 'xah-fly-keys
   :set (lambda (@layout-var @new-layout)
-	 ;; Only reload xah-fly-keys if it was already loaded and the new layout is different:
-	 (if (and (featurep 'xah-fly-keys)
-		  (not (eq @new-layout (symbol-value @layout-var))))
-	     (progn
-	       (set @layout-var @new-layout)
-	       (load "xah-fly-keys"))
-	   (set @layout-var @new-layout))))
+         ;; Only reload xah-fly-keys if it was already loaded and the new layout is different:
+         (if (and (featurep 'xah-fly-keys)
+                  (not (eq @new-layout (symbol-value @layout-var))))
+             (progn
+               (set @layout-var @new-layout)
+               (load "xah-fly-keys"))
+           (set @layout-var @new-layout))))
 (if xah-fly-key-current-layout nil (setq xah-fly-key-current-layout 'dvorak))
 
 (defvar xah-fly--current-layout-kmap nil
@@ -3238,11 +3238,11 @@ Value is automatically set from value of `xah-fly-key-current-layout'. Do not ma
 (setq xah-fly--current-layout-kmap
       (symbol-value
        (intern
-	(concat "xah--dvorak-to-"
-		(if (symbolp xah-fly-key-current-layout)
-		    (symbol-name xah-fly-key-current-layout)
-		  xah-fly-key-current-layout)
-		"-kmap"))))
+        (concat "xah--dvorak-to-"
+                (if (symbolp xah-fly-key-current-layout)
+                    (symbol-name xah-fly-key-current-layout)
+                  xah-fly-key-current-layout)
+                "-kmap"))))
 
 (defun xah-fly--key-char (@charstr)
   "Return the corresponding char @charstr according to `xah-fly--current-layout-kmap'.
@@ -3270,12 +3270,12 @@ Version 2020-04-18"
   (let (($keymap-name (make-symbol "keymap-name")))
     `(let ((,$keymap-name , @keymap-name))
        ,@(mapcar
-	  (lambda ($pair)
-	    `(define-key
-	       ,$keymap-name
-	       (kbd (,(if @direct-q #'identity #'xah-fly--key-char) ,(car $pair)))
-	       ,(list 'quote (cdr $pair))))
-	  (cadr @key-cmd-alist)))))
+          (lambda ($pair)
+            `(define-key
+               ,$keymap-name
+               (kbd (,(if @direct-q #'identity #'xah-fly--key-char) ,(car $pair)))
+               ,(list 'quote (cdr $pair))))
+          (cadr @key-cmd-alist)))))
 
 
 ;; keymaps
@@ -3474,7 +3474,7 @@ minor modes loaded later may override bindings in this map.")
   ;;     (xah-fly--define-keys
   ;;      xah-fly-shared-map
   ;;      '(("C-2" . xah-previous-user-buffer)
-  ;; 	 ("C-1" . xah-next-user-buffer))
+  ;;        ("C-1" . xah-next-user-buffer))
   ;;      :direct)
   ;;   (xah-fly--define-keys
   ;;    xah-fly-shared-map
@@ -3839,115 +3839,115 @@ minor modes loaded later may override bindings in this map.")
 
 ;; the following have keys in emacs, but right now i decided not to give them a key, because either they are rarely used (say, less than once a month by 90% of emacs users), or there is a more efficient command/workflow with key in xah-fly-keys
 
-;; C-x C-p	mark-page
-;; C-x C-l	downcase-region
-;; C-x C-u	upcase-region
+;; C-x C-p   →   mark-page
+;; C-x C-l   →   downcase-region
+;; C-x C-u   →   upcase-region
 
-;; C-x C-t	transpose-lines
-;; C-x C-o	delete-blank-lines
+;; C-x C-t   →   transpose-lines
+;; C-x C-o   →   delete-blank-lines
 
-;; C-x C-r	find-file-read-only
-;; C-x C-v	find-alternate-file
+;; C-x C-r   →   find-file-read-only
+;; C-x C-v   →   find-alternate-file
 
-;; C-x =	what-cursor-position, use describe-char instead
-;; C-x <	scroll-left
-;; C-x >	scroll-right
-;; C-x [	backward-page
-;; C-x ]	forward-page
-;; C-x ^	enlarge-window
+;; C-x =   →   what-cursor-position, use describe-char instead
+;; C-x <   →   scroll-left
+;; C-x >   →   scroll-right
+;; C-x [   →   backward-page
+;; C-x ]   →   forward-page
+;; C-x ^   →   enlarge-window
 
-;; C-x {	shrink-window-horizontally
-;; C-x }	enlarge-window-horizontally
-;; C-x DEL	backward-kill-sentence
+;; C-x {   →   shrink-window-horizontally
+;; C-x }   →   enlarge-window-horizontally
+;; C-x DEL   →   backward-kill-sentence
 
-;; C-x C-z	suspend-frame
+;; C-x C-z   →   suspend-frame
 
-;; C-x k	kill-buffer , use xah-close-current-buffer
-;; C-x l	count-lines-page
-;; C-x m	compose-mail
+;; C-x k   →   kill-buffer , use xah-close-current-buffer
+;; C-x l   →   count-lines-page
+;; C-x m   →   compose-mail
 
 
 ;; undecided yet
 
-;; C-x e	kmacro-end-and-call-macro
-;; C-x q	kbd-macro-query
-;; C-x C-k	kmacro-keymap
+;; C-x e   →   kmacro-end-and-call-macro
+;; C-x q   →   kbd-macro-query
+;; C-x C-k   →   kmacro-keymap
 
-;; C-x C-d	list-directory
-;; C-x C-n	set-goal-column
-;; C-x ESC	Prefix Command
-;; C-x $	set-selective-display
-;; C-x *	calc-dispatch
-;; C-x -	shrink-window-if-larger-than-buffer
-;; C-x .	set-fill-prefix
+;; C-x C-d   →   list-directory
+;; C-x C-n   →   set-goal-column
+;; C-x ESC   →   Prefix Command
+;; C-x $   →   set-selective-display
+;; C-x *   →   calc-dispatch
+;; C-x -   →   shrink-window-if-larger-than-buffer
+;; C-x .   →   set-fill-prefix
 
-;; C-x 4	ctl-x-4-prefix
-;; C-x 5	ctl-x-5-prefix
-;; C-x 6	2C-command
-;; C-x ;	comment-set-column
+;; C-x 4   →   ctl-x-4-prefix
+;; C-x 5   →   ctl-x-5-prefix
+;; C-x 6   →   2C-command
+;; C-x ;   →   comment-set-column
 
-;; C-x `	next-error
-;; C-x f	set-fill-column
-;; C-x i	insert-file
-;; C-x n	Prefix Command
-;; C-x r	Prefix Command
+;; C-x `   →   next-error
+;; C-x f   →   set-fill-column
+;; C-x i   →   insert-file
+;; C-x n   →   Prefix Command
+;; C-x r   →   Prefix Command
 
-;; C-x C-k C-a	kmacro-add-counter
-;; C-x C-k C-c	kmacro-set-counter
-;; C-x C-k C-d	kmacro-delete-ring-head
-;; C-x C-k C-e	kmacro-edit-macro-repeat
-;; C-x C-k C-f	kmacro-set-format
-;; C-x C-k TAB	kmacro-insert-counter
-;; C-x C-k C-k	kmacro-end-or-call-macro-repeat
-;; C-x C-k C-l	kmacro-call-ring-2nd-repeat
-;; C-x C-k RET	kmacro-edit-macro
-;; C-x C-k C-n	kmacro-cycle-ring-next
-;; C-x C-k C-p	kmacro-cycle-ring-previous
-;; C-x C-k C-s	kmacro-start-macro
-;; C-x C-k C-t	kmacro-swap-ring
-;; C-x C-k C-v	kmacro-view-macro-repeat
-;; C-x C-k SPC	kmacro-step-edit-macro
-;; C-x C-k b	kmacro-bind-to-key
-;; C-x C-k e	edit-kbd-macro
-;; C-x C-k l	kmacro-edit-lossage
-;; C-x C-k n	kmacro-name-last-macro
-;; C-x C-k q	kbd-macro-query
-;; C-x C-k r	apply-macro-to-region-lines
-;; C-x C-k s	kmacro-start-macro
+;; C-x C-k C-a   →   kmacro-add-counter
+;; C-x C-k C-c   →   kmacro-set-counter
+;; C-x C-k C-d   →   kmacro-delete-ring-head
+;; C-x C-k C-e   →   kmacro-edit-macro-repeat
+;; C-x C-k C-f   →   kmacro-set-format
+;; C-x C-k TAB   →   kmacro-insert-counter
+;; C-x C-k C-k   →   kmacro-end-or-call-macro-repeat
+;; C-x C-k C-l   →   kmacro-call-ring-2nd-repeat
+;; C-x C-k RET   →   kmacro-edit-macro
+;; C-x C-k C-n   →   kmacro-cycle-ring-next
+;; C-x C-k C-p   →   kmacro-cycle-ring-previous
+;; C-x C-k C-s   →   kmacro-start-macro
+;; C-x C-k C-t   →   kmacro-swap-ring
+;; C-x C-k C-v   →   kmacro-view-macro-repeat
+;; C-x C-k SPC   →   kmacro-step-edit-macro
+;; C-x C-k b   →   kmacro-bind-to-key
+;; C-x C-k e   →   edit-kbd-macro
+;; C-x C-k l   →   kmacro-edit-lossage
+;; C-x C-k n   →   kmacro-name-last-macro
+;; C-x C-k q   →   kbd-macro-query
+;; C-x C-k r   →   apply-macro-to-region-lines
+;; C-x C-k s   →   kmacro-start-macro
 
 
 
-;; C-x 4 C-f	find-file-other-window
-;; C-x 4 C-o	display-buffer
-;; C-x 4 .	find-tag-other-window
-;; C-x 4 0	kill-buffer-and-window
-;; C-x 4 a	add-change-log-entry-other-window
-;; C-x 4 b	switch-to-buffer-other-window
-;; C-x 4 c	clone-indirect-buffer-other-window
-;; C-x 4 d	dired-other-window
-;; C-x 4 f	find-file-other-window
-;; C-x 4 m	compose-mail-other-window
-;; C-x 4 r	find-file-read-only-other-window
+;; C-x 4 C-f   →   find-file-other-window
+;; C-x 4 C-o   →   display-buffer
+;; C-x 4 .   →   find-tag-other-window
+;; C-x 4 0   →   kill-buffer-and-window
+;; C-x 4 a   →   add-change-log-entry-other-window
+;; C-x 4 b   →   switch-to-buffer-other-window
+;; C-x 4 c   →   clone-indirect-buffer-other-window
+;; C-x 4 d   →   dired-other-window
+;; C-x 4 f   →   find-file-other-window
+;; C-x 4 m   →   compose-mail-other-window
+;; C-x 4 r   →   find-file-read-only-other-window
 
-;; C-x 6 2	2C-two-columns
-;; C-x 6 b	2C-associate-buffer
-;; C-x 6 s	2C-split
-;; C-x 6 <f2>	2C-two-columns
+;; C-x 6 2   →   2C-two-columns
+;; C-x 6 b   →   2C-associate-buffer
+;; C-x 6 s   →   2C-split
+;; C-x 6 <f2>   →   2C-two-columns
 
 ;; ctl-x-5-map
 
-;; r C-f     find-file-other-frame
-;; r C-o     display-buffer-other-frame
-;; r .       find-tag-other-frame
-;; r 0       delete-frame
-;; r 1       delete-other-frames
-;; r 2       make-frame-command
-;; r b       switch-to-buffer-other-frame
-;; r d       dired-other-frame
-;; r f       find-file-other-frame
-;; r m       compose-mail-other-frame
-;; r o       other-frame
-;; r r       find-file-read-only-other-frame
+;; r C-f   →   find-file-other-frame
+;; r C-o   →   display-buffer-other-frame
+;; r .   →   find-tag-other-frame
+;; r 0   →   delete-frame
+;; r 1   →   delete-other-frames
+;; r 2   →   make-frame-command
+;; r b   →   switch-to-buffer-other-frame
+;; r d   →   dired-other-frame
+;; r f   →   find-file-other-frame
+;; r m   →   compose-mail-other-frame
+;; r o   →   other-frame
+;; r r   →   find-file-read-only-other-frame
 
 ;; (xah-fly--define-keys
 ;;  (define-prefix-command 'xah-leader-vc-keymap)
@@ -3976,8 +3976,8 @@ minor modes loaded later may override bindings in this map.")
 
 (defun xah-fly--update-key-map ()
   (setq xah-fly-key-map (if xah-fly-insert-state-q
-			    xah-fly-insert-map
-			  xah-fly-command-map)))
+                            xah-fly-insert-map
+                          xah-fly-command-map)))
 
 (defun xah-fly-keys-set-layout (@layout)
   "Set a keyboard layout.
@@ -3998,11 +3998,11 @@ Argument must be one of:
 For backwards compatibility, a string that is the name of one of the above symbols is also acceptable (case-sensitive).
 Version 2020-04-09"
   (interactive (list
-		        (widget-prompt-value (get 'xah-fly-key-current-layout 'custom-type)
-				                     "New keyboard layout: ")))
+                (widget-prompt-value (get 'xah-fly-key-current-layout 'custom-type)
+                                     "New keyboard layout: ")))
   (funcall (get 'xah-fly-key-current-layout 'custom-set)
-	   'xah-fly-key-current-layout
-	   @layout))
+           'xah-fly-key-current-layout
+           @layout))
 
 (defun xah-fly-command-mode-init ()
   "Set command mode keys.
@@ -4011,13 +4011,13 @@ Version 2017-01-21"
   (setq xah-fly-insert-state-q nil)
   (xah-fly--update-key-map)
   (setq xah-fly--deactivate-command-mode-func
-	(set-transient-map xah-fly-command-map (lambda () t)))
+        (set-transient-map xah-fly-command-map (lambda () t)))
   (modify-all-frames-parameters (list (cons 'cursor-type 'box)))
   (setq mode-line-front-space "C")
   (force-mode-line-update))
 
 (defun xah-fly-space-key ()
-  "switch to command mode if the char before cursor is a space.
+  "Switch to command mode if the char before cursor is a space.
 experimental
 Version 2018-05-07"
   (interactive)
@@ -4109,15 +4109,15 @@ URL `http://ergoemacs.org/misc/ergoemacs_vi_mode.html'"
   (if xah-fly-keys
       ;; Construction:
       (progn
-	    (add-hook 'minibuffer-setup-hook 'xah-fly-insert-mode-activate)
-	    (add-hook 'minibuffer-exit-hook 'xah-fly-command-mode-activate)
+        (add-hook 'minibuffer-setup-hook 'xah-fly-insert-mode-activate)
+        (add-hook 'minibuffer-exit-hook 'xah-fly-command-mode-activate)
         (add-hook 'isearch-mode-end-hook 'xah-fly-command-mode-activate)
-	    (when (and (keymapp xah-fly-key-map)
-		           (not (memq xah-fly-key-map (list xah-fly-command-map
-						                            xah-fly-insert-map))))
-	      (set-keymap-parent xah-fly-key-map xah-fly-command-map)
-	      (setq xah-fly-command-map xah-fly-key-map))
-	    (xah-fly-command-mode-activate))
+        (when (and (keymapp xah-fly-key-map)
+                   (not (memq xah-fly-key-map (list xah-fly-command-map
+                                                    xah-fly-insert-map))))
+          (set-keymap-parent xah-fly-key-map xah-fly-command-map)
+          (setq xah-fly-command-map xah-fly-key-map))
+        (xah-fly-command-mode-activate))
     ;; Teardown:
     (remove-hook 'minibuffer-setup-hook 'xah-fly-insert-mode-activate)
     (remove-hook 'minibuffer-exit-hook 'xah-fly-command-mode-activate)
