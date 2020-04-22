@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2020, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 11.2.20200418235639
+;; Version: 11.3.20200422062308
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -3721,7 +3721,7 @@ minor modes loaded later may override bindings in this map.")
    ("e" . list-matching-lines)
    ("f" . goto-line )
    ;; g
-   ("h" . xah-close-current-buffer )
+   ;; ("h" . xah-close-current-buffer )
    ("i" . delete-non-matching-lines)
    ("j" . copy-to-register)
    ("k" . insert-register)
@@ -3811,7 +3811,7 @@ minor modes loaded later may override bindings in this map.")
    ("d" . beginning-of-buffer)
    ("e" . xah-fly-e-keymap)
    ("f" . xah-search-current-word)
-   ("g" . isearch-forward)
+   ("g" . xah-close-current-buffer)
    ("h" . xah-fly-h-keymap)
    ("i" . kill-line)
    ("j" . xah-copy-all-or-region)
