@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2020, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 11.3.20200422062308
+;; Version: 11.4.20200424165750
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -146,10 +146,6 @@
   :group 'xah-fly-keys)
 (defcustom xah-fly-use-isearch-arrows t
   "If nil, do not bind the arrow keys to move between matches in Isearch."
-  :type 'boolean
-  :group 'xah-fly-keys)
-(defcustom xah-fly-use-esc-c-g nil
-  "If non-nil, treat ESC as C-g when it has no other binding."
   :type 'boolean
   :group 'xah-fly-keys)
 
@@ -3496,9 +3492,6 @@ minor modes loaded later may override bindings in this map.")
    '(("<left>" . isearch-reverse-exit-minibuffer)
      ("<right>" . isearch-forward-exit-minibuffer))
    :direct))
-
-(when xah-fly-use-esc-c-g
-  (define-key key-translation-map (kbd "ESC") (kbd "C-g")))
 
 
 ;; commands related to highlight
