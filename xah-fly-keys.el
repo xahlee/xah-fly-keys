@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2020, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 11.4.20200424165750
+;; Version: 11.5.20200427065720
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -40,6 +40,7 @@
 ;; 'programer-dvorak
 ;; 'qwerty
 ;; 'qwerty-abnt
+;; 'qwerty-no (qwerty Norwegian)
 ;; 'qwertz
 ;; 'workman
 ;; 'norman
@@ -3251,6 +3252,7 @@ If the value is nil, it's automatically set to \"dvorak\"."
                   (const :tag "Programmer Dvorak" programer-dvorak)
                   (const :tag "QWERTY" qwerty)
                   (const :tag "Portuguese QWERTY (ABNT)" qwerty-abnt)
+                  (const :tag "QWERTY Norwegian" qwerty-no)
                   (const :tag "QWERTZ" qwertz)
                   (const :tag "Workman" workman)
                   (const :tag "Norman" norman))
@@ -4028,6 +4030,7 @@ Argument must be one of:
  'programer-dvorak
  'qwerty
  'qwerty-abnt
+ 'qwerty-no (qwerty Norwegian)
  'qwertz
  'workman
  'norman
