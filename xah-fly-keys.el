@@ -4108,8 +4108,8 @@ URL `http://ergoemacs.org/misc/ergoemacs_vi_mode.html'"
         (when (and (keymapp xah-fly-key-map)
                    (not (memq xah-fly-key-map (list xah-fly-command-map
                                                     xah-fly-insert-map))))
-          (set-keymap-parent xah-fly-key-map xah-fly-command-map)
-          (setq xah-fly-command-map xah-fly-key-map))
+          (set-keymap-parent xah-fly-key-map xah-fly-shared-map)
+          (setq xah-fly-shared-map xah-fly-key-map))
         (xah-fly-command-mode-activate))
     ;; Teardown:
     (remove-hook 'minibuffer-setup-hook 'xah-fly-insert-mode-activate)
