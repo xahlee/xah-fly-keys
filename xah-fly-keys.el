@@ -3420,6 +3420,12 @@ minor modes loaded later may override bindings in this map.")
    ("<C-f12>" . xah-next-emacs-buffer))
  :direct)
 
+(when xah-fly-use-meta-key
+  (xah-fly--define-keys
+   xah-fly-shared-map
+   '(("M-SPC" . xah-fly-command-mode-activate))
+   :direct))
+
 (when xah-fly-use-control-key
   (xah-fly--define-keys
    xah-fly-shared-map
