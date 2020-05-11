@@ -4083,6 +4083,32 @@ Version 2018-05-07"
       (xah-fly-command-mode-activate)
     (xah-fly-insert-mode-activate)))
 
+(defun xah-fly-one-command-2 ()
+  "Internal function."
+  ;; Re-enter command-mode, unless a different transient map has been set in the meantime or we entered a minibuffer.
+  (unless (and overriding-terminal-local-map
+	       xah-fly-insert-state-q)
+    (remove-hook 'post-command-hook #'xah-fly-one-command-2)
+    (when (and xah-fly-insert-state-q
+	       (not (minibufferp)))
+      (xah-fly-command-mode-activate))))
+
+(defun xah-fly-one-command-1 ()
+  "Internal function."
+  ;; Register a hook to possibly re-enable command mode after the next function completes.
+  (remove-hook 'post-command-hook #'xah-fly-one-command-1)
+  (add-hook 'post-command-hook #'xah-fly-one-command-2))
+
+(defun xah-fly-one-command ()
+  "Go into insert mode for the duration of one command.
+
+Very useful for utilizing both Xah Fly Keys' fast navigation commands and
+a mode's own keymaps.
+Version 2020-05-11"
+  (interactive)
+  (xah-fly-insert-mode-activate)
+  (add-hook 'post-command-hook #'xah-fly-one-command-1))
+
 (defun xah-fly-save-buffer-if-file ()
   "Save current buffer if it is a file."
   (interactive)
