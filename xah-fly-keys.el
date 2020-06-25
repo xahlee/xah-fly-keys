@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2020, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 11.5.20200427065720
+;; Version: 11.5.20200625041453
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -4046,7 +4046,7 @@ Version 2020-04-09"
 
 (defun xah-fly-command-mode-init ()
   "Set command mode keys.
-Version 2017-01-21"
+Version 2020-04-28"
   (interactive)
   (setq xah-fly-insert-state-q nil)
   (xah-fly--update-key-map)
