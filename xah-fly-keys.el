@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2020, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 12.0.20200625044428
+;; Version: 12.0.20200626042202
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -808,7 +808,7 @@ Version 2019-02-12"
 Always cycle in this order: Init Caps, ALL CAPS, all lower.
 
 URL `http://ergoemacs.org/emacs/modernization_upcase-word.html'
-Version 2019-11-24"
+Version 2020-06-26"
   (interactive)
   (let (
         (deactivate-mark nil)
@@ -816,9 +816,9 @@ Version 2019-11-24"
     (if (use-region-p)
         (setq $p1 (region-beginning) $p2 (region-end))
       (save-excursion
-        (skip-chars-backward "0-9A-Za-z")
+        (skip-chars-backward "[:alpha:]")
         (setq $p1 (point))
-        (skip-chars-forward "0-9A-Za-z")
+        (skip-chars-forward "[:alpha:]")
         (setq $p2 (point))))
     (when (not (eq last-command this-command))
       (put this-command 'state 0))
@@ -1292,7 +1292,7 @@ or
 If the delimiter is any left bracket, the end delimiter is automatically the matching bracket.
 
 URL `http://ergoemacs.org/emacs/emacs_quote_lines.html'
-Version 2017-01-11"
+Version 2020-06-26"
   (interactive)
   (let* (
          $p1
@@ -1338,16 +1338,15 @@ Version 2017-01-11"
       (save-restriction
         (narrow-to-region $p1 $p2)
         (goto-char (point-min))
-        (skip-chars-forward "\t ")
-        (insert $beginQuote)
-        (goto-char (point-max))
-        (insert $endQuote)
-        (goto-char (point-min))
-        (while (re-search-forward "\n\\([\t ]*\\)" nil "move" )
-          (replace-match
-           (concat $endQuote $separator (concat "\n" (match-string 1)) $beginQuote) "FIXEDCASE" "LITERAL"))
-        ;;
-        ))))
+        (catch 'EndReached
+          (while t
+            (skip-chars-forward "\t ")
+            (insert $beginQuote)
+            (end-of-line )
+            (insert $endQuote $separator)
+            (if (eq (point) (point-max))
+                (throw 'EndReached t)
+              (forward-char 1))))))))
 
 (defun xah-escape-quotes (@begin @end)
   "Replace 「\"」 by 「\\\"」 in current line or text selection.
