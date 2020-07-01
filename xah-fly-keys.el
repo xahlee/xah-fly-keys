@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2020, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 12.0.20200626042202
+;; Version: 12.1.20200701062452
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -3834,7 +3834,7 @@ minor modes loaded later may override bindings in this map.")
 
    ;; 1
    ;; 2
-   ("3" . delete-other-windows)
+   ("3" . delete-window)
    ("4" . split-window-right)
    ("5" . balance-windows)
    ("6" . xah-upcase-sentence)
