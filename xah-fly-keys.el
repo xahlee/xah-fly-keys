@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2020, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 12.1.20200701062452
+;; Version: 12.2.20200704074515
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -3396,7 +3396,7 @@ minor modes loaded later may override bindings in this map.")
 
    ("1" . xah-extend-selection)
    ("2" . xah-select-line)
-   ("3" . delete-window)
+   ("3" . delete-other-windows)
    ("4" . split-window-below)
    ("5" . delete-char)
    ("6" . xah-select-block)
