@@ -658,7 +658,7 @@ Version 2017-07-02"
       (goto-char $pt)
       (delete-char 1))))
 
-(defun xah-replace-bracket-pairs ( @from-chars @to-chars)
+(defun xah-change-bracket-pairs ( @from-chars @to-chars)
   "Change bracket pairs from one type to another.
 
 For example, change all parenthesis () to square brackets [].
@@ -671,7 +671,7 @@ If the string contains “,2”, then the first 2 chars and last 2 chars are use
 If @to-chars is equal to string “none”, the brackets are deleted.
 
 URL `http://ergoemacs.org/emacs/elisp_change_brackets.html'
-Version 2020-07-06"
+Version 2019-02-12"
   (interactive
    (let (($bracketsList
           '("(paren)"
