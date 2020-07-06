@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2020, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 12.2.20200704074515
+;; Version: 12.2.20200706055128
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -658,7 +658,7 @@ Version 2017-07-02"
       (goto-char $pt)
       (delete-char 1))))
 
-(defun xah-change-bracket-pairs ( @from-chars @to-chars)
+(defun xah-replace-bracket-pairs ( @from-chars @to-chars)
   "Change bracket pairs from one type to another.
 
 For example, change all parenthesis () to square brackets [].
@@ -671,7 +671,7 @@ If the string contains “,2”, then the first 2 chars and last 2 chars are use
 If @to-chars is equal to string “none”, the brackets are deleted.
 
 URL `http://ergoemacs.org/emacs/elisp_change_brackets.html'
-Version 2019-02-12"
+Version 2020-07-06"
   (interactive
    (let (($bracketsList
           '("(paren)"
