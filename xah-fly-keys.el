@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2020, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 12.2.20200706055128
+;; Version: 12.2.20200707061021
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -64,8 +64,8 @@
 ;; 【f】 (or Dvorak 【u】) activates insertion mode.
 ;; 【Space】 is a leader key. For example, 【SPACE r】 (Dvorak 【SPACE p】) calls query-replace. Press 【SPACE C-h】 to see the full list.
 ;; 【Space Space】 also activates insertion mode.
-;; 【Space Enter】 calls execute-extended-command.
-;; 【a】 calls execute-extended-command or smex or helm or counsel (if they are installed).
+;; 【Space Enter】 calls execute-extended-command or alternative.
+;; 【a】 calls execute-extended-command or alternative.
 
 ;; The leader key sequence basically replace ALL emacs commands that starts with C-x key.
 
@@ -3819,7 +3819,7 @@ minor modes loaded later may override bindings in this map.")
  '(
    ("SPC" . xah-fly-insert-mode-activate)
    ("DEL" . xah-fly-insert-mode-activate)
-   ("RET" . execute-extended-command)
+   ("RET" . xah-fly-M-x)
    ("TAB" . xah-fly--tab-key-map)
    ("." . xah-fly-dot-keymap)
    ("'" . xah-fill-or-unfill)
