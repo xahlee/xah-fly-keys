@@ -2348,9 +2348,9 @@ Version 2019-07-16"
 Calls one of the following, in order: `smex', `helm-M-x', `counsel-M-x', `execute-extended-command'.
 Version 2020-04-09"
   (interactive)
-  (command-execute (cond ((fboundp 'smex) 'smex)
-                         ((fboundp 'helm-M-x) 'helm-M-x)
+  (command-execute (cond ((fboundp 'helm-M-x) 'helm-M-x)
                          ((fboundp 'counsel-M-x) 'counsel-M-x)
+                         ((fboundp 'smex) 'smex)
                          (t 'execute-extended-command))
                    nil
                    nil
