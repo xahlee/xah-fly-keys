@@ -29,24 +29,22 @@ Setup
 Add the following to `.emacs` after installing manually or via MELPA:
 ```elisp
 (require 'xah-fly-keys)
-(xah-fly-keys-set-layout 'qwerty) ; required
+(xah-fly-keys-set-layout "qwerty") ; required
 ```
 
 The following keyboard layouts are supported:
 
-* 'azerty
-* 'azerty-be
-* 'colemak
-* 'colemak-mod-dh
-* 'dvorak
-* 'programer-dvorak
-* 'qwerty
-* 'qwerty-abnt
-* 'qwertz
-* 'workman
-* 'norman
-
-For backward compatibility, strings with the above names are also accepted.
+* "azerty"
+* "azerty-be"
+* "colemak"
+* "colemak-mod-dh"
+* "dvorak"
+* "programer-dvorak"
+* "qwerty"
+* "qwerty-abnt"
+* "qwertz"
+* "workman"
+* "norman"
 
 Customization
 -------------------
