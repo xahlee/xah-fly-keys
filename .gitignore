@@ -1,4 +1,5 @@
-# emacs
 *~
 *.elc
 [#]*[#]
+xx*
+.DS_Store

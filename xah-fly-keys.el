@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2020, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 12.2.20200707061021
+;; Version: 12.2.20200907144414
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1631,11 +1631,11 @@ version 2016-07-17"
 (defun xah-insert-date ()
   "Insert current date time.
 Insert date in this format: yyyy-mm-dd.
-When called with `universal-argument', prompt for a format to use.
+If `universal-argument' is called first, prompt for a format to use.
 If there's text selection, delete it first.
 
 URL `http://ergoemacs.org/emacs/elisp_insert-date-time.html'
-version 2018-07-03"
+version 2020-09-07"
   (interactive)
   (let (($style
          (if current-prefix-arg
