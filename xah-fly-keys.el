@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2020, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 12.2.20200907144414
+;; Version: 12.2.20200908161702
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -854,10 +854,10 @@ Version 2015-12-22"
   "Upcase first letters of sentences of current text block or selection.
 
 URL `http://ergoemacs.org/emacs/emacs_upcase_sentence.html'
-Version 2020-03-29"
+Version 2020-09-08"
   (interactive)
   (let ($p1 $p2)
-    (if (region-active-p)
+    (if (use-region-p)
         (setq $p1 (region-beginning) $p2 (region-end))
       (save-excursion
         (if (re-search-backward "\n[ \t]*\n" nil "move")
@@ -1192,7 +1192,7 @@ When there is a text selection, act on the selection, else, act on a text block 
 If `universal-argument' is called first, use the number value for min length of line. By default, it's 70.
 
 URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
-Version 2018-12-16"
+Version 2020-09-08"
   (interactive)
   (let (
         $p1 $p2
@@ -1202,7 +1202,7 @@ Version 2018-12-16"
                    (if current-prefix-arg (prefix-numeric-value current-prefix-arg) fill-column))))
     (if (and  @begin @end)
         (setq $p1 @begin $p2 @end)
-      (if (region-active-p)
+      (if (use-region-p)
           (progn (setq $p1 (region-beginning) $p2 (region-end)))
         (save-excursion
           (if (re-search-backward $blanks-regex nil "move")
@@ -1582,7 +1582,7 @@ URL `http://ergoemacs.org/emacs/elisp_copy-paste_register_1.html'
 Version 2017-01-23"
   (interactive)
   (let ($p1 $p2)
-    (if (region-active-p)
+    (if (use-region-p)
          (setq $p1 (region-beginning) $p2 (region-end))
       (setq $p1 (line-beginning-position) $p2 (line-end-position)))
     (copy-to-register ?1 $p1 $p2)
@@ -1594,10 +1594,10 @@ When no selection, append current line, with newline char.
 See also: `xah-paste-from-register-1', `copy-to-register'.
 
 URL `http://ergoemacs.org/emacs/elisp_copy-paste_register_1.html'
-Version 2015-12-08"
+Version 2015-12-08 2020-09-08"
   (interactive)
   (let ($p1 $p2)
-    (if (region-active-p)
+    (if (use-region-p)
          (setq $p1 (region-beginning) $p2 (region-end))
       (setq $p1 (line-beginning-position) $p2 (line-end-position)))
     (append-to-register ?1 $p1 $p2)
@@ -1933,7 +1933,7 @@ If region is active, extend selection downward by block.
 URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
 Version 2019-12-26"
   (interactive)
-  (if (region-active-p)
+  (if (use-region-p)
       (re-search-forward "\n[ \t]*\n" nil "move")
     (progn
       (skip-chars-forward " \n\t")
@@ -2402,7 +2402,7 @@ File suffix is used to determine what program to run.
 If the file is modified or not saved, save it automatically before run.
 
 URL `http://ergoemacs.org/emacs/elisp_run_current_file.html'
-Version 2020-03-05"
+Version 2020-09-06"
   (interactive)
   (let (
         ($outBuffer "*xah-run output*")
@@ -2417,7 +2417,8 @@ Version 2020-03-05"
            ("rb" . "ruby")
            ("go" . "go run")
            ("hs" . "runhaskell")
-           ("js" . "node")
+           ;; ("js" . "node")
+           ("js" . "deno run")
            ("mjs" . "node --experimental-modules ")
            ("ts" . "tsc") ; TypeScript
            ("tsx" . "tsc")
@@ -2473,10 +2474,10 @@ Version 2020-03-05"
 Works on whole buffer or text selection, respects `narrow-to-region'.
 
 URL `http://ergoemacs.org/emacs/elisp_compact_empty_lines.html'
-Version 2017-09-22"
+Version 2017-09-22 2020-09-08"
   (interactive)
   (let ($begin $end)
-    (if (region-active-p)
+    (if (use-region-p)
         (setq $begin (region-beginning) $end (region-end))
       (setq $begin (point-min) $end (point-max)))
     (save-excursion
@@ -2493,10 +2494,10 @@ Only space and tab is considered whitespace here.
 Works on whole buffer or text selection, respects `narrow-to-region'.
 
 URL `http://ergoemacs.org/emacs/elisp_compact_empty_lines.html'
-Version 2017-09-22"
+Version 2017-09-22 2020-09-08"
   (interactive)
   (let ($begin $end)
-    (if (region-active-p)
+    (if (use-region-p)
         (setq $begin (region-beginning) $end (region-end))
       (setq $begin (point-min) $end (point-max)))
     (save-excursion
