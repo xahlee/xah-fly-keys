@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2020, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 12.2.20200908161702
+;; Version: 12.3.20200913090225
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -519,7 +519,7 @@ This command calls `yank', and if repeated, call `yank-pop'.
 When `universal-argument' is called first with a number arg, paste that many times.
 
 URL `http://ergoemacs.org/emacs/emacs_paste_or_paste_previous.html'
-Version 2017-07-25"
+Version 2017-07-25 2020-09-08"
   (interactive)
   (progn
     (when (and delete-selection-mode (region-active-p))
@@ -1123,14 +1123,12 @@ Version 2016-07-13"
   "Reformat current text block into 1 long line or multiple short lines.
 When there is a text selection, act on the selection, else, act on a text block separated by blank lines.
 
-When the command is called for the first time, it checks the current line's length to decide to go into 1 line or multiple lines. If current line is short, it'll reformat to 1 long lines. And vice versa.
-
-Repeated call toggles between formatting to 1 long line and multiple lines.
+When the command is called for the first time, make it a long line. Second call makes it short line. Repeated call toggles.
 
 If `universal-argument' is called first, use the number value for min length of line. By default, it's 70.
 
 URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
-Version 2019-06-09"
+Version 2020-09-12"
   (interactive)
   ;; This command symbol has a property “'is-longline-p”, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
   (let* (
@@ -1140,7 +1138,7 @@ Version 2019-06-09"
          (is-longline-p
           (if (eq last-command this-command)
               (get this-command 'is-longline-p)
-            (> (- (line-end-position) (line-beginning-position)) @length)))
+            nil))
          ($blanks-regex "\n[ \t]*\n")
          $p1 $p2
          )
@@ -1192,7 +1190,7 @@ When there is a text selection, act on the selection, else, act on a text block 
 If `universal-argument' is called first, use the number value for min length of line. By default, it's 70.
 
 URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
-Version 2020-09-08"
+Version 2018-12-16 2020-09-08"
   (interactive)
   (let (
         $p1 $p2
@@ -1593,7 +1591,7 @@ Version 2017-01-23"
 When no selection, append current line, with newline char.
 See also: `xah-paste-from-register-1', `copy-to-register'.
 
-URL `http://ergoemacs.org/emacs/elisp_copy-paste_register_1.html'
+URL `http://ergoemacs.org/emacs/emacs_copy_append.html'
 Version 2015-12-08 2020-09-08"
   (interactive)
   (let ($p1 $p2)
