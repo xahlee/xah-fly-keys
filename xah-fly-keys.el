@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2020, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 12.3.20200913090225
+;; Version: 12.3.20200919211358
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -28,24 +28,9 @@
 
 ;; (add-to-list 'load-path "~/.emacs.d/lisp/")
 ;; (require 'xah-fly-keys)
-;; (xah-fly-keys-set-layout 'qwerty) ; required
+;; (xah-fly-keys-set-layout "qwerty") ; required
 
-;; possible layout values:
-
-;; 'azerty
-;; 'azerty-be
-;; 'colemak
-;; 'colemak-mod-dh
-;; 'dvorak
-;; 'programer-dvorak
-;; 'qwerty
-;; 'qwerty-abnt
-;; 'qwerty-no (qwerty Norwegian)
-;; 'qwertz
-;; 'workman
-;; 'norman
-
-;; For backward compatibility, strings with the above names are also accepted.
+;; possible layout values: azerty, azerty-be, colemak, colemak-mod-dh, dvorak, programer-dvorak, qwerty, qwerty-abnt, qwerty-no (qwerty Norwegian), qwertz, workman, norman
 
 ;; (xah-fly-keys 1)
 
