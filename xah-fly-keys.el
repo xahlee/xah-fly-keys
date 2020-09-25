@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2020, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 12.3.20200919211358
+;; Version: 12.4.20200925000221
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2385,7 +2385,7 @@ File suffix is used to determine what program to run.
 If the file is modified or not saved, save it automatically before run.
 
 URL `http://ergoemacs.org/emacs/elisp_run_current_file.html'
-Version 2020-09-06"
+Version 2020-09-24"
   (interactive)
   (let (
         ($outBuffer "*xah-run output*")
@@ -2402,9 +2402,9 @@ Version 2020-09-06"
            ("hs" . "runhaskell")
            ;; ("js" . "node")
            ("js" . "deno run")
-           ("mjs" . "node --experimental-modules ")
-           ("ts" . "tsc") ; TypeScript
+           ("ts" . "deno run") ; TypeScript
            ("tsx" . "tsc")
+           ("mjs" . "node --experimental-modules ")
            ("sh" . "bash")
            ("clj" . "java -cp ~/apps/clojure-1.6.0/clojure-1.6.0.jar clojure.main")
            ("rkt" . "racket")
@@ -2429,15 +2429,6 @@ Version 2020-09-06"
     (cond
      ((string-equal $fSuffix "el")
       (load $fname))
-     ((or (string-equal $fSuffix "ts") (string-equal $fSuffix "tsx"))
-      (if (fboundp 'xah-ts-compile-file)
-          (progn
-            (xah-ts-compile-file current-prefix-arg))
-        (if $progName
-            (progn
-              (message "Running")
-              (shell-command $cmdStr $outBuffer ))
-          (error "No recognized program file suffix for this file."))))
      ((string-equal $fSuffix "go")
       (xah-run-current-go-file))
      ((string-equal $fSuffix "java")
