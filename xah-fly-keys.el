@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2020, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 12.5.20201012005709
+;; Version: 12.5.20201025230439
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2256,7 +2256,7 @@ If path does not have a file extension, automatically try with “.el” for eli
 This command is similar to `find-file-at-point' but without prompting for confirmation.
 
 URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'
-Version 2019-07-16"
+Version 2020-10-17"
   (interactive)
   (let* (
          ($inputStr
@@ -2289,7 +2289,7 @@ Version 2019-07-16"
         (if (string-match "#" $path )
             (let (
                   ( $fpath (substring $path 0 (match-beginning 0)))
-                  ( $fractPart (substring $path (match-beginning 0))))
+                  ( $fractPart (substring $path (1+ (match-beginning 0)))))
               (if (file-exists-p $fpath)
                   (progn
                     (find-file $fpath)
