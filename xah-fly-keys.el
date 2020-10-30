@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2020, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 12.5.20201025230439
+;; Version: 12.6.20201030150406
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1105,15 +1105,14 @@ Version 2016-07-13"
     (fill-region @begin @end)))
 
 (defun xah-reformat-lines ( &optional @length)
-  "Reformat current text block into 1 long line or multiple short lines.
-When there is a text selection, act on the selection, else, act on a text block separated by blank lines.
+  "Reformat current text block or selection into short lines or 1 long line.
 
-When the command is called for the first time, make it a long line. Second call makes it short line. Repeated call toggles.
+When called for the first time, change to multiple short lines. Second call makes it one long line. Repeated call toggles.
 
 If `universal-argument' is called first, use the number value for min length of line. By default, it's 70.
 
 URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
-Version 2020-09-12"
+Version 2020-10-30"
   (interactive)
   ;; This command symbol has a property “'is-longline-p”, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
   (let* (
@@ -1123,7 +1122,7 @@ Version 2020-09-12"
          (is-longline-p
           (if (eq last-command this-command)
               (get this-command 'is-longline-p)
-            nil))
+            t))
          ($blanks-regex "\n[ \t]*\n")
          $p1 $p2
          )
