@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2020, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 12.6.20201030150406
+;; Version: 12.6.20201101232221
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -656,7 +656,7 @@ If the string contains “,2”, then the first 2 chars and last 2 chars are use
 If @to-chars is equal to string “none”, the brackets are deleted.
 
 URL `http://ergoemacs.org/emacs/elisp_change_brackets.html'
-Version 2019-02-12"
+Version 2020-11-01"
   (interactive
    (let (($bracketsList
           '("(paren)"
@@ -671,20 +671,20 @@ Version 2019-02-12"
             "[[double square,2]]"
             "“curly quote”"
             "‘single quote’"
-            "‹angle quote›"
-            "«double angle quote»"
+            "‹french angle›"
+            "«french double angle»"
             "「corner」"
             "『white corner』"
-            "【LENTICULAR】"
-            "〖white LENTICULAR〗"
+            "【lenticular】"
+            "〖white lenticular〗"
             "〈angle〉"
             "《double angle》"
-            "〔TORTOISE〕"
-            "〘WHITE TORTOISE SHELL〙"
+            "〔tortoise〕"
+            "〘white tortoise〙"
             "⦅white paren⦆"
             "〚white square〛"
             "⦃white curly⦄"
-            "〈angle〉"
+            "〈pointing angle〉"
             "⦑ANGLE WITH DOT⦒"
             "⧼CURVED ANGLE⧽"
             "⟦math square⟧"
