@@ -3105,6 +3105,7 @@ Version 2017-01-29"
     ("z" . ";"))
   "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding ABNT. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
 
+
 (defvar xah--dvorak-to-qwertz-kmap
   '(("." . "e")
     ("," . "w")
@@ -3142,6 +3143,44 @@ Version 2017-01-29"
     ("y" . "t")
     ("z" . "-"))
   "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding QWERTZ. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+
+(defvar xah--dvorak-to-neo2-kmap
+  '(("." . "l") ; e
+    ("," . "v") ; w
+    ("'" . "x") ; q
+    (";" . "ü") ; y
+    ("/" . "ß") ; ü
+    ("[" . "-") ; ß
+    ("]" . "`") ; ´
+    ("=" . "´") ; +
+    ("-" . "y") ; ä
+    ("a" . "u") ; a
+    ("b" . "b") ; n
+    ("c" . "g") ; i
+    ("d" . "s") ; h
+    ("e" . "a") ; d
+    ("f" . "k") ; z
+    ("g" . "h") ; u
+    ("h" . "n") ; j
+    ("i" . "o") ; g
+    ("j" . "ä") ; c
+    ("k" . "p") ; v
+    ("l" . "q") ; p
+    ("m" . "m") ; m
+    ("n" . "t") ; l
+    ("o" . "i") ; s
+    ("p" . "c") ; r
+    ("q" . "ö") ; x
+    ("r" . "f") ; o
+    ("s" . "d") ; ö
+    ("t" . "r") ; k
+    ("u" . "e") ; f
+    ("v" . ".") ; .
+    ("w" . ",") ; ,
+    ("x" . "z") ; b
+    ("y" . "w") ; t
+    ("z" . "j")) ; -
+  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding NEO2. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
 
 (defvar xah--dvorak-to-workman-kmap
   '(("'" . "q")
@@ -3229,6 +3268,7 @@ If the value is nil, it's automatically set to \"dvorak\"."
                   (const :tag "Portuguese QWERTY (ABNT)" qwerty-abnt)
                   (const :tag "QWERTY Norwegian" qwerty-no)
                   (const :tag "QWERTZ" qwertz)
+                  (const :tag "NEO2" neo2) ;xah--dvorak-to-neo2-layout-kmap
                   (const :tag "Workman" workman)
                   (const :tag "Norman" norman))
   :group 'xah-fly-keys
@@ -4007,6 +4047,7 @@ Argument must be one of:
  'qwerty-abnt
  'qwerty-no (qwerty Norwegian)
  'qwertz
+ 'neo2
  'workman
  'norman
 
