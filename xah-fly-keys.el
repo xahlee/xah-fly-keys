@@ -4024,7 +4024,7 @@ minor modes loaded later may override bindings in this map.")
 ;;    ("v" . vc-next-action)
 ;;    ("~" . vc-revision-other-window)))
 
-
+
 
 (defvar xah-fly-insert-state-q t "Boolean value. true means insertion mode is on.")
 
