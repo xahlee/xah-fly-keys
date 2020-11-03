@@ -45,6 +45,7 @@ The following keyboard layouts are supported:
 * "qwertz"
 * "workman"
 * "norman"
+* ["neo2"](https://neo-layout.org/) 
 
 Customization
 -------------------
