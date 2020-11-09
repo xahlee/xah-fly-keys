@@ -24,6 +24,10 @@ DVORAK layout
 -------------------
 ![xah-fly-keys dvorak layout](xah_fly_keys_dvorak_layout_2020-04-18_3bn3f.png)
 
+Neo2 layout
+-------------------
+![xah-fly-keys neo2 layout](xah_fly_keys_neo2_layout_2020-11-06.png)
+
 Setup
 -------------------
 Add the following to `.emacs` after installing manually or via MELPA:
