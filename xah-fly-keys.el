@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2020, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 12.6.20201101232221
+;; Version: 12.6.20201114170834
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -187,7 +187,9 @@ Version 2018-06-04"
 (defvar xah-brackets nil "string of left/right brackets pairs.")
 (setq xah-brackets "()[]{}<>＜＞（）［］｛｝⦅⦆〚〛⦃⦄“”‘’‹›«»「」〈〉《》【】〔〕⦗⦘『』〖〗〘〙｢｣⟦⟧⟨⟩⟪⟫⟮⟯⟬⟭⌈⌉⌊⌋⦇⦈⦉⦊❛❜❝❞❨❩❪❫❴❵❬❭❮❯❰❱❲❳〈〉⦑⦒⧼⧽﹙﹚﹛﹜﹝﹞⁽⁾₍₎⦋⦌⦍⦎⦏⦐⁅⁆⸢⸣⸤⸥⟅⟆⦓⦔⦕⦖⸦⸧⸨⸩｟｠")
 
-(defvar xah-left-brackets '("\""  "(" "{" "[" "<" "〔" "【" "〖" "〈" "《" "「" "『" "“" "‘" "‹" "«" )
+(defvar xah-left-brackets '("\""  "(" "{" "[" "<" "〔" "【" "〖" "〈" "《" "「" "『" "“" "‘" "‹" "«" "〘")
+
+
   "List of left bracket chars.")
 ;; (progn
 ;; ;; make xah-left-brackets based on xah-brackets
@@ -198,7 +200,7 @@ Version 2018-06-04"
 ;;             xah-left-brackets)))
 ;;   (setq xah-left-brackets (reverse xah-left-brackets)))
 
-(defvar xah-right-brackets '("\"" ")" "]" "}" ">" "〕" "】" "〗" "〉" "》" "」" "』" "”" "’" "›" "»")
+(defvar xah-right-brackets '("\"" ")" "]" "}" ">" "〕" "】" "〗" "〉" "》" "」" "』" "”" "’" "›" "»" "〙")
   "list of right bracket chars.")
 ;; (progn
 ;;   (setq xah-right-brackets '())
@@ -839,7 +841,7 @@ Version 2015-12-22"
   "Upcase first letters of sentences of current text block or selection.
 
 URL `http://ergoemacs.org/emacs/emacs_upcase_sentence.html'
-Version 2020-09-08"
+Version 2020-11-05"
   (interactive)
   (let ($p1 $p2)
     (if (use-region-p)
@@ -872,7 +874,7 @@ Version 2020-09-08"
 
           ;; for HTML. first letter after tag
           (goto-char (point-min))
-          (while (re-search-forward "\\(<p>\n?\\|<li>\\|<td>\n?\\|<figcaption>\n?\\)\\([a-z]\\)" nil "move")
+          (while (re-search-forward "\\(<p>\n?\\|<li>\\|<dd>\\|<td>\n?\\|<figcaption>\n?\\)\\([a-z]\\)" nil "move")
             (upcase-region (match-beginning 2) (match-end 2))
             (overlay-put (make-overlay (match-beginning 2) (match-end 2)) 'face 'highlight))
 
@@ -1107,12 +1109,12 @@ Version 2016-07-13"
 (defun xah-reformat-lines ( &optional @length)
   "Reformat current text block or selection into short lines or 1 long line.
 
-When called for the first time, change to multiple short lines. Second call makes it one long line. Repeated call toggles.
+When called for the first time, change to one long line. Second call change it to multiple short lines. Repeated call toggles.
 
 If `universal-argument' is called first, use the number value for min length of line. By default, it's 70.
 
 URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
-Version 2020-10-30"
+Version 2020-11-14"
   (interactive)
   ;; This command symbol has a property “'is-longline-p”, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
   (let* (
@@ -1122,7 +1124,7 @@ Version 2020-10-30"
          (is-longline-p
           (if (eq last-command this-command)
               (get this-command 'is-longline-p)
-            t))
+            nil))
          ($blanks-regex "\n[ \t]*\n")
          $p1 $p2
          )
