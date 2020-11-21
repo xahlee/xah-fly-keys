@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2020, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 12.6.20201114170834
+;; Version: 12.6.20201120171443
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2654,13 +2654,14 @@ Version 2015-04-09"
     (isearch-yank-string (buffer-substring-no-properties $p1 $p2))))
 
 (declare-function w32-shell-execute "w32fns.c" (operation document &optional parameters show-flag))
+
 (defun xah-show-in-desktop ()
   "Show current file in desktop.
  (Mac Finder, Windows Explorer, Linux file manager)
  This command can be called when in a file or in `dired'.
 
 URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
-Version 2020-02-13"
+Version 2020-11-20"
   (interactive)
   (let (($path (if (buffer-file-name) (buffer-file-name) (shell-quote-argument default-directory))))
     (cond
@@ -2670,7 +2671,7 @@ Version 2020-02-13"
       (if (eq major-mode 'dired-mode)
           (let (($files (dired-get-marked-files )))
             (if (eq (length $files) 0)
-                (shell-command (concat "open " (shell-quote-argument default-directory)))
+                (shell-command (concat "open " (shell-quote-argument (expand-file-name default-directory ))))
               (shell-command (concat "open -R " (shell-quote-argument (car (dired-get-marked-files )))))))
         (shell-command
          (concat "open -R " $path))))
