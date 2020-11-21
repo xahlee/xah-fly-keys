@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2020, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 12.6.20201120171443
+;; Version: 12.6.20201121020014
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2738,18 +2738,16 @@ Version 2019-11-04"
 
 (defun xah-open-in-terminal ()
   "Open the current dir in a new terminal window.
+
 URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
-Version 2020-03-05"
+Version 2020-11-21"
   (interactive)
   (cond
    ((string-equal system-type "windows-nt")
     (let ((process-connection-type nil))
       (start-process "" nil "powershell" "start-process" "powershell"  "-workingDirectory" default-directory)))
    ((string-equal system-type "darwin")
-    (let ((process-connection-type nil))
-      (if (file-exists-p "/System/Applications/")
-          (start-process "" nil "/System/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal" default-directory)
-        (start-process "" nil "/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal" default-directory))))
+    (shell-command (concat "open -a terminal " (shell-quote-argument (expand-file-name default-directory )))))
    ((string-equal system-type "gnu/linux")
     (let ((process-connection-type nil))
       (start-process "" nil "x-terminal-emulator"
