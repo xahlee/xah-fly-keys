@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2020, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 12.7.20201122110617
+;; Version: 12.7.20201124143549
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2052,18 +2052,18 @@ Version 2020-02-04"
 
 (defun xah-select-text-in-quote ()
   "Select text between the nearest left and right delimiters.
-Delimiters here includes the following chars: '\"`<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕（）
-This command select between any bracket chars, not the inner text of a bracket. For example, if text is
+Delimiters here includes the following chars: \"`<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕（）
+This command select between any bracket chars, does not consider nesting. For example, if text is
 
  (a(b)c▮)
 
  the selected char is “c”, not “a(b)c”.
 
 URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
-Version 2020-03-11"
+Version 2020-11-24"
   (interactive)
   (let (
-        ($skipChars "^'\"`<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕（）〘〙")
+        ($skipChars "^\"`<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕（）〘〙")
         $p1
         )
     (skip-chars-backward $skipChars)
