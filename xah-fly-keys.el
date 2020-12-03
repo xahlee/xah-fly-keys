@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2020, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 12.6.20201114170834
+;; Version: 12.7.20201130070138
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -841,7 +841,7 @@ Version 2015-12-22"
   "Upcase first letters of sentences of current text block or selection.
 
 URL `http://ergoemacs.org/emacs/emacs_upcase_sentence.html'
-Version 2020-11-05"
+Version 2020-11-30"
   (interactive)
   (let ($p1 $p2)
     (if (use-region-p)
@@ -859,25 +859,21 @@ Version 2020-11-05"
       (save-restriction
         (narrow-to-region $p1 $p2)
         (let ((case-fold-search nil))
-
           ;; after period or question mark or exclamation
           (goto-char (point-min))
           (while (re-search-forward "\\(\\.\\|\\?\\|!\\)[ \n]+ *\\([a-z]\\)" nil "move")
             (upcase-region (match-beginning 2) (match-end 2))
             (overlay-put (make-overlay (match-beginning 2) (match-end 2)) 'face 'highlight))
-
           ;; after a blank line, after a bullet, or beginning of buffer
           (goto-char (point-min))
           (while (re-search-forward "\\(\\`\\|• \\|\n\n\\)\\([a-z]\\)" nil "move")
             (upcase-region (match-beginning 2) (match-end 2))
             (overlay-put (make-overlay (match-beginning 2) (match-end 2)) 'face 'highlight))
-
           ;; for HTML. first letter after tag
           (goto-char (point-min))
-          (while (re-search-forward "\\(<p>\n?\\|<li>\\|<dd>\\|<td>\n?\\|<figcaption>\n?\\)\\([a-z]\\)" nil "move")
+          (while (re-search-forward "\\(<h[1-6]>[ \n]?\\|<p>[ \n]?\\|<li>\\|<dd>\\|<td>[ \n]?\\|<figcaption>[ \n]?\\)\\([a-z]\\)" nil "move")
             (upcase-region (match-beginning 2) (match-end 2))
             (overlay-put (make-overlay (match-beginning 2) (match-end 2)) 'face 'highlight))
-
           (goto-char (point-min)))))))
 
 (defun xah-title-case-region-or-line (@begin @end)
@@ -1055,22 +1051,25 @@ Version 2019-01-30"
   (redraw-frame (selected-frame)))
 
 (defun xah-fill-or-unfill ()
-  "Reformat current paragraph or region to `fill-column', like `fill-paragraph' or “unfill”.
-When there is a text selection, act on the selection, else, act on a text block separated by blank lines.
+  "Reformat current paragraph to short lines or one long line.
+First call will break into multiple short lines. Repeated call toggles between short and long lines.
+When there is a text selection, act on the selection.
+This commands calls `fill-region' to do its work. Set `fill-column' for short line length.
+
 URL `http://ergoemacs.org/emacs/modernization_fill-paragraph.html'
-Version 2017-01-08"
+Version 2020-11-22"
   (interactive)
-  ;; This command symbol has a property “'compact-p”, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
-  (let ( ($compact-p
+  ;; This command symbol has a property “'longline-p”, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
+  (let ( ($longline-p
           (if (eq last-command this-command)
-              (get this-command 'compact-p)
-            (> (- (line-end-position) (line-beginning-position)) fill-column)))
+              (get this-command 'longline-p)
+            t))
          (deactivate-mark nil)
          ($blanks-regex "\n[ \t]*\n")
          $p1 $p2
          )
     (if (use-region-p)
-         (setq $p1 (region-beginning) $p2 (region-end))
+        (setq $p1 (region-beginning) $p2 (region-end))
       (save-excursion
         (if (re-search-backward $blanks-regex nil "move")
             (progn (re-search-forward $blanks-regex)
@@ -1080,11 +1079,11 @@ Version 2017-01-08"
             (progn (re-search-backward $blanks-regex)
                    (setq $p2 (point)))
           (setq $p2 (point)))))
-    (if $compact-p
+    (if $longline-p
         (fill-region $p1 $p2)
       (let ((fill-column most-positive-fixnum ))
         (fill-region $p1 $p2)))
-    (put this-command 'compact-p (not $compact-p))))
+    (put this-command 'longline-p (not $longline-p))))
 
 (defun xah-unfill-paragraph ()
   "Replace newline chars in current paragraph by single spaces.
@@ -2053,18 +2052,18 @@ Version 2020-02-04"
 
 (defun xah-select-text-in-quote ()
   "Select text between the nearest left and right delimiters.
-Delimiters here includes the following chars: '\"`<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕（）
-This command select between any bracket chars, not the inner text of a bracket. For example, if text is
+Delimiters here includes the following chars: \"`<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕（）
+This command select between any bracket chars, does not consider nesting. For example, if text is
 
  (a(b)c▮)
 
  the selected char is “c”, not “a(b)c”.
 
 URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
-Version 2020-03-11"
+Version 2020-11-24"
   (interactive)
   (let (
-        ($skipChars "^'\"`<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕（）〘〙")
+        ($skipChars "^\"`<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕（）〘〙")
         $p1
         )
     (skip-chars-backward $skipChars)
@@ -2654,13 +2653,14 @@ Version 2015-04-09"
     (isearch-yank-string (buffer-substring-no-properties $p1 $p2))))
 
 (declare-function w32-shell-execute "w32fns.c" (operation document &optional parameters show-flag))
+
 (defun xah-show-in-desktop ()
   "Show current file in desktop.
  (Mac Finder, Windows Explorer, Linux file manager)
  This command can be called when in a file or in `dired'.
 
 URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
-Version 2020-02-13"
+Version 2020-11-20"
   (interactive)
   (let (($path (if (buffer-file-name) (buffer-file-name) (shell-quote-argument default-directory))))
     (cond
@@ -2670,7 +2670,7 @@ Version 2020-02-13"
       (if (eq major-mode 'dired-mode)
           (let (($files (dired-get-marked-files )))
             (if (eq (length $files) 0)
-                (shell-command (concat "open " (shell-quote-argument default-directory)))
+                (shell-command (concat "open " (shell-quote-argument (expand-file-name default-directory ))))
               (shell-command (concat "open -R " (shell-quote-argument (car (dired-get-marked-files )))))))
         (shell-command
          (concat "open -R " $path))))
@@ -2737,18 +2737,16 @@ Version 2019-11-04"
 
 (defun xah-open-in-terminal ()
   "Open the current dir in a new terminal window.
+
 URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
-Version 2020-03-05"
+Version 2020-11-21"
   (interactive)
   (cond
    ((string-equal system-type "windows-nt")
     (let ((process-connection-type nil))
       (start-process "" nil "powershell" "start-process" "powershell"  "-workingDirectory" default-directory)))
    ((string-equal system-type "darwin")
-    (let ((process-connection-type nil))
-      (if (file-exists-p "/System/Applications/")
-          (start-process "" nil "/System/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal" default-directory)
-        (start-process "" nil "/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal" default-directory))))
+    (shell-command (concat "open -a terminal " (shell-quote-argument (expand-file-name default-directory )))))
    ((string-equal system-type "gnu/linux")
     (let ((process-connection-type nil))
       (start-process "" nil "x-terminal-emulator"
