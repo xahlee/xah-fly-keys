@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2020, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 12.7.20201130070138
+;; Version: 12.8.20201204052448
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -72,8 +72,6 @@
 ;; The first key we call it leader key. In the above examples, the SPACE is the leader key.
 
 ;; When in command mode, the 【SPACE】 is a leader key.
-
-;; globally, the leader key is the 【f9】 key. 【f9】 is leader key regardless it's in command mode or insert mode.
 
 ;; the following standard keys with Control are supported:
 
@@ -3426,9 +3424,6 @@ minor modes loaded later may override bindings in this map.")
  '(("<home>" . xah-fly-command-mode-activate)
    ("<menu>" . xah-fly-command-mode-activate)
    ("<f8>" . xah-fly-command-mode-activate-no-hook)
-
-   ("<f9>" . xah-fly-leader-key-map)
-
    ("<f11>" . xah-previous-user-buffer)
    ("<f12>" . xah-next-user-buffer)
    ("<C-f11>" . xah-previous-emacs-buffer)
