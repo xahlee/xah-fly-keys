@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2020, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 12.7.20201130070138
+;; Version: 12.8.20201208155046
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -72,8 +72,6 @@
 ;; The first key we call it leader key. In the above examples, the SPACE is the leader key.
 
 ;; When in command mode, the 【SPACE】 is a leader key.
-
-;; globally, the leader key is the 【f9】 key. 【f9】 is leader key regardless it's in command mode or insert mode.
 
 ;; the following standard keys with Control are supported:
 
@@ -188,7 +186,6 @@ Version 2018-06-04"
 (setq xah-brackets "()[]{}<>＜＞（）［］｛｝⦅⦆〚〛⦃⦄“”‘’‹›«»「」〈〉《》【】〔〕⦗⦘『』〖〗〘〙｢｣⟦⟧⟨⟩⟪⟫⟮⟯⟬⟭⌈⌉⌊⌋⦇⦈⦉⦊❛❜❝❞❨❩❪❫❴❵❬❭❮❯❰❱❲❳〈〉⦑⦒⧼⧽﹙﹚﹛﹜﹝﹞⁽⁾₍₎⦋⦌⦍⦎⦏⦐⁅⁆⸢⸣⸤⸥⟅⟆⦓⦔⦕⦖⸦⸧⸨⸩｟｠")
 
 (defvar xah-left-brackets '("\""  "(" "{" "[" "<" "〔" "【" "〖" "〈" "《" "「" "『" "“" "‘" "‹" "«" "〘")
-
 
   "List of left bracket chars.")
 ;; (progn
@@ -841,7 +838,7 @@ Version 2015-12-22"
   "Upcase first letters of sentences of current text block or selection.
 
 URL `http://ergoemacs.org/emacs/emacs_upcase_sentence.html'
-Version 2020-11-30"
+Version 2020-12-08"
   (interactive)
   (let ($p1 $p2)
     (if (use-region-p)
@@ -870,11 +867,19 @@ Version 2020-11-30"
             (upcase-region (match-beginning 2) (match-end 2))
             (overlay-put (make-overlay (match-beginning 2) (match-end 2)) 'face 'highlight))
           ;; for HTML. first letter after tag
-          (goto-char (point-min))
-          (while (re-search-forward "\\(<h[1-6]>[ \n]?\\|<p>[ \n]?\\|<li>\\|<dd>\\|<td>[ \n]?\\|<figcaption>[ \n]?\\)\\([a-z]\\)" nil "move")
-            (upcase-region (match-beginning 2) (match-end 2))
-            (overlay-put (make-overlay (match-beginning 2) (match-end 2)) 'face 'highlight))
-          (goto-char (point-min)))))))
+          (when
+              (or
+               (eq major-mode 'xah-html-mode)
+               (eq major-mode 'html-mode)
+               (eq major-mode 'sgml-mode)
+               (eq major-mode 'nxml-mode)
+               (eq major-mode 'xml-mode)
+               (eq major-mode 'mhtml-mode))
+            (goto-char (point-min))
+            (while
+                (re-search-forward "\\(<h[1-6]>[ \n]?\\|<p>[ \n]?\\|<li>\\|<dd>\\|<td>[ \n]?\\|<br ?/?>[ \n]?\\|<figcaption>[ \n]?\\)\\([a-z]\\)" nil "move")
+              (upcase-region (match-beginning 2) (match-end 2))
+              (overlay-put (make-overlay (match-beginning 2) (match-end 2)) 'face 'highlight))))))))
 
 (defun xah-title-case-region-or-line (@begin @end)
   "Title case text between nearest brackets, or current line, or text selection.
@@ -2374,8 +2379,6 @@ Version 2018-10-12"
       ;;
       )))
 
-
-
 (defun xah-run-current-file ()
   "Execute the current file.
 For example, if the current buffer is x.py, then it'll call 「python x.py」 in a shell.
@@ -3466,9 +3469,6 @@ minor modes loaded later may override bindings in this map.")
  '(("<home>" . xah-fly-command-mode-activate)
    ("<menu>" . xah-fly-command-mode-activate)
    ("<f8>" . xah-fly-command-mode-activate-no-hook)
-
-   ("<f9>" . xah-fly-leader-key-map)
-
    ("<f11>" . xah-previous-user-buffer)
    ("<f12>" . xah-next-user-buffer)
    ("<C-f11>" . xah-previous-emacs-buffer)
