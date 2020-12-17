@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2020, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 12.8.20201208155046
+;; Version: 12.8.20201216223521
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1462,7 +1462,7 @@ Version 2019-02-12"
                (point-max)
                "move")
             (replace-match $changeTo "FIXEDCASE" "LITERAL"))))
-      (when (or (string= $changeTo " ") $regionWasActive-p)
+      (when (or (string-equal $changeTo " ") $regionWasActive-p)
         (goto-char $p2)
         (set-mark $p1)
         (setq deactivate-mark nil))
@@ -2180,7 +2180,7 @@ URL `http://ergoemacs.org/emacs/elisp_close_buffer_open_last_closed.html'
 Version 2018-06-11"
   (interactive)
   (let (($org-p (string-match "^*Org Src" (buffer-name))))
-    (if (string= major-mode "minibuffer-inactive-mode")
+    (if (string-equal major-mode "minibuffer-inactive-mode")
         (minibuffer-keyboard-quit) ; if the buffer is minibuffer
       (progn
         ;; offer to save buffers that are non-empty and modified, even for non-file visiting buffer. (because kill-buffer does not offer to save buffers that are not associated with files)
@@ -2741,13 +2741,18 @@ Version 2019-11-04"
 (defun xah-open-in-terminal ()
   "Open the current dir in a new terminal window.
 
+on Microsoft Windows, it starts cross-platform PowerShell pwsh. You need to have it installed.
+
 URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
-Version 2020-11-21"
+Version 2020-11-21 2020-12-16"
   (interactive)
   (cond
    ((string-equal system-type "windows-nt")
     (let ((process-connection-type nil))
-      (start-process "" nil "powershell" "start-process" "powershell"  "-workingDirectory" default-directory)))
+      ;; (start-process "" nil "powershell" "Start-Process" "powershell"  "-WorkingDirectory" default-directory)
+      (shell-command (concat "pwsh -Command Start-Process pwsh -WorkingDirectory " (shell-quote-argument (expand-file-name default-directory ))))
+      ;;
+      ))
    ((string-equal system-type "darwin")
     (shell-command (concat "open -a terminal " (shell-quote-argument (expand-file-name default-directory )))))
    ((string-equal system-type "gnu/linux")
