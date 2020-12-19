@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2020, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 12.9.20201217172629
+;; Version: 12.10.20201218231510
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2506,10 +2506,10 @@ in the same dir. If such a file already exist, it's overwritten.
 If the current buffer is not associated with a file, nothing's done.
 
 URL `http://ergoemacs.org/emacs/elisp_make-backup.html'
-Version 2018-06-06"
+Version 2018-06-06 2020-12-18"
   (interactive)
   (let (($fname (buffer-file-name))
-        ($date-time-format "%Y-%m-%d_%H%M%S"))
+        ($date-time-format "%Y%m%d_%H%M%S"))
     (if $fname
         (let (($backup-name
                (concat $fname "~" (format-time-string $date-time-format) "~")))
@@ -2548,12 +2548,12 @@ Backup filename is “‹name›~‹date time stamp›~”. Existing file of the
 When `universal-argument' is called first, don't create backup.
 
 URL `http://ergoemacs.org/emacs/elisp_delete-current-file.html'
-Version 2018-05-15"
+Version 2018-05-15 2020-12-18"
   (interactive "P")
   (let* (
          ($fname (buffer-file-name))
          ($buffer-is-file-p $fname)
-         ($date-time-format "%Y-%m-%d_%H%M%S")
+         ($date-time-format "%Y%m%d_%H%M%S")
          ($backup-suffix
           (concat "~" (format-time-string $date-time-format) "~")))
     (if $buffer-is-file-p
