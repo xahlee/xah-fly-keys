@@ -30,7 +30,7 @@
 ;; (require 'xah-fly-keys)
 ;; (xah-fly-keys-set-layout "qwerty") ; required
 
-;; possible layout values: azerty, azerty-be, colemak, colemak-mod-dh, dvorak, programer-dvorak, qwerty, qwerty-abnt, qwerty-no (qwerty Norwegian), qwertz, workman, norman
+;; possible layout values: azerty, azerty-be, colemak, colemak-mod-dh, dvorak, programer-dvorak, qwerty, qwerty-abnt, qwerty-no (qwerty Norwegian), qwertz, workman, norman, neo2, koy, adnw
 
 ;; (xah-fly-keys 1)
 
@@ -3223,6 +3223,123 @@ Version 2017-01-29"
     ("z" . "/"))
   "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding Norman layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
 
+(defvar xah--dvorak-to-neo2-kmap
+  '(
+    ("'" . "x")
+    ("," . "v")
+    ("." . "l")
+    ("p" . "c")
+    ("y" . "w")
+
+    ("f" . "k")
+    ("g" . "h")
+    ("c" . "g")
+    ("r" . "f")
+    ("l" . "q")
+
+    ("a" . "u")
+    ("o" . "i")
+    ("e" . "a")
+    ("u" . "e")
+    ("i" . "o")
+
+    ("d" . "s")
+    ("h" . "n")
+    ("t" . "r")
+    ("n" . "t")
+    ("s" . "d")
+
+    (";" . "ü")
+    ("q" . "ö")
+    ("j" . "ä")
+    ("k" . "p")
+    ("x" . "z")
+
+    ("b" . "b")
+    ("m" . "m")
+    ("w" . ",")
+    ("v" . ".")
+    ("z" . "j"))
+  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding neo2 layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+
+(defvar xah--dvorak-to-koy-kmap
+  '(
+    ("'" . "k")
+    ("," . ".")
+    ("." . "o")
+    ("p" . ",")
+    ("y" . "y")
+
+    ("f" . "v")
+    ("g" . "g")
+    ("c" . "c")
+    ("r" . "l")
+    ("l" . "ß")
+
+    ("a" . "h")
+    ("o" . "a")
+    ("e" . "e")
+    ("u" . "i")
+    ("i" . "u")
+
+    ("d" . "d")
+    ("h" . "t")
+    ("t" . "r")
+    ("n" . "n")
+    ("s" . "s")
+
+    (";" . "x")
+    ("q" . "q")
+    ("j" . "ä")
+    ("k" . "ü")
+    ("x" . "ö")
+
+    ("b" . "b")
+    ("m" . "p")
+    ("w" . "w")
+    ("v" . "m")
+    ("z" . "j"))
+  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding koy layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+
+(defvar xah--dvorak-to-adnw-kmap
+  '(
+    ("'" . "k")
+    ("," . ".")
+    ("." . "o")
+    ("p" . ",")
+    ("y" . "y")
+
+    ("f" . "v")
+    ("g" . "g")
+    ("c" . "c")
+    ("r" . "l")
+    ("l" . "ß")
+
+    ("a" . "h")
+    ("o" . "a")
+    ("e" . "e")
+    ("u" . "i")
+    ("i" . "u")
+
+    ("d" . "d")
+    ("h" . "t")
+    ("t" . "r")
+    ("n" . "n")
+    ("s" . "s")
+
+    (";" . "x")
+    ("q" . "q")
+    ("j" . "ä")
+    ("k" . "ü")
+    ("x" . "ö")
+
+    ("b" . "b")
+    ("m" . "p")
+    ("w" . "w")
+    ("v" . "m")
+    ("z" . "j"))
+  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding adnw layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+
 (define-obsolete-variable-alias 'xah-fly-key--current-layout 'xah-fly-key-current-layout "2020-04-09")
 (defcustom xah-fly-key-current-layout nil
   "The current keyboard layout. Use `xah-fly-keys-set-layout' to set the layout.
@@ -3238,7 +3355,10 @@ If the value is nil, it's automatically set to \"dvorak\"."
                   (const :tag "QWERTY Norwegian" qwerty-no)
                   (const :tag "QWERTZ" qwertz)
                   (const :tag "Workman" workman)
-                  (const :tag "Norman" norman))
+                  (const :tag "Norman" norman)
+                  (const :tag "Neo2" neo2)
+                  (const :tag "Koy" koy)
+                  (const :tag "Adnw" adnw))
   :group 'xah-fly-keys
   :set (lambda (@layout-var @new-layout)
          ;; Only reload xah-fly-keys if it was already loaded and the new layout is different:
@@ -4014,6 +4134,9 @@ Argument must be one of:
  'qwertz
  'workman
  'norman
+ 'neo2
+ 'koy
+ 'adnw
 
 For backwards compatibility, a string that is the name of one of the above symbols is also acceptable (case-sensitive).
 Version 2020-04-09"

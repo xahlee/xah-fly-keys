@@ -45,6 +45,9 @@ The following keyboard layouts are supported:
 * "qwertz"
 * "workman"
 * "norman"
+* "neo2"
+* "koy"
+* "adnw"
 
 Customization
 -------------------
