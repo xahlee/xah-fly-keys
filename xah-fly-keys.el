@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2020, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 12.11.20201220115534
+;; Version: 12.12.20201227170628
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -186,26 +186,27 @@ Version 2018-06-04"
 (setq xah-brackets "()[]{}<>＜＞（）［］｛｝⦅⦆〚〛⦃⦄“”‘’‹›«»「」〈〉《》【】〔〕⦗⦘『』〖〗〘〙｢｣⟦⟧⟨⟩⟪⟫⟮⟯⟬⟭⌈⌉⌊⌋⦇⦈⦉⦊❛❜❝❞❨❩❪❫❴❵❬❭❮❯❰❱❲❳〈〉⦑⦒⧼⧽﹙﹚﹛﹜﹝﹞⁽⁾₍₎⦋⦌⦍⦎⦏⦐⁅⁆⸢⸣⸤⸥⟅⟆⦓⦔⦕⦖⸦⸧⸨⸩｟｠")
 
 (defvar xah-left-brackets '( "(" "{" "[" "<" "〔" "【" "〖" "〈" "《" "「" "『" "“" "‘" "‹" "«" "〘")
-
   "List of left bracket chars.")
-;; (progn
-;; ;; make xah-left-brackets based on xah-brackets
-;;   (setq xah-left-brackets '())
-;;   (dotimes ($x (- (length xah-brackets) 1))
-;;     (when (= (% $x 2) 0)
-;;       (push (char-to-string (elt xah-brackets $x))
-;;             xah-left-brackets)))
-;;   (setq xah-left-brackets (reverse xah-left-brackets)))
+
+(progn
+;; make xah-left-brackets based on xah-brackets
+  (setq xah-left-brackets '())
+  (dotimes ($x (- (length xah-brackets) 1))
+    (when (= (% $x 2) 0)
+      (push (char-to-string (elt xah-brackets $x))
+            xah-left-brackets)))
+  (setq xah-left-brackets (reverse xah-left-brackets)))
 
 (defvar xah-right-brackets '( ")" "]" "}" ">" "〕" "】" "〗" "〉" "》" "」" "』" "”" "’" "›" "»" "〙")
   "list of right bracket chars.")
-;; (progn
-;;   (setq xah-right-brackets '())
-;;   (dotimes ($x (- (length xah-brackets) 1))
-;;     (when (= (% $x 2) 1)
-;;       (push (char-to-string (elt xah-brackets $x))
-;;             xah-right-brackets)))
-;;   (setq xah-right-brackets (reverse xah-right-brackets)))
+
+(progn
+  (setq xah-right-brackets '())
+  (dotimes ($x (- (length xah-brackets) 1))
+    (when (= (% $x 2) 1)
+      (push (char-to-string (elt xah-brackets $x))
+            xah-right-brackets)))
+  (setq xah-right-brackets (reverse xah-right-brackets)))
 
 (defvar xah-punctuation-regex nil "A regex string for the purpose of moving cursor to a punctuation.")
 (setq xah-punctuation-regex "[!\?\"\.,`'#$%&*+:;=@^|~]+")
@@ -838,7 +839,7 @@ Version 2015-12-22"
   "Upcase first letters of sentences of current text block or selection.
 
 URL `http://ergoemacs.org/emacs/emacs_upcase_sentence.html'
-Version 2020-12-08"
+Version 2020-12-08 2020-12-24"
   (interactive)
   (let ($p1 $p2)
     (if (use-region-p)
@@ -877,7 +878,7 @@ Version 2020-12-08"
                (eq major-mode 'mhtml-mode))
             (goto-char (point-min))
             (while
-                (re-search-forward "\\(<h[1-6]>[ \n]?\\|<p>[ \n]?\\|<li>\\|<dd>\\|<td>[ \n]?\\|<br ?/?>[ \n]?\\|<figcaption>[ \n]?\\)\\([a-z]\\)" nil "move")
+                (re-search-forward "\\(<h[1-6]>[ \n]?\\|<p>[ \n]?\\|<li>[ \n]?\\|<dd>[ \n]?\\|<td>[ \n]?\\|<br ?/?>[ \n]?\\|<figcaption>[ \n]?\\)\\([a-z]\\)" nil "move")
               (upcase-region (match-beginning 2) (match-end 2))
               (overlay-put (make-overlay (match-beginning 2) (match-end 2)) 'face 'highlight))))))))
 
@@ -887,7 +888,7 @@ Capitalize first letter of each word, except words like {to, of, the, a, in, or,
 
 When called in a elisp program, @begin @end are region boundaries.
 URL `http://ergoemacs.org/emacs/elisp_title_case_text.html'
-Version 2017-01-11"
+Version 2017-01-11 2020-12-22"
   (interactive
    (if (use-region-p)
        (list (region-beginning) (region-end))
@@ -937,7 +938,9 @@ Version 2017-01-11"
              (goto-char (point-min))
              (while
                  (search-forward (aref $x 0) nil t)
-               (replace-match (aref $x 1) "FIXEDCASE" "LITERAL")))
+               (replace-match (aref $x 1) "FIXEDCASE" "LITERAL"))
+             ;;
+             )
            $strPairs))))))
 
 (defun xah-delete-blank-lines ()
@@ -3620,7 +3623,8 @@ minor modes loaded later may override bindings in this map.")
 (xah-fly--define-keys
  (define-prefix-command 'xah-fly-h-keymap)
  '(
-   (";" . Info-goto-emacs-command-node)
+   ;; ',.
+   ;; ;
    ("a" . apropos-command)
    ("b" . describe-bindings)
    ("c" . describe-char)
@@ -3632,16 +3636,18 @@ minor modes loaded later may override bindings in this map.")
    ("i" . info)
    ("j" . man)
    ("k" . describe-key)
-   ("K" . Info-goto-emacs-key-command-node)
    ("l" . view-lossage)
    ("m" . xah-describe-major-mode)
    ("n" . describe-variable)
    ("o" . describe-language-environment)
-   ("p" . finder-by-keyword)
+   ;; p
+   ;; q
    ("r" . apropos-variable)
    ("s" . describe-syntax)
+   ;; t
    ("u" . elisp-index-search)
    ("v" . apropos-value)
+   ;; wxy
    ("z" . describe-coding-system)))
 
 (xah-fly--define-keys
