@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2020, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 12.12.20201227170628
+;; Version: 12.12.20210101224935
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -3662,7 +3662,7 @@ minor modes loaded later may override bindings in this map.")
    ("," . abbrev-mode)
    ("." . toggle-frame-fullscreen)
    ("'" . frameset-to-register)
-   (";" . window-configuration-to-register) 
+   (";" . window-configuration-to-register)
    ("1" . set-input-method)
    ("2" . global-hl-line-mode)
    ("4" . global-display-line-numbers-mode)
@@ -3696,7 +3696,7 @@ minor modes loaded later may override bindings in this map.")
    ;; v
    ("w" . eww)
    ("x" . save-some-buffers)
-   ;; y
+   ("y" . toggle-truncate-lines)
    ("z" . abort-recursive-edit)))
 
 (xah-fly--define-keys
