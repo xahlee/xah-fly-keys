@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2020, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 12.12.20210101224935
+;; Version: 12.13.20210105173339
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1874,6 +1874,7 @@ Version 2019-03-07"
 (defvar xah-unicode-list nil "Associative list of Unicode symbols. First element is a Unicode character, second element is a string used as key shortcut in `ido-completing-read'")
 (setq xah-unicode-list
       '(
+        ;; format: (str . nameOrFastKey)
         ("_" . "underscore" )
         ("•" . ".bullet" )
         ("→" . "tn")
@@ -1886,20 +1887,25 @@ Version 2019-03-07"
         ("⭑" . "9" )
         ("🎶" . "5" )
         ("—" . "-emdash" )
-        ("＆" . "7" )
-        ("↓" . "tt")
-        ("←" . "th")
-        ("↑" . "tc")
-        ("👍" . "tu")
+        ("＆" . "7fullwidthAmpersand" )
+        ("↓" . "downArrow")
+        ("←" . "leftArrow")
+        ("↑" . "upArrow")
+        ("👍" . "thumbUp")
+        ("〚〛" . "whiteSquareBracket")
         ) )
 
 (defun xah-insert-unicode ()
-  "Insert a unicode"
+  "Insert a unicode from a custom list `xah-unicode-list'.
+Version 2021-01-05"
   (interactive)
-  (let (gotThis)
-    (setq gotThis
-          (ido-completing-read "insert:" (mapcar (lambda (x) (concat (car x) (cdr x))) xah-unicode-list)))
-    (insert (car (assoc (substring gotThis 0 1) xah-unicode-list)))))
+  (let (
+        (xStr
+         (ido-completing-read
+          "Insert:" (mapcar
+                     (lambda (x)
+                       (format "%s %s" (car x) (cdr x))) xah-unicode-list))))
+    (insert (car (split-string xStr " " t)))))
 
 
 ;; text selection
