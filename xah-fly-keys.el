@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2020, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 12.13.20210105173339
+;; Version: 12.13.20210105173652
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -104,14 +104,14 @@
 
 ;; If you like this project, Buy Xah Emacs Tutorial http://ergoemacs.org/emacs/buy_xah_emacs_tutorial.html or make a donation. Thanks.
 
-
+;; HHH___________________________________________________________________
 ;;; Code:
 
 (require 'dired) ; in emacs
 (require 'dired-x) ; in emacs
 (require 'ido) ; in emacs
 
-
+;; HHH___________________________________________________________________
 
 (defgroup xah-fly-keys nil
   "Ergonomic modal keybinding minor mode."
@@ -133,7 +133,7 @@
   :type 'boolean
   :group 'xah-fly-keys)
 
-
+;; HHH___________________________________________________________________
 ;; cursor movement
 
 (defun xah-pop-local-mark-ring ()
@@ -398,7 +398,7 @@ Version 2015-03-24"
 ;;   (posix-search-backward "[ \t\n]+" nil t)
 ;;   )
 
-
+;; HHH___________________________________________________________________
 ;; editing commands
 
 (defun xah-copy-line-or-region ()
@@ -1616,7 +1616,7 @@ version 2016-07-17"
   (require 'rect)
   (kill-new (mapconcat 'identity (extract-rectangle @begin @end) "\n")))
 
-
+;; HHH___________________________________________________________________
 ;; insertion commands
 
 (defun xah-insert-date ()
@@ -1907,7 +1907,7 @@ Version 2021-01-05"
                        (format "%s %s" (car x) (cdr x))) xah-unicode-list))))
     (insert (car (split-string xStr " " t)))))
 
-
+;; HHH___________________________________________________________________
 ;; text selection
 
 (defun xah-select-current-block ()
@@ -2085,7 +2085,7 @@ Version 2020-11-24"
     (skip-chars-forward $skipChars)
     (set-mark $p1)))
 
-
+;; HHH___________________________________________________________________
 ;; misc
 
 (defun xah-user-buffer-q ()
@@ -2353,7 +2353,7 @@ Version 2020-04-09"
                    nil
                    :special))
 
-
+;; HHH___________________________________________________________________
 
 (defvar xah-run-current-file-before-hook nil "Hook for `xah-run-current-file'. Before the file is run.")
 
@@ -2641,7 +2641,7 @@ Version 2020-02-14"
           (set-buffer-modified-p nil)
           (kill-buffer (current-buffer)))))))
 
-
+;; HHH___________________________________________________________________
 
 (defun xah-search-current-word ()
   "Call `isearch' on current word or text selection.
@@ -2794,7 +2794,7 @@ Version 2017-01-29"
   (interactive)
   (describe-function major-mode))
 
-
+;; HHH___________________________________________________________________
 ;; key maps for conversion
 
 (defvar xah--dvorak-to-azerty-kmap
@@ -3305,7 +3305,7 @@ Version 2020-04-18"
                ,(list 'quote (cdr $pair))))
           (cadr @key-cmd-alist)))))
 
-
+;; HHH___________________________________________________________________
 ;; keymaps
 
 ;; (defvar xah-fly-swapped-1-8-and-2-7-p nil "If non-nil, it means keys 1 and 8 are swapped, and 2 and 7 are swapped. See: http://xahlee.info/kbd/best_number_key_layout.html")
@@ -3360,7 +3360,7 @@ minor modes loaded later may override bindings in this map.")
 
 (defvar xah-fly--deactivate-command-mode-func nil)
 
-
+;; HHH___________________________________________________________________
 ;; setting keys
 
 (xah-fly--define-keys
@@ -3435,7 +3435,7 @@ minor modes loaded later may override bindings in this map.")
 ;;        ("2" . xah-select-line)
 ;;        ("1" . xah-extend-selection))))
 
-
+;; HHH___________________________________________________________________
 ;; set control meta, etc keys
 
 (xah-fly--define-keys
@@ -3528,7 +3528,7 @@ minor modes loaded later may override bindings in this map.")
      ("<right>" . isearch-forward-exit-minibuffer))
    :direct))
 
-
+;; HHH___________________________________________________________________
 ;; commands related to highlight
 (xah-fly--define-keys
  (define-prefix-command 'xah-fly-dot-keymap)
@@ -3576,7 +3576,7 @@ minor modes loaded later may override bindings in this map.")
    ("0" . expand-jump-to-next-slot)
    ("=" . expand-jump-to-previous-slot)))
 
-
+;; HHH___________________________________________________________________
 
 (xah-fly--define-keys
  (define-prefix-command 'xah-fly-c-keymap)
@@ -3865,7 +3865,7 @@ minor modes loaded later may override bindings in this map.")
    ;;
    ))
 
-
+;; HHH___________________________________________________________________
 ;;;; misc
 
 ;; the following have keys in emacs, but right now i decided not to give them a key, because either they are rarely used (say, less than once a month by 90% of emacs users), or there is a more efficient command/workflow with key in xah-fly-keys
@@ -3897,7 +3897,7 @@ minor modes loaded later may override bindings in this map.")
 ;; C-x l   →   count-lines-page
 ;; C-x m   →   compose-mail
 
-
+;; HHH___________________________________________________________________
 ;; undecided yet
 
 ;; C-x e   →   kmacro-end-and-call-macro
@@ -3946,7 +3946,7 @@ minor modes loaded later may override bindings in this map.")
 ;; C-x C-k r   →   apply-macro-to-region-lines
 ;; C-x C-k s   →   kmacro-start-macro
 
-
+;; HHH___________________________________________________________________
 
 ;; C-x 4 C-f   →   find-file-other-window
 ;; C-x 4 C-o   →   display-buffer
@@ -4001,7 +4001,7 @@ minor modes loaded later may override bindings in this map.")
 ;;    ("v" . vc-next-action)
 ;;    ("~" . vc-revision-other-window)))
 
-
+;; HHH___________________________________________________________________
 
 (defvar xah-fly-insert-state-q t "Boolean value. true means insertion mode is on.")
 
@@ -4120,12 +4120,12 @@ Version 2017-07-07"
   (xah-fly-insert-mode-activate)
   (left-char))
 
-
+;; HHH___________________________________________________________________
 
 ;; ;; when in shell mode, switch to insertion mode.
 ;; (add-hook 'dired-mode-hook 'xah-fly-keys-off)
 
-
+;; HHH___________________________________________________________________
 
 ;; experimental. auto switch back to command mode after some sec of idle time
 ;; (setq xah-fly-timer-id (run-with-idle-timer 20 t 'xah-fly-command-mode-activate))
