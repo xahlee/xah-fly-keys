@@ -1,9 +1,9 @@
 ;;; xah-fly-keys.el --- ergonomic modal keybinding minor mode. -*- coding: utf-8; lexical-binding: t; byte-compile-dynamic: t; -*-
 
-;; Copyright © 2013-2020, by Xah Lee
+;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 12.13.20210105173652
+;; Version: 12.14.20210110210939
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -3442,11 +3442,7 @@ minor modes loaded later may override bindings in this map.")
  xah-fly-shared-map
  '(("<home>" . xah-fly-command-mode-activate)
    ("<menu>" . xah-fly-command-mode-activate)
-   ("<f8>" . xah-fly-command-mode-activate-no-hook)
-   ("<f11>" . xah-previous-user-buffer)
-   ("<f12>" . xah-next-user-buffer)
-   ("<C-f11>" . xah-previous-emacs-buffer)
-   ("<C-f12>" . xah-next-emacs-buffer))
+   ("<f8>" . xah-fly-command-mode-activate-no-hook))
  :direct)
 
 (when xah-fly-use-meta-key
