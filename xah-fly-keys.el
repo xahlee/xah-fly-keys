@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 12.14.20210110210939
+;; Version: 12.15.20210113235117
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -3491,7 +3491,7 @@ minor modes loaded later may override bindings in this map.")
      ("C-w" . xah-close-current-buffer)
      ("C-z" . undo)
 
-     ("C-+" . text-scale-increase)
+     ("C-=" . text-scale-increase)
      ("C--" . text-scale-decrease)
 
      ("C-d" . pop-global-mark))
