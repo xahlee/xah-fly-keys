@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 12.15.20210113235117
+;; Version: 12.15.20210118223817
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1028,34 +1028,25 @@ Version 2019-06-13"
 
 (defun xah-toggle-read-novel-mode ()
   "Setup current frame to be suitable for reading long novel/article text.
-
 • Set frame width to 70
 • Line wrap at word boundaries.
 • Line spacing is increased.
 • Proportional width font is used.
-
 Call again to toggle back.
 URL `http://ergoemacs.org/emacs/emacs_novel_reading_mode.html'
-Version 2019-01-30"
+Version 2019-01-30 2021-01-16"
   (interactive)
-  (let ()
-    (if (eq (frame-parameter (selected-frame) 'width) 70)
-        (progn
-          (set-frame-parameter (selected-frame) 'width 106)
-          (variable-pitch-mode 0)
-          (setq line-spacing nil)
-          (setq word-wrap nil)
-          ;;
-          )
+  (if (eq (frame-parameter (selected-frame) 'width) 70)
       (progn
-        (set-frame-parameter (selected-frame) 'width 70)
-        (variable-pitch-mode 1)
-        (setq line-spacing 0.4)
-        (setq word-wrap t)
-        ;;
-        ))
-    ;;
-    )
+        (set-frame-parameter (selected-frame) 'width 106)
+        (variable-pitch-mode 0)
+        (setq line-spacing nil)
+        (setq word-wrap nil))
+    (progn
+      (set-frame-parameter (selected-frame) 'width 70)
+      (variable-pitch-mode 1)
+      (setq line-spacing 0.5)
+      (setq word-wrap t)))
   (redraw-frame (selected-frame)))
 
 (defun xah-fill-or-unfill ()
@@ -2664,7 +2655,7 @@ Version 2015-04-09"
     (isearch-mode t)
     (isearch-yank-string (buffer-substring-no-properties $p1 $p2))))
 
-(declare-function w32-shell-execute "w32fns.c" (operation document &optional parameters show-flag))
+(declare-function w32-shell-execute "w32fns.c" (operation document &optional parameters show-flag)) ; (w32-shell-execute "open" default-directory)
 
 (defun xah-show-in-desktop ()
   "Show current file in desktop.
@@ -2672,12 +2663,14 @@ Version 2015-04-09"
  This command can be called when in a file or in `dired'.
 
 URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
-Version 2020-11-20"
+Version 2020-11-20 2021-01-18"
   (interactive)
-  (let (($path (if (buffer-file-name) (buffer-file-name) (shell-quote-argument default-directory))))
+  (let (($path (if (buffer-file-name) (buffer-file-name) default-directory)))
     (cond
      ((string-equal system-type "windows-nt")
-      (w32-shell-execute "open" default-directory))
+      (shell-command (format "PowerShell -Command Start-Process Explorer -FilePath %s" (shell-quote-argument default-directory)))
+      ;; todo. need to make window highlight the file
+      )
      ((string-equal system-type "darwin")
       (if (eq major-mode 'dired-mode)
           (let (($files (dired-get-marked-files )))
@@ -2685,14 +2678,15 @@ Version 2020-11-20"
                 (shell-command (concat "open " (shell-quote-argument (expand-file-name default-directory ))))
               (shell-command (concat "open -R " (shell-quote-argument (car (dired-get-marked-files )))))))
         (shell-command
-         (concat "open -R " $path))))
+         (concat "open -R " (shell-quote-argument $path)))))
+
      ((string-equal system-type "gnu/linux")
       (let (
             (process-connection-type nil)
             (openFileProgram (if (file-exists-p "/usr/bin/gvfs-open")
                                  "/usr/bin/gvfs-open"
                                "/usr/bin/xdg-open")))
-        (start-process "" nil openFileProgram $path))
+        (start-process "" nil openFileProgram (shell-quote-argument $path)))
       ;; (shell-command "xdg-open .") ;; 2013-02-10 this sometimes froze emacs till the folder is closed. eg with nautilus
       ))))
 
@@ -2702,24 +2696,31 @@ Version 2020-11-20"
 URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
 Version 2020-02-13"
   (interactive)
-  (let (($path (if (buffer-file-name) (buffer-file-name) (expand-file-name default-directory ) )))
+  (let (($path (if (buffer-file-name) (buffer-file-name) (expand-file-name default-directory ))))
     (message "path is %s" $path)
     (cond
      ((string-equal system-type "darwin")
-      (shell-command (format "open -a Visual\\ Studio\\ Code.app \"%s\"" $path)))
+      (shell-command (format "open -a Visual\\ Studio\\ Code.app %s" (shell-quote-argument $path))))
      ((string-equal system-type "windows-nt")
-      (shell-command (format "Code \"%s\"" $path)))
+      ;; (shell-command
+      ;;  (format
+      ;;   "PowerShell -Command Invoke-Expression \"%s\\%s\" %s"
+      ;;   (getenv "HOMEPATH")
+      ;;   "AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe"
+      ;;   (shell-quote-argument $path)))
+      ;; (shell-command (concat "PowerShell -Command Start-Process Code.exe -filepath " (shell-quote-argument $path)))
+      (shell-command (format "Code %s" (shell-quote-argument $path)))
+      ;;
+      )
      ((string-equal system-type "gnu/linux")
-      (shell-command (format "code \"%s\"" $path))))))
+      (shell-command (format "code %s" (shell-quote-argument $path)))))))
 
 (defun xah-open-in-external-app (&optional @fname)
   "Open the current file or dired marked files in external app.
 The app is chosen from your OS's preference.
-
 When called in emacs lisp, if @fname is given, open that.
-
 URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
-Version 2019-11-04"
+Version 2019-11-04 2021-01-18"
   (interactive)
   (let* (
          ($file-list
@@ -2736,7 +2737,8 @@ Version 2019-11-04"
        ((string-equal system-type "windows-nt")
         (mapc
          (lambda ($fpath)
-           (w32-shell-execute "open" $fpath)) $file-list))
+           (shell-command (concat "PowerShell -Command invoke-item " (shell-quote-argument (expand-file-name $fpath )))))
+         $file-list))
        ((string-equal system-type "darwin")
         (mapc
          (lambda ($fpath)
@@ -2753,13 +2755,13 @@ Version 2019-11-04"
 on Microsoft Windows, it starts cross-platform PowerShell pwsh. You need to have it installed.
 
 URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
-Version 2020-11-21 2020-12-16"
+Version 2020-11-21 2021-01-18"
   (interactive)
   (cond
    ((string-equal system-type "windows-nt")
     (let ((process-connection-type nil))
       ;; (start-process "" nil "powershell" "Start-Process" "powershell"  "-WorkingDirectory" default-directory)
-      (shell-command (concat "pwsh -Command Start-Process pwsh -WorkingDirectory " (shell-quote-argument (expand-file-name default-directory ))))
+      (shell-command (concat "PowerShell -Command Start-Process pwsh -WorkingDirectory " (shell-quote-argument default-directory)))
       ;;
       ))
    ((string-equal system-type "darwin")
