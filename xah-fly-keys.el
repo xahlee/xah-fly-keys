@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 12.16.20210118223817
+;; Version: 12.17.20210120100055
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2660,8 +2660,7 @@ Version 2015-04-09"
 (defun xah-show-in-desktop ()
   "Show current file in desktop.
  (Mac Finder, Windows Explorer, Linux file manager)
- This command can be called when in a file or in `dired'.
-
+This command can be called when in a file buffer or in `dired'.
 URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
 Version 2020-11-20 2021-01-18"
   (interactive)
@@ -2694,7 +2693,7 @@ Version 2020-11-20 2021-01-18"
   "Open current file or dir in vscode.
 
 URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
-Version 2020-02-13"
+Version 2020-02-13 2021-01-18"
   (interactive)
   (let (($path (if (buffer-file-name) (buffer-file-name) (expand-file-name default-directory ))))
     (message "path is %s" $path)
@@ -2702,6 +2701,10 @@ Version 2020-02-13"
      ((string-equal system-type "darwin")
       (shell-command (format "open -a Visual\\ Studio\\ Code.app %s" (shell-quote-argument $path))))
      ((string-equal system-type "windows-nt")
+      ;; 2021-01-18 problem: if gnu findutils is installed, it installs a code.exe program, same name as vscode's executable. and usually in path before vscode.
+;; vs code is usually at home dir
+;; "C:\Users\joe\AppData\Local\Programs\Microsoft VS Code\bin\code.cmd"
+      ;; the following is attemp to work around
       ;; (shell-command
       ;;  (format
       ;;   "PowerShell -Command Invoke-Expression \"%s\\%s\" %s"
@@ -2717,7 +2720,6 @@ Version 2020-02-13"
 
 (defun xah-open-in-external-app (&optional @fname)
   "Open the current file or dired marked files in external app.
-The app is chosen from your OS's preference.
 When called in emacs lisp, if @fname is given, open that.
 URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
 Version 2019-11-04 2021-01-18"
@@ -2751,8 +2753,7 @@ Version 2019-11-04 2021-01-18"
 
 (defun xah-open-in-terminal ()
   "Open the current dir in a new terminal window.
-
-on Microsoft Windows, it starts cross-platform PowerShell pwsh. You need to have it installed.
+On Microsoft Windows, it starts cross-platform PowerShell pwsh. You need to have it installed.
 
 URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
 Version 2020-11-21 2021-01-18"
@@ -3583,17 +3584,18 @@ minor modes loaded later may override bindings in this map.")
    ("." . find-file)
    ("c" . bookmark-bmenu-list)
    ("e" . ibuffer)
-   ("u" . xah-open-file-at-cursor)
+   ("f" . xah-open-recently-closed)
+   ("g" . xah-open-in-terminal)
    ("h" . recentf-open-files)
    ("i" . xah-copy-file-path)
    ("l" . bookmark-set)
    ("n" . xah-new-empty-buffer)
    ("o" . xah-show-in-desktop)
    ("p" . xah-open-last-closed)
-   ("f" . xah-open-recently-closed)
-   ("y" . xah-list-recently-closed)
    ("r" . xah-open-file-fast)
    ("s" . write-file)
+   ("u" . xah-open-file-at-cursor)
+   ("y" . xah-list-recently-closed)
    ))
 
 (xah-fly--define-keys
