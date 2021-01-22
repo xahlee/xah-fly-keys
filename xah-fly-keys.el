@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 12.17.20210121101600
+;; Version: 12.18.20210121194801
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2379,10 +2379,39 @@ Version 2018-10-12"
       ;;
       )))
 
+(defvar xah-run-current-file-map nil "A association list that maps file extension to program path, used by `xah-run-current-file'. First element is file suffix, second is program name or path. You can add items to it.")
+(setq
+ xah-run-current-file-map
+ '(
+
+   ("php" . "php")
+   ("pl" . "perl")
+   ("py" . "python")
+   ("py2" . "python2")
+   ("py3" . "python3")
+   ("rb" . "ruby")
+   ("go" . "go run")
+   ("hs" . "runhaskell")
+   ("js" . "deno run")
+   ("ts" . "deno run") ; TypeScript
+   ("tsx" . "tsc")
+   ("mjs" . "node --experimental-modules ")
+   ("sh" . "bash")
+   ("clj" . "java -cp ~/apps/clojure-1.6.0/clojure-1.6.0.jar clojure.main")
+   ("rkt" . "racket")
+   ("ml" . "ocaml")
+   ("vbs" . "cscript")
+   ("tex" . "pdflatex")
+   ("latex" . "pdflatex")
+   ("java" . "javac")
+   ;; ("pov" . "/usr/local/bin/povray +R2 +A0.1 +J1.2 +Am2 +Q9 +H480 +W640")
+   ))
+
 (defun xah-run-current-file ()
   "Execute the current file.
 For example, if the current buffer is x.py, then it'll call 「python x.py」 in a shell.
 Output is printed to buffer “*xah-run output*”.
+Which program is called depends on the variable `xah-run-current-file-map'.
 
 The file can be Emacs Lisp, PHP, Perl, Python, Ruby, JavaScript, TypeScript, golang, Bash, Ocaml, Visual Basic, TeX, Java, Clojure.
 File suffix is used to determine what program to run.
@@ -2390,36 +2419,12 @@ File suffix is used to determine what program to run.
 If the file is modified or not saved, save it automatically before run.
 
 URL `http://ergoemacs.org/emacs/elisp_run_current_file.html'
-Version 2020-09-24"
+Version 2020-09-24 2021-01-21"
   (interactive)
   (let (
         ($outBuffer "*xah-run output*")
         (resize-mini-windows nil)
-        ($suffixMap
-         ;; (‹extension› . ‹shell program name›)
-         `(
-           ("php" . "php")
-           ("pl" . "perl")
-           ("py" . "python")
-           ("py3" . ,(if (string-equal system-type "windows-nt") "c:/Python32/python.exe" "python3"))
-           ("rb" . "ruby")
-           ("go" . "go run")
-           ("hs" . "runhaskell")
-           ;; ("js" . "node")
-           ("js" . "deno run")
-           ("ts" . "deno run") ; TypeScript
-           ("tsx" . "tsc")
-           ("mjs" . "node --experimental-modules ")
-           ("sh" . "bash")
-           ("clj" . "java -cp ~/apps/clojure-1.6.0/clojure-1.6.0.jar clojure.main")
-           ("rkt" . "racket")
-           ("ml" . "ocaml")
-           ("vbs" . "cscript")
-           ("tex" . "pdflatex")
-           ("latex" . "pdflatex")
-           ("java" . "javac")
-           ;; ("pov" . "/usr/local/bin/povray +R2 +A0.1 +J1.2 +Am2 +Q9 +H480 +W640")
-           ))
+        ($suffixMap xah-run-current-file-map )
         $fname
         $fSuffix
         $progName
@@ -2664,20 +2669,21 @@ This command can be called when in a file buffer or in `dired'.
 URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
 Version 2020-11-20 2021-01-20"
   (interactive)
-  (let (($path (if (buffer-file-name) (buffer-file-name) default-directory)))
+  (let (($path (if (eq major-mode 'dired-mode)
+                   (if (eq nil (dired-get-marked-files ))
+                       default-directory
+                     (car (dired-get-marked-files )))
+                 (if (buffer-file-name) (buffer-file-name) default-directory))))
     (cond
      ((string-equal system-type "windows-nt")
       (let (
             ($cmd (format "Explorer /select,%s"  (shell-quote-argument (replace-regexp-in-string "/" "\\" $path "FIXEDCASE" "LITERAL" )))))
+        ;; c:/Users/xah/AppData/Local/Microsoft/WindowsApps/MicrosoftEdge.exe
+        (message "%s \n %s" $path $cmd)
         (shell-command $cmd)))
      ((string-equal system-type "darwin")
-      (if (eq major-mode 'dired-mode)
-          (let (($files (dired-get-marked-files )))
-            (if (eq (length $files) 0)
-                (shell-command (concat "open " (shell-quote-argument (expand-file-name default-directory ))))
-              (shell-command (concat "open -R " (shell-quote-argument (car (dired-get-marked-files )))))))
-        (shell-command
-         (concat "open -R " (shell-quote-argument $path)))))
+      (shell-command
+           (concat "open -R " (shell-quote-argument $path))) )
      ((string-equal system-type "gnu/linux")
       (let (
             (process-connection-type nil)
