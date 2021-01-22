@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 12.18.20210121194801
+;; Version: 12.18.20210121202143
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2352,9 +2352,7 @@ Version 2020-04-09"
 
 (defun xah-run-current-go-file ()
   "Run or build current golang file.
-
 To build, call `universal-argument' first.
-
 Version 2018-10-12"
   (interactive)
   (when (not (buffer-file-name)) (save-buffer))
@@ -2383,7 +2381,6 @@ Version 2018-10-12"
 (setq
  xah-run-current-file-map
  '(
-
    ("php" . "php")
    ("pl" . "perl")
    ("py" . "python")
@@ -2411,10 +2408,7 @@ Version 2018-10-12"
   "Execute the current file.
 For example, if the current buffer is x.py, then it'll call 「python x.py」 in a shell.
 Output is printed to buffer “*xah-run output*”.
-Which program is called depends on the variable `xah-run-current-file-map'.
-
-The file can be Emacs Lisp, PHP, Perl, Python, Ruby, JavaScript, TypeScript, golang, Bash, Ocaml, Visual Basic, TeX, Java, Clojure.
-File suffix is used to determine what program to run.
+File suffix is used to determine which program to run, set in the variable `xah-run-current-file-map'.
 
 If the file is modified or not saved, save it automatically before run.
 
