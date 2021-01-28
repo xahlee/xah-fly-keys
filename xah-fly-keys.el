@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 12.18.20210121202143
+;; Version: 12.18.20210128131138
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2672,12 +2672,10 @@ Version 2020-11-20 2021-01-20"
      ((string-equal system-type "windows-nt")
       (let (
             ($cmd (format "Explorer /select,%s"  (shell-quote-argument (replace-regexp-in-string "/" "\\" $path "FIXEDCASE" "LITERAL" )))))
-        ;; c:/Users/xah/AppData/Local/Microsoft/WindowsApps/MicrosoftEdge.exe
-        (message "%s \n %s" $path $cmd)
         (shell-command $cmd)))
      ((string-equal system-type "darwin")
       (shell-command
-           (concat "open -R " (shell-quote-argument $path))) )
+       (concat "open -R " (shell-quote-argument $path))))
      ((string-equal system-type "gnu/linux")
       (let (
             (process-connection-type nil)
@@ -2738,7 +2736,8 @@ Version 2019-11-04 2021-01-18"
        ((string-equal system-type "windows-nt")
         (mapc
          (lambda ($fpath)
-           (shell-command (concat "PowerShell -Command invoke-item " (shell-quote-argument (expand-file-name $fpath )))))
+           (shell-command
+            (format "PowerShell -Command invoke-item '%s'" (expand-file-name $fpath ))))
          $file-list))
        ((string-equal system-type "darwin")
         (mapc
