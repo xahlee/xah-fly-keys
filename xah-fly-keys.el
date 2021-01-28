@@ -2300,7 +2300,7 @@ Version 2020-10-17"
                     (find-file $fpath)
                     (goto-char 1)
                     (search-forward $fractPart ))
-                (when (y-or-n-p (format "file no exist: 「%s」. Create?" $fpath))
+                (when (y-or-n-p (format "file does not exist: 「%s」. Create?" $fpath))
                   (find-file $fpath))))
           (if (string-match "^\\`\\(.+?\\):\\([0-9]+\\)\\(:[0-9]+\\)?\\'" $path)
               (let (
@@ -2311,7 +2311,7 @@ Version 2020-10-17"
                       (find-file $fpath)
                       (goto-char 1)
                       (forward-line (1- $line-num)))
-                  (when (y-or-n-p (format "file no exist: 「%s」. Create?" $fpath))
+                  (when (y-or-n-p (format "file does not exist: 「%s」. Create?" $fpath))
                     (find-file $fpath))))
             (if (file-exists-p $path)
                 (progn ; open f.ts instead of f.js
@@ -2323,7 +2323,7 @@ Version 2020-10-17"
                       (find-file $path))))
               (if (file-exists-p (concat $path ".el"))
                   (find-file (concat $path ".el"))
-                (when (y-or-n-p (format "file no exist: 「%s」. Create?" $path))
+                (when (y-or-n-p (format "file does not exist: 「%s」. Create?" $path))
                   (find-file $path ))))))))))
 
 (if (version<= emacs-version "26.0.50")
