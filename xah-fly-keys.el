@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 12.18.20210128131138
+;; Version: 12.19.20210131180900
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2661,7 +2661,7 @@ Version 2015-04-09"
  (Mac Finder, Windows Explorer, Linux file manager)
 This command can be called when in a file buffer or in `dired'.
 URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
-Version 2020-11-20 2021-01-20"
+Version 2020-11-20 2021-01-31"
   (interactive)
   (let (($path (if (eq major-mode 'dired-mode)
                    (if (eq nil (dired-get-marked-files ))
@@ -2670,9 +2670,10 @@ Version 2020-11-20 2021-01-20"
                  (if (buffer-file-name) (buffer-file-name) default-directory))))
     (cond
      ((string-equal system-type "windows-nt")
-      (let (
-            ($cmd (format "Explorer /select,%s"  (shell-quote-argument (replace-regexp-in-string "/" "\\" $path "FIXEDCASE" "LITERAL" )))))
-        (shell-command $cmd)))
+      (shell-command (format "PowerShell -Command invoke-item '%s'" (expand-file-name default-directory )))
+      ;; (let ( ($cmd (format "Explorer /select,%s"  (shell-quote-argument (replace-regexp-in-string "/" "\\" $path "FIXEDCASE" "LITERAL" )))))
+      ;;   (shell-command $cmd))
+      )
      ((string-equal system-type "darwin")
       (shell-command
        (concat "open -R " (shell-quote-argument $path))))
