@@ -3583,16 +3583,14 @@ minor modes loaded later may override bindings in this map.")
      ("<C-S-tab>" . xah-previous-user-buffer)
      ("<C-S-iso-lefttab>" . xah-previous-user-buffer)
 
-     ("C-SPC" . xah-fly-leader-key-map)
-
      ("<C-prior>" . xah-previous-user-buffer)
      ("<C-next>" . xah-next-user-buffer)
+
+     ("C-SPC" . xah-fly-leader-key-map)
 
      ("C-9" . scroll-down-command)
      ("C-0" . scroll-up-command)
 
-     ("C-1" . xah-next-user-buffer)
-     ("C-2" . xah-previous-user-buffer)
      ("C-7" . xah-previous-user-buffer)
      ("C-8" . xah-next-user-buffer)
 
@@ -3603,6 +3601,7 @@ minor modes loaded later may override bindings in this map.")
      ("C-4" . next-error)
 
      ("C-a" . mark-whole-buffer)
+     ("C-t" . xah-new-empty-buffer)
      ("C-n" . xah-new-empty-buffer)
      ("C-S-n" . make-frame-command)
      ("C-o" . find-file)
