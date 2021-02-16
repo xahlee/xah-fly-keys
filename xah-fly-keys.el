@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 12.20.20210212153419
+;; Version: 12.20.20210216140907
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2261,7 +2261,7 @@ If path does not have a file extension, automatically try with “.el” for eli
 This command is similar to `find-file-at-point' but without prompting for confirmation.
 
 URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'
-Version 2020-10-17"
+Version 2020-10-17 2021-02-16"
   (interactive)
   (let* (
          ($inputStr
@@ -2280,9 +2280,11 @@ Version 2020-10-17"
               (buffer-substring-no-properties $p1 $p2))))
          ($path
           (replace-regexp-in-string
-           "^file:///" "/"
+           "^/C:/" "/"
            (replace-regexp-in-string
-            ":\\'" "" $inputStr))))
+            "^file://" ""
+            (replace-regexp-in-string
+             ":\\'" "" $inputStr)))))
     (if (string-match-p "\\`https?://" $path)
         (if (fboundp 'xahsite-url-to-filepath)
             (let (($x (xahsite-url-to-filepath $path)))
@@ -2743,8 +2745,7 @@ Version 2019-11-04 2021-01-18"
        ((string-equal system-type "windows-nt")
         (mapc
          (lambda ($fpath)
-           (shell-command
-            (format "PowerShell -Command invoke-item '%s'" (expand-file-name $fpath ))))
+           (shell-command (concat "PowerShell -Command \"Invoke-Item -LiteralPath\" " "'" (shell-quote-argument (expand-file-name $fpath )) "'")))
          $file-list))
        ((string-equal system-type "darwin")
         (mapc
