@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 12.20.20210216141516
+;; Version: 13.0.20210221173157
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -30,7 +30,23 @@
 ;; (require 'xah-fly-keys)
 ;; (xah-fly-keys-set-layout "qwerty") ; required
 
-;; possible layout values: azerty, azerty-be, colemak, colemak-mod-dh, dvorak, programer-dvorak, qwerty, qwerty-abnt, qwerty-no (qwerty Norwegian), qwertz, workman, norman, neo2, koy, adnw
+;; possible layout values:
+;; azerty
+;; azerty-be
+;; colemak
+;; colemak-mod-dh
+;; dvorak
+;; programer-dvorak
+;; qwerty
+;; qwerty-abnt
+;; qwerty-no (qwerty Norwegian)
+;; qwertz
+;; workman
+;; norman
+;; neo2
+;; koy
+;; adnw
+;; pt-nativo
 
 ;; (xah-fly-keys 1)
 
@@ -3412,7 +3428,7 @@ If the value is nil, it's automatically set to \"dvorak\"."
                   (const :tag "Neo2" neo2)
                   (const :tag "Koy" koy)
                   (const :tag "Adnw" adnw)
-		  (const :tag "PT-nativo" pt-nativo))
+		          (const :tag "PT-nativo" pt-nativo))
   :group 'xah-fly-keys
   :set (lambda (@layout-var @new-layout)
          ;; Only reload xah-fly-keys if it was already loaded and the new layout is different:
