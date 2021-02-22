@@ -3360,6 +3360,39 @@ Version 2017-01-29"
     ("z" . "z"))
   "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding adnw layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
 
+(defvar xah--dvorak-to-pt-nativo-kmap
+  '((";" . "«")
+    ("/" . "~")
+    ("[" . "º")
+    ("]" . "<")
+    ("=" . "-")
+    ("-" . "´")
+    ("a" . "i")
+    ("b" . "q")
+    ("c" . "t")
+    ("d" . "m")
+    ("e" . "a")
+    ("f" . "w")
+    ("g" . "l")
+    ("h" . "d")
+    ("i" . "u")
+    ("k" . "b")
+    ("l" . "p")
+    ("m" . "v")
+    ("n" . "r")
+    ("o" . "e")
+    ("p" . "h")
+    ("q" . "ç")
+    ("r" . "c")
+    ("s" . "n")
+    ("t" . "s")
+    ("u" . "o")
+    ("v" . "f")
+    ("w" . "g")
+    ("x" . "k")
+    ("y" . "x"))
+  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding PT-Nativo. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+
 (define-obsolete-variable-alias 'xah-fly-key--current-layout 'xah-fly-key-current-layout "2020-04-09")
 (defcustom xah-fly-key-current-layout nil
   "The current keyboard layout. Use `xah-fly-keys-set-layout' to set the layout.
@@ -3378,7 +3411,8 @@ If the value is nil, it's automatically set to \"dvorak\"."
                   (const :tag "Norman" norman)
                   (const :tag "Neo2" neo2)
                   (const :tag "Koy" koy)
-                  (const :tag "Adnw" adnw))
+                  (const :tag "Adnw" adnw)
+		  (const :tag "PT-nativo" pt-nativo))
   :group 'xah-fly-keys
   :set (lambda (@layout-var @new-layout)
          ;; Only reload xah-fly-keys if it was already loaded and the new layout is different:
@@ -4156,6 +4190,7 @@ Argument must be one of:
  'neo2
  'koy
  'adnw
+ 'pt-nativo
 
 For backwards compatibility, a string that is the name of one of the above symbols is also acceptable (case-sensitive).
 Version 2020-04-09"
