@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 13.0.20210221173157
+;; Version: 13.1.20210224124257
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1220,6 +1220,29 @@ Version 2018-12-16 2020-09-08"
           (when (> (- (point) (line-beginning-position)) $minlen)
             (replace-match "\n" )))))))
 
+(defun xah-reformat-to-sentence-lines ()
+  "Break a long line or text block into multiple lines by ending period.
+Work on text selection if there is one, else the current text block.
+Version 2020-12-02 2021-02-12"
+  (interactive)
+  (let ($p1 $p2)
+    (if (use-region-p)
+        (setq $p1 (region-beginning) $p2 (region-end))
+      (progn
+        (if (re-search-backward "\n[ \t]*\n+" nil "move")
+            (progn (re-search-forward "\n[ \t]*\n+")
+                   (setq $p1 (point)))
+          (setq $p1 (point)))
+        (re-search-forward "\n[ \t]*\n" nil "move")
+        (setq $p2 (point))))
+    (save-restriction
+      (narrow-to-region $p1 $p2)
+      (let ((fill-column most-positive-fixnum ))
+        (fill-region (point-min) (point-max)))
+      (goto-char (point-min))
+      (while (re-search-forward "\\. +\\([0-9A-Za-z]+\\)" nil "NOERROR")
+        (replace-match ".\n\\1" )))))
+
 (defun xah-space-to-newline ()
   "Replace space sequence to a newline char.
 Works on current block or selection.
@@ -2277,7 +2300,7 @@ If path does not have a file extension, automatically try with “.el” for eli
 This command is similar to `find-file-at-point' but without prompting for confirmation.
 
 URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'
-Version 2020-10-17 2021-02-16"
+Version 2020-10-17 2021-02-24"
   (interactive)
   (let* (
          ($inputStr
@@ -3945,7 +3968,7 @@ minor modes loaded later may override bindings in this map.")
    ("u" . delete-matching-lines)
    ;; v
    ("w" . xah-next-window-or-frame)
-   ;; x
+   ("x" . xah-reformat-to-sentence-lines)
    ("y" . delete-duplicate-lines)
    ;; z
 ))
