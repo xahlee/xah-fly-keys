@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 13.1.20210224124257
+;; Version: 13.2.20210224125227
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2373,16 +2373,16 @@ Version 2020-10-17 2021-02-24"
 
 (defvar xah-fly-M-x-command nil "Command to call for emacs `execute-extended-command' replacement, used by `xah-fly-M-x'. Value should be a lisp symbol.")
 
-(setq xah-fly-M-x-command 'helm-M-x)
+(setq xah-fly-M-x-command nil)
 
 (defun xah-fly-M-x ()
   "Calls `execute-extended-command' or an alternative.
 If `xah-fly-M-x-command' is non-nil, call it, else call one of the following, in order: `smex', `helm-M-x', `counsel-M-x', `execute-extended-command'.
-Version 2020-04-09 2021-02-12"
+Version 2020-04-09 2021-02-24"
   (interactive)
   (command-execute
    (cond
-    ((boundp 'xah-fly-M-x-command) xah-fly-M-x-command )
+    ((and (boundp 'xah-fly-M-x-command) xah-fly-M-x-command) xah-fly-M-x-command )
     ((fboundp 'smex) 'smex)
     ((fboundp 'helm-M-x) 'helm-M-x)
     ((fboundp 'counsel-M-x) 'counsel-M-x)
