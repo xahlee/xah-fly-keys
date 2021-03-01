@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 13.2.20210224125227
+;; Version: 13.3.20210301134052
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2801,13 +2801,16 @@ Version 2019-11-04 2021-02-16"
 On Microsoft Windows, it starts cross-platform PowerShell pwsh. You need to have it installed.
 
 URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
-Version 2020-11-21 2021-01-21"
+Version 2020-11-21 2021-03-01"
   (interactive)
   (cond
    ((string-equal system-type "windows-nt")
-    (let ((process-connection-type nil))
+    (let ((process-connection-type nil)
+          ($cmdstr
+           (format "pwsh -Command Start-Process pwsh -WorkingDirectory %s" (shell-quote-argument default-directory))))
       ;; (start-process "" nil "powershell" "Start-Process" "powershell"  "-WorkingDirectory" default-directory)
-      (shell-command (concat "pwsh -Command Start-Process pwsh -WorkingDirectory " (shell-quote-argument default-directory)))
+      (message "Runs: %s" $cmdstr)
+      (shell-command $cmdstr)
       ;;
       ))
    ((string-equal system-type "darwin")
