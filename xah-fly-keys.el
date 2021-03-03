@@ -35,6 +35,7 @@
 ;; azerty-be
 ;; colemak
 ;; colemak-mod-dh
+;; colemak-mod-dh-new
 ;; dvorak
 ;; programer-dvorak
 ;; qwerty
@@ -3014,6 +3015,39 @@ Version 2017-01-29"
     ("z" . "/"))
   "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding Colemak Mod-DH layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
 
+(defvar xah--dvorak-to-colemak-mod-dh-new-kmap
+  '(("'" . "q")
+    ("," . "w")
+    ("." . "f")
+    ("p" . "p")
+    ("y" . "b")
+    ("f" . "j")
+    ("g" . "l")
+    ("c" . "u")
+    ("r" . "y")
+    ("l" . ";")
+    ("a" . "a")
+    ("o" . "r")
+    ("e" . "s")
+    ("u" . "t")
+    ("i" . "g")
+    ("d" . "m")
+    ("h" . "n")
+    ("t" . "e")
+    ("n" . "i")
+    ("s" . "o")
+    (";" . "x")
+    ("q" . "c")
+    ("j" . "d")
+    ("k" . "v")
+    ("x" . "\\")
+    ("b" . "k")
+    ("m" . "h")
+    ("w" . ",")
+    ("v" . ".")
+    ("z" . "/"))
+  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding Colemak Mod-DH layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+
 (defvar xah--dvorak-to-dvorak-kmap
   '()
   "A alist, dvorak to dvorak.")
@@ -3443,6 +3477,7 @@ If the value is nil, it's automatically set to \"dvorak\"."
                   (const :tag "Belgian AZERTY" azerty-be)
                   (const :tag "Colemak" colemak)
                   (const :tag "Colemak Mod-DH" colemak-mod-dh)
+		  (const :tag "New Colemak Mod-DH with M on the home row" colemak-mod-dh-new)
                   (const :tag "Dvorak" dvorak)
                   (const :tag "Programmer Dvorak" programer-dvorak)
                   (const :tag "QWERTY" qwerty)
@@ -4221,6 +4256,7 @@ Argument must be one of:
  'azerty-be
  'colemak
  'colemak-mod-dh
+ 'colemak-mod-dh-new
  'dvorak
  'programer-dvorak
  'qwerty
