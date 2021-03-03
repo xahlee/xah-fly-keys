@@ -38,7 +38,7 @@ The following keyboard layouts are supported:
 * "azerty-be"
 * "colemak"
 * "colemak-mod-dh"
-* "colemak-mod-dh-iso"
+* "colemak-mod-dh-new"
 * "dvorak"
 * "programer-dvorak"
 * "qwerty"
