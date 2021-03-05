@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 13.4.20210303140806
+;; Version: 13.4.20210305140434
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -3984,7 +3984,7 @@ minor modes loaded later may override bindings in this map.")
    ("," . sort-numeric-fields)
    ("'" . reverse-region)
    ;; a
-   ;; b
+   ("b" . xah-reformat-to-sentence-lines)
    ("c" . goto-char)
    ("d" . mark-defun)
    ("e" . list-matching-lines)
@@ -4006,7 +4006,7 @@ minor modes loaded later may override bindings in this map.")
    ("u" . delete-matching-lines)
    ;; v
    ("w" . xah-next-window-or-frame)
-   ("x" . xah-reformat-to-sentence-lines)
+   ;; x
    ("y" . delete-duplicate-lines)
    ;; z
 ))
