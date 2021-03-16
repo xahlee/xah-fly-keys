@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 13.5.20210310085217
+;; Version: 13.6.20210316115715
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -166,9 +166,10 @@ Version 2016-04-04"
 
 • When called first time, move cursor to beginning of char in current line. (if already, move to beginning of line.)
 • When called again, move cursor backward by jumping over any sequence of whitespaces containing 2 blank lines.
+• if `visual-line-mode' is on, beginning of line means visual line.
 
 URL `http://ergoemacs.org/emacs/emacs_keybinding_design_beginning-of-line-or-block.html'
-Version 2018-06-04"
+Version 2018-06-04 2021-03-16"
   (interactive)
   (let (($p (point)))
     (if (or (equal (point) (line-beginning-position))
@@ -179,25 +180,29 @@ Version 2018-06-04"
               ;; (forward-char )
               )
           (goto-char (point-min)))
-      (progn
-        (back-to-indentation)
-        (when (eq $p (point))
-          (beginning-of-line))))))
+      (if visual-line-mode
+          (beginning-of-visual-line)
+        (progn
+          (back-to-indentation)
+          (when (eq $p (point))
+            (beginning-of-line)))))))
 
 (defun xah-end-of-line-or-block ()
   "Move cursor to end of line or next paragraph.
 
 • When called first time, move cursor to end of line.
 • When called again, move cursor forward by jumping over any sequence of whitespaces containing 2 blank lines.
+• if `visual-line-mode' is on, end of line means visual line.
 
 URL `http://ergoemacs.org/emacs/emacs_keybinding_design_beginning-of-line-or-block.html'
-Version 2018-06-04"
+Version 2018-06-04 2021-03-16"
   (interactive)
   (if (or (equal (point) (line-end-position))
           (eq last-command this-command))
-      (progn
-        (re-search-forward "\n[\t\n ]*\n+" nil "move" ))
-    (end-of-line)))
+      (re-search-forward "\n[\t\n ]*\n+" nil "move" )
+    (if visual-line-mode
+        (end-of-visual-line)
+      (end-of-line))))
 
 (defvar xah-brackets nil "string of left/right brackets pairs.")
 (setq xah-brackets "()[]{}<>＜＞（）［］｛｝⦅⦆〚〛⦃⦄“”‘’‹›«»「」〈〉《》【】〔〕⦗⦘『』〖〗〘〙｢｣⟦⟧⟨⟩⟪⟫⟮⟯⟬⟭⌈⌉⌊⌋⦇⦈⦉⦊❛❜❝❞❨❩❪❫❴❵❬❭❮❯❰❱❲❳〈〉⦑⦒⧼⧽﹙﹚﹛﹜﹝﹞⁽⁾₍₎⦋⦌⦍⦎⦏⦐⁅⁆⸢⸣⸤⸥⟅⟆⦓⦔⦕⦖⸦⸧⸨⸩｟｠")
