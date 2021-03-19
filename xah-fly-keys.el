@@ -1990,12 +1990,23 @@ URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
 Version 2017-11-01"
   (interactive)
   (if (region-active-p)
+      (if visual-line-mode
+          (let (($point (point)))
+                ;; Advance to end of current line first
+                (end-of-visual-line 1)
+                ;; If we were at end of line, advance to next line's end
+                (when (equal $point (point))
+                  (end-of-visual-line 2)))
+        (progn
+          (forward-line 1)
+          (end-of-line)))
+    (if visual-line-mode
+        (progn (beginning-of-visual-line)
+               (set-mark (point))
+               (end-of-visual-line))
       (progn
-        (forward-line 1)
-        (end-of-line))
-    (progn
-      (end-of-line)
-      (set-mark (line-beginning-position)))))
+        (end-of-line)
+        (set-mark (line-beginning-position))))))
 
 (defun xah-extend-selection ()
   "Select the current word, bracket/quote expression, or expand selection.
