@@ -4,7 +4,7 @@
 
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 13.6.20210316115715
+;; Version: 13.7.20210330091240
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -911,7 +911,7 @@ Capitalize first letter of each word, except words like {to, of, the, a, in, or,
 
 When called in a elisp program, @begin @end are region boundaries.
 URL `http://ergoemacs.org/emacs/elisp_title_case_text.html'
-Version 2017-01-11 2020-12-22"
+Version 2017-01-11 2021-03-30"
   (interactive
    (if (use-region-p)
        (list (region-beginning) (region-end))
@@ -928,6 +928,7 @@ Version 2017-01-11 2020-12-22"
   (let* (
          ($strPairs [
                      [" A " " a "]
+                     [" An " " an "]
                      [" And " " and "]
                      [" At " " at "]
                      [" As " " as "]
@@ -1986,16 +1987,15 @@ Version 2016-07-22"
 
 (defun xah-select-line ()
   "Select current line. If region is active, extend selection downward by line.
+If `visual-line-mode' is on, consider line as visual line.
 URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
-Version 2017-11-01"
+Version 2017-11-01 2021-03-19"
   (interactive)
   (if (region-active-p)
       (if visual-line-mode
-          (let (($point (point)))
-                ;; Advance to end of current line first
+          (let (($p1 (point)))
                 (end-of-visual-line 1)
-                ;; If we were at end of line, advance to next line's end
-                (when (equal $point (point))
+                (when (eq $p1 (point))
                   (end-of-visual-line 2)))
         (progn
           (forward-line 1)
@@ -4305,6 +4305,7 @@ Version 2020-04-28"
   (setq xah-fly--deactivate-command-mode-func
         (set-transient-map xah-fly-command-map (lambda () t)))
   (modify-all-frames-parameters (list (cons 'cursor-type 'box)))
+  ;; (set-face-background 'cursor "red")
   (setq mode-line-front-space "C")
   (force-mode-line-update))
 
@@ -4325,6 +4326,7 @@ Version 2018-05-07"
   (funcall xah-fly--deactivate-command-mode-func)
   (unless no-indication
     (modify-all-frames-parameters '((cursor-type . bar)))
+    ;; (set-face-background 'cursor "black")
     (setq mode-line-front-space "I"))
   (force-mode-line-update))
 
