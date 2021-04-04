@@ -4,7 +4,7 @@
 
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 13.7.20210330091240
+;; Version: 13.7.20210404144901
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1966,10 +1966,10 @@ Version 2017-07-02"
 If region is active, extend selection downward by block.
 
 URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
-Version 2019-12-26"
+Version 2019-12-26 2021-04-04"
   (interactive)
   (if (use-region-p)
-      (re-search-forward "\n[ \t]*\n" nil "move")
+      (re-search-forward "\n[ \t]*\n[ \t]*\n*" nil "move")
     (progn
       (skip-chars-forward " \n\t")
       (when (re-search-backward "\n[ \t]*\n" nil "move")
