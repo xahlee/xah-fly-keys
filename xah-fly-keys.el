@@ -49,6 +49,9 @@
 ;; koy
 ;; adnw
 ;; pt-nativo
+;; carpalx-qgmlwy
+;; carpalx-qgmlwb
+;; carpalx-qfmlwy
 
 ;; (xah-fly-keys 1)
 
@@ -3486,6 +3489,120 @@ Version 2017-01-29"
     ("y" . "x"))
   "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding PT-Nativo. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
 
+(defvar xah--dvorak-to-carpalx-qgmlwy-kmap
+  '(("." . "m")
+    ("," . "g")
+    ("'" . "q")
+    (";" . "z")
+    ("/" . "[")
+    ("[" . "-")
+    ("]" . "=")
+    ("=" . "]")
+    ("-" . "'")
+    ("a" . "d")
+    ("b" . "k")
+    ("c" . "u")
+    ("d" . "i")
+    ("e" . "t")
+    ("f" . "y")
+    ("g" . "f")
+    ("h" . "a")
+    ("i" . "r")
+    ("j" . "c")
+    ("k" . "v")
+    ("l" . ";")
+    ("m" . "p")
+    ("n" . "o")
+    ("o" . "s")
+    ("p" . "l")
+    ("q" . "x")
+    ("r" . "b")
+    ("s" . "h")
+    ("t" . "e")
+    ("u" . "n")
+    ("v" . ".")
+    ("w" . ",")
+    ("x" . "j")
+    ("y" . "w")
+    ("z" . "/"))
+  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding Carpalx QGMLWY layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+
+(defvar xah--dvorak-to-carpalx-qgmlwb-kmap
+  '(("." . "m")
+    ("," . "g")
+    ("'" . "q")
+    (";" . "z")
+    ("/" . "[")
+    ("[" . "-")
+    ("]" . "=")
+    ("=" . "]")
+    ("-" . "'")
+    ("a" . "d")
+    ("b" . "k")
+    ("c" . "u")
+    ("d" . "i")
+    ("e" . "t")
+    ("f" . "b")
+    ("g" . "y")
+    ("h" . "a")
+    ("i" . "r")
+    ("j" . "c")
+    ("k" . "f")
+    ("l" . ";")
+    ("m" . "p")
+    ("n" . "o")
+    ("o" . "s")
+    ("p" . "l")
+    ("q" . "x")
+    ("r" . "v")
+    ("s" . "h")
+    ("t" . "e")
+    ("u" . "n")
+    ("v" . ".")
+    ("w" . ",")
+    ("x" . "j")
+    ("y" . "w")
+    ("z" . "/"))
+  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding Carpalx QGMLWB layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+
+(defvar xah--dvorak-to-carpalx-qfmlwy-kmap
+  '(("." . "m")
+    ("," . "f")
+    ("'" . "q")
+    (";" . "z")
+    ("/" . "[")
+    ("[" . "-")
+    ("]" . "=")
+    ("=" . "]")
+    ("-" . "'")
+    ("a" . "d")
+    ("b" . "p")
+    ("c" . "o")
+    ("d" . "i")
+    ("e" . "t")
+    ("f" . "y")
+    ("g" . "u")
+    ("h" . "a")
+    ("i" . "r")
+    ("j" . "g")
+    ("k" . "c")
+    ("l" . "j")
+    ("m" . "k")
+    ("n" . "h")
+    ("o" . "s")
+    ("p" . "l")
+    ("q" . "v")
+    ("r" . "b")
+    ("s" . ";")
+    ("t" . "e")
+    ("u" . "n")
+    ("v" . ".")
+    ("w" . ",")
+
+    ("y" . "w")
+    ("z" . "/"))
+  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding Carpalx QFMLWY layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+
 (define-obsolete-variable-alias 'xah-fly-key--current-layout 'xah-fly-key-current-layout "2020-04-09")
 (defcustom xah-fly-key-current-layout nil
   "The current keyboard layout. Use `xah-fly-keys-set-layout' to set the layout.
@@ -3506,7 +3623,10 @@ If the value is nil, it's automatically set to \"dvorak\"."
                   (const :tag "Neo2" neo2)
                   (const :tag "Koy" koy)
                   (const :tag "Adnw" adnw)
-		          (const :tag "PT-nativo" pt-nativo))
+		              (const :tag "PT-nativo" pt-nativo)
+                  (const :tag "Carpalx QGMLWY" carpalx-qgmlwy)
+                  (const :tag "Carpalx QGMLWB" carpalx-qgmlwb)
+                  (const :tag "Carpalx QFMLWY" carpalx-qfmlwy))
   :group 'xah-fly-keys
   :set (lambda (@layout-var @new-layout)
          ;; Only reload xah-fly-keys if it was already loaded and the new layout is different:
@@ -4286,6 +4406,9 @@ Argument must be one of:
  'koy
  'adnw
  'pt-nativo
+ 'carpalx-qgmlwy
+ 'carpalx-qgmlwb
+ 'carpalx-qfmlwy
 
 For backwards compatibility, a string that is the name of one of the above symbols is also acceptable (case-sensitive).
 Version 2020-04-09"
