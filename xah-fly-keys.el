@@ -2,9 +2,8 @@
 
 ;; Copyright © 2013-2021, by Xah Lee
 
-
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 13.7.20210404144901
+;; Version: 13.8.20210514115249
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1231,7 +1230,9 @@ Version 2018-12-16 2020-09-08"
 (defun xah-reformat-to-sentence-lines ()
   "Break a long line or text block into multiple lines by ending period.
 Work on text selection if there is one, else the current text block.
-Version 2020-12-02 2021-02-12"
+
+URL `http://ergoemacs.org/emacs/elisp_reformat_to_sentence_lines.html'
+Version 2020-12-02 2021-04-14"
   (interactive)
   (let ($p1 $p2)
     (if (use-region-p)
@@ -4306,7 +4307,7 @@ Version 2020-04-28"
         (set-transient-map xah-fly-command-map (lambda () t)))
   (modify-all-frames-parameters (list (cons 'cursor-type 'box)))
   ;; (set-face-background 'cursor "red")
-  (setq mode-line-front-space "C")
+  (setq mode-line-front-space "c")
   (force-mode-line-update))
 
 (defun xah-fly-space-key ()
@@ -4327,7 +4328,7 @@ Version 2018-05-07"
   (unless no-indication
     (modify-all-frames-parameters '((cursor-type . bar)))
     ;; (set-face-background 'cursor "black")
-    (setq mode-line-front-space "I"))
+    (setq mode-line-front-space "i"))
   (force-mode-line-update))
 
 (defun xah-fly-mode-toggle ()
