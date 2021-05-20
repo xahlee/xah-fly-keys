@@ -49,6 +49,10 @@ The following keyboard layouts are supported:
 * "neo2"
 * "koy"
 * "adnw"
+* "pt-nativo"
+* "carpalx-qgmlwy"
+* "carpalx-qgmlwb"
+* "carpalx-qfmlwy"
 
 Customization
 -------------------
