@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 13.8.20210514115249
+;; Version: 13.9.20210519224008
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -3650,7 +3650,6 @@ Version 2017-01-29"
     ("u" . "n")
     ("v" . ".")
     ("w" . ",")
-
     ("y" . "w")
     ("z" . "/"))
   "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding Carpalx QFMLWY layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
@@ -3661,10 +3660,10 @@ Version 2017-01-29"
 If the value is nil, it's automatically set to \"dvorak\"."
   :type '(choice  (const :tag "AZERTY" azerty)
                   (const :tag "Belgian AZERTY" azerty-be)
-		  (const :tag "BEOPY" beopy)
+		          (const :tag "BEOPY" beopy)
                   (const :tag "Colemak" colemak)
                   (const :tag "Colemak Mod-DH" colemak-mod-dh)
-		  (const :tag "New Colemak Mod-DH with M on the home row" colemak-mod-dh-new)
+		          (const :tag "New Colemak Mod-DH with M on the home row" colemak-mod-dh-new)
                   (const :tag "Dvorak" dvorak)
                   (const :tag "Programmer Dvorak" programer-dvorak)
                   (const :tag "QWERTY" qwerty)
@@ -3676,7 +3675,7 @@ If the value is nil, it's automatically set to \"dvorak\"."
                   (const :tag "Neo2" neo2)
                   (const :tag "Koy" koy)
                   (const :tag "Adnw" adnw)
-		              (const :tag "PT-nativo" pt-nativo)
+		          (const :tag "PT-nativo" pt-nativo)
                   (const :tag "Carpalx QGMLWY" carpalx-qgmlwy)
                   (const :tag "Carpalx QGMLWB" carpalx-qgmlwb)
                   (const :tag "Carpalx QFMLWY" carpalx-qfmlwy))
@@ -4465,7 +4464,7 @@ Argument must be one of:
  'carpalx-qfmlwy
 
 For backwards compatibility, a string that is the name of one of the above symbols is also acceptable (case-sensitive).
-Version 2020-04-09"
+Version 2021-05-19"
   (interactive (list
                 (widget-prompt-value (get 'xah-fly-key-current-layout 'custom-type)
                                      "New keyboard layout: ")))
