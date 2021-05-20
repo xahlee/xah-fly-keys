@@ -2970,6 +2970,57 @@ Version 2017-01-29"
     ("`" . "²"))
   "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding AZERTY-BE. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
 
+
+(defvar xah--dvorak-to-beopy-kmap
+  '(("." . "o")
+    ("," . "é")
+    ("'" . "b")
+    (";" . "à")
+    ("/" . "k")
+    ("[" . "=")
+    ("]" . "%")
+    ("=" . "z")
+    ("-" . "m")
+    ("a" . "a")
+    ("b" . "'")
+    ("c" . "d")
+    ("d" . "c")
+    ("e" . "e")
+    ("f" . "^"); NOTE: this is a dead key
+    ("g" . "v")
+    ("h" . "t")
+    ("i" . ",")
+    ("j" . "x")
+    ("k" . ".")
+    ("l" . "j")
+    ("m" . "g")
+    ("n" . "r")
+    ("o" . "u")
+    ("p" . "p")
+    ("q" . "è")
+    ("r" . "l")
+    ("s" . "n")
+    ("t" . "s")
+    ("u" . "i")
+    ("v" . "h")
+    ("w" . "q")
+    ("x" . "w")
+    ("y" . "y")
+    ("z" . "f")
+    ("1" . "\"")
+    ("2" . "«")
+    ("3" . "»")
+    ("4" . "(")
+    ("5" . ")")
+    ("6" . "@")
+    ("7" . "+")
+    ("8" . "-")
+    ("9" . "/")
+    ("0" . "*")
+    ("\\" . "ç")
+    ("`" . "$")))
+
+
 (defvar xah--dvorak-to-colemak-kmap
   '(("'" . "q")
     ("," . "w")
@@ -3610,6 +3661,7 @@ Version 2017-01-29"
 If the value is nil, it's automatically set to \"dvorak\"."
   :type '(choice  (const :tag "AZERTY" azerty)
                   (const :tag "Belgian AZERTY" azerty-be)
+		  (const :tag "BEOPY" beopy)
                   (const :tag "Colemak" colemak)
                   (const :tag "Colemak Mod-DH" colemak-mod-dh)
 		  (const :tag "New Colemak Mod-DH with M on the home row" colemak-mod-dh-new)
@@ -4392,6 +4444,7 @@ Argument must be one of:
 
  'azerty
  'azerty-be
+ 'beopy
  'colemak
  'colemak-mod-dh
  'colemak-mod-dh-new
