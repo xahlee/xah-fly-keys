@@ -33,6 +33,8 @@
 ;; possible layout values:
 ;; azerty
 ;; azerty-be
+;; beopy
+;; bepo
 ;; colemak
 ;; colemak-mod-dh
 ;; colemak-mod-dh-new
@@ -3654,16 +3656,64 @@ Version 2017-01-29"
     ("z" . "/"))
   "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding Carpalx QFMLWY layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
 
+(defvar xah--dvorak-to-bepo-kmap
+  '(("'" . "b")
+    ("," . "é")
+    ("." . "p")
+    ("p" . "o")
+    ("y" . "è")
+
+    ("f" . "^") ; NOTE: dead key
+    ("g" . "v")
+    ("c" . "d")
+    ("r" . "l")
+    ("l" . "j")
+
+    ("a" . "a")
+    ("o" . "u")
+    ("e" . "i")
+    ("u" . "e")
+    ("i" . ",")
+
+    ("d" . "c")
+    ("h" . "t")
+    ("t" . "s")
+    ("n" . "r")
+    ("s" . "n")
+
+    (":" . "à")
+    ("q" . "y")
+    ("j" . "x")
+    ("k" . ".")
+    ("x" . "k")
+
+    ("b" . "’")
+    ("m" . "q")
+    ("w" . "g")
+    ("v" . "h")
+    ("z" . "f")
+
+    ("3" . "»")
+    ("4" . "(")
+    ("5" . ")")
+    ("6" . "@")
+    ("7" . "+")
+    ("8" . "-")
+    ("9" . "/"))
+
+  "A alist, each element is of the form (\"e\" . \"d\"). First char is Dvorak, second is corresponding BEPO layout. Not all chars are in the list. When not in this alist, they are assumed to be the same.")
+
 (define-obsolete-variable-alias 'xah-fly-key--current-layout 'xah-fly-key-current-layout "2020-04-09")
 (defcustom xah-fly-key-current-layout nil
   "The current keyboard layout. Use `xah-fly-keys-set-layout' to set the layout.
 If the value is nil, it's automatically set to \"dvorak\"."
   :type '(choice  (const :tag "AZERTY" azerty)
                   (const :tag "Belgian AZERTY" azerty-be)
-		          (const :tag "BEOPY" beopy)
+	          (const :tag "BEOPY" beopy)
+	          (const :tag "BEPO" bepo)
                   (const :tag "Colemak" colemak)
                   (const :tag "Colemak Mod-DH" colemak-mod-dh)
-		          (const :tag "New Colemak Mod-DH with M on the home row" colemak-mod-dh-new)
+	          (const :tag "New Colemak Mod-DH with M on the home row" colemak-mod-dh-new)
                   (const :tag "Dvorak" dvorak)
                   (const :tag "Programmer Dvorak" programer-dvorak)
                   (const :tag "QWERTY" qwerty)
@@ -4444,6 +4494,7 @@ Argument must be one of:
  'azerty
  'azerty-be
  'beopy
+ 'bepo
  'colemak
  'colemak-mod-dh
  'colemak-mod-dh-new
