@@ -42,6 +42,7 @@ The following keyboard layouts are supported:
 * "azerty-be"
 * "colemak"
 * "colemak-mod-dh"
+* "colemak-mod-dh-new"
 * "dvorak"
 * "programer-dvorak"
 * "qwerty"
@@ -49,7 +50,13 @@ The following keyboard layouts are supported:
 * "qwertz"
 * "workman"
 * "norman"
-* ["neo2"](https://neo-layout.org/) 
+* ["neo2"](https://neo-layout.org/)
+* "koy"
+* "adnw"
+* "pt-nativo"
+* "carpalx-qgmlwy"
+* "carpalx-qgmlwb"
+* "carpalx-qfmlwy"
 
 Customization
 -------------------
