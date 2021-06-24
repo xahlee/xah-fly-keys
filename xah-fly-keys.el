@@ -3427,7 +3427,11 @@ Version 2017-01-29"
     ("m" . "m")
     ("w" . ",")
     ("v" . ".")
-    ("z" . "j"))
+    ("z" . "j")
+
+    ("/" . "ß")
+    ("[" . "-")
+    ("-" . "y"))
   "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding neo2 layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
 
 (defvar xah--dvorak-to-koy-kmap
