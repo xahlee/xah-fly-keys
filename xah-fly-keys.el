@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 13.10.20210623222030
+;; Version: 13.11.20210623225018
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -31,28 +31,29 @@
 ;; (xah-fly-keys-set-layout "qwerty") ; required
 
 ;; possible layout values:
+
+;; adnw
 ;; azerty
 ;; azerty-be
 ;; beopy
 ;; bepo
+;; carpalx-qfmlwy
+;; carpalx-qgmlwb
+;; carpalx-qgmlwy
 ;; colemak
 ;; colemak-mod-dh
 ;; colemak-mod-dh-new
 ;; dvorak
+;; koy
+;; neo2
+;; norman
 ;; programer-dvorak
+;; pt-nativo
 ;; qwerty
 ;; qwerty-abnt
 ;; qwerty-no (qwerty Norwegian)
 ;; qwertz
 ;; workman
-;; norman
-;; neo2
-;; koy
-;; adnw
-;; pt-nativo
-;; carpalx-qgmlwy
-;; carpalx-qgmlwb
-;; carpalx-qfmlwy
 
 ;; (xah-fly-keys 1)
 
@@ -3793,8 +3794,6 @@ Version 2020-04-18"
 ;; HHH___________________________________________________________________
 ;; keymaps
 
-;; (defvar xah-fly-swapped-1-8-and-2-7-p nil "If non-nil, it means keys 1 and 8 are swapped, and 2 and 7 are swapped. See: http://xahlee.info/kbd/best_number_key_layout.html")
-
 (defvar xah-fly-key-map (make-sparse-keymap)
   "Backward-compatibility map for `xah-fly-keys' minor mode.
 
@@ -3911,15 +3910,6 @@ minor modes loaded later may override bindings in this map.")
    ("y" . set-mark-command)
    ("z" . xah-goto-matching-bracket)))
 
-;; (when xah-fly-swapped-1-8-and-2-7-p
-;;     (xah-fly--define-keys
-;;      xah-command-key-map
-;;      '(
-;;        ("8" . pop-global-mark)
-;;        ("7" . xah-pop-local-mark-ring)
-;;        ("2" . xah-select-line)
-;;        ("1" . xah-extend-selection))))
-
 ;; HHH___________________________________________________________________
 ;; set control meta, etc keys
 
@@ -3949,25 +3939,24 @@ minor modes loaded later may override bindings in this map.")
      ("<C-prior>" . xah-previous-user-buffer)
      ("<C-next>" . xah-next-user-buffer)
 
-     ("C-SPC" . xah-fly-leader-key-map)
-
-     ("C-9" . scroll-down-command)
-     ("C-0" . scroll-up-command)
-
-     ("C-7" . xah-previous-user-buffer)
-     ("C-8" . xah-next-user-buffer)
-
-     ("C-5" . xah-previous-emacs-buffer)
-     ("C-6" . xah-next-emacs-buffer)
+     ;; ("C-SPC" . xah-fly-leader-key-map)
 
      ("C-3" . previous-error)
      ("C-4" . next-error)
+     ("C-5" . xah-previous-emacs-buffer)
+     ("C-6" . xah-next-emacs-buffer)
+     ("C-7" . xah-previous-user-buffer)
+     ("C-8" . xah-next-user-buffer)
+     ("C-9" . scroll-down-command)
+     ("C-0" . scroll-up-command)
 
      ("C--" . text-scale-decrease)
      ("C-=" . text-scale-increase)
+
      ("C-S-n" . make-frame-command)
      ("C-S-s" . write-file)
      ("C-S-t" . xah-open-last-closed)
+
      ("C-a" . mark-whole-buffer)
      ;; ("C-b" . nil)
      ;; ("C-c" . nil)
@@ -3996,20 +3985,7 @@ minor modes loaded later may override bindings in this map.")
      ("C-z" . undo)
      ;;
      )
-   :direct)
-
-  ;; (if xah-fly-swapped-1-8-and-2-7-p
-  ;;     (xah-fly--define-keys
-  ;;      xah-fly-shared-map
-  ;;      '(("C-2" . xah-previous-user-buffer)
-  ;;        ("C-1" . xah-next-user-buffer))
-  ;;      :direct)
-  ;;   (xah-fly--define-keys
-  ;;    xah-fly-shared-map
-  ;;    '(("C-7" . xah-previous-user-buffer)
-  ;;      ("C-8" . xah-next-user-buffer))
-  ;;    :direct))
-  )
+   :direct))
 
 (when xah-fly-use-isearch-arrows
   (xah-fly--define-keys
