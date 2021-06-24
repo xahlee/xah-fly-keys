@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 13.9.20210519224008
+;; Version: 13.10.20210623221132
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2453,7 +2453,7 @@ Version 2018-10-12"
  xah-run-current-file-map
  '(
    ("php" . "php")
-   ("pl" . "perl")
+   ("pl" . "d:/Strawberry/perl/bin/perl.exe")
    ("py" . "python")
    ("py2" . "python2")
    ("py3" . "python3")
@@ -3709,11 +3709,11 @@ Version 2017-01-29"
 If the value is nil, it's automatically set to \"dvorak\"."
   :type '(choice  (const :tag "AZERTY" azerty)
                   (const :tag "Belgian AZERTY" azerty-be)
-	          (const :tag "BEOPY" beopy)
-	          (const :tag "BEPO" bepo)
+                  (const :tag "BEOPY" beopy)
+                  (const :tag "BEPO" bepo)
                   (const :tag "Colemak" colemak)
                   (const :tag "Colemak Mod-DH" colemak-mod-dh)
-	          (const :tag "New Colemak Mod-DH with M on the home row" colemak-mod-dh-new)
+                  (const :tag "New Colemak Mod-DH with M on the home row" colemak-mod-dh-new)
                   (const :tag "Dvorak" dvorak)
                   (const :tag "Programmer Dvorak" programer-dvorak)
                   (const :tag "QWERTY" qwerty)
@@ -3725,7 +3725,7 @@ If the value is nil, it's automatically set to \"dvorak\"."
                   (const :tag "Neo2" neo2)
                   (const :tag "Koy" koy)
                   (const :tag "Adnw" adnw)
-		          (const :tag "PT-nativo" pt-nativo)
+                  (const :tag "PT-nativo" pt-nativo)
                   (const :tag "Carpalx QGMLWY" carpalx-qgmlwy)
                   (const :tag "Carpalx QGMLWB" carpalx-qgmlwb)
                   (const :tag "Carpalx QFMLWY" carpalx-qfmlwy))
@@ -3959,22 +3959,39 @@ minor modes loaded later may override bindings in this map.")
      ("C-3" . previous-error)
      ("C-4" . next-error)
 
-     ("C-a" . mark-whole-buffer)
-     ("C-t" . xah-new-empty-buffer)
-     ("C-n" . xah-new-empty-buffer)
+     ("C--" . text-scale-decrease)
+     ("C-=" . text-scale-increase)
      ("C-S-n" . make-frame-command)
-     ("C-o" . find-file)
-     ("C-s" . save-buffer)
      ("C-S-s" . write-file)
      ("C-S-t" . xah-open-last-closed)
+     ("C-a" . mark-whole-buffer)
+     ;; ("C-b" . nil)
+     ;; ("C-c" . nil)
+     ("C-d" . pop-global-mark)
+     ;; ("C-e" . nil)
+     ;; ("C-f" . nil)
+     ;; ("C-g" . nil)
+     ;; ("C-h" . nil)
+     ;; ("C-i" . nil)
+     ;; ("C-j" . nil)
+     ;; ("C-k" . nil)
+     ;; ("C-l" . nil)
+     ;; ("C-m" . nil)
+     ("C-n" . xah-new-empty-buffer)
+     ("C-o" . find-file)
+     ;; ("C-p" . nil)
+     ;; ("C-q" . nil)
+     ;; ("C-r" . nil)
+     ("C-s" . save-buffer)
+     ;; ("C-t" . nil)
+     ;; ("C-u" . nil)
      ("C-v" . yank)
      ("C-w" . xah-close-current-buffer)
+     ;; ("C-x" . nil)
+     ;; ("C-y" . nil)
      ("C-z" . undo)
-
-     ("C-=" . text-scale-increase)
-     ("C--" . text-scale-decrease)
-
-     ("C-d" . pop-global-mark))
+     ;;
+     )
    :direct)
 
   ;; (if xah-fly-swapped-1-8-and-2-7-p
