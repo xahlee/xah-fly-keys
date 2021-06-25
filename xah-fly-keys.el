@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 13.11.20210623225018
+;; Version: 13.12.20210625140905
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -4624,6 +4624,7 @@ URL `http://ergoemacs.org/misc/ergoemacs_vi_mode.html'"
   :global t
   :lighter " ∑flykeys"
   :keymap xah-fly-insert-map
+  (delete-selection-mode 1)
   (if xah-fly-keys
       ;; Construction:
       (progn
@@ -4652,3 +4653,4 @@ URL `http://ergoemacs.org/misc/ergoemacs_vi_mode.html'"
 (provide 'xah-fly-keys)
 
 ;;; xah-fly-keys.el ends here
+
