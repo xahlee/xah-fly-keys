@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 13.12.20210625140905
+;; Version: 13.13.20210627144552
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -3939,7 +3939,7 @@ minor modes loaded later may override bindings in this map.")
      ("<C-prior>" . xah-previous-user-buffer)
      ("<C-next>" . xah-next-user-buffer)
 
-     ;; ("C-SPC" . xah-fly-leader-key-map)
+     ("<f7>" . xah-fly-leader-key-map)
 
      ("C-3" . previous-error)
      ("C-4" . next-error)
