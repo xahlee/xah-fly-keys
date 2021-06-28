@@ -3770,8 +3770,9 @@ Version 2020-04-18"
 
 (defmacro xah-fly--define-keys (@keymap-name @key-cmd-alist &optional @direct-q)
   "Map `define-key' over a alist @key-cmd-alist, with key layout remap.
-The key is remapped by `xah-fly--key-char'.
-If @direct-q is t, do not remap key.
+The key is remapped from Dvorak to the current keyboard layout
+by `xah-fly--key-char'.
+If @direct-q is t, do not remap key to current keyboard layout.
 Example usage:
 ;; (xah-fly--define-keys
 ;;  (define-prefix-command 'xah-fly-dot-keymap)
