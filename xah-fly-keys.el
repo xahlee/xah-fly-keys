@@ -4340,6 +4340,14 @@ minor modes loaded later may override bindings in this map.")
    ))
 
 ;; HHH___________________________________________________________________
+;; Movement key integrations with built-in Emacs packages
+
+(xah-fly--define-keys
+ indent-rigidly-map
+ '(("h" . indent-rigidly-left)
+   ("n" . indent-rigidly-right)))
+
+;; HHH___________________________________________________________________
 ;;;; misc
 
 ;; the following have keys in emacs, but right now i decided not to give them a key, because either they are rarely used (say, less than once a month by 90% of emacs users), or there is a more efficient command/workflow with key in xah-fly-keys
