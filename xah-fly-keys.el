@@ -602,7 +602,7 @@ Version 2017-07-02"
      ((looking-back "\\s\"" 1)
       (if (nth 3 (syntax-ppss))
           (progn
-            (backward-char )
+            (backward-char)
             (xah-delete-forward-bracket-pairs (not current-prefix-arg)))
         (if current-prefix-arg
             (xah-delete-backward-bracket-pair)
