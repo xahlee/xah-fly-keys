@@ -602,7 +602,7 @@ Version 2017-07-02"
      ((looking-back "\\s\"" 1)
       (if (nth 3 (syntax-ppss))
           (progn
-            (backward-char )
+            (backward-char)
             (xah-delete-forward-bracket-pairs (not current-prefix-arg)))
         (if current-prefix-arg
             (xah-delete-backward-bracket-pair)
@@ -3770,8 +3770,9 @@ Version 2020-04-18"
 
 (defmacro xah-fly--define-keys (@keymap-name @key-cmd-alist &optional @direct-q)
   "Map `define-key' over a alist @key-cmd-alist, with key layout remap.
-The key is remapped by `xah-fly--key-char'.
-If @direct-q is t, do not remap key.
+The key is remapped from Dvorak to the current keyboard layout
+by `xah-fly--key-char'.
+If @direct-q is t, do not remap key to current keyboard layout.
 Example usage:
 ;; (xah-fly--define-keys
 ;;  (define-prefix-command 'xah-fly-dot-keymap)
@@ -4338,6 +4339,14 @@ minor modes loaded later may override bindings in this map.")
    ;; z
    ;;
    ))
+
+;; HHH___________________________________________________________________
+;; Movement key integrations with built-in Emacs packages
+
+(xah-fly--define-keys
+ indent-rigidly-map
+ '(("h" . indent-rigidly-left)
+   ("n" . indent-rigidly-right)))
 
 ;; HHH___________________________________________________________________
 ;;;; misc
