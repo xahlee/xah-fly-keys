@@ -2819,7 +2819,12 @@ Version 2019-11-04 2021-02-16"
        ((string-equal system-type "gnu/linux")
         (mapc
          (lambda ($fpath) (let ((process-connection-type nil))
-                            (start-process "" nil "xdg-open" $fpath))) $file-list))))))
+                            (start-process "" nil "xdg-open" $fpath))) $file-list))
+       ((string-equal system-type "berkeley-unix")
+        (mapc
+         (lambda ($fpath) (let ((process-connection-type nil))
+                            (start-process "" nil "xdg-open" $fpath)))
+         $file-list))))))
 
 (defun xah-open-in-terminal ()
   "Open the current dir in a new terminal window.
