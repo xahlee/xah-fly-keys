@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 13.14.20210630183838
+;; Version: 13.14.20210630184456
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2454,7 +2454,7 @@ Version 2018-10-12"
  xah-run-current-file-map
  '(
    ("php" . "php")
-   ("pl" . "d:/Strawberry/perl/bin/perl.exe")
+   ("pl" . "perl")
    ("py" . "python")
    ("py2" . "python2")
    ("py3" . "python3")
@@ -2466,7 +2466,7 @@ Version 2018-10-12"
    ("tsx" . "tsc")
    ("mjs" . "node --experimental-modules ")
    ("sh" . "bash")
-   ("clj" . "java -cp ~/apps/clojure-1.6.0/clojure-1.6.0.jar clojure.main")
+   ("clj" . "clj")
    ("rkt" . "racket")
    ("ml" . "ocaml")
    ("vbs" . "cscript")
