@@ -2235,40 +2235,44 @@ Version 2017-11-01"
 
 Similar to `kill-buffer', with the following addition:
 
-• Prompt user to save if the buffer has been modified even if the buffer is not associated with a file.
-• If the buffer is editing a source file in an org-mode file, prompt the user to save before closing.
+• Prompt user to save if the buffer has been modified even if the buffer is not
+  associated with a file.
+• If the buffer is editing a source file in an `org-mode' file, prompt the user
+  to save before closing.
 • If the buffer is a file, add the path to the list `xah-recently-closed-buffers'.
-• If it is the minibuffer, exit the minibuffer
+• If in the minibuffer and the mark is active, deactivate it; if the mark is not
+  active abort the minibuffer.
 
 URL `http://ergoemacs.org/emacs/elisp_close_buffer_open_last_closed.html'
 Version 2018-06-11"
   (interactive)
   (let (($org-p (string-match "^*Org Src" (buffer-name))))
-    (if (string-equal major-mode "minibuffer-inactive-mode")
+    (if (active-minibuffer-window)
         (minibuffer-keyboard-quit) ; if the buffer is minibuffer
-      (progn
-        ;; offer to save buffers that are non-empty and modified, even for non-file visiting buffer. (because kill-buffer does not offer to save buffers that are not associated with files)
-        (when (and (buffer-modified-p)
-                   (xah-user-buffer-q)
-                   (not (string-equal major-mode "dired-mode"))
-                   (if (equal (buffer-file-name) nil)
-                       (if (string-equal "" (save-restriction (widen) (buffer-string))) nil t)
-                     t))
-          (if (y-or-n-p (format "Buffer %s modified; Do you want to save? " (buffer-name)))
-              (save-buffer)
-            (set-buffer-modified-p nil)))
-        (when (and (buffer-modified-p)
-                   $org-p)
-          (if (y-or-n-p (format "Buffer %s modified; Do you want to save? " (buffer-name)))
-              (org-edit-src-save)
-            (set-buffer-modified-p nil)))
-        ;; save to a list of closed buffer
-        (when (buffer-file-name)
-          (setq xah-recently-closed-buffers
-                (cons (cons (buffer-name) (buffer-file-name)) xah-recently-closed-buffers))
-          (when (> (length xah-recently-closed-buffers) xah-recently-closed-buffers-max)
-            (setq xah-recently-closed-buffers (butlast xah-recently-closed-buffers 1))))
-        (kill-buffer (current-buffer))))))
+      ;; Offer to save buffers that are non-empty and modified, even for
+      ;; non-file visiting buffer. (Because `kill-buffer' does not offer to
+      ;; save buffers that are not associated with files.)
+      (when (and (buffer-modified-p)
+                 (xah-user-buffer-q)
+                 (not (string-equal major-mode "dired-mode"))
+                 (if (equal (buffer-file-name) nil)
+                     (if (string-equal "" (save-restriction (widen) (buffer-string))) nil t)
+                   t))
+        (if (y-or-n-p (format "Buffer %s modified; Do you want to save? " (buffer-name)))
+            (save-buffer)
+          (set-buffer-modified-p nil)))
+      (when (and (buffer-modified-p)
+                 $org-p)
+        (if (y-or-n-p (format "Buffer %s modified; Do you want to save? " (buffer-name)))
+            (org-edit-src-save)
+          (set-buffer-modified-p nil)))
+      ;; save to a list of closed buffer
+      (when (buffer-file-name)
+        (setq xah-recently-closed-buffers
+              (cons (cons (buffer-name) (buffer-file-name)) xah-recently-closed-buffers))
+        (when (> (length xah-recently-closed-buffers) xah-recently-closed-buffers-max)
+          (setq xah-recently-closed-buffers (butlast xah-recently-closed-buffers 1))))
+      (kill-buffer (current-buffer)))))
 
 (defun xah-open-last-closed ()
   "Open the last closed file.
