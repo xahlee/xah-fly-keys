@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 13.14.20210701225341
+;; Version: 13.15.20210703111042
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -545,19 +545,26 @@ Version 2017-07-25 2020-09-08"
           (yank-pop 1)
         (yank)))))
 
+(defcustom xah-show-kill-ring-separator "\n\nss_____________________________________________________________________________\n\n"
+"A line divider for `xah-show-kill-ring'"
+  :type 'string
+  :group 'xah-fly-keys)
+
 (defun xah-show-kill-ring ()
   "Insert all `kill-ring' content in a new buffer named *copy history*.
-
 URL `http://ergoemacs.org/emacs/emacs_show_kill_ring.html'
-Version 2019-12-02"
+Version 2019-12-02 2021-07-03"
   (interactive)
-  (let (($buf (generate-new-buffer "*copy history*")))
+  (let (($buf (generate-new-buffer "*copy history*"))
+        (inhibit-read-only t))
     (progn
       (switch-to-buffer $buf)
       (funcall 'fundamental-mode)
-      (dolist (x kill-ring )
-        (insert x "\n\nhh=============================================================================\n\n"))
-      (goto-char (point-min)))))
+      (mapc
+       (lambda (x)
+         (insert x xah-show-kill-ring-separator ))
+       kill-ring))
+    (goto-char (point-min))))
 
 (defun xah-kill-word ()
   "Like `kill-word', but delete selection first if there's one.
@@ -2245,6 +2252,7 @@ Version 2018-06-11 2021-07-01"
   (interactive)
   (let (($org-p (string-match "^*Org Src" (buffer-name))))
     (if (active-minibuffer-window) ; if the buffer is minibuffer
+        ;; (string-equal major-mode "minibuffer-inactive-mode")
         (minibuffer-keyboard-quit)
       (progn
         ;; Offer to save buffers that are non-empty and modified, even for non-file visiting buffer. (Because `kill-buffer' does not offer to save buffers that are not associated with files.)
