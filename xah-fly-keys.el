@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 13.15.20210703111042
+;; Version: 13.15.20210703113538
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -545,10 +545,10 @@ Version 2017-07-25 2020-09-08"
           (yank-pop 1)
         (yank)))))
 
-(defcustom xah-show-kill-ring-separator "\n\nss_____________________________________________________________________________\n\n"
-"A line divider for `xah-show-kill-ring'"
-  :type 'string
-  :group 'xah-fly-keys)
+
+
+(defvar xah-show-kill-ring-separator nil "A line divider for `xah-show-kill-ring'.")
+(setq xah-show-kill-ring-separator "\n\nss_____________________________________________________________________________\n\n")
 
 (defun xah-show-kill-ring ()
   "Insert all `kill-ring' content in a new buffer named *copy history*.
