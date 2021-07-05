@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 13.15.20210703113538
+;; Version: 13.16.20210705153103
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1140,7 +1140,7 @@ Version 2016-07-13"
   (let ((fill-column most-positive-fixnum))
     (fill-region @begin @end)))
 
-(defun xah-reformat-lines ( &optional @length)
+(defun xah-reformat-lines ( &optional @width)
   "Reformat current text block or selection into short lines or 1 long line.
 
 When called for the first time, change to one long line. Second call change it to multiple short lines. Repeated call toggles.
@@ -1148,38 +1148,38 @@ When called for the first time, change to one long line. Second call change it t
 If `universal-argument' is called first, use the number value for min length of line. By default, it's 70.
 
 URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
-Version 2020-11-14"
+Created 2016 or before.
+Version 2021-07-05"
   (interactive)
-  ;; This command symbol has a property “'is-longline-p”, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
-  (let* (
-         (@length (if @length
-                      @length
-                    (if current-prefix-arg (prefix-numeric-value current-prefix-arg) fill-column )))
-         (is-longline-p
+  ;; This command symbol has a property “'isLong-p”, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
+  (let ( isLong-p $blanksRegex $p1 $p2 )
+    (setq @width (if @width
+                     @width
+                   (if current-prefix-arg
+                       (prefix-numeric-value current-prefix-arg) 70 )))
+    (setq isLong-p
           (if (eq last-command this-command)
-              (get this-command 'is-longline-p)
+              (get this-command 'isLong-p)
             nil))
-         ($blanks-regex "\n[ \t]*\n")
-         $p1 $p2
-         )
+    (setq $blanksRegex "\n[ \t]*\n")
     (if (use-region-p)
-         (setq $p1 (region-beginning) $p2 (region-end))
+        (setq $p1 (region-beginning) $p2 (region-end))
       (save-excursion
-        (if (re-search-backward $blanks-regex nil "move")
-            (progn (re-search-forward $blanks-regex)
+        (if (re-search-backward $blanksRegex nil "move")
+            (progn (re-search-forward $blanksRegex)
                    (setq $p1 (point)))
           (setq $p1 (point)))
-        (if (re-search-forward $blanks-regex nil "move")
-            (progn (re-search-backward $blanks-regex)
+        (if (re-search-forward $blanksRegex nil "move")
+            (progn (re-search-backward $blanksRegex)
                    (setq $p2 (point)))
           (setq $p2 (point)))))
     (progn
       (if current-prefix-arg
-          (xah-reformat-to-multi-lines $p1 $p2 @length)
-        (if is-longline-p
-            (xah-reformat-to-multi-lines $p1 $p2 @length)
+          (xah-reformat-to-multi-lines $p1 $p2 @width)
+        (if isLong-p
+            (xah-reformat-to-multi-lines $p1 $p2 @width)
           (xah-reformat-whitespaces-to-one-space $p1 $p2)))
-      (put this-command 'is-longline-p (not is-longline-p)))))
+      (put this-command 'isLong-p (not isLong-p)))))
 
 (defun xah-reformat-whitespaces-to-one-space (@begin @end)
   "Replace whitespaces by one space.
