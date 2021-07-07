@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 13.16.20210706210856
+;; Version: 13.16.20210706212434
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1175,13 +1175,13 @@ Version 2017-01-11"
         (replace-match " ")))))
 
 (defun xah-reformat-to-multi-lines ( &optional @begin @end @min-length)
-  "Replace spaces by a newline at places so lines are not long.
+  "Replace spaces by a newline at places so lines less than 70 chars.
 When there is a text selection, act on the selection, else, act on a text block separated by blank lines.
 
-If `universal-argument' is called first, use the number value for min length of line. By default, it's 70.
+If `universal-argument' is called first, ask user to type max width.
 
 URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
-Version 2018-12-16 2020-09-08"
+Version 2018-12-16 2021-07-06"
   (interactive)
   (let ( $p1 $p2 $blanksRegex $minlen )
     (setq $blanksRegex "\n[ \t]*\n")
@@ -1213,7 +1213,8 @@ Version 2018-12-16 2020-09-08"
 (defun xah-reformat-lines ( &optional @width)
   "Reformat current text block or selection into short lines or 1 long line.
 When called for the first time, change to one long line. Second call change it to multiple short lines. Repeated call toggles.
-If `universal-argument' is called first, use the number value for min length of line. By default, it's 70.
+If `universal-argument' is called first, ask user to type max length of line. By default, it's 70.
+
 URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
 Created 2016 or before.
 Version 2021-07-05"
