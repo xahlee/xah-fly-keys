@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 13.16.20210705153103
+;; Version: 13.16.20210706210856
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1100,18 +1100,18 @@ Version 2020-11-22"
               (get this-command 'longline-p)
             t))
          (deactivate-mark nil)
-         ($blanks-regex "\n[ \t]*\n")
+         ($blanksRegex "\n[ \t]*\n")
          $p1 $p2
          )
     (if (use-region-p)
         (setq $p1 (region-beginning) $p2 (region-end))
       (save-excursion
-        (if (re-search-backward $blanks-regex nil "move")
-            (progn (re-search-forward $blanks-regex)
+        (if (re-search-backward $blanksRegex nil "move")
+            (progn (re-search-forward $blanksRegex)
                    (setq $p1 (point)))
           (setq $p1 (point)))
-        (if (re-search-forward $blanks-regex nil "move")
-            (progn (re-search-backward $blanks-regex)
+        (if (re-search-forward $blanksRegex nil "move")
+            (progn (re-search-backward $blanksRegex)
                    (setq $p2 (point)))
           (setq $p2 (point)))))
     (if $longline-p
@@ -1140,13 +1140,80 @@ Version 2016-07-13"
   (let ((fill-column most-positive-fixnum))
     (fill-region @begin @end)))
 
-(defun xah-reformat-lines ( &optional @width)
-  "Reformat current text block or selection into short lines or 1 long line.
+(defun xah-change-newline-chars-to-one (@begin @end)
+  "Replace newline char sequence by just one.
 
-When called for the first time, change to one long line. Second call change it to multiple short lines. Repeated call toggles.
+URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
+Version 2021-07-06"
+  (interactive "r")
+  (save-excursion
+    (save-restriction
+      (narrow-to-region @begin @end)
+      (goto-char (point-min))
+      (while (re-search-forward "\n\n+" nil "move") (replace-match "\n")))))
+
+(defun xah-reformat-whitespaces-to-one-space (@begin @end)
+  "Replace whitespaces by one space.
+
+URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
+Version 2017-01-11"
+  (interactive "r")
+  (save-excursion
+    (save-restriction
+      (narrow-to-region @begin @end)
+      (goto-char (point-min))
+      (while
+          (search-forward "\n" nil "move")
+        (replace-match " "))
+      (goto-char (point-min))
+      (while
+          (search-forward "\t" nil "move")
+        (replace-match " "))
+      (goto-char (point-min))
+      (while
+          (re-search-forward "  +" nil "move")
+        (replace-match " ")))))
+
+(defun xah-reformat-to-multi-lines ( &optional @begin @end @min-length)
+  "Replace spaces by a newline at places so lines are not long.
+When there is a text selection, act on the selection, else, act on a text block separated by blank lines.
 
 If `universal-argument' is called first, use the number value for min length of line. By default, it's 70.
 
+URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
+Version 2018-12-16 2020-09-08"
+  (interactive)
+  (let ( $p1 $p2 $blanksRegex $minlen )
+    (setq $blanksRegex "\n[ \t]*\n")
+    (setq $minlen (if @min-length
+                      @min-length
+                    (if current-prefix-arg (prefix-numeric-value current-prefix-arg) fill-column)))
+    (if (and  @begin @end)
+        (setq $p1 @begin $p2 @end)
+      (if (use-region-p)
+          (setq $p1 (region-beginning) $p2 (region-end))
+        (save-excursion
+          (if (re-search-backward $blanksRegex nil "move")
+              (progn (re-search-forward $blanksRegex)
+                     (setq $p1 (point)))
+            (setq $p1 (point)))
+          (if (re-search-forward $blanksRegex nil "move")
+              (progn (re-search-backward $blanksRegex)
+                     (setq $p2 (point)))
+            (setq $p2 (point))))))
+    (save-excursion
+      (save-restriction
+        (narrow-to-region $p1 $p2)
+        (goto-char (point-min))
+        (while
+            (re-search-forward " +" nil "move")
+          (when (> (- (point) (line-beginning-position)) $minlen)
+            (replace-match "\n" )))))))
+
+(defun xah-reformat-lines ( &optional @width)
+  "Reformat current text block or selection into short lines or 1 long line.
+When called for the first time, change to one long line. Second call change it to multiple short lines. Repeated call toggles.
+If `universal-argument' is called first, use the number value for min length of line. By default, it's 70.
 URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
 Created 2016 or before.
 Version 2021-07-05"
@@ -1181,69 +1248,9 @@ Version 2021-07-05"
           (xah-reformat-whitespaces-to-one-space $p1 $p2)))
       (put this-command 'isLong-p (not isLong-p)))))
 
-(defun xah-reformat-whitespaces-to-one-space (@begin @end)
-  "Replace whitespaces by one space.
-
-URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
-Version 2017-01-11"
-  (interactive "r")
-  (save-excursion
-    (save-restriction
-      (narrow-to-region @begin @end)
-      (goto-char (point-min))
-      (while
-          (search-forward "\n" nil "move")
-        (replace-match " "))
-      (goto-char (point-min))
-      (while
-          (search-forward "\t" nil "move")
-        (replace-match " "))
-      (goto-char (point-min))
-      (while
-          (re-search-forward "  +" nil "move")
-        (replace-match " ")))))
-
-(defun xah-reformat-to-multi-lines ( &optional @begin @end @min-length)
-  "Replace spaces by a newline at places so lines are not long.
-When there is a text selection, act on the selection, else, act on a text block separated by blank lines.
-
-If `universal-argument' is called first, use the number value for min length of line. By default, it's 70.
-
-URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
-Version 2018-12-16 2020-09-08"
-  (interactive)
-  (let (
-        $p1 $p2
-        ($blanks-regex "\n[ \t]*\n")
-        ($minlen (if @min-length
-                     @min-length
-                   (if current-prefix-arg (prefix-numeric-value current-prefix-arg) fill-column))))
-    (if (and  @begin @end)
-        (setq $p1 @begin $p2 @end)
-      (if (use-region-p)
-          (progn (setq $p1 (region-beginning) $p2 (region-end)))
-        (save-excursion
-          (if (re-search-backward $blanks-regex nil "move")
-              (progn (re-search-forward $blanks-regex)
-                     (setq $p1 (point)))
-            (setq $p1 (point)))
-          (if (re-search-forward $blanks-regex nil "move")
-              (progn (re-search-backward $blanks-regex)
-                     (setq $p2 (point)))
-            (setq $p2 (point))))))
-    (save-excursion
-      (save-restriction
-        (narrow-to-region $p1 $p2)
-        (goto-char (point-min))
-        (while
-            (re-search-forward " +" nil "move")
-          (when (> (- (point) (line-beginning-position)) $minlen)
-            (replace-match "\n" )))))))
-
 (defun xah-reformat-to-sentence-lines ()
   "Break a long line or text block into multiple lines by ending period.
 Work on text selection if there is one, else the current text block.
-
 URL `http://ergoemacs.org/emacs/elisp_reformat_to_sentence_lines.html'
 Version 2020-12-02 2021-04-14"
   (interactive)
