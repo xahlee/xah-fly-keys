@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 13.16.20210706212434
+;; Version: 13.17.20210713191021
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2138,18 +2138,14 @@ Version 2020-02-04"
   "Select text between the nearest left and right delimiters.
 Delimiters here includes the following chars: \"`<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕（）
 This command select between any bracket chars, does not consider nesting. For example, if text is
-
- (a(b)c▮)
-
- the selected char is “c”, not “a(b)c”.
+(a(b)c▮)
+the selected char is “c”, not “a(b)c”.
 
 URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
-Version 2020-11-24"
+Version 2020-11-24 2021-07-11"
   (interactive)
-  (let (
-        ($skipChars "^\"`<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕（）〘〙")
-        $p1
-        )
+  (let ( $skipChars $p1 )
+    (setq $skipChars "^\"`<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕（）〘〙")
     (skip-chars-backward $skipChars)
     (setq $p1 (point))
     (skip-chars-forward $skipChars)
@@ -4214,6 +4210,7 @@ minor modes loaded later may override bindings in this map.")
    ("d" . delete-rectangle)
    ("e" . call-last-kbd-macro)
    ("g" . kill-rectangle)
+   ("h" . xah-change-bracket-pairs)
    ("l" . clear-rectangle)
    ("i" . xah-space-to-newline)
    ("n" . rectangle-number-lines)
