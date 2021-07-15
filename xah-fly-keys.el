@@ -4707,7 +4707,6 @@ Version 2017-07-07"
 
 ;; HHH___________________________________________________________________
 
-;; ;; when in shell mode, switch to insertion mode.
 ;; (add-hook 'dired-mode-hook 'xah-fly-keys-off)
 
 ;; HHH___________________________________________________________________
@@ -4739,7 +4738,6 @@ URL `http://ergoemacs.org/misc/ergoemacs_vi_mode.html'"
     ;; Teardown:
     (remove-hook 'minibuffer-setup-hook 'xah-fly-insert-mode-activate)
     (remove-hook 'minibuffer-exit-hook 'xah-fly-command-mode-activate)
-    (remove-hook 'shell-mode-hook 'xah-fly-insert-mode-activate)
     (remove-hook 'isearch-mode-end-hook 'xah-fly-command-mode-activate)
     (xah-fly-insert-mode-init :no-indication)
     (setq mode-line-front-space '(:eval (if (display-graphic-p) " " "-")))))
