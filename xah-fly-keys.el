@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 13.18.20210714184640
+;; Version: 13.19.20210715131320
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -4707,14 +4707,6 @@ Version 2017-07-07"
 
 ;; HHH___________________________________________________________________
 
-;; (add-hook 'dired-mode-hook 'xah-fly-keys-off)
-
-;; HHH___________________________________________________________________
-
-;; experimental. auto switch back to command mode after some sec of idle time
-;; (setq xah-fly-timer-id (run-with-idle-timer 20 t 'xah-fly-command-mode-activate))
-;; (cancel-timer xah-fly-timer-id)
-
 (define-minor-mode xah-fly-keys
   "A modal keybinding set, like vim, but based on ergonomic principles, like Dvorak layout.
 URL `http://ergoemacs.org/misc/ergoemacs_vi_mode.html'"
@@ -4729,6 +4721,9 @@ URL `http://ergoemacs.org/misc/ergoemacs_vi_mode.html'"
         (add-hook 'minibuffer-setup-hook 'xah-fly-insert-mode-activate)
         (add-hook 'minibuffer-exit-hook 'xah-fly-command-mode-activate)
         (add-hook 'isearch-mode-end-hook 'xah-fly-command-mode-activate)
+        (add-hook 'eshell-mode-hook 'xah-fly-insert-mode-activate)
+        (add-hook 'shell-mode-hook 'xah-fly-insert-mode-activate)
+        ;; (add-hook 'dired-mode-hook 'xah-fly-keys-off)
         (when (and (keymapp xah-fly-key-map)
                    (not (memq xah-fly-key-map (list xah-fly-command-map
                                                     xah-fly-insert-map))))
@@ -4739,6 +4734,8 @@ URL `http://ergoemacs.org/misc/ergoemacs_vi_mode.html'"
     (remove-hook 'minibuffer-setup-hook 'xah-fly-insert-mode-activate)
     (remove-hook 'minibuffer-exit-hook 'xah-fly-command-mode-activate)
     (remove-hook 'isearch-mode-end-hook 'xah-fly-command-mode-activate)
+    (remove-hook 'eshell-mode-hook 'xah-fly-insert-mode-activate)
+    (remove-hook 'shell-mode-hook 'xah-fly-insert-mode-activate)
     (xah-fly-insert-mode-init :no-indication)
     (setq mode-line-front-space '(:eval (if (display-graphic-p) " " "-")))))
 
