@@ -33,30 +33,37 @@ Setup
 Add the following to `.emacs` after installing manually or via MELPA:
 ```elisp
 (require 'xah-fly-keys)
-(xah-fly-keys-set-layout "qwerty") ; required
+(xah-fly-keys-set-layout 'qwerty) ; required
 ```
 
 The following keyboard layouts are supported:
 
-* "azerty"
-* "azerty-be"
-* "colemak"
-* "colemak-mod-dh"
-* "colemak-mod-dh-new"
-* "dvorak"
-* "programer-dvorak"
-* "qwerty"
-* "qwerty-abnt"
-* "qwertz"
-* "workman"
-* "norman"
-* ["neo2"](https://neo-layout.org/)
-* "koy"
-* "adnw"
-* "pt-nativo"
-* "carpalx-qgmlwy"
-* "carpalx-qgmlwb"
-* "carpalx-qfmlwy"
+* 'adnw
+* 'azerty
+* 'azerty-be
+* 'beopy
+* 'bepo
+* 'carpalx-qfmlwy
+* 'carpalx-qgmlwb
+* 'carpalx-qgmlwy
+* 'colemak
+* 'colemak-mod-dh
+* 'colemak-mod-dh-new
+* 'dvorak
+* 'programer-dvorak
+* 'koy
+* ['neo2](https://neo-layout.org/)
+* 'norman
+* 'pt-nativo
+* 'qwerty
+* 'qwerty-abnt
+* 'qwerty-no (qwerty Norwegian)
+* 'qwertz
+* 'workman
+
+```elisp
+(xah-fly-keys 1)
+```
 
 Customization
 -------------------

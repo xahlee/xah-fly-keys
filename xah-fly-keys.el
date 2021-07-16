@@ -28,7 +28,7 @@
 
 ;; (add-to-list 'load-path "~/.emacs.d/lisp/")
 ;; (require 'xah-fly-keys)
-;; (xah-fly-keys-set-layout "qwerty") ; required
+;; (xah-fly-keys-set-layout 'qwerty) ; required
 
 ;; possible layout values:
 
@@ -44,10 +44,10 @@
 ;; colemak-mod-dh
 ;; colemak-mod-dh-new
 ;; dvorak
+;; programer-dvorak
 ;; koy
 ;; neo2
 ;; norman
-;; programer-dvorak
 ;; pt-nativo
 ;; qwerty
 ;; qwerty-abnt
@@ -2960,6 +2960,47 @@ Version 2017-01-29"
 ;; HHH___________________________________________________________________
 ;; key maps for conversion
 
+(defvar xah--dvorak-to-adnw-kmap
+  '(
+    ("'" . "k")
+    ("," . "u")
+    ("." . "ü")
+    ("p" . ".")
+    ("y" . "ä")
+
+    ("f" . "v")
+    ("g" . "g")
+    ("c" . "c")
+    ("r" . "l")
+    ("l" . "j")
+    ("/" . "f")
+
+    ("a" . "h")
+    ("o" . "i")
+    ("e" . "e")
+    ("u" . "a")
+    ("i" . "o")
+
+    ("d" . "d")
+    ("h" . "t")
+    ("t" . "r")
+    ("n" . "n")
+    ("s" . "s")
+    ("-" . "ß")
+
+    (";" . "x")
+    ("q" . "y")
+    ("j" . "ö")
+    ("k" . ",")
+    ("x" . "q")
+
+    ("b" . "b")
+    ("m" . "p")
+    ("w" . "w")
+    ("v" . "m")
+    ("z" . "z"))
+  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding adnw layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+
 (defvar xah--dvorak-to-azerty-kmap
   '(("." . "e")
     ("," . "z")
@@ -3060,7 +3101,6 @@ Version 2017-01-29"
     ("`" . "²"))
   "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding AZERTY-BE. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
 
-
 (defvar xah--dvorak-to-beopy-kmap
   '(("." . "o")
     ("," . "é")
@@ -3108,8 +3148,167 @@ Version 2017-01-29"
     ("9" . "/")
     ("0" . "*")
     ("\\" . "ç")
-    ("`" . "$")))
+    ("`" . "$"))
+  "A alist, each element is of the form (\"e\" . \"d\"). First char is Dvorak, second is corresponding BEOPY layout. Not all chars are in the list. When not in this alist, they are assumed to be the same.")
 
+(defvar xah--dvorak-to-bepo-kmap
+  '(("'" . "b")
+    ("," . "é")
+    ("." . "p")
+    ("p" . "o")
+    ("y" . "è")
+
+    ("f" . "^") ; NOTE: dead key
+    ("g" . "v")
+    ("c" . "d")
+    ("r" . "l")
+    ("l" . "j")
+
+    ("a" . "a")
+    ("o" . "u")
+    ("e" . "i")
+    ("u" . "e")
+    ("i" . ",")
+
+    ("d" . "c")
+    ("h" . "t")
+    ("t" . "s")
+    ("n" . "r")
+    ("s" . "n")
+
+    (":" . "à")
+    ("q" . "y")
+    ("j" . "x")
+    ("k" . ".")
+    ("x" . "k")
+
+    ("b" . "’")
+    ("m" . "q")
+    ("w" . "g")
+    ("v" . "h")
+    ("z" . "f")
+
+    ("3" . "»")
+    ("4" . "(")
+    ("5" . ")")
+    ("6" . "@")
+    ("7" . "+")
+    ("8" . "-")
+    ("9" . "/"))
+  "A alist, each element is of the form (\"e\" . \"d\"). First char is Dvorak, second is corresponding BEPO layout. Not all chars are in the list. When not in this alist, they are assumed to be the same.")
+
+(defvar xah--dvorak-to-carpalx-qfmlwy-kmap
+  '(("." . "m")
+    ("," . "f")
+    ("'" . "q")
+    (";" . "z")
+    ("/" . "[")
+    ("[" . "-")
+    ("]" . "=")
+    ("=" . "]")
+    ("-" . "'")
+    ("a" . "d")
+    ("b" . "p")
+    ("c" . "o")
+    ("d" . "i")
+    ("e" . "t")
+    ("f" . "y")
+    ("g" . "u")
+    ("h" . "a")
+    ("i" . "r")
+    ("j" . "g")
+    ("k" . "c")
+    ("l" . "j")
+    ("m" . "k")
+    ("n" . "h")
+    ("o" . "s")
+    ("p" . "l")
+    ("q" . "v")
+    ("r" . "b")
+    ("s" . ";")
+    ("t" . "e")
+    ("u" . "n")
+    ("v" . ".")
+    ("w" . ",")
+    ("y" . "w")
+    ("z" . "/"))
+  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding Carpalx QFMLWY layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+
+(defvar xah--dvorak-to-carpalx-qgmlwb-kmap
+  '(("." . "m")
+    ("," . "g")
+    ("'" . "q")
+    (";" . "z")
+    ("/" . "[")
+    ("[" . "-")
+    ("]" . "=")
+    ("=" . "]")
+    ("-" . "'")
+    ("a" . "d")
+    ("b" . "k")
+    ("c" . "u")
+    ("d" . "i")
+    ("e" . "t")
+    ("f" . "b")
+    ("g" . "y")
+    ("h" . "a")
+    ("i" . "r")
+    ("j" . "c")
+    ("k" . "f")
+    ("l" . ";")
+    ("m" . "p")
+    ("n" . "o")
+    ("o" . "s")
+    ("p" . "l")
+    ("q" . "x")
+    ("r" . "v")
+    ("s" . "h")
+    ("t" . "e")
+    ("u" . "n")
+    ("v" . ".")
+    ("w" . ",")
+    ("x" . "j")
+    ("y" . "w")
+    ("z" . "/"))
+  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding Carpalx QGMLWB layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+
+(defvar xah--dvorak-to-carpalx-qgmlwy-kmap
+  '(("." . "m")
+    ("," . "g")
+    ("'" . "q")
+    (";" . "z")
+    ("/" . "[")
+    ("[" . "-")
+    ("]" . "=")
+    ("=" . "]")
+    ("-" . "'")
+    ("a" . "d")
+    ("b" . "k")
+    ("c" . "u")
+    ("d" . "i")
+    ("e" . "t")
+    ("f" . "y")
+    ("g" . "f")
+    ("h" . "a")
+    ("i" . "r")
+    ("j" . "c")
+    ("k" . "v")
+    ("l" . ";")
+    ("m" . "p")
+    ("n" . "o")
+    ("o" . "s")
+    ("p" . "l")
+    ("q" . "x")
+    ("r" . "b")
+    ("s" . "h")
+    ("t" . "e")
+    ("u" . "n")
+    ("v" . ".")
+    ("w" . ",")
+    ("x" . "j")
+    ("y" . "w")
+    ("z" . "/"))
+  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding Carpalx QGMLWY layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
 
 (defvar xah--dvorak-to-colemak-kmap
   '(("'" . "q")
@@ -3208,7 +3407,7 @@ Version 2017-01-29"
     ("w" . ",")
     ("v" . ".")
     ("z" . "/"))
-  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding Colemak Mod-DH layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding Colemak Mod-DH new layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
 
 (defvar xah--dvorak-to-dvorak-kmap
   '()
@@ -3255,6 +3454,160 @@ Version 2017-01-29"
     )
   "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding Programer Dvorak layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
 
+(defvar xah--dvorak-to-koy-kmap
+  '(
+    ("'" . "k")
+    ("," . ".")
+    ("." . "o")
+    ("p" . ",")
+    ("y" . "y")
+
+    ("f" . "v")
+    ("g" . "g")
+    ("c" . "c")
+    ("r" . "l")
+    ("l" . "ß")
+
+    ("a" . "h")
+    ("o" . "a")
+    ("e" . "e")
+    ("u" . "i")
+    ("i" . "u")
+
+    ("d" . "d")
+    ("h" . "t")
+    ("t" . "r")
+    ("n" . "n")
+    ("s" . "s")
+
+    (";" . "x")
+    ("q" . "q")
+    ("j" . "ä")
+    ("k" . "ü")
+    ("x" . "ö")
+
+    ("b" . "b")
+    ("m" . "p")
+    ("w" . "w")
+    ("v" . "m")
+    ("z" . "j"))
+  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding koy layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+
+(defvar xah--dvorak-to-neo2-kmap
+  '(
+    ("'" . "x")
+    ("," . "v")
+    ("." . "l")
+    ("p" . "c")
+    ("y" . "w")
+
+    ("f" . "k")
+    ("g" . "h")
+    ("c" . "g")
+    ("r" . "f")
+    ("l" . "q")
+
+    ("a" . "u")
+    ("o" . "i")
+    ("e" . "a")
+    ("u" . "e")
+    ("i" . "o")
+
+    ("d" . "s")
+    ("h" . "n")
+    ("t" . "r")
+    ("n" . "t")
+    ("s" . "d")
+
+    (";" . "ü")
+    ("q" . "ö")
+    ("j" . "ä")
+    ("k" . "p")
+    ("x" . "z")
+
+    ("b" . "b")
+    ("m" . "m")
+    ("w" . ",")
+    ("v" . ".")
+    ("z" . "j")
+
+    ("/" . "ß")
+    ("[" . "-")
+    ("-" . "y"))
+  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding neo2 layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+
+(defvar xah--dvorak-to-norman-kmap
+  '(
+    ("'" . "q")
+    ("," . "w")
+    ("." . "d")
+    ("p" . "f")
+    ("y" . "k")
+
+    ("f" . "j")
+    ("g" . "u")
+    ("c" . "r")
+    ("r" . "l")
+    ("l" . ";")
+
+    ("a" . "a")
+    ("o" . "s")
+    ("e" . "e")
+    ("u" . "t")
+    ("i" . "g")
+
+    ("d" . "y")
+    ("h" . "n")
+    ("t" . "i")
+    ("n" . "o")
+    ("s" . "h")
+
+    (";" . "z")
+    ("q" . "x")
+    ("j" . "c")
+    ("k" . "v")
+    ("x" . "b")
+
+    ("b" . "p")
+    ("m" . "m")
+    ("w" . ",")
+    ("v" . ".")
+    ("z" . "/"))
+  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding Norman layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+
+(defvar xah--dvorak-to-pt-nativo-kmap
+  '((";" . "«")
+    ("/" . "~")
+    ("[" . "º")
+    ("]" . "<")
+    ("=" . "-")
+    ("-" . "´")
+    ("a" . "i")
+    ("b" . "q")
+    ("c" . "t")
+    ("d" . "m")
+    ("e" . "a")
+    ("f" . "w")
+    ("g" . "l")
+    ("h" . "d")
+    ("i" . "u")
+    ("k" . "b")
+    ("l" . "p")
+    ("m" . "v")
+    ("n" . "r")
+    ("o" . "e")
+    ("p" . "h")
+    ("q" . "ç")
+    ("r" . "c")
+    ("s" . "n")
+    ("t" . "s")
+    ("u" . "o")
+    ("v" . "f")
+    ("w" . "g")
+    ("x" . "k")
+    ("y" . "x"))
+  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding PT-Nativo. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+
 (defvar xah--dvorak-to-qwerty-kmap
   '(("." . "e")
     ("," . "w")
@@ -3293,44 +3646,6 @@ Version 2017-01-29"
     ("z" . "/"))
   "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding QWERTY. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
 
-(defvar xah--dvorak-to-qwerty-no-kmap
-  '(("." . "e")
-    ("," . "w")
-    ("'" . "q")
-    (";" . "z")
-    ("/" . "å")
-    ("[" . "+")
-    ("]" . "´") ; NOTE: this is a dead key
-    ("=" . "¨") ; NOTE: this is a dead key
-    ("-" . "æ")
-    ("a" . "a")
-    ("b" . "n")
-    ("c" . "i")
-    ("d" . "h")
-    ("e" . "d")
-    ("f" . "y")
-    ("g" . "u")
-    ("h" . "j")
-    ("i" . "g")
-    ("j" . "c")
-    ("k" . "v")
-    ("l" . "p")
-    ("m" . "m")
-    ("n" . "l")
-    ("o" . "s")
-    ("p" . "r")
-    ("q" . "x")
-    ("r" . "o")
-    ("s" . "ø")
-    ("t" . "k")
-    ("u" . "f")
-    ("v" . ".")
-    ("w" . ",")
-    ("x" . "b")
-    ("y" . "t")
-    ("z" . "-"))
-  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding QWERTY-NO. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
-
 (defvar xah--dvorak-to-qwerty-abnt-kmap
   '(("." . "e")
     ("," . "w")
@@ -3368,6 +3683,44 @@ Version 2017-01-29"
     ("y" . "t")
     ("z" . ";"))
   "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding ABNT. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+
+(defvar xah--dvorak-to-qwerty-no-kmap
+  '(("." . "e")
+    ("," . "w")
+    ("'" . "q")
+    (";" . "z")
+    ("/" . "å")
+    ("[" . "+")
+    ("]" . "´") ; NOTE: this is a dead key
+    ("=" . "¨") ; NOTE: this is a dead key
+    ("-" . "æ")
+    ("a" . "a")
+    ("b" . "n")
+    ("c" . "i")
+    ("d" . "h")
+    ("e" . "d")
+    ("f" . "y")
+    ("g" . "u")
+    ("h" . "j")
+    ("i" . "g")
+    ("j" . "c")
+    ("k" . "v")
+    ("l" . "p")
+    ("m" . "m")
+    ("n" . "l")
+    ("o" . "s")
+    ("p" . "r")
+    ("q" . "x")
+    ("r" . "o")
+    ("s" . "ø")
+    ("t" . "k")
+    ("u" . "f")
+    ("v" . ".")
+    ("w" . ",")
+    ("x" . "b")
+    ("y" . "t")
+    ("z" . "-"))
+  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding QWERTY-NO. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
 
 (defvar xah--dvorak-to-qwertz-kmap
   '(("." . "e")
@@ -3440,387 +3793,32 @@ Version 2017-01-29"
     ("z" . "/"))
   "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding Workman layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
 
-(defvar xah--dvorak-to-norman-kmap
-  '(
-    ("'" . "q")
-    ("," . "w")
-    ("." . "d")
-    ("p" . "f")
-    ("y" . "k")
-
-    ("f" . "j")
-    ("g" . "u")
-    ("c" . "r")
-    ("r" . "l")
-    ("l" . ";")
-
-    ("a" . "a")
-    ("o" . "s")
-    ("e" . "e")
-    ("u" . "t")
-    ("i" . "g")
-
-    ("d" . "y")
-    ("h" . "n")
-    ("t" . "i")
-    ("n" . "o")
-    ("s" . "h")
-
-    (";" . "z")
-    ("q" . "x")
-    ("j" . "c")
-    ("k" . "v")
-    ("x" . "b")
-
-    ("b" . "p")
-    ("m" . "m")
-    ("w" . ",")
-    ("v" . ".")
-    ("z" . "/"))
-  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding Norman layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
-
-(defvar xah--dvorak-to-neo2-kmap
-  '(
-    ("'" . "x")
-    ("," . "v")
-    ("." . "l")
-    ("p" . "c")
-    ("y" . "w")
-
-    ("f" . "k")
-    ("g" . "h")
-    ("c" . "g")
-    ("r" . "f")
-    ("l" . "q")
-
-    ("a" . "u")
-    ("o" . "i")
-    ("e" . "a")
-    ("u" . "e")
-    ("i" . "o")
-
-    ("d" . "s")
-    ("h" . "n")
-    ("t" . "r")
-    ("n" . "t")
-    ("s" . "d")
-
-    (";" . "ü")
-    ("q" . "ö")
-    ("j" . "ä")
-    ("k" . "p")
-    ("x" . "z")
-
-    ("b" . "b")
-    ("m" . "m")
-    ("w" . ",")
-    ("v" . ".")
-    ("z" . "j")
-
-    ("/" . "ß")
-    ("[" . "-")
-    ("-" . "y"))
-  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding neo2 layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
-
-(defvar xah--dvorak-to-koy-kmap
-  '(
-    ("'" . "k")
-    ("," . ".")
-    ("." . "o")
-    ("p" . ",")
-    ("y" . "y")
-
-    ("f" . "v")
-    ("g" . "g")
-    ("c" . "c")
-    ("r" . "l")
-    ("l" . "ß")
-
-    ("a" . "h")
-    ("o" . "a")
-    ("e" . "e")
-    ("u" . "i")
-    ("i" . "u")
-
-    ("d" . "d")
-    ("h" . "t")
-    ("t" . "r")
-    ("n" . "n")
-    ("s" . "s")
-
-    (";" . "x")
-    ("q" . "q")
-    ("j" . "ä")
-    ("k" . "ü")
-    ("x" . "ö")
-
-    ("b" . "b")
-    ("m" . "p")
-    ("w" . "w")
-    ("v" . "m")
-    ("z" . "j"))
-  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding koy layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
-
-(defvar xah--dvorak-to-adnw-kmap
-  '(
-    ("'" . "k")
-    ("," . "u")
-    ("." . "ü")
-    ("p" . ".")
-    ("y" . "ä")
-
-    ("f" . "v")
-    ("g" . "g")
-    ("c" . "c")
-    ("r" . "l")
-    ("l" . "j")
-    ("/" . "f")
-
-    ("a" . "h")
-    ("o" . "i")
-    ("e" . "e")
-    ("u" . "a")
-    ("i" . "o")
-
-    ("d" . "d")
-    ("h" . "t")
-    ("t" . "r")
-    ("n" . "n")
-    ("s" . "s")
-    ("-" . "ß")
-
-    (";" . "x")
-    ("q" . "y")
-    ("j" . "ö")
-    ("k" . ",")
-    ("x" . "q")
-
-    ("b" . "b")
-    ("m" . "p")
-    ("w" . "w")
-    ("v" . "m")
-    ("z" . "z"))
-  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding adnw layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
-
-(defvar xah--dvorak-to-pt-nativo-kmap
-  '((";" . "«")
-    ("/" . "~")
-    ("[" . "º")
-    ("]" . "<")
-    ("=" . "-")
-    ("-" . "´")
-    ("a" . "i")
-    ("b" . "q")
-    ("c" . "t")
-    ("d" . "m")
-    ("e" . "a")
-    ("f" . "w")
-    ("g" . "l")
-    ("h" . "d")
-    ("i" . "u")
-    ("k" . "b")
-    ("l" . "p")
-    ("m" . "v")
-    ("n" . "r")
-    ("o" . "e")
-    ("p" . "h")
-    ("q" . "ç")
-    ("r" . "c")
-    ("s" . "n")
-    ("t" . "s")
-    ("u" . "o")
-    ("v" . "f")
-    ("w" . "g")
-    ("x" . "k")
-    ("y" . "x"))
-  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding PT-Nativo. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
-
-(defvar xah--dvorak-to-carpalx-qgmlwy-kmap
-  '(("." . "m")
-    ("," . "g")
-    ("'" . "q")
-    (";" . "z")
-    ("/" . "[")
-    ("[" . "-")
-    ("]" . "=")
-    ("=" . "]")
-    ("-" . "'")
-    ("a" . "d")
-    ("b" . "k")
-    ("c" . "u")
-    ("d" . "i")
-    ("e" . "t")
-    ("f" . "y")
-    ("g" . "f")
-    ("h" . "a")
-    ("i" . "r")
-    ("j" . "c")
-    ("k" . "v")
-    ("l" . ";")
-    ("m" . "p")
-    ("n" . "o")
-    ("o" . "s")
-    ("p" . "l")
-    ("q" . "x")
-    ("r" . "b")
-    ("s" . "h")
-    ("t" . "e")
-    ("u" . "n")
-    ("v" . ".")
-    ("w" . ",")
-    ("x" . "j")
-    ("y" . "w")
-    ("z" . "/"))
-  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding Carpalx QGMLWY layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
-
-(defvar xah--dvorak-to-carpalx-qgmlwb-kmap
-  '(("." . "m")
-    ("," . "g")
-    ("'" . "q")
-    (";" . "z")
-    ("/" . "[")
-    ("[" . "-")
-    ("]" . "=")
-    ("=" . "]")
-    ("-" . "'")
-    ("a" . "d")
-    ("b" . "k")
-    ("c" . "u")
-    ("d" . "i")
-    ("e" . "t")
-    ("f" . "b")
-    ("g" . "y")
-    ("h" . "a")
-    ("i" . "r")
-    ("j" . "c")
-    ("k" . "f")
-    ("l" . ";")
-    ("m" . "p")
-    ("n" . "o")
-    ("o" . "s")
-    ("p" . "l")
-    ("q" . "x")
-    ("r" . "v")
-    ("s" . "h")
-    ("t" . "e")
-    ("u" . "n")
-    ("v" . ".")
-    ("w" . ",")
-    ("x" . "j")
-    ("y" . "w")
-    ("z" . "/"))
-  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding Carpalx QGMLWB layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
-
-(defvar xah--dvorak-to-carpalx-qfmlwy-kmap
-  '(("." . "m")
-    ("," . "f")
-    ("'" . "q")
-    (";" . "z")
-    ("/" . "[")
-    ("[" . "-")
-    ("]" . "=")
-    ("=" . "]")
-    ("-" . "'")
-    ("a" . "d")
-    ("b" . "p")
-    ("c" . "o")
-    ("d" . "i")
-    ("e" . "t")
-    ("f" . "y")
-    ("g" . "u")
-    ("h" . "a")
-    ("i" . "r")
-    ("j" . "g")
-    ("k" . "c")
-    ("l" . "j")
-    ("m" . "k")
-    ("n" . "h")
-    ("o" . "s")
-    ("p" . "l")
-    ("q" . "v")
-    ("r" . "b")
-    ("s" . ";")
-    ("t" . "e")
-    ("u" . "n")
-    ("v" . ".")
-    ("w" . ",")
-    ("y" . "w")
-    ("z" . "/"))
-  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding Carpalx QFMLWY layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
-
-(defvar xah--dvorak-to-bepo-kmap
-  '(("'" . "b")
-    ("," . "é")
-    ("." . "p")
-    ("p" . "o")
-    ("y" . "è")
-
-    ("f" . "^") ; NOTE: dead key
-    ("g" . "v")
-    ("c" . "d")
-    ("r" . "l")
-    ("l" . "j")
-
-    ("a" . "a")
-    ("o" . "u")
-    ("e" . "i")
-    ("u" . "e")
-    ("i" . ",")
-
-    ("d" . "c")
-    ("h" . "t")
-    ("t" . "s")
-    ("n" . "r")
-    ("s" . "n")
-
-    (":" . "à")
-    ("q" . "y")
-    ("j" . "x")
-    ("k" . ".")
-    ("x" . "k")
-
-    ("b" . "’")
-    ("m" . "q")
-    ("w" . "g")
-    ("v" . "h")
-    ("z" . "f")
-
-    ("3" . "»")
-    ("4" . "(")
-    ("5" . ")")
-    ("6" . "@")
-    ("7" . "+")
-    ("8" . "-")
-    ("9" . "/"))
-
-  "A alist, each element is of the form (\"e\" . \"d\"). First char is Dvorak, second is corresponding BEPO layout. Not all chars are in the list. When not in this alist, they are assumed to be the same.")
-
 (define-obsolete-variable-alias 'xah-fly-key--current-layout 'xah-fly-key-current-layout "2020-04-09")
 (defcustom xah-fly-key-current-layout nil
   "The current keyboard layout. Use `xah-fly-keys-set-layout' to set the layout.
 If the value is nil, it's automatically set to \"dvorak\"."
-  :type '(choice  (const :tag "AZERTY" azerty)
+  :type '(choice  (const :tag "Adnw" adnw)
+                  (const :tag "AZERTY" azerty)
                   (const :tag "Belgian AZERTY" azerty-be)
                   (const :tag "BEOPY" beopy)
                   (const :tag "BEPO" bepo)
+                  (const :tag "Carpalx QFMLWY" carpalx-qfmlwy)
+                  (const :tag "Carpalx QGMLWB" carpalx-qgmlwb)
+                  (const :tag "Carpalx QGMLWY" carpalx-qgmlwy)
                   (const :tag "Colemak" colemak)
                   (const :tag "Colemak Mod-DH" colemak-mod-dh)
                   (const :tag "New Colemak Mod-DH with M on the home row" colemak-mod-dh-new)
                   (const :tag "Dvorak" dvorak)
                   (const :tag "Programmer Dvorak" programer-dvorak)
+                  (const :tag "Koy" koy)
+                  (const :tag "Neo2" neo2)
+                  (const :tag "Norman" norman)
+                  (const :tag "PT-nativo" pt-nativo)
                   (const :tag "QWERTY" qwerty)
                   (const :tag "Portuguese QWERTY (ABNT)" qwerty-abnt)
                   (const :tag "QWERTY Norwegian" qwerty-no)
                   (const :tag "QWERTZ" qwertz)
-                  (const :tag "Workman" workman)
-                  (const :tag "Norman" norman)
-                  (const :tag "Neo2" neo2)
-                  (const :tag "Koy" koy)
-                  (const :tag "Adnw" adnw)
-                  (const :tag "PT-nativo" pt-nativo)
-                  (const :tag "Carpalx QGMLWY" carpalx-qgmlwy)
-                  (const :tag "Carpalx QGMLWB" carpalx-qgmlwb)
-                  (const :tag "Carpalx QFMLWY" carpalx-qfmlwy))
+                  (const :tag "Workman" workman))
   :group 'xah-fly-keys
   :set (lambda (@layout-var @new-layout)
          ;; Only reload xah-fly-keys if it was already loaded and the new layout is different:
@@ -4588,28 +4586,28 @@ minor modes loaded later may override bindings in this map.")
   "Set a keyboard layout.
 Argument must be one of:
 
+ 'adnw
  'azerty
  'azerty-be
  'beopy
  'bepo
+ 'carpalx-qfmlwy
+ 'carpalx-qgmlwb
+ 'carpalx-qgmlwy
  'colemak
  'colemak-mod-dh
  'colemak-mod-dh-new
  'dvorak
  'programer-dvorak
+ 'koy
+ 'neo2
+ 'norman
+ 'pt-nativo
  'qwerty
  'qwerty-abnt
  'qwerty-no (qwerty Norwegian)
  'qwertz
  'workman
- 'norman
- 'neo2
- 'koy
- 'adnw
- 'pt-nativo
- 'carpalx-qgmlwy
- 'carpalx-qgmlwb
- 'carpalx-qfmlwy
 
 For backwards compatibility, a string that is the name of one of the above symbols is also acceptable (case-sensitive).
 Version 2021-05-19"
