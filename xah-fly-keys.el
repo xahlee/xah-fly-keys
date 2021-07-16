@@ -2571,7 +2571,8 @@ Version 2020-09-24 2021-01-21"
   (let (
         ($outBuffer "*xah-run output*")
         (resize-mini-windows nil)
-        ($suffixMap xah-run-current-file-map )
+        ($suffixMap xah-run-current-file-map)
+        (xah-run-current-file-after-hook 'xah-fly-command-mode-activate)
         $fname
         $fSuffix
         $progName
