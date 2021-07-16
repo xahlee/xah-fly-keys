@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 13.19.20210715131320
+;; Version: 13.20.20210716143842
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -3798,28 +3798,29 @@ Version 2017-01-29"
 (defcustom xah-fly-key-current-layout nil
   "The current keyboard layout. Use `xah-fly-keys-set-layout' to set the layout.
 If the value is nil, it's automatically set to \"dvorak\"."
-  :type '(choice  (const :tag "AZERTY" azerty)
-                  (const :tag "Belgian AZERTY" azerty-be)
-                  (const :tag "BEOPY" beopy)
-                  (const :tag "BEPO" bepo)
-                  (const :tag "Colemak" colemak)
-                  (const :tag "Colemak Mod-DH" colemak-mod-dh)
-                  (const :tag "New Colemak Mod-DH with M on the home row" colemak-mod-dh-new)
-                  (const :tag "Dvorak" dvorak)
-                  (const :tag "Programmer Dvorak" programer-dvorak)
-                  (const :tag "QWERTY" qwerty)
-                  (const :tag "Portuguese QWERTY (ABNT)" qwerty-abnt)
-                  (const :tag "QWERTY Norwegian" qwerty-no)
-                  (const :tag "QWERTZ" qwertz)
-                  (const :tag "Workman" workman)
-                  (const :tag "Norman" norman)
-                  (const :tag "Neo2" neo2)
-                  (const :tag "Koy" koy)
-                  (const :tag "Adnw" adnw)
-                  (const :tag "PT-nativo" pt-nativo)
-                  (const :tag "Carpalx QGMLWY" carpalx-qgmlwy)
-                  (const :tag "Carpalx QGMLWB" carpalx-qgmlwb)
-                  (const :tag "Carpalx QFMLWY" carpalx-qfmlwy))
+  :type '(choice
+          (const :tag "AZERTY" azerty)
+          (const :tag "Adnw" adnw)
+          (const :tag "BEOPY" beopy)
+          (const :tag "BEPO" bepo)
+          (const :tag "Belgian AZERTY" azerty-be)
+          (const :tag "Carpalx QFMLWY" carpalx-qfmlwy)
+          (const :tag "Carpalx QGMLWB" carpalx-qgmlwb)
+          (const :tag "Carpalx QGMLWY" carpalx-qgmlwy)
+          (const :tag "Colemak Mod-DH" colemak-mod-dh)
+          (const :tag "Colemak" colemak)
+          (const :tag "Dvorak" dvorak)
+          (const :tag "Koy" koy)
+          (const :tag "Neo2" neo2)
+          (const :tag "New Colemak Mod-DH with M on the home row" colemak-mod-dh-new)
+          (const :tag "Norman" norman)
+          (const :tag "PT-nativo" pt-nativo)
+          (const :tag "Portuguese QWERTY (ABNT)" qwerty-abnt)
+          (const :tag "Programmer Dvorak" programer-dvorak)
+          (const :tag "QWERTY Norwegian" qwerty-no)
+          (const :tag "QWERTY" qwerty)
+          (const :tag "QWERTZ" qwertz)
+          (const :tag "Workman" workman))
   :group 'xah-fly-keys
   :set (lambda (@layout-var @new-layout)
          ;; Only reload xah-fly-keys if it was already loaded and the new layout is different:
@@ -4587,28 +4588,28 @@ minor modes loaded later may override bindings in this map.")
   "Set a keyboard layout.
 Argument must be one of:
 
+ 'adnw
  'azerty
  'azerty-be
  'beopy
  'bepo
+ 'carpalx-qfmlwy
+ 'carpalx-qgmlwb
+ 'carpalx-qgmlwy
  'colemak
  'colemak-mod-dh
  'colemak-mod-dh-new
  'dvorak
+ 'koy
+ 'neo2
+ 'norman
  'programer-dvorak
+ 'pt-nativo
  'qwerty
  'qwerty-abnt
  'qwerty-no (qwerty Norwegian)
  'qwertz
  'workman
- 'norman
- 'neo2
- 'koy
- 'adnw
- 'pt-nativo
- 'carpalx-qgmlwy
- 'carpalx-qgmlwb
- 'carpalx-qfmlwy
 
 For backwards compatibility, a string that is the name of one of the above symbols is also acceptable (case-sensitive).
 Version 2021-05-19"
