@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 13.22.20210721090857
+;; Version: 13.22.20210721092224
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -544,8 +544,6 @@ Version 2017-07-25 2020-09-08"
       (if (eq real-last-command this-command)
           (yank-pop 1)
         (yank)))))
-
-
 
 (defvar xah-show-kill-ring-separator nil "A line divider for `xah-show-kill-ring'.")
 (setq xah-show-kill-ring-separator "\n\nss_____________________________________________________________________________\n\n")
@@ -2457,22 +2455,23 @@ Version 2020-10-17 2021-02-24"
 
 (defvar xah-fly-M-x-command nil "Command to call for emacs `execute-extended-command' replacement, used by `xah-fly-M-x'. Value should be a lisp symbol.")
 
-(setq xah-fly-M-x-command
-      (cond
-       ((and (boundp 'xah-fly-M-x-command)
-             xah-fly-M-x-command)
-        xah-fly-M-x-command)
-       ((fboundp 'smex) 'smex)
-       ((fboundp 'helm-M-x) 'helm-M-x)
-       ((fboundp 'counsel-M-x) 'counsel-M-x)
-       (t 'execute-extended-command)))
+(setq xah-fly-M-x-command nil)
 
 (defun xah-fly-M-x ()
   "Calls `execute-extended-command' or an alternative.
 If `xah-fly-M-x-command' is non-nil, call it, else call one of the following, in order: `smex', `helm-M-x', `counsel-M-x', `execute-extended-command'.
-Version 2020-04-09 2021-07-20"
+Version 2020-04-09 2021-02-24"
   (interactive)
-  (command-execute xah-fly-M-x-command nil nil :special))
+  (command-execute
+   (cond
+    ((and (boundp 'xah-fly-M-x-command) xah-fly-M-x-command) xah-fly-M-x-command )
+    ((fboundp 'smex) 'smex)
+    ((fboundp 'helm-M-x) 'helm-M-x)
+    ((fboundp 'counsel-M-x) 'counsel-M-x)
+    (t 'execute-extended-command))
+   nil
+   nil
+   :special))
 
 ;; HHH___________________________________________________________________
 
@@ -3023,7 +3022,6 @@ Version 2017-01-29"
     ("`" . "²"))
   "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding AZERTY-BE. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
 
-
 (defvar xah--dvorak-to-beopy-kmap
   '(("." . "o")
     ("," . "é")
@@ -3068,7 +3066,6 @@ Version 2017-01-29"
     ("0" . "*")
     ("\\" . "ç")
     ("`" . "$")))
-
 
 (defvar xah--dvorak-to-colemak-kmap
   '(("'" . "q")
