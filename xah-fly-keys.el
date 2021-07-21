@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 13.22.20210721084754
+;; Version: 13.22.20210721090857
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1412,38 +1412,19 @@ or
 If the delimiter is any left bracket, the end delimiter is automatically the matching bracket.
 
 URL `http://ergoemacs.org/emacs/emacs_quote_lines.html'
-Version 2020-06-26"
+Version 2020-06-26 2021-07-21"
   (interactive)
-  (let* (
-         $p1
-         $p2
-         ($quoteToUse
-          (read-string
-           "Quote to use:" "\"" nil
-           '(
-             ""
-             "\""
-             "'"
-             "("
-             "{"
-             "["
-             )))
-         ($separator
-          (read-string
-           "line separator:" "," nil
-           '(
-             ""
-             ","
-             ";"
-             )))
-         ($beginQuote $quoteToUse)
-         ($endQuote
+  (let ( $p1 $p2 $quoteToUse $separator $beginQuote $endQuote )
+         (setq $quoteToUse (read-string "Quote to use:" "\"" nil '( "" "\"" "'" "(" "{" "[" )))
+         (setq $separator (read-string "line separator:" "," nil '( "" "," ";" )))
+         (setq $beginQuote $quoteToUse)
+         (setq $endQuote
           ;; if begin quote is a bracket, set end quote to the matching one. else, same as begin quote
           (let (($syntableValue (aref (syntax-table) (string-to-char $beginQuote))))
             (if (eq (car $syntableValue ) 4) ; ; syntax table, code 4 is open paren
                 (char-to-string (cdr $syntableValue))
               $quoteToUse
-              ))))
+              )))
     (if (use-region-p)
         (setq $p1 (region-beginning) $p2 (region-end))
       (progn
@@ -1547,12 +1528,12 @@ The region to work on is by this order:
  ③ else, work on current line.
 
 URL `http://ergoemacs.org/emacs/elisp_change_space-hyphen_underscore.html'
-Version 2019-02-12"
+Version 2019-02-12 2021-07-21"
   (interactive)
   ;; this function sets a property 「'state」. Possible values are 0 to length of $charArray.
   (let ($p1 $p2)
     (if (and @begin @end)
-        (progn (setq $p1 @begin $p2 @end))
+        (setq $p1 @begin $p2 @end)
       (if (use-region-p)
           (setq $p1 (region-beginning) $p2 (region-end))
         (if (nth 3 (syntax-ppss))
@@ -1561,25 +1542,22 @@ Version 2019-02-12"
               (setq $p1 (point))
               (skip-chars-forward "^\"")
               (setq $p2 (point)))
-          (let (
-                ($skipChars
-                 (if (boundp 'xah-brackets)
-                     (concat "^\"" xah-brackets)
-                   "^\"<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕（）")))
+          (let ($skipChars)
+            (setq $skipChars
+                  (if (boundp 'xah-brackets)
+                      (concat "^\"" xah-brackets)
+                    "^\"<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕（）"))
             (skip-chars-backward $skipChars (line-beginning-position))
             (setq $p1 (point))
             (skip-chars-forward $skipChars (line-end-position))
             (setq $p2 (point))
             (set-mark $p1)))))
-    (let* (
-           ($charArray ["_" "-" " "])
-           ($length (length $charArray))
-           ($regionWasActive-p (region-active-p))
-           ($nowState
-            (if (eq last-command this-command)
-                (get 'xah-cycle-hyphen-underscore-space 'state)
-              0 ))
-           ($changeTo (elt $charArray $nowState)))
+    (let ( $charArray $length $regionWasActive-p $nowState $changeTo)
+      (setq $charArray ["_" "-" " "])
+      (setq $length (length $charArray))
+      (setq $regionWasActive-p (region-active-p))
+      (setq $nowState (if (eq last-command this-command) (get 'xah-cycle-hyphen-underscore-space 'state) 0 ))
+      (setq $changeTo (elt $charArray $nowState))
       (save-excursion
         (save-restriction
           (narrow-to-region $p1 $p2)
