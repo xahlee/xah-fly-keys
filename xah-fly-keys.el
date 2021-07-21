@@ -2479,23 +2479,22 @@ Version 2020-10-17 2021-02-24"
 
 (defvar xah-fly-M-x-command nil "Command to call for emacs `execute-extended-command' replacement, used by `xah-fly-M-x'. Value should be a lisp symbol.")
 
-(setq xah-fly-M-x-command nil)
+(setq xah-fly-M-x-command
+      (cond
+       ((and (boundp 'xah-fly-M-x-command)
+             xah-fly-M-x-command)
+        xah-fly-M-x-command)
+       ((fboundp 'smex) 'smex)
+       ((fboundp 'helm-M-x) 'helm-M-x)
+       ((fboundp 'counsel-M-x) 'counsel-M-x)
+       (t 'execute-extended-command)))
 
 (defun xah-fly-M-x ()
   "Calls `execute-extended-command' or an alternative.
 If `xah-fly-M-x-command' is non-nil, call it, else call one of the following, in order: `smex', `helm-M-x', `counsel-M-x', `execute-extended-command'.
-Version 2020-04-09 2021-02-24"
+Version 2020-04-09 2021-07-20"
   (interactive)
-  (command-execute
-   (cond
-    ((and (boundp 'xah-fly-M-x-command) xah-fly-M-x-command) xah-fly-M-x-command )
-    ((fboundp 'smex) 'smex)
-    ((fboundp 'helm-M-x) 'helm-M-x)
-    ((fboundp 'counsel-M-x) 'counsel-M-x)
-    (t 'execute-extended-command))
-   nil
-   nil
-   :special))
+  (command-execute xah-fly-M-x-command nil nil :special))
 
 ;; HHH___________________________________________________________________
 
@@ -2907,12 +2906,27 @@ Version 2019-11-04 2021-06-30"
                             (start-process "" nil "xdg-open" $fpath)))
          $file-list))))))
 
+(defvar xah-fly-terminal-emulator nil
+  "Terminal emulator for *nix platforms, used by `xah-open-in-external-app'.
+Value should be a string.")
+
+(setq xah-fly-terminal-emulator
+      (cond
+       ((string-suffix-p "gnome-terminal\n" (shell-command-to-string "which gnome-terminal") :IGNORE-CASE)
+        "gnome-terminal")
+       ((string-suffix-p "konsole\n" (shell-command-to-string "which konsole") :IGNORE-CASE)
+        "konsole")
+       ((string-suffix-p "xterm\n" (shell-command-to-string "which xterm") :IGNORE-CASE)
+        "xterm")
+       (t (message "No known terminal emulator found.")
+          nil)))
+
 (defun xah-open-in-terminal ()
   "Open the current dir in a new terminal window.
 On Microsoft Windows, it starts cross-platform PowerShell pwsh. You need to have it installed.
 
 URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
-Version 2020-11-21 2021-03-01"
+Version 2020-11-21 2021-07-20"
   (interactive)
   (cond
    ((string-equal system-type "windows-nt")
@@ -2928,8 +2942,10 @@ Version 2020-11-21 2021-03-01"
     (shell-command (concat "open -a terminal " (shell-quote-argument (expand-file-name default-directory )))))
    ((string-equal system-type "gnu/linux")
     (let ((process-connection-type nil))
-      (start-process "" nil "x-terminal-emulator"
-                     (concat "--working-directory=" default-directory))))))
+      (start-process "" nil xah-fly-terminal-emulator)))
+   ((string-equal system-type "berkeley-unix")
+    (let ((process-connection-type nil))
+      (start-process "" nil xah-fly-terminal-emulator)))))
 
 (defun xah-next-window-or-frame ()
   "Switch to next window or frame.
@@ -3070,11 +3086,9 @@ Version 2017-01-29"
     ("]" . "%")
     ("=" . "z")
     ("-" . "m")
-    ("a" . "a")
     ("b" . "'")
     ("c" . "d")
     ("d" . "c")
-    ("e" . "e")
     ("f" . "^"); NOTE: this is a dead key
     ("g" . "v")
     ("h" . "t")
@@ -3085,7 +3099,6 @@ Version 2017-01-29"
     ("m" . "g")
     ("n" . "r")
     ("o" . "u")
-    ("p" . "p")
     ("q" . "è")
     ("r" . "l")
     ("s" . "n")
@@ -3094,7 +3107,6 @@ Version 2017-01-29"
     ("v" . "h")
     ("w" . "q")
     ("x" . "w")
-    ("y" . "y")
     ("z" . "f")
     ("1" . "\"")
     ("2" . "«")
@@ -3114,14 +3126,12 @@ Version 2017-01-29"
   '(("'" . "q")
     ("," . "w")
     ("." . "f")
-    ("p" . "p")
     ("y" . "g")
     ("f" . "j")
     ("g" . "l")
     ("c" . "u")
     ("r" . "y")
     ("l" . ";")
-    ("a" . "a")
     ("o" . "r")
     ("e" . "s")
     ("u" . "t")
@@ -3137,7 +3147,6 @@ Version 2017-01-29"
     ("k" . "v")
     ("x" . "b")
     ("b" . "k")
-    ("m" . "m")
     ("w" . ",")
     ("v" . ".")
     ("z" . "/"))
@@ -3147,14 +3156,12 @@ Version 2017-01-29"
   '(("'" . "q")
     ("," . "w")
     ("." . "f")
-    ("p" . "p")
     ("y" . "b")
     ("f" . "j")
     ("g" . "l")
     ("c" . "u")
     ("r" . "y")
     ("l" . ";")
-    ("a" . "a")
     ("o" . "r")
     ("e" . "s")
     ("u" . "t")
@@ -3180,14 +3187,12 @@ Version 2017-01-29"
   '(("'" . "q")
     ("," . "w")
     ("." . "f")
-    ("p" . "p")
     ("y" . "b")
     ("f" . "j")
     ("g" . "l")
     ("c" . "u")
     ("r" . "y")
     ("l" . ";")
-    ("a" . "a")
     ("o" . "r")
     ("e" . "s")
     ("u" . "t")
@@ -3276,7 +3281,6 @@ Version 2017-01-29"
     ("j" . "c")
     ("k" . "v")
     ("l" . "p")
-    ("m" . "m")
     ("n" . "l")
     ("o" . "s")
     ("p" . "r")
@@ -3302,7 +3306,6 @@ Version 2017-01-29"
     ("]" . "´") ; NOTE: this is a dead key
     ("=" . "¨") ; NOTE: this is a dead key
     ("-" . "æ")
-    ("a" . "a")
     ("b" . "n")
     ("c" . "i")
     ("d" . "h")
@@ -3314,7 +3317,6 @@ Version 2017-01-29"
     ("j" . "c")
     ("k" . "v")
     ("l" . "p")
-    ("m" . "m")
     ("n" . "l")
     ("o" . "s")
     ("p" . "r")
@@ -3340,7 +3342,6 @@ Version 2017-01-29"
     ("]" . "=")
     ("=" . "[")
     ("-" . "~")
-    ("a" . "a")
     ("b" . "n")
     ("c" . "i")
     ("d" . "h")
@@ -3352,7 +3353,6 @@ Version 2017-01-29"
     ("j" . "c")
     ("k" . "v")
     ("l" . "p")
-    ("m" . "m")
     ("n" . "l")
     ("o" . "s")
     ("p" . "r")
@@ -3378,7 +3378,6 @@ Version 2017-01-29"
     ("]" . "´")
     ("=" . "+")
     ("-" . "ä")
-    ("a" . "a")
     ("b" . "n")
     ("c" . "i")
     ("d" . "h")
@@ -3390,7 +3389,6 @@ Version 2017-01-29"
     ("j" . "c")
     ("k" . "v")
     ("l" . "p")
-    ("m" . "m")
     ("n" . "l")
     ("o" . "s")
     ("p" . "r")
@@ -3417,7 +3415,6 @@ Version 2017-01-29"
     ("c" . "u")
     ("r" . "p")
     ("l" . ";")
-    ("a" . "a")
     ("o" . "s")
     ("e" . "h")
     ("u" . "t")
@@ -3453,9 +3450,7 @@ Version 2017-01-29"
     ("r" . "l")
     ("l" . ";")
 
-    ("a" . "a")
     ("o" . "s")
-    ("e" . "e")
     ("u" . "t")
     ("i" . "g")
 
@@ -3472,7 +3467,6 @@ Version 2017-01-29"
     ("x" . "b")
 
     ("b" . "p")
-    ("m" . "m")
     ("w" . ",")
     ("v" . ".")
     ("z" . "/"))
@@ -3510,8 +3504,6 @@ Version 2017-01-29"
     ("k" . "p")
     ("x" . "z")
 
-    ("b" . "b")
-    ("m" . "m")
     ("w" . ",")
     ("v" . ".")
     ("z" . "j")
@@ -3527,35 +3519,25 @@ Version 2017-01-29"
     ("," . ".")
     ("." . "o")
     ("p" . ",")
-    ("y" . "y")
 
     ("f" . "v")
-    ("g" . "g")
-    ("c" . "c")
     ("r" . "l")
     ("l" . "ß")
 
     ("a" . "h")
     ("o" . "a")
-    ("e" . "e")
     ("u" . "i")
     ("i" . "u")
 
-    ("d" . "d")
     ("h" . "t")
     ("t" . "r")
-    ("n" . "n")
-    ("s" . "s")
 
     (";" . "x")
-    ("q" . "q")
     ("j" . "ä")
     ("k" . "ü")
     ("x" . "ö")
 
-    ("b" . "b")
     ("m" . "p")
-    ("w" . "w")
     ("v" . "m")
     ("z" . "j"))
   "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding koy layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
@@ -3569,23 +3551,17 @@ Version 2017-01-29"
     ("y" . "ä")
 
     ("f" . "v")
-    ("g" . "g")
-    ("c" . "c")
     ("r" . "l")
     ("l" . "j")
     ("/" . "f")
 
     ("a" . "h")
     ("o" . "i")
-    ("e" . "e")
     ("u" . "a")
     ("i" . "o")
 
-    ("d" . "d")
     ("h" . "t")
     ("t" . "r")
-    ("n" . "n")
-    ("s" . "s")
     ("-" . "ß")
 
     (";" . "x")
@@ -3594,11 +3570,8 @@ Version 2017-01-29"
     ("k" . ",")
     ("x" . "q")
 
-    ("b" . "b")
     ("m" . "p")
-    ("w" . "w")
-    ("v" . "m")
-    ("z" . "z"))
+    ("v" . "m"))
   "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding adnw layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
 
 (defvar xah--dvorak-to-pt-nativo-kmap
@@ -3760,7 +3733,6 @@ Version 2017-01-29"
     ("r" . "l")
     ("l" . "j")
 
-    ("a" . "a")
     ("o" . "u")
     ("e" . "i")
     ("u" . "e")
