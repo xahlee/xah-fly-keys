@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 13.21.20210719205611
+;; Version: 13.22.20210721084754
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2872,61 +2872,36 @@ Version 2020-02-13 2021-01-18"
   "Open the current file or dired marked files in external app.
 When called in emacs lisp, if @fname is given, open that.
 URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
-Version 2019-11-04 2021-06-30"
+Version 2019-11-04 2021-07-21"
   (interactive)
-  (let* (
-         ($file-list
+  (let ($fileList $doIt )
+    (setq $fileList
           (if @fname
-              (progn (list @fname))
+              (list @fname)
             (if (string-equal major-mode "dired-mode")
                 (dired-get-marked-files)
               (list (buffer-file-name)))))
-         ($do-it-p (if (<= (length $file-list) 5)
-                       t
-                     (y-or-n-p "Open more than 5 files? "))))
-    (when $do-it-p
+    (setq $doIt (if (<= (length $fileList) 5) t (y-or-n-p "Open more than 5 files? ")))
+    (when $doIt
       (cond
        ((string-equal system-type "windows-nt")
         (mapc
          (lambda ($fpath)
            (shell-command (concat "PowerShell -Command \"Invoke-Item -LiteralPath\" " "'" (shell-quote-argument (expand-file-name $fpath )) "'")))
-         $file-list))
+         $fileList))
        ((string-equal system-type "darwin")
-        (mapc
-         (lambda ($fpath)
-           (shell-command
-            (concat "open " (shell-quote-argument $fpath))))  $file-list))
+        (mapc (lambda ($fpath) (shell-command (concat "open " (shell-quote-argument $fpath)))) $fileList))
        ((string-equal system-type "gnu/linux")
-        (mapc
-         (lambda ($fpath) (let ((process-connection-type nil))
-                            (start-process "" nil "xdg-open" $fpath))) $file-list))
+        (mapc (lambda ($fpath) (let ((process-connection-type nil)) (start-process "" nil "xdg-open" $fpath))) $fileList))
        ((string-equal system-type "berkeley-unix")
-        (mapc
-         (lambda ($fpath) (let ((process-connection-type nil))
-                            (start-process "" nil "xdg-open" $fpath)))
-         $file-list))))))
-
-(defvar xah-fly-terminal-emulator nil
-  "Terminal emulator for *nix platforms, used by `xah-open-in-external-app'.
-Value should be a string.")
-
-(setq xah-fly-terminal-emulator
-      (cond
-       ((string-suffix-p "gnome-terminal\n" (shell-command-to-string "which gnome-terminal") :IGNORE-CASE)
-        "gnome-terminal")
-       ((string-suffix-p "konsole\n" (shell-command-to-string "which konsole") :IGNORE-CASE)
-        "konsole")
-       ((string-suffix-p "xterm\n" (shell-command-to-string "which xterm") :IGNORE-CASE)
-        "xterm")
-       (t (message "No known terminal emulator found.")
-          nil)))
+        (mapc (lambda ($fpath) (let ((process-connection-type nil)) (start-process "" nil "xdg-open" $fpath))) $fileList))))))
 
 (defun xah-open-in-terminal ()
   "Open the current dir in a new terminal window.
 On Microsoft Windows, it starts cross-platform PowerShell pwsh. You need to have it installed.
 
 URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
-Version 2020-11-21 2021-07-20"
+Version 2020-11-21 2021-07-21"
   (interactive)
   (cond
    ((string-equal system-type "windows-nt")
@@ -2934,18 +2909,13 @@ Version 2020-11-21 2021-07-20"
           ($cmdstr
            (format "pwsh -Command Start-Process pwsh -WorkingDirectory %s" (shell-quote-argument default-directory))))
       ;; (start-process "" nil "powershell" "Start-Process" "powershell"  "-WorkingDirectory" default-directory)
-      (message "Runs: %s" $cmdstr)
-      (shell-command $cmdstr)
-      ;;
-      ))
+      (shell-command $cmdstr)))
    ((string-equal system-type "darwin")
     (shell-command (concat "open -a terminal " (shell-quote-argument (expand-file-name default-directory )))))
    ((string-equal system-type "gnu/linux")
-    (let ((process-connection-type nil))
-      (start-process "" nil xah-fly-terminal-emulator)))
+    (let ((process-connection-type nil)) (start-process "" nil "x-terminal-emulator" (concat "--working-directory=" default-directory))))
    ((string-equal system-type "berkeley-unix")
-    (let ((process-connection-type nil))
-      (start-process "" nil xah-fly-terminal-emulator)))))
+    (let ((process-connection-type nil)) (start-process "" nil "x-terminal-emulator" (concat "--working-directory=" default-directory))))))
 
 (defun xah-next-window-or-frame ()
   "Switch to next window or frame.
