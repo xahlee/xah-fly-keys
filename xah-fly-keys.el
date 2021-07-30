@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 13.22.20210721092224
+;; Version: 13.23.20210721183558
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -3946,6 +3946,8 @@ minor modes loaded later may override bindings in this map.")
 
      ("<f7>" . xah-fly-leader-key-map)
 
+     ("C-1" . nil)
+     ("C-2" . pop-global-mark)
      ("C-3" . previous-error)
      ("C-4" . next-error)
      ("C-5" . xah-previous-emacs-buffer)
@@ -3962,26 +3964,28 @@ minor modes loaded later may override bindings in this map.")
      ("C-S-s" . write-file)
      ("C-S-t" . xah-open-last-closed)
 
+     ("C-@" . nil)
+
      ("C-a" . mark-whole-buffer)
-     ;; ("C-b" . nil)
+     ("C-b" . nil)
      ;; ("C-c" . nil)
-     ("C-d" . pop-global-mark)
-     ;; ("C-e" . nil)
-     ;; ("C-f" . nil)
+     ("C-d" . nil)
+     ("C-e" . nil)
+     ("C-f" . nil)
      ;; ("C-g" . nil)
      ;; ("C-h" . nil)
      ;; ("C-i" . nil)
-     ;; ("C-j" . nil)
-     ;; ("C-k" . nil)
-     ;; ("C-l" . nil)
+     ("C-j" . nil)
+     ("C-k" . nil)
+     ("C-l" . nil)
      ;; ("C-m" . nil)
      ("C-n" . xah-new-empty-buffer)
      ("C-o" . find-file)
-     ;; ("C-p" . nil)
+     ("C-p" . nil)
      ;; ("C-q" . nil)
      ;; ("C-r" . nil)
      ("C-s" . save-buffer)
-     ;; ("C-t" . nil)
+     ("C-t" . xah-new-empty-buffer)
      ;; ("C-u" . nil)
      ("C-v" . yank)
      ("C-w" . xah-close-current-buffer)
