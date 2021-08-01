@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 13.24.20210801123222
+;; Version: 13.25.20210801124745
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1265,12 +1265,14 @@ Version 2020-12-02 2021-04-14 2021-08-01"
         (setq $p2 (point))))
     (save-restriction
       (narrow-to-region $p1 $p2)
-      ;; (let ((fill-column most-positive-fixnum )) (fill-region (point-min) (point-max)))
-      (progn (goto-char (point-min)) (while (search-forward "\n" nil "NOERROR") (replace-match " " )))
-      (progn (goto-char (point-min)) (while (re-search-forward "\\. +\\([0-9A-Za-z]+\\)" nil "NOERROR") (replace-match ".\n\\1" )))
-      (progn (goto-char (point-min)) (while (search-forward "<a " nil "NOERROR") (replace-match "\n<a " )))
-      (progn (goto-char (point-min)) (while (search-forward "</a>" nil "NOERROR") (replace-match "</a>\n" )))
-      (insert "\n"))))
+      (progn (goto-char (point-min)) (while (search-forward "\n" nil t) (replace-match " " )))
+      (progn (goto-char (point-min)) (while (re-search-forward "  +" nil t) (replace-match " " )))
+      (progn (goto-char (point-min)) (while (re-search-forward "\\. +\\([0-9A-Za-z]+\\)" nil t) (replace-match ".\n\\1" )))
+      (progn (goto-char (point-min)) (while (search-forward " <a " nil t) (replace-match "\n<a " )))
+      (progn (goto-char (point-min)) (while (search-forward "</a>" nil t) (replace-match "</a>\n" )))
+      (goto-char (point-max))
+      (while (eq (char-before ) 32) (delete-char -1))
+      (insert "\n\n"))))
 
 (defun xah-space-to-newline ()
   "Replace space sequence to a newline char.
