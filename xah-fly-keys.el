@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 13.24.20210801122902
+;; Version: 13.24.20210801123222
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1268,7 +1268,7 @@ Version 2020-12-02 2021-04-14 2021-08-01"
       ;; (let ((fill-column most-positive-fixnum )) (fill-region (point-min) (point-max)))
       (progn (goto-char (point-min)) (while (search-forward "\n" nil "NOERROR") (replace-match " " )))
       (progn (goto-char (point-min)) (while (re-search-forward "\\. +\\([0-9A-Za-z]+\\)" nil "NOERROR") (replace-match ".\n\\1" )))
-      (progn (goto-char (point-min)) (while (search-forward "<a " nil "NOERROR") (replace-match "<a \n" )))
+      (progn (goto-char (point-min)) (while (search-forward "<a " nil "NOERROR") (replace-match "\n<a " )))
       (progn (goto-char (point-min)) (while (search-forward "</a>" nil "NOERROR") (replace-match "</a>\n" )))
       (insert "\n"))))
 
