@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 13.26.20210802114916
+;; Version: 13.27.20210802140553
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -4642,9 +4642,6 @@ URL `http://ergoemacs.org/misc/ergoemacs_vi_mode.html'"
         (add-hook 'minibuffer-setup-hook 'xah-fly-insert-mode-activate)
         (add-hook 'minibuffer-exit-hook 'xah-fly-command-mode-activate)
         (add-hook 'isearch-mode-end-hook 'xah-fly-command-mode-activate)
-        (add-hook 'eshell-mode-hook 'xah-fly-insert-mode-activate)
-        (add-hook 'shell-mode-hook 'xah-fly-insert-mode-activate)
-        ;; (add-hook 'dired-mode-hook 'xah-fly-keys-off)
         (when (and (keymapp xah-fly-key-map)
                    (not (memq xah-fly-key-map (list xah-fly-command-map
                                                     xah-fly-insert-map))))
@@ -4659,11 +4656,6 @@ URL `http://ergoemacs.org/misc/ergoemacs_vi_mode.html'"
     (remove-hook 'shell-mode-hook 'xah-fly-insert-mode-activate)
     (xah-fly-insert-mode-init :no-indication)
     (setq mode-line-front-space '(:eval (if (display-graphic-p) " " "-")))))
-
-(defun xah-fly-keys-off ()
-  "Turn off xah-fly-keys minor mode."
-  (interactive)
-  (xah-fly-keys 0))
 
 (provide 'xah-fly-keys)
 
