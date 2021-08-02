@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 13.25.20210801124745
+;; Version: 13.26.20210802114916
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -4018,20 +4018,16 @@ minor modes loaded later may override bindings in this map.")
 (xah-fly--define-keys
  (define-prefix-command 'xah-fly-dot-keymap)
  ;; 2019-02-22 experiment. this is now empty. so you can use this key space for all major mode custom keys or personal keys. These highlight command isn't used much in my experience
- '()
- ;; '(
- ;;   ("." . highlight-symbol-at-point)
- ;;   ("g" . unhighlight-regexp)
- ;;   ("c" . highlight-lines-matching-regexp)
- ;;   ("h" . highlight-regexp)
- ;;   ("t" . highlight-phrase)
- ;;   ("p" . isearch-forward-symbol-at-point)
- ;;   ;; ("c" . isearch-forward-symbol)
- ;;   ;; ("h" . isearch-forward-word)
-
- ;;   ;;
- ;;   )
- )
+ '(
+   ("." . highlight-symbol-at-point)
+   ("g" . unhighlight-regexp)
+   ("c" . highlight-lines-matching-regexp)
+   ("h" . highlight-regexp)
+   ("t" . highlight-phrase)
+   ;; ("p" . isearch-forward-symbol-at-point)
+   ;; ("c" . isearch-forward-symbol)
+   ;; ("h" . isearch-forward-word)
+   ))
 
 (xah-fly--define-keys
  (define-prefix-command 'xah-fly--tab-key-map)
