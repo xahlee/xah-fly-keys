@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 13.28.20210806145426
+;; Version: 13.29.20210806152107
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2723,26 +2723,16 @@ Version 2019-03-22"
       (kill-buffer (current-buffer)))))
 
 (defun xah-delete-current-file (&optional @no-backup-p)
-  "Delete current file or directory of dired.
+  "Delete current file.
 If buffer is a file, make a backup~, push content to `kill-ring' (unless buffer is greater than 1 mega bytes.), then delete it.
 If buffer is not associate with a file, push content to `kill-ring' (unless buffer is greater than 1 mega bytes.), then kill it.
 If buffer is dired, do nothing.
 
-This commands may call `xah-delete-current-file-make-backup'.
-
-If next buffer is dired, refresh it.
-
 URL `http://ergoemacs.org/emacs/elisp_delete-current-file.html'
-Version 2020-02-14"
+Version 2020-02-14 2021-08-06"
   (interactive "P")
   (if (eq major-mode 'dired-mode)
-      (progn
-        (message "you in dired. nothing's done.")
-        ;; (dired-up-directory)
-        ;; (dired-flag-file-deletion 1)
-        ;; (dired-do-flagged-delete)
-        ;; (revert-buffer)
-        )
+      (message "you in dired. nothing's done.")
     (let (($bstr (buffer-string)))
       (when (> (length $bstr) 0)
         (if (< (point-max) 1000000)
@@ -3986,7 +3976,7 @@ minor modes loaded later may override bindings in this map.")
      ;; ("C-q" . nil)
      ;; ("C-r" . nil)
      ("C-s" . save-buffer)
-     ("C-t" . xah-new-empty-buffer)
+     ("C-t" . nil)
      ;; ("C-u" . nil)
      ("C-v" . yank)
      ("C-w" . xah-close-current-buffer)
@@ -4260,7 +4250,7 @@ minor modes loaded later may override bindings in this map.")
 (xah-fly--define-keys
  (define-prefix-command 'xah-fly-w-keymap)
  '(
-   ("DEL" . xah-delete-current-file)
+   ("d" . xah-delete-current-file)
    ("." . eval-buffer)
    ("e" . eval-defun)
    ("m" . eval-last-sexp)
