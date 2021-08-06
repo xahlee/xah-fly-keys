@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 13.28.20210803125758
+;; Version: 13.28.20210806145426
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -3944,6 +3944,8 @@ minor modes loaded later may override bindings in this map.")
      ("<C-next>" . xah-next-user-buffer)
 
      ("<f7>" . xah-fly-leader-key-map)
+
+     ;; 2021-08-06 todo. setting to nil does not work. need to study the shared map thing. also, it seems to override other major mode from defining the control+key space
 
      ("C-1" . nil)
      ("C-2" . pop-global-mark)
