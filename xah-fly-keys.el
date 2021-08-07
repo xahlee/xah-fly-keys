@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 13.29.20210806152107
+;; Version: 14.0.20210807134825
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2198,6 +2198,11 @@ Version 2020-11-24 2021-07-11"
 ;; HHH___________________________________________________________________
 ;; misc
 
+(defun xah-beep ()
+  "Beep"
+  (interactive)
+  (ding))
+
 (defun xah-user-buffer-q ()
   "Return t if current buffer is a user buffer, else nil.
 Typically, if buffer name starts with *, it's not considered a user buffer.
@@ -3917,7 +3922,61 @@ minor modes loaded later may override bindings in this map.")
 (when xah-fly-use-meta-key
   (xah-fly--define-keys
    xah-fly-shared-map
-   '(("M-SPC" . xah-fly-command-mode-activate))
+   '(
+
+     ("M-SPC" . xah-fly-command-mode-activate)
+     ("M-\"" . xah-beep) ; delete-horizontal-space
+
+     ("M-!" . xah-beep) ; shell-command
+     ("M-$" . xah-beep) ; ispell-word
+     ("M-%" . xah-beep) ; query-replace
+     ("M-&" . xah-beep) ; async-shell-command
+     ("M-'" . xah-beep) ; abbrev-prefix-mark
+     ("M-(" . xah-beep) ; insert-parentheses
+     ("M-)" . xah-beep) ; move-past-close-and-reindent
+     ;; ("M-," . xah-beep) ; xref-pop-marker-stack
+     ;; ("M-." . xah-beep) ; xref-find-definitions
+     ("M-/" . xah-beep) ; dabbrev-expand
+     ("M-:" . xah-beep) ; eval-expression
+     ;; ("M-;" . xah-beep) ; comment-dwim
+     ("M-<" . xah-beep) ; beginning-of-buffer
+     ("M-=" . xah-beep) ; count-words-region
+     ("M->" . xah-beep) ; end-of-buffer
+     ;; ("M-?" . xah-beep) ; xref-find-references
+     ("M-@" . xah-beep) ; mark-word
+     ("M-^" . xah-beep) ; delete-indentation
+     ("M-`" . xah-beep) ; tmm-menubar
+     ("M-a" . xah-beep) ; backward-sentence
+     ("M-b" . nil)           ; backward-word
+     ("M-c" . xah-beep) ; capitalize-word
+     ("M-d" . xah-beep) ;  kill-word
+     ("M-e" . xah-beep) ; forward-sentence
+     ("M-f" . xah-beep) ; forward-word
+     ("M-g" . xah-beep) ; Prefix Command
+     ("M-h" . xah-beep) ; mark-paragraph
+     ("M-i" . xah-beep) ; tab-to-tab-stop
+     ("M-j" . xah-beep) ; default-indent-new-line
+     ("M-k" . xah-beep) ; kill-sentence
+     ("M-l" . xah-beep) ; downcase-word
+     ("M-m" . xah-beep) ; back-to-indentation
+     ("M-o" . xah-beep) ; facemenu-keymap
+     ("M-q" . xah-beep) ; fill-paragraph
+     ("M-r" . xah-beep) ; move-to-window-line-top-bottom
+     ("M-s" . xah-beep) ; Prefix Command
+     ("M-t" . xah-beep) ; transpose-words
+     ("M-u" . xah-beep) ; upcase-word
+     ("M-v" . xah-beep) ; scroll-down-command
+     ("M-w" . xah-beep) ; kill-ring-save
+     ;; ("M-x" . xah-beep) ; execute-extended-command
+     ;; ("M-y" . xah-beep) ; yank-pop
+     ("M-z" . xah-beep)   ; zap-to-char
+     ("M-{" . xah-beep)   ; backward-paragraph
+     ("M-|" . xah-beep)   ; shell-command-on-region
+     ("M-}" . xah-beep)   ; forward-paragraph
+     ("M-~" . xah-beep)   ; not-modified
+     ("M-DEL" . xah-beep) ; backward-kill-word
+
+     )
    :direct))
 
 (when xah-fly-use-control-key
@@ -3937,7 +3996,7 @@ minor modes loaded later may override bindings in this map.")
 
      ;; 2021-08-06 todo. setting to nil does not work. need to study the shared map thing. also, it seems to override other major mode from defining the control+key space
 
-     ("C-1" . nil)
+     ("C-1" . xah-beep)
      ("C-2" . pop-global-mark)
      ("C-3" . previous-error)
      ("C-4" . next-error)
@@ -3955,33 +4014,33 @@ minor modes loaded later may override bindings in this map.")
      ("C-S-s" . write-file)
      ("C-S-t" . xah-open-last-closed)
 
-     ("C-@" . nil)
+     ("C-@" . xah-beep)
 
      ("C-a" . mark-whole-buffer)
-     ("C-b" . nil)
-     ;; ("C-c" . nil)
-     ("C-d" . nil)
-     ("C-e" . nil)
-     ("C-f" . nil)
-     ;; ("C-g" . nil)
-     ;; ("C-h" . nil)
-     ;; ("C-i" . nil)
-     ("C-j" . nil)
-     ("C-k" . nil)
-     ("C-l" . nil)
-     ;; ("C-m" . nil)
+     ("C-b" . xah-beep)
+     ;; ("C-c" . xah-beep)
+     ("C-d" . xah-beep)
+     ("C-e" . xah-beep)
+     ("C-f" . xah-beep)
+     ;; ("C-g" . xah-beep)
+     ;; ("C-h" . xah-beep)
+     ;; ("C-i" . xah-beep)
+     ("C-j" . xah-beep)
+     ("C-k" . xah-beep)
+     ("C-l" . xah-beep)
+     ;; ("C-m" . xah-beep)
      ("C-n" . xah-new-empty-buffer)
      ("C-o" . find-file)
-     ("C-p" . nil)
-     ;; ("C-q" . nil)
-     ;; ("C-r" . nil)
+     ("C-p" . xah-beep)
+     ;; ("C-q" . xah-beep)
+     ;; ("C-r" . xah-beep)
      ("C-s" . save-buffer)
-     ("C-t" . nil)
-     ;; ("C-u" . nil)
+     ("C-t" . xah-beep)
+     ;; ("C-u" . xah-beep)
      ("C-v" . yank)
      ("C-w" . xah-close-current-buffer)
-     ;; ("C-x" . nil)
-     ;; ("C-y" . nil)
+     ;; ("C-x" . xah-beep)
+     ;; ("C-y" . xah-beep)
      ("C-z" . undo)
      ;;
      )
