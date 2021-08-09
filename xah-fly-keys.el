@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 14.2.20210808193021
+;; Version: 14.3.20210809003153
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1496,18 +1496,16 @@ Version 2016-10-04 2019-11-24"
     (user-error "Not in dired")))
 
 (defun xah-cycle-hyphen-underscore-space ( &optional @begin @end )
-  "Cycle {underscore, space, hyphen} chars in selection or inside quote/bracket or line.
-When called repeatedly, this command cycles the {“_”, “-”, “ ”} characters, in that order.
-
+  "Cycle lowline/space/hyphen chars in selection or inside quote/bracket or line.
+When this command is called, pressing t will repeat it. Press other key to exit.
 The region to work on is by this order:
- ① if there is a selection, use that.
- ② If cursor is string quote or any type of bracket, and is within current line, work on that region.
- ③ else, work on current line.
-
+ 1. if there is a selection, use that.
+ 2. If cursor is string quote or any type of bracket, and is within current line, work on that region.
+ 3. else, work on current line.
 URL `http://ergoemacs.org/emacs/elisp_change_space-hyphen_underscore.html'
-Version 2019-02-12 2021-07-21"
+Version 2019-02-12 2021-08-09"
   (interactive)
-  ;; this function sets a property 「'state」. Possible values are 0 to length of $charArray.
+  ;; this function sets a property 'state. Possible values are 0 to length of $charArray.
   (let ($p1 $p2)
     (if (and @begin @end)
         (setq $p1 @begin $p2 @end)
@@ -1519,11 +1517,7 @@ Version 2019-02-12 2021-07-21"
               (setq $p1 (point))
               (skip-chars-forward "^\"")
               (setq $p2 (point)))
-          (let ($skipChars)
-            (setq $skipChars
-                  (if (boundp 'xah-brackets)
-                      (concat "^\"" xah-brackets)
-                    "^\"<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕（）"))
+          (let (($skipChars "^\"<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕（）"))
             (skip-chars-backward $skipChars (line-beginning-position))
             (setq $p1 (point))
             (skip-chars-forward $skipChars (line-end-position))
@@ -1539,34 +1533,14 @@ Version 2019-02-12 2021-07-21"
         (save-restriction
           (narrow-to-region $p1 $p2)
           (goto-char (point-min))
-          (while
-              (re-search-forward
-               (elt $charArray (% (+ $nowState 2) $length))
-               ;; (concat
-               ;;  (elt $charArray (% (+ $nowState 1) $length))
-               ;;  "\\|"
-               ;;  (elt $charArray (% (+ $nowState 2) $length)))
-               (point-max)
-               "move")
+          (while (re-search-forward (elt $charArray (% (+ $nowState 2) $length)) (point-max) "move")
             (replace-match $changeTo "FIXEDCASE" "LITERAL"))))
       (when (or (string-equal $changeTo " ") $regionWasActive-p)
         (goto-char $p2)
         (set-mark $p1)
         (setq deactivate-mark nil))
-      (put 'xah-cycle-hyphen-underscore-space 'state (% (+ $nowState 1) $length)))))
-
-(defun xah-underscore-to-space-region (@begin @end)
-  "Change underscore char to space.
-URL `http://ergoemacs.org/emacs/elisp_change_space-hyphen_underscore.html'
-Version 2017-01-11"
-  (interactive "r")
-  (save-excursion
-    (save-restriction
-      (narrow-to-region @begin @end)
-      (goto-char (point-min))
-      (while
-          (re-search-forward "_" (point-max) "move")
-        (replace-match " " "FIXEDCASE" "LITERAL")))))
+      (put 'xah-cycle-hyphen-underscore-space 'state (% (+ $nowState 1) $length))))
+  (set-transient-map (let (($kmap (make-sparse-keymap))) (define-key $kmap (kbd "t") 'xah-cycle-hyphen-underscore-space ) $kmap)))
 
 (defun xah-copy-file-path (&optional @dir-path-only-p)
   "Copy the current buffer's file path or dired path to `kill-ring'.
