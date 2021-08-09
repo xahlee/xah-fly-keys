@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 14.1.20210807151553
+;; Version: 14.2.20210808193021
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -430,7 +430,7 @@ Version 2015-03-24"
 ;; editing commands
 
 (defun xah-copy-line-or-region ()
-  "Copy current line, or text selection.
+  "Copy current line or selection.
 When called repeatedly, append copy subsequent lines.
 When `universal-argument' is called first, copy whole buffer (respects `narrow-to-region').
 
@@ -467,7 +467,7 @@ Version 2019-10-30"
               (forward-char))))))))
 
 (defun xah-cut-line-or-region ()
-  "Cut current line, or text selection.
+  "Cut current line or selection.
 When `universal-argument' is called first, cut whole buffer (respects `narrow-to-region').
 
 URL `http://ergoemacs.org/emacs/emacs_copy_cut_current_line.html'
@@ -482,7 +482,7 @@ Version 2015-06-10"
              (kill-region (line-beginning-position) (line-beginning-position 2))))))
 
 (defun xah-copy-all-or-region ()
-  "Put the whole buffer content to `kill-ring', or text selection if there's one.
+  "Copy buffer or selection content to `kill-ring'.
 Respects `narrow-to-region'.
 URL `http://ergoemacs.org/emacs/emacs_copy_cut_all_or_region.html'
 Version 2015-08-22"
@@ -496,7 +496,7 @@ Version 2015-08-22"
       (message "Buffer content copied."))))
 
 (defun xah-cut-all-or-region ()
-  "Cut the whole buffer content to `kill-ring', or text selection if there's one.
+  "Cut buffer or selection content to `kill-ring'.
 Respects `narrow-to-region'.
 URL `http://ergoemacs.org/emacs/emacs_copy_cut_all_or_region.html'
 Version 2015-08-22"
@@ -564,24 +564,8 @@ Version 2019-12-02 2021-07-03"
        kill-ring))
     (goto-char (point-min))))
 
-(defun xah-kill-word ()
-  "Like `kill-word', but delete selection first if there's one.
-Version 2018-08-31"
-  (interactive)
-  (when (use-region-p)
-    (delete-region (region-beginning) (region-end)))
-  (kill-word 1))
-
-(defun xah-backward-kill-word ()
-  "Like `backward-kill-word', but delete selection first if there's one.
-Version 2018-08-31"
-  (interactive)
-  (when (use-region-p)
-    (delete-region (region-beginning) (region-end)))
-  (backward-kill-word 1))
-
 (defun xah-delete-backward-char-or-bracket-text ()
-  "Delete backward 1 character, but if it's a \"quote\" or bracket ()[]{}【】「」 etc, delete bracket and the inner text, push the deleted text to `kill-ring'.
+  "Delete backward 1 character, but if it is a \"quote\" or bracket ()[]{}【】「」 etc, delete bracket and the inner text, push the deleted text to `kill-ring'.
 
 What char is considered bracket or quote is determined by current syntax table.
 
@@ -618,7 +602,7 @@ Version 2017-07-02"
 (defun xah-delete-backward-bracket-text ()
   "Delete the matching brackets/quotes to the left of cursor, including the inner text.
 
-This command assumes the left of cursor is a right bracket, and there's a matching one before it.
+This command assumes the left of cursor is a right bracket, and there is a matching one before it.
 
 What char is considered bracket or quote is determined by current syntax table.
 
@@ -635,7 +619,7 @@ Version 2017-09-21"
 
 After the command, mark is set at the left matching bracket position, so you can `exchange-point-and-mark' to select it.
 
-This command assumes the left of point is a right bracket, and there's a matching one before it.
+This command assumes the left of point is a right bracket, and there is a matching one before it.
 
 What char is considered bracket or quote is determined by current syntax table.
 
@@ -681,7 +665,7 @@ Version 2017-07-02"
 
 For example, change all parenthesis () to square brackets [].
 
-Works on selected text, or current text block.
+Works on selected text, or current block.
 
 When called in lisp program, @from-chars or @to-chars is a string of bracket pair. eg \"(paren)\",  \"[bracket]\", etc.
 The first and last characters are used. (the middle is for convenience in ido selection.)
@@ -822,7 +806,7 @@ Version 2020-11-01"
                     (replace-match $toRight "FIXEDCASE" "LITERAL")))))))))))
 
 (defun xah-toggle-letter-case ()
-  "Toggle the letter case of current word or text selection.
+  "Toggle the letter case of current word or selection.
 Always cycle in this order: Init Caps, ALL CAPS, all lower.
 
 URL `http://ergoemacs.org/emacs/modernization_upcase-word.html'
@@ -869,7 +853,7 @@ Version 2015-12-22"
     (right-char)))
 
 (defun xah-upcase-sentence ()
-  "Upcase first letters of sentences of current text block or selection.
+  "Upcase first letters of sentences of current block or selection.
 
 URL `http://ergoemacs.org/emacs/emacs_upcase_sentence.html'
 Version 2020-12-08 2020-12-24"
@@ -916,7 +900,7 @@ Version 2020-12-08 2020-12-24"
               (overlay-put (make-overlay (match-beginning 2) (match-end 2)) 'face 'highlight))))))))
 
 (defun xah-title-case-region-or-line (@begin @end)
-  "Title case text between nearest brackets, or current line, or text selection.
+  "Title case text between nearest brackets, or current line or selection.
 Capitalize first letter of each word, except words like {to, of, the, a, in, or, and, …}. If a word already contains cap letters such as HTTP, URL, they are left as is.
 
 When called in a elisp program, @begin @end are region boundaries.
@@ -1084,9 +1068,8 @@ Version 2019-01-30 2021-01-16"
   (redraw-frame (selected-frame)))
 
 (defun xah-fill-or-unfill ()
-  "Reformat current paragraph to short lines or one long line.
+  "Reformat current block or selection to short/long line.
 First call will break into multiple short lines. Repeated call toggles between short and long lines.
-When there is a text selection, act on the selection.
 This commands calls `fill-region' to do its work. Set `fill-column' for short line length.
 
 URL `http://ergoemacs.org/emacs/modernization_fill-paragraph.html'
@@ -1173,10 +1156,8 @@ Version 2017-01-11"
         (replace-match " ")))))
 
 (defun xah-reformat-to-multi-lines ( &optional @begin @end @min-length)
-  "Replace spaces by a newline at places so lines less than 70 chars.
-When there is a text selection, act on the selection, else, act on a text block separated by blank lines.
-
-If `universal-argument' is called first, ask user to type max width.
+  "Replace spaces by a newline at ~70 chars, on current block or selection.
+If `universal-argument' is called first, ask user for max width.
 
 URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
 Version 2018-12-16 2021-07-06"
@@ -1209,9 +1190,9 @@ Version 2018-12-16 2021-07-06"
             (replace-match "\n" )))))))
 
 (defun xah-reformat-lines ( &optional @width)
-  "Reformat current text block or selection into short lines or 1 long line.
+  "Reformat current block or selection into short lines or 1 long line.
 When called for the first time, change to one long line. Second call change it to multiple short lines. Repeated call toggles.
-If `universal-argument' is called first, ask user to type max length of line. By default, it's 70.
+If `universal-argument' is called first, ask user to type max length of line. By default, it is 70.
 
 URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
 Created 2016 or before.
@@ -1248,8 +1229,7 @@ Version 2021-07-05"
       (put this-command 'isLong-p (not isLong-p)))))
 
 (defun xah-reformat-to-sentence-lines ()
-  "Break a long line or text block into multiple lines by ending period.
-Work on text selection if there is one, else the current text block.
+  "Reformat current block or selection into multiple lines by ending period.
 URL `http://ergoemacs.org/emacs/elisp_reformat_to_sentence_lines.html'
 Version 2020-12-02 2021-04-14 2021-08-03"
   (interactive)
@@ -1385,8 +1365,8 @@ Version 2016-10-25"
             (forward-line )))))))
 
 (defun xah-quote-lines ()
-  "Change current text block's lines to quoted lines with comma or other separator char.
-When there is a text selection, act on the selection, else, act on a text block separated by blank lines.
+  "Change current block's lines to quoted lines with comma or other.
+Act on current block or selection.
 
 For example,
 
@@ -1447,9 +1427,9 @@ Version 2020-06-26 2021-07-21"
               (forward-char 1))))))))
 
 (defun xah-escape-quotes (@begin @end)
-  "Replace 「\"」 by 「\\\"」 in current line or text selection.
+  "Add slash before double quote in current line or selection.
+Double quote is codepoint 34.
 See also: `xah-unescape-quotes'
-
 URL `http://ergoemacs.org/emacs/elisp_escape_quotes.html'
 Version 2017-01-11"
   (interactive
@@ -1464,7 +1444,7 @@ Version 2017-01-11"
           (replace-match "\\\"" "FIXEDCASE" "LITERAL")))))
 
 (defun xah-unescape-quotes (@begin @end)
-  "Replace  「\\\"」 by 「\"」 in current line or text selection.
+  "Replace  「\\\"」 by 「\"」 in current line or selection.
 See also: `xah-escape-quotes'
 
 URL `http://ergoemacs.org/emacs/elisp_escape_quotes.html'
@@ -1520,7 +1500,7 @@ Version 2016-10-04 2019-11-24"
 When called repeatedly, this command cycles the {“_”, “-”, “ ”} characters, in that order.
 
 The region to work on is by this order:
- ① if there's active region (text selection), use that.
+ ① if there is a selection, use that.
  ② If cursor is string quote or any type of bracket, and is within current line, work on that region.
  ③ else, work on current line.
 
@@ -1620,12 +1600,12 @@ Version 2018-06-18"
          $fpath )))))
 
 ;; (defun xah-delete-text-block ()
-;;   "Delete current/next text block or selection, and also copy to `kill-ring'.
+;;   "Delete current/next block or selection, and also copy to `kill-ring'.
 
 ;; A “block” is text between blank lines.
 ;; The “current block” is the block the cursor is at.
 ;; If cursor is not on a block, deletes the next block.
-;; If there's a text selection, just delete that region.
+;; If there is a selection, just delete that region.
 
 ;; URL `http://ergoemacs.org/emacs/emacs_delete_block.html'
 ;; Version 2016-10-10"
@@ -1640,7 +1620,7 @@ Version 2018-06-18"
 ;;           (xah-delete-current-text-block))))))
 
 (defun xah-delete-current-text-block ()
-  "Delete the current text block or selection, and copy to `kill-ring'.
+  "Delete the current block or selection, and copy to `kill-ring'.
 A “block” is text between blank lines.
 
 URL `http://ergoemacs.org/emacs/emacs_delete_block.html'
@@ -1670,7 +1650,7 @@ Version 2015-12-08"
     (message "Cleared register 1.")))
 
 (defun xah-copy-to-register-1 ()
-  "Copy current line or text selection to register 1.
+  "Copy current line or selection to register 1.
 See also: `xah-paste-from-register-1', `copy-to-register'.
 
 URL `http://ergoemacs.org/emacs/elisp_copy-paste_register_1.html'
@@ -1684,7 +1664,7 @@ Version 2017-01-23"
     (message "Copied to register 1: 「%s」." (buffer-substring-no-properties $p1 $p2))))
 
 (defun xah-append-to-register-1 ()
-  "Append current line or text selection to register 1.
+  "Append current line or selection to register 1.
 When no selection, append current line, with newline char.
 See also: `xah-paste-from-register-1', `copy-to-register'.
 
@@ -1727,7 +1707,7 @@ version 2016-07-17"
   "Insert current date time.
 Insert date in this format: yyyy-mm-dd.
 If `universal-argument' is called first, prompt for a format to use.
-If there's text selection, delete it first.
+If there is selection, delete it first.
 
 URL `http://ergoemacs.org/emacs/elisp_insert-date-time.html'
 version 2020-09-07"
@@ -1808,7 +1788,7 @@ version 2020-09-07"
 
  @left-bracket and @right-bracket are strings. @wrap-method must be either 'line or 'block. 'block means between empty lines.
 
-• if there's a region, add brackets around region.
+• if there is a region, add brackets around region.
 • If @wrap-method is 'line, wrap around line.
 • If @wrap-method is 'block, wrap around block.
 • if cursor is at beginning of line and its not empty line and contain at least 1 space, wrap around the line.
@@ -1820,7 +1800,7 @@ version 2020-09-07"
 URL `http://ergoemacs.org/emacs/elisp_insert_brackets_by_pair.html'
 Version 2017-01-17"
   (if (use-region-p)
-      (progn ; there's active region
+      (progn ; there is active region
         (let (
               ($p1 (region-beginning))
               ($p2 (region-end)))
@@ -1829,7 +1809,7 @@ Version 2017-01-17"
           (goto-char $p1)
           (insert @left-bracket)
           (goto-char (+ $p2 2))))
-    (progn ; no text selection
+    (progn ; no selection
       (let ($p1 $p2)
         (cond
          ((eq @wrap-method 'line)
@@ -2078,11 +2058,11 @@ Version 2017-11-01 2021-03-19"
   "Select the current word, bracket/quote expression, or expand selection.
 Subsequent calls expands the selection.
 
-when there's no selection,
+when there is no selection,
 • if cursor is on a any type of bracket (including parenthesis, quotation mark), select whole bracketed thing including bracket
 • else, select current word.
 
-when there's a selection, the selection extension behavior is still experimental. But when cursor is on a any type of bracket (parenthesis, quote), it extends selection to outer bracket.
+when there is a selection, the selection extension behavior is still experimental. But when cursor is on a any type of bracket (parenthesis, quote), it extends selection to outer bracket.
 
 URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
 Version 2020-02-04"
@@ -2170,7 +2150,7 @@ Version 2020-02-04"
         ;; (message "left and right both newline")
         (skip-chars-forward "\n")
         (set-mark (point))
-        (re-search-forward "\n[ \t]*\n")) ; between blank lines, select next text block
+        (re-search-forward "\n[ \t]*\n")) ; between blank lines, select next block
        (t
         ;; (message "just mark sexp" )
         (mark-sexp)
@@ -2200,7 +2180,7 @@ Version 2020-11-24 2021-07-11"
 
 (defun xah-user-buffer-q ()
   "Return t if current buffer is a user buffer, else nil.
-Typically, if buffer name starts with *, it's not considered a user buffer.
+Typically, if buffer name starts with *, it is not considered a user buffer.
 This function is used by buffer switching command and close buffer command, so that next buffer shown is a user buffer.
 You can override this function to get your idea of “user buffer”.
 Version 2016-06-18"
@@ -2373,7 +2353,7 @@ Version 2019-02-26"
 
 (defun xah-open-file-at-cursor ()
   "Open the file path under cursor.
-If there is text selection, uses the text selection for path.
+If there is selection, use it for path.
 If the path starts with “http://”, open the URL in browser.
 Input path can be {relative, full path, URL}.
 Path may have a trailing “:‹n›” that indicates line number, or “:‹n›:‹m›” with line and column number. If so, jump to that line number.
@@ -2388,7 +2368,7 @@ Version 2020-10-17 2021-02-24"
           (if (use-region-p)
               (buffer-substring-no-properties (region-beginning) (region-end))
             (let ($p0 $p1 $p2
-                      ;; chars that are likely to be delimiters of file path or url, e.g. whitespace, comma. The colon is a problem. cuz it's in url, but not in file name. Don't want to use just space as delimiter because path or url are often in brackets or quotes as in markdown or html
+                      ;; chars that are likely to be delimiters of file path or url, e.g. whitespace, comma. The colon is a problem. cuz it is in url, but not in file name. Don't want to use just space as delimiter because path or url are often in brackets or quotes as in markdown or html
                       ($pathStops "^  \t\n\"`'‘’“”|[]{}「」<>〔〕〈〉《》【】〖〗«»‹›❮❯❬❭〘〙·。\\"))
               (setq $p0 (point))
               (skip-chars-backward $pathStops)
@@ -2576,9 +2556,8 @@ Version 2020-09-24 2021-01-21"
     (run-hooks 'xah-run-current-file-after-hook)))
 
 (defun xah-clean-empty-lines ()
-  "Replace repeated blank lines to just 1.
-Works on whole buffer or text selection, respects `narrow-to-region'.
-
+  "Replace repeated blank lines to just 1, in whole buffer or selection.
+Respects `narrow-to-region'.
 URL `http://ergoemacs.org/emacs/elisp_compact_empty_lines.html'
 Version 2017-09-22 2020-09-08"
   (interactive)
@@ -2597,7 +2576,7 @@ Version 2017-09-22 2020-09-08"
 (defun xah-clean-whitespace ()
   "Delete trailing whitespace, and replace repeated blank lines to just 1.
 Only space and tab is considered whitespace here.
-Works on whole buffer or text selection, respects `narrow-to-region'.
+Works on whole buffer or selection, respects `narrow-to-region'.
 
 URL `http://ergoemacs.org/emacs/elisp_compact_empty_lines.html'
 Version 2017-09-22 2020-09-08"
@@ -2629,7 +2608,7 @@ If in dired, backup current file or marked files.
 The backup file name is in this format
  x.html~2018-05-15_133429~
  The last part is hour, minutes, seconds.
-in the same dir. If such a file already exist, it's overwritten.
+in the same dir. If such a file already exist, it is overwritten.
 If the current buffer is not associated with a file, nothing's done.
 
 URL `http://ergoemacs.org/emacs/elisp_make-backup.html'
@@ -2732,7 +2711,7 @@ URL `http://ergoemacs.org/emacs/elisp_delete-current-file.html'
 Version 2020-02-14 2021-08-06"
   (interactive "P")
   (if (eq major-mode 'dired-mode)
-      (message "you in dired. nothing's done.")
+      (message "you in dired. nothing is done.")
     (let (($bstr (buffer-string)))
       (when (> (length $bstr) 0)
         (if (< (point-max) 1000000)
@@ -2752,7 +2731,7 @@ Version 2020-02-14 2021-08-06"
 ;; HHH___________________________________________________________________
 
 (defun xah-search-current-word ()
-  "Call `isearch' on current word or text selection.
+  "Call `isearch' on current word or selection.
 “word” here is A to Z, a to z, and hyphen 「-」 and underline 「_」, independent of syntax table.
 URL `http://ergoemacs.org/emacs/modernization_isearch.html'
 Version 2015-04-09"
@@ -3703,7 +3682,7 @@ Version 2017-01-29"
 (define-obsolete-variable-alias 'xah-fly-key--current-layout 'xah-fly-key-current-layout "2020-04-09")
 (defcustom xah-fly-key-current-layout nil
   "The current keyboard layout. Use `xah-fly-keys-set-layout' to set the layout.
-If the value is nil, it's automatically set to \"dvorak\"."
+If the value is nil, it is automatically set to \"dvorak\"."
   :type '(choice
           (const :tag "AZERTY" azerty)
           (const :tag "Adnw" adnw)
@@ -3853,7 +3832,7 @@ minor modes loaded later may override bindings in this map.")
    ("'" . xah-reformat-lines)
    ("," . xah-shrink-whitespaces)
    ("-" . xah-cycle-hyphen-underscore-space)
-   ("." . xah-backward-kill-word)
+   ("." . backward-kill-word)
    (";" . xah-comment-dwim)
    ("/" . hippie-expand)
    ("\\" . nil)
@@ -3892,7 +3871,7 @@ minor modes loaded later may override bindings in this map.")
    ("m" . xah-backward-left-bracket)
    ("n" . forward-char)
    ("o" . open-line)
-   ("p" . xah-kill-word)
+   ("p" . kill-word)
    ("q" . xah-cut-line-or-region)
    ("r" . forward-word)
    ("s" . xah-end-of-line-or-block)
@@ -4372,7 +4351,7 @@ minor modes loaded later may override bindings in this map.")
    ("h" . xah-fly-h-keymap)
    ("i" . kill-line)
    ("j" . xah-copy-all-or-region)
-   ("k" . xah-paste-or-paste-previous)
+   ;; k
    ("l" . recenter-top-bottom)
    ("m" . dired-jump)
    ("n" . xah-fly-n-keymap)
