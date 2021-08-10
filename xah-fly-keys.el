@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 14.3.20210809003153
+;; Version: 14.4.20210809190805
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -798,12 +798,12 @@ Version 2020-11-01"
                   (goto-char (point-min))
                   (while (search-forward $fromLeft nil t)
                     (overlay-put (make-overlay (match-beginning 0) (match-end 0)) 'face 'highlight)
-                    (replace-match $toLeft "FIXEDCASE" "LITERAL")))
+                    (replace-match $toLeft t t)))
                 (progn
                   (goto-char (point-min))
                   (while (search-forward $fromRight nil t)
                     (overlay-put (make-overlay (match-beginning 0) (match-end 0)) 'face 'highlight)
-                    (replace-match $toRight "FIXEDCASE" "LITERAL")))))))))))
+                    (replace-match $toRight t t)))))))))))
 
 (defun xah-toggle-letter-case ()
   "Toggle the letter case of current word or selection.
@@ -956,7 +956,7 @@ Version 2017-01-11 2021-03-30"
              (goto-char (point-min))
              (while
                  (search-forward (aref $x 0) nil t)
-               (replace-match (aref $x 1) "FIXEDCASE" "LITERAL"))
+               (replace-match (aref $x 1) t t))
              ;;
              )
            $strPairs))))))
@@ -1441,7 +1441,7 @@ Version 2017-01-11"
         (narrow-to-region @begin @end)
         (goto-char (point-min))
         (while (search-forward "\"" nil t)
-          (replace-match "\\\"" "FIXEDCASE" "LITERAL")))))
+          (replace-match "\\\"" t t)))))
 
 (defun xah-unescape-quotes (@begin @end)
   "Replace  「\\\"」 by 「\"」 in current line or selection.
@@ -1458,7 +1458,7 @@ Version 2017-01-11"
       (narrow-to-region @begin @end)
       (goto-char (point-min))
       (while (search-forward "\\\"" nil t)
-        (replace-match "\"" "FIXEDCASE" "LITERAL")))))
+        (replace-match "\"" t t)))))
 
 (defun xah-dired-rename-space-to-underscore ()
   "In dired, rename current or marked files by replacing space to lowline _.
@@ -1495,8 +1495,8 @@ Version 2016-10-04 2019-11-24"
         (revert-buffer))
     (user-error "Not in dired")))
 
-(defun xah-cycle-hyphen-underscore-space ( &optional @begin @end )
-  "Cycle lowline/space/hyphen chars in selection or inside quote/bracket or line.
+(defun xah-cycle-hyphen-lowline-space ( &optional @begin @end )
+  "Cycle hyphen/lowline/space chars in selection or inside quote/bracket or line, in that order.
 When this command is called, pressing t will repeat it. Press other key to exit.
 The region to work on is by this order:
  1. if there is a selection, use that.
@@ -1524,23 +1524,23 @@ Version 2019-02-12 2021-08-09"
             (setq $p2 (point))
             (set-mark $p1)))))
     (let ( $charArray $length $regionWasActive-p $nowState $changeTo)
-      (setq $charArray ["_" "-" " "])
+      (setq $charArray ["-" "_" " "])
       (setq $length (length $charArray))
       (setq $regionWasActive-p (region-active-p))
-      (setq $nowState (if (eq last-command this-command) (get 'xah-cycle-hyphen-underscore-space 'state) 0 ))
+      (setq $nowState (if (eq last-command this-command) (get 'xah-cycle-hyphen-lowline-space 'state) 0 ))
       (setq $changeTo (elt $charArray $nowState))
       (save-excursion
         (save-restriction
           (narrow-to-region $p1 $p2)
           (goto-char (point-min))
           (while (re-search-forward (elt $charArray (% (+ $nowState 2) $length)) (point-max) "move")
-            (replace-match $changeTo "FIXEDCASE" "LITERAL"))))
+            (replace-match $changeTo t t))))
       (when (or (string-equal $changeTo " ") $regionWasActive-p)
         (goto-char $p2)
         (set-mark $p1)
         (setq deactivate-mark nil))
-      (put 'xah-cycle-hyphen-underscore-space 'state (% (+ $nowState 1) $length))))
-  (set-transient-map (let (($kmap (make-sparse-keymap))) (define-key $kmap (kbd "t") 'xah-cycle-hyphen-underscore-space ) $kmap)))
+      (put 'xah-cycle-hyphen-lowline-space 'state (% (+ $nowState 1) $length))))
+  (set-transient-map (let (($kmap (make-sparse-keymap))) (define-key $kmap (kbd "t") 'xah-cycle-hyphen-lowline-space ) $kmap)))
 
 (defun xah-copy-file-path (&optional @dir-path-only-p)
   "Copy the current buffer's file path or dired path to `kill-ring'.
@@ -2742,7 +2742,7 @@ Version 2020-11-20 2021-01-31"
     (cond
      ((string-equal system-type "windows-nt")
       (shell-command (format "PowerShell -Command invoke-item '%s'" (expand-file-name default-directory )))
-      ;; (let ( ($cmd (format "Explorer /select,%s"  (shell-quote-argument (replace-regexp-in-string "/" "\\" $path "FIXEDCASE" "LITERAL" )))))
+      ;; (let ( ($cmd (format "Explorer /select,%s"  (shell-quote-argument (replace-regexp-in-string "/" "\\" $path t t )))))
       ;;   (shell-command $cmd))
       )
      ((string-equal system-type "darwin")
@@ -3805,7 +3805,7 @@ minor modes loaded later may override bindings in this map.")
 
    ("'" . xah-reformat-lines)
    ("," . xah-shrink-whitespaces)
-   ("-" . xah-cycle-hyphen-underscore-space)
+   ("-" . xah-cycle-hyphen-lowline-space)
    ("." . backward-kill-word)
    (";" . xah-comment-dwim)
    ("/" . hippie-expand)
