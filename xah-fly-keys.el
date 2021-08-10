@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 14.4.20210809190805
+;; Version: 14.4.20210809192720
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -771,28 +771,28 @@ Version 2020-11-01"
               (while
                   (re-search-forward "`\\([^`]+?\\)`" nil t)
                 (overlay-put (make-overlay (match-beginning 0) (match-end 0)) 'face 'highlight)
-                (replace-match (concat $toLeft "\\1" $toRight ) "FIXEDCASE" ))))
+                (replace-match (concat $toLeft "\\1" $toRight ) t ))))
            ((string-match "tilde" @from-chars)
             (progn
               (goto-char (point-min))
               (while
                   (re-search-forward "~\\([^~]+?\\)~" nil t)
                 (overlay-put (make-overlay (match-beginning 0) (match-end 0)) 'face 'highlight)
-                (replace-match (concat $toLeft "\\1" $toRight ) "FIXEDCASE" ))))
+                (replace-match (concat $toLeft "\\1" $toRight ) t ))))
            ((string-match "ascii quote" @from-chars)
             (progn
               (goto-char (point-min))
               (while
                   (re-search-forward "\"\\([^\"]+?\\)\"" nil t)
                 (overlay-put (make-overlay (match-beginning 0) (match-end 0)) 'face 'highlight)
-                (replace-match (concat $toLeft "\\1" $toRight ) "FIXEDCASE" ))))
+                (replace-match (concat $toLeft "\\1" $toRight ) t ))))
            ((string-match "equal" @from-chars)
             (progn
               (goto-char (point-min))
               (while
                   (re-search-forward "=\\([^=]+?\\)=" nil t)
                 (overlay-put (make-overlay (match-beginning 0) (match-end 0)) 'face 'highlight)
-                (replace-match (concat $toLeft "\\1" $toRight ) "FIXEDCASE" ))))
+                (replace-match (concat $toLeft "\\1" $toRight ) t ))))
            (t (progn
                 (progn
                   (goto-char (point-min))
@@ -812,9 +812,7 @@ Always cycle in this order: Init Caps, ALL CAPS, all lower.
 URL `http://ergoemacs.org/emacs/modernization_upcase-word.html'
 Version 2020-06-26"
   (interactive)
-  (let (
-        (deactivate-mark nil)
-        $p1 $p2)
+  (let ( (deactivate-mark nil) $p1 $p2)
     (if (use-region-p)
         (setq $p1 (region-beginning) $p2 (region-end))
       (save-excursion
