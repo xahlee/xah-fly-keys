@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 14.4.20210809192720
+;; Version: 14.4.20210811224240
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -616,8 +616,7 @@ Version 2017-09-21"
 
 (defun xah-delete-backward-bracket-pair ()
   "Delete the matching brackets/quotes to the left of cursor.
-
-After the command, mark is set at the left matching bracket position, so you can `exchange-point-and-mark' to select it.
+After call, mark is set at the matching bracket position, so you can `exchange-point-and-mark' to select it.
 
 This command assumes the left of point is a right bracket, and there is a matching one before it.
 
@@ -3800,7 +3799,6 @@ minor modes loaded later may override bindings in this map.")
 
    ("SPC" . xah-fly-leader-key-map)
    ("DEL" . xah-fly-leader-key-map)
-
    ("'" . xah-reformat-lines)
    ("," . xah-shrink-whitespaces)
    ("-" . xah-cycle-hyphen-lowline-space)
