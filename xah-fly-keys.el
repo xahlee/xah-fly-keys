@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 14.6.20210813004054
+;; Version: 14.7.20210813012842
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1461,14 +1461,20 @@ Version 2018-06-18"
          $fpath )))))
 
 (defun xah-delete-current-text-block ()
-  "Delete the current block or selection, and copy to `kill-ring'.
-A “block” is text between blank lines.
-
+  "Delete the current text block plus a blank line, or selection, and copy to `kill-ring'.
 URL `http://ergoemacs.org/emacs/emacs_delete_block.html'
 Version 2017-07-09 2021-08-13"
   (interactive)
   (let ($p1 $p2)
-    (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
+    (if (use-region-p)
+        (setq $p1 (region-beginning) $p2 (region-end))
+      (progn
+        (if (re-search-backward "\n[ \t]*\n+" nil "move")
+            (progn (re-search-forward "\n[ \t]*\n+")
+                   (setq $p1 (point)))
+          (setq $p1 (point)))
+        (re-search-forward "\n[ \t]*\n" nil "move")
+        (setq $p2 (point))))
     (kill-region $p1 $p2)))
 
 (defun xah-clear-register-1 ()
