@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 14.7.20210813012842
+;; Version: 14.8.20210813025231
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -161,10 +161,10 @@
 Version 2021-08-12"
   (let ( $p1 $p2 ($blankRegex "\n[ \t]*\n"))
     (save-excursion
-      (setq $p1 (if (re-search-backward $blankRegex nil "move")
+      (setq $p1 (if (re-search-backward $blankRegex nil 1)
                     (goto-char (match-end 0))
                   (point)))
-      (setq $p2 (if (re-search-forward $blankRegex nil "move")
+      (setq $p2 (if (re-search-forward $blankRegex nil 1)
                     (match-beginning 0)
                   (point))))
     (cons $p1 $p2 )))
@@ -200,7 +200,7 @@ Version 2018-06-04 2021-03-16"
   (let (($p (point)))
     (if (or (equal (point) (line-beginning-position))
             (eq last-command this-command))
-        (if (re-search-backward "\n[\t\n ]*\n+" nil "move")
+        (if (re-search-backward "\n[\t\n ]*\n+" nil 1)
             (progn
               (skip-chars-backward "\n\t ")
               ;; (forward-char )
@@ -225,7 +225,7 @@ Version 2018-06-04 2021-03-16"
   (interactive)
   (if (or (equal (point) (line-end-position))
           (eq last-command this-command))
-      (re-search-forward "\n[\t\n ]*\n+" nil "move" )
+      (re-search-forward "\n[\t\n ]*\n+" nil 1 )
     (if visual-line-mode
         (end-of-visual-line)
       (end-of-line))))
@@ -271,7 +271,6 @@ Version 2017-06-26"
 (defun xah-backward-punct (&optional n)
   "Move cursor to the previous occurrence of punctuation.
 See `xah-forward-punct'
-
 URL `http://ergoemacs.org/emacs/emacs_jump_to_punctuations.html'
 Version 2017-06-26"
   (interactive "p")
@@ -311,43 +310,6 @@ Version 2016-11-22"
       (backward-sexp))
      (t (backward-up-list 1 'ESCAPE-STRINGS 'NO-SYNTAX-CROSSING)))))
 
-(defun xah-forward-equal-quote ()
-  "Move cursor to the next occurrence of 「='」 or 「=\"」, with or without space.
-URL `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
-Version 2015-05-05"
-  (interactive)
-  (re-search-forward "=[ \n]*\\('+\\|\\\"+\\)" nil t))
-
-(defun xah-forward-equal-sign ()
-  "Move cursor to the next occurrence of equal sign 「=」.
-URL `http://ergoemacs.org/emacs/emacs_jump_to_punctuations.html'
-Version 2015-06-15"
-  (interactive)
-  (re-search-forward "=+" nil t))
-
-(defun xah-backward-equal-sign ()
-  "Move cursor to previous occurrence of equal sign 「=」.
-URL `http://ergoemacs.org/emacs/emacs_jump_to_punctuations.html'
-Version 2015-06-15"
-  (interactive)
-  (when (re-search-backward "=+" nil t)
-    (while (search-backward "=" (- (point) 1) t)
-      (left-char))))
-
-(defun xah-forward-comma-sign ()
-  "Move cursor to the next occurrence of comma 「,」.
-Version 2016-01-19"
-  (interactive)
-  (re-search-forward ",+" nil t))
-
-(defun xah-backward-comma-sign ()
-  "Move cursor to previous occurrence of comma sign 「,」.
-Version 2016-01-19"
-  (interactive)
-  (when (re-search-backward ",+" nil t)
-    (while (search-backward "," (- (point) 1) t)
-      (left-char))))
-
 (defun xah-forward-quote ()
   "Move cursor to the next occurrence of \".
 If there are consecutive quotes of the same char, keep moving until none.
@@ -386,36 +348,6 @@ Version 2016-11-22"
       (progn (re-search-forward "\\\"" nil t)))
     (when (<= (point) $pos)
       (progn (re-search-forward "\\\"" nil t)))))
-
-(defun xah-backward-quote ()
-  "Move cursor to the previous occurrence of \".
-If there are consecutive quotes of the same char, keep moving until none.
-Returns `t' if found, else `nil'.
-URL `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
-Version 2016-07-23"
-  (interactive)
-  (if (re-search-backward "\\\"+" nil t)
-      (when (char-before) ; isn't nil, at beginning of buffer
-        (while (char-equal (char-before) (char-after))
-          (left-char)
-          t))
-    (progn
-      (message "No more quotes before cursor.")
-      nil)))
-
-(defun xah-forward-dot-comma ()
-  "Move cursor to the next occurrence of 「.」 「,」 「;」.
-URL `http://ergoemacs.org/emacs/emacs_jump_to_punctuations.html'
-Version 2015-03-24"
-  (interactive)
-  (re-search-forward "\\.+\\|,+\\|;+" nil t))
-
-(defun xah-backward-dot-comma ()
-  "Move cursor to the previous occurrence of 「.」 「,」 「;」
-URL `http://ergoemacs.org/emacs/emacs_jump_to_punctuations.html'
-Version 2015-03-24"
-  (interactive)
-  (re-search-backward "\\.+\\|,+\\|;+" nil t))
 
 ;; HHH___________________________________________________________________
 ;; editing commands
@@ -838,12 +770,12 @@ Version 2020-12-08 2020-12-24 2021-08-13"
         (let ((case-fold-search nil))
           ;; after period or question mark or exclamation
           (goto-char (point-min))
-          (while (re-search-forward "\\(\\.\\|\\?\\|!\\)[ \n]+ *\\([a-z]\\)" nil "move")
+          (while (re-search-forward "\\(\\.\\|\\?\\|!\\)[ \n]+ *\\([a-z]\\)" nil 1)
             (upcase-region (match-beginning 2) (match-end 2))
             (overlay-put (make-overlay (match-beginning 2) (match-end 2)) 'face 'highlight))
           ;; after a blank line, after a bullet, or beginning of buffer
           (goto-char (point-min))
-          (while (re-search-forward "\\(\\`\\|• \\|\n\n\\)\\([a-z]\\)" nil "move")
+          (while (re-search-forward "\\(\\`\\|• \\|\n\n\\)\\([a-z]\\)" nil 1)
             (upcase-region (match-beginning 2) (match-end 2))
             (overlay-put (make-overlay (match-beginning 2) (match-end 2)) 'face 'highlight))
           ;; for HTML. first letter after tag
@@ -857,7 +789,7 @@ Version 2020-12-08 2020-12-24 2021-08-13"
                (eq major-mode 'mhtml-mode))
             (goto-char (point-min))
             (while
-                (re-search-forward "\\(<h[1-6]>[ \n]?\\|<p>[ \n]?\\|<li>[ \n]?\\|<dd>[ \n]?\\|<td>[ \n]?\\|<br ?/?>[ \n]?\\|<figcaption>[ \n]?\\)\\([a-z]\\)" nil "move")
+                (re-search-forward "\\(<h[1-6]>[ \n]?\\|<p>[ \n]?\\|<li>[ \n]?\\|<dd>[ \n]?\\|<td>[ \n]?\\|<br ?/?>[ \n]?\\|<figcaption>[ \n]?\\)\\([a-z]\\)" nil 1)
               (upcase-region (match-beginning 2) (match-end 2))
               (overlay-put (make-overlay (match-beginning 2) (match-end 2)) 'face 'highlight))))))))
 
@@ -1075,7 +1007,7 @@ Version 2021-07-06"
     (save-restriction
       (narrow-to-region @begin @end)
       (goto-char (point-min))
-      (while (re-search-forward "\n\n+" nil "move") (replace-match "\n")))))
+      (while (re-search-forward "\n\n+" nil 1) (replace-match "\n")))))
 
 (defun xah-reformat-whitespaces-to-one-space (@begin @end)
   "Replace whitespaces by one space.
@@ -1088,15 +1020,15 @@ Version 2017-01-11"
       (narrow-to-region @begin @end)
       (goto-char (point-min))
       (while
-          (search-forward "\n" nil "move")
+          (search-forward "\n" nil 1)
         (replace-match " "))
       (goto-char (point-min))
       (while
-          (search-forward "\t" nil "move")
+          (search-forward "\t" nil 1)
         (replace-match " "))
       (goto-char (point-min))
       (while
-          (re-search-forward "  +" nil "move")
+          (re-search-forward "  +" nil 1)
         (replace-match " ")))))
 
 (defun xah-reformat-to-multi-lines ( &optional @begin @end @minLength)
@@ -1115,7 +1047,7 @@ Version 2018-12-16 2021-07-06 2021-08-12"
       (save-restriction
         (narrow-to-region $p1 $p2)
         (goto-char (point-min))
-        (while (re-search-forward " +" nil "move")
+        (while (re-search-forward " +" nil 1)
           (when (> (- (point) (line-beginning-position)) $minlen)
             (replace-match "\n" )))))))
 
@@ -1420,7 +1352,7 @@ Version 2019-02-12 2021-08-09"
         (save-restriction
           (narrow-to-region $p1 $p2)
           (goto-char (point-min))
-          (while (re-search-forward (elt $charArray (% (+ $nowState 2) $length)) (point-max) "move")
+          (while (re-search-forward (elt $charArray (% (+ $nowState 2) $length)) (point-max) 1)
             (replace-match $changeTo t t))))
       (when (or (string-equal $changeTo " ") $regionWasActive-p)
         (goto-char $p2)
@@ -1469,11 +1401,10 @@ Version 2017-07-09 2021-08-13"
     (if (use-region-p)
         (setq $p1 (region-beginning) $p2 (region-end))
       (progn
-        (if (re-search-backward "\n[ \t]*\n+" nil "move")
-            (progn (re-search-forward "\n[ \t]*\n+")
-                   (setq $p1 (point)))
+        (if (re-search-backward "\n[ \t]*\n+" nil 1)
+            (setq $p1 (goto-char (match-end 0)))
           (setq $p1 (point)))
-        (re-search-forward "\n[ \t]*\n" nil "move")
+        (re-search-forward "\n[ \t]*\n" nil 1)
         (setq $p2 (point))))
     (kill-region $p1 $p2)))
 
@@ -1826,14 +1757,14 @@ If region is active, extend selection downward by block.
 URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
 Version 2019-12-26 2021-04-04 2021-08-13"
   (interactive)
-  (if (use-region-p)
-      (re-search-forward "\n[ \t]*\n[ \t]*\n*" nil "move")
+  (if (region-active-p)
+      (re-search-forward "\n[ \t]*\n[ \t]*\n*" nil 1)
     (progn
       (skip-chars-forward " \n\t")
-      (when (re-search-backward "\n[ \t]*\n" nil "move")
-        (re-search-forward "\n[ \t]*\n"))
+      (when (re-search-backward "\n[ \t]*\n" nil 1)
+        (goto-char (match-end 0)))
       (push-mark (point) t t)
-      (re-search-forward "\n[ \t]*\n" nil "move"))))
+      (re-search-forward "\n[ \t]*\n" nil 1))))
 
 (defun xah-select-line ()
   "Select current line. If region is active, extend selection downward by line.
@@ -2373,7 +2304,7 @@ Version 2017-09-22 2020-09-08"
         (narrow-to-region $begin $end)
         (progn
           (goto-char (point-min))
-          (while (re-search-forward "\n\n\n+" nil "move")
+          (while (re-search-forward "\n\n\n+" nil 1)
             (replace-match "\n\n")))))))
 
 (defun xah-clean-whitespace ()
@@ -2393,11 +2324,11 @@ Version 2017-09-22 2020-09-08"
         (narrow-to-region $begin $end)
         (progn
           (goto-char (point-min))
-          (while (re-search-forward "[ \t]+\n" nil "move")
+          (while (re-search-forward "[ \t]+\n" nil 1)
             (replace-match "\n")))
         (progn
           (goto-char (point-min))
-          (while (re-search-forward "\n\n\n+" nil "move")
+          (while (re-search-forward "\n\n\n+" nil 1)
             (replace-match "\n\n")))
         (progn
           (goto-char (point-max))
@@ -3638,12 +3569,11 @@ minor modes loaded later may override bindings in this map.")
    (";" . xah-comment-dwim)
    ("/" . hippie-expand)
    ("\\" . nil)
-   ;; ("=" . xah-forward-equal-sign)
+   ("=" . nil)
    ("[" . xah-backward-punct )
    ("]" . xah-forward-punct)
    ("`" . other-frame)
 
-   ;; ("#" . xah-backward-quote)
    ;; ("$" . xah-forward-punct)
 
    ("1" . xah-extend-selection)
