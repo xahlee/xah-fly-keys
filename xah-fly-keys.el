@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 14.5.20210812205125
+;; Version: 14.6.20210813002036
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -155,6 +155,26 @@
   "If nil, do not bind the arrow keys to move between matches in Isearch."
   :type 'boolean
   :group 'xah-fly-keys)
+
+(defun xah-get-bounds-of-block ()
+  "Return the boundary (START . END) of block under cursor.
+Version 2021-08-12"
+  (let ( $p1 $p2 ($blankRegex "\n[ \t]*\n"))
+    (save-excursion
+      (setq $p1 (if (re-search-backward $blankRegex nil "move")
+                    (goto-char (match-end 0))
+                  (point)))
+      (setq $p2 (if (re-search-forward $blankRegex nil "move")
+                    (match-beginning 0)
+                  (point))))
+    (cons $p1 $p2 )))
+
+(defun xah-get-bounds-of-block-or-region ()
+  "If region is active, return its boundary, else same as `xah-get-bounds-of-block'.
+Version 2021-08-12"
+  (if (region-active-p)
+      (cons (region-beginning) (region-end))
+    (xah-get-bounds-of-block)))
 
 ;; HHH___________________________________________________________________
 ;; cursor movement
@@ -672,7 +692,7 @@ If the string contains “,2”, then the first 2 chars and last 2 chars are use
 If @to-chars is equal to string “none”, the brackets are deleted.
 
 URL `http://ergoemacs.org/emacs/elisp_change_brackets.html'
-Version 2020-11-01"
+Version 2020-11-01 2021-08-12"
   (interactive
    (let (($bracketsList
           '("(paren)"
@@ -722,25 +742,11 @@ Version 2020-11-01"
       (ido-completing-read "Replace this:" $bracketsList )
       (ido-completing-read "To:" $bracketsList ))))
   (let ( $p1 $p2 )
-    (if (use-region-p)
-        (setq $p1 (region-beginning) $p2 (region-end))
-      (save-excursion
-        (if (re-search-backward "\n[ \t]*\n" nil "move")
-            (progn (re-search-forward "\n[ \t]*\n")
-                   (setq $p1 (point)))
-          (setq $p1 (point)))
-        (if (re-search-forward "\n[ \t]*\n" nil "move")
-            (progn (re-search-backward "\n[ \t]*\n")
-                   (setq $p2 (point)))
-          (setq $p2 (point)))))
+    (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
     (save-excursion
       (save-restriction
         (narrow-to-region $p1 $p2)
-        (let ( (case-fold-search nil)
-               $fromLeft
-               $fromRight
-               $toLeft
-               $toRight)
+        (let ( (case-fold-search nil) $fromLeft $fromRight $toLeft $toRight)
           (cond
            ((string-match ",2" @from-chars  )
             (progn
@@ -853,20 +859,10 @@ Version 2015-12-22"
   "Upcase first letters of sentences of current block or selection.
 
 URL `http://ergoemacs.org/emacs/emacs_upcase_sentence.html'
-Version 2020-12-08 2020-12-24"
+Version 2020-12-08 2020-12-24 2021-08-13"
   (interactive)
   (let ($p1 $p2)
-    (if (use-region-p)
-        (setq $p1 (region-beginning) $p2 (region-end))
-      (save-excursion
-        (if (re-search-backward "\n[ \t]*\n" nil "move")
-            (progn
-              (setq $p1 (point))
-              (re-search-forward "\n[ \t]*\n"))
-          (setq $p1 (point)))
-        (progn
-          (re-search-forward "\n[ \t]*\n" nil "move")
-          (setq $p2 (point)))))
+    (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
     (save-excursion
       (save-restriction
         (narrow-to-region $p1 $p2)
@@ -1070,28 +1066,13 @@ First call will break into multiple short lines. Repeated call toggles between s
 This commands calls `fill-region' to do its work. Set `fill-column' for short line length.
 
 URL `http://ergoemacs.org/emacs/modernization_fill-paragraph.html'
-Version 2020-11-22"
+Version 2020-11-22 2021-08-13"
   (interactive)
   ;; This command symbol has a property “'longline-p”, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
-  (let ( ($longline-p
-          (if (eq last-command this-command)
-              (get this-command 'longline-p)
-            t))
+  (let ( ($longline-p (if (eq last-command this-command) (get this-command 'longline-p) t))
          (deactivate-mark nil)
-         ($blanksRegex "\n[ \t]*\n")
-         $p1 $p2
-         )
-    (if (use-region-p)
-        (setq $p1 (region-beginning) $p2 (region-end))
-      (save-excursion
-        (if (re-search-backward $blanksRegex nil "move")
-            (progn (re-search-forward $blanksRegex)
-                   (setq $p1 (point)))
-          (setq $p1 (point)))
-        (if (re-search-forward $blanksRegex nil "move")
-            (progn (re-search-backward $blanksRegex)
-                   (setq $p2 (point)))
-          (setq $p2 (point)))))
+         $p1 $p2 )
+    (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
     (if $longline-p
         (fill-region $p1 $p2)
       (let ((fill-column most-positive-fixnum ))
@@ -1152,37 +1133,23 @@ Version 2017-01-11"
           (re-search-forward "  +" nil "move")
         (replace-match " ")))))
 
-(defun xah-reformat-to-multi-lines ( &optional @begin @end @min-length)
+(defun xah-reformat-to-multi-lines ( &optional @begin @end @minLength)
   "Replace spaces by a newline at ~70 chars, on current block or selection.
 If `universal-argument' is called first, ask user for max width.
 
 URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
-Version 2018-12-16 2021-07-06"
+Version 2018-12-16 2021-07-06 2021-08-12"
   (interactive)
-  (let ( $p1 $p2 $blanksRegex $minlen )
-    (setq $blanksRegex "\n[ \t]*\n")
-    (setq $minlen (if @min-length
-                      @min-length
-                    (if current-prefix-arg (prefix-numeric-value current-prefix-arg) fill-column)))
-    (if (and  @begin @end)
+  (let ( $p1 $p2 $minlen )
+    (setq $minlen (if @minLength @minLength (if current-prefix-arg (prefix-numeric-value current-prefix-arg) fill-column)))
+    (if (and @begin @end)
         (setq $p1 @begin $p2 @end)
-      (if (use-region-p)
-          (setq $p1 (region-beginning) $p2 (region-end))
-        (save-excursion
-          (if (re-search-backward $blanksRegex nil "move")
-              (progn (re-search-forward $blanksRegex)
-                     (setq $p1 (point)))
-            (setq $p1 (point)))
-          (if (re-search-forward $blanksRegex nil "move")
-              (progn (re-search-backward $blanksRegex)
-                     (setq $p2 (point)))
-            (setq $p2 (point))))))
+      (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds))))
     (save-excursion
       (save-restriction
         (narrow-to-region $p1 $p2)
         (goto-char (point-min))
-        (while
-            (re-search-forward " +" nil "move")
+        (while (re-search-forward " +" nil "move")
           (when (> (- (point) (line-beginning-position)) $minlen)
             (replace-match "\n" )))))))
 
@@ -1193,35 +1160,18 @@ If `universal-argument' is called first, ask user to type max length of line. By
 
 URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
 Created 2016 or before.
-Version 2021-07-05"
+Version 2021-07-05 2021-08-13"
   (interactive)
   ;; This command symbol has a property 'is-long-p, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
-  (let ( $isLong $blanksRegex $p1 $p2 )
-    (setq @width (if @width
-                     @width
-                   (if current-prefix-arg
-                       (prefix-numeric-value current-prefix-arg) 70 )))
-    (setq $isLong
-          (if (eq last-command this-command)
-              (get this-command 'is-long-p)
-            nil))
-    (setq $blanksRegex "\n[ \t]*\n")
-    (if (use-region-p)
-        (setq $p1 (region-beginning) $p2 (region-end))
-      (save-excursion
-        (if (re-search-backward $blanksRegex nil "move")
-            (progn (re-search-forward $blanksRegex)
-                   (setq $p1 (point)))
-          (setq $p1 (point)))
-        (if (re-search-forward $blanksRegex nil "move")
-            (progn (re-search-backward $blanksRegex)
-                   (setq $p2 (point)))
-          (setq $p2 (point)))))
+  (let ( $isLong $width $p1 $p2)
+    (setq $width (if @width @width (if current-prefix-arg (prefix-numeric-value current-prefix-arg) 70 )))
+    (setq $isLong (if (eq last-command this-command) (get this-command 'is-long-p) nil))
+    (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
     (progn
       (if current-prefix-arg
-          (xah-reformat-to-multi-lines $p1 $p2 @width)
+          (xah-reformat-to-multi-lines $p1 $p2 $width)
         (if $isLong
-            (xah-reformat-to-multi-lines $p1 $p2 @width)
+            (xah-reformat-to-multi-lines $p1 $p2 $width)
           (xah-reformat-whitespaces-to-one-space $p1 $p2)))
       (put this-command 'is-long-p (not $isLong)))))
 
@@ -1232,15 +1182,7 @@ URL `http://ergoemacs.org/emacs/elisp_reformat_to_sentence_lines.html'
 Version 2020-12-02 2021-04-14 2021-08-03 2021-08-12"
   (interactive)
   (let ($p1 $p2)
-    (if (use-region-p)
-        (setq $p1 (region-beginning) $p2 (region-end))
-      (progn
-        (if (re-search-backward "\n[ \t]*\n+" nil "move")
-            (progn (re-search-forward "\n[ \t]*\n+")
-                   (setq $p1 (point)))
-          (setq $p1 (point)))
-        (re-search-forward "\n[ \t]*\n" nil "move")
-        (setq $p2 (point))))
+    (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
     (save-restriction
       (narrow-to-region $p1 $p2)
       (progn (goto-char (point-min)) (while (search-forward "\n" nil t) (replace-match " " )))
@@ -1250,23 +1192,12 @@ Version 2020-12-02 2021-04-14 2021-08-03 2021-08-12"
   (set-transient-map (let (($kmap (make-sparse-keymap))) (define-key $kmap (kbd "t") 'xah-reformat-to-sentence-lines ) $kmap)))
 
 (defun xah-space-to-newline ()
-  "Replace space sequence to a newline char.
-Works on current block or selection.
-
+  "Replace space sequence to a newline char in current block or selection.
 URL `http://ergoemacs.org/emacs/emacs_space_to_newline.html'
-Version 2017-08-19"
+Version 2017-08-19 2021-08-12"
   (interactive)
-  (let* ( $p1 $p2 )
-    (if (use-region-p)
-        (setq $p1 (region-beginning) $p2 (region-end))
-      (save-excursion
-        (if (re-search-backward "\n[ \t]*\n" nil "move")
-            (progn (re-search-forward "\n[ \t]*\n")
-                   (setq $p1 (point)))
-          (setq $p1 (point)))
-        (re-search-forward "\n[ \t]*\n" nil "move")
-        (skip-chars-backward " \t\n" )
-        (setq $p2 (point))))
+  (let ( $p1 $p2 )
+    (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
     (save-excursion
       (save-restriction
         (narrow-to-region $p1 $p2)
@@ -1278,14 +1209,14 @@ Version 2017-08-19"
   "Replace slash by backslash on current line or region.
 Version 2021-07-14"
   (interactive)
-  (let (p1 p2)
+  (let ($p1 $p2)
     (if pos1
-        (setq p1 pos1 p2 pos2)
+        (setq $p1 pos1 $p2 pos2)
       (if (region-active-p)
-          (setq p1 (region-beginning) p2 (region-end))
-        (setq p1 (line-beginning-position) p2 (line-end-position))))
+          (setq $p1 (region-beginning) $p2 (region-end))
+        (setq $p1 (line-beginning-position) $p2 (line-end-position))))
     (save-restriction
-      (narrow-to-region p1 p2)
+      (narrow-to-region $p1 $p2)
       (let ((case-fold-search nil))
         (goto-char (point-min))
         (while (search-forward "/" nil t)
@@ -1295,14 +1226,14 @@ Version 2021-07-14"
   "Replace slash by double backslash on current line or region.
 Version 2021-07-14"
   (interactive)
-  (let (p1 p2)
+  (let ($p1 $p2)
     (if pos1
-        (setq p1 pos1 p2 pos2)
+        (setq $p1 pos1 $p2 pos2)
       (if (region-active-p)
-          (setq p1 (region-beginning) p2 (region-end))
-        (setq p1 (line-beginning-position) p2 (line-end-position))))
+          (setq $p1 (region-beginning) $p2 (region-end))
+        (setq $p1 (line-beginning-position) $p2 (line-end-position))))
     (save-restriction
-      (narrow-to-region p1 p2)
+      (narrow-to-region $p1 $p2)
       (let ((case-fold-search nil))
         (goto-char (point-min))
         (while (search-forward "/" nil t)
@@ -1312,14 +1243,14 @@ Version 2021-07-14"
   "Replace double backslash by slash on current line or region.
 Version 2021-07-14"
   (interactive)
-  (let (p1 p2)
+  (let ($p1 $p2)
     (if pos1
-        (setq p1 pos1 p2 pos2)
+        (setq $p1 pos1 $p2 pos2)
       (if (region-active-p)
-          (setq p1 (region-beginning) p2 (region-end))
-        (setq p1 (line-beginning-position) p2 (line-end-position))))
+          (setq $p1 (region-beginning) $p2 (region-end))
+        (setq $p1 (line-beginning-position) $p2 (line-end-position))))
     (save-restriction
-      (narrow-to-region p1 p2)
+      (narrow-to-region $p1 $p2)
       (let ((case-fold-search nil))
         (goto-char (point-min))
         (while (search-forward "\\\\" nil t)
@@ -1388,29 +1319,20 @@ or
 If the delimiter is any left bracket, the end delimiter is automatically the matching bracket.
 
 URL `http://ergoemacs.org/emacs/emacs_quote_lines.html'
-Version 2020-06-26 2021-07-21"
+Version 2020-06-26 2021-07-21 2021-08-13"
   (interactive)
   (let ( $p1 $p2 $quoteToUse $separator $beginQuote $endQuote )
-         (setq $quoteToUse (read-string "Quote to use:" "\"" nil '( "" "\"" "'" "(" "{" "[" )))
-         (setq $separator (read-string "line separator:" "," nil '( "" "," ";" )))
-         (setq $beginQuote $quoteToUse)
-         (setq $endQuote
+    (setq $quoteToUse (read-string "Quote to use:" "\"" nil '( "" "\"" "'" "(" "{" "[" )))
+    (setq $separator (read-string "line separator:" "," nil '( "" "," ";" )))
+    (setq $beginQuote $quoteToUse)
+    (setq $endQuote
           ;; if begin quote is a bracket, set end quote to the matching one. else, same as begin quote
           (let (($syntableValue (aref (syntax-table) (string-to-char $beginQuote))))
             (if (eq (car $syntableValue ) 4) ; ; syntax table, code 4 is open paren
                 (char-to-string (cdr $syntableValue))
               $quoteToUse
               )))
-    (if (use-region-p)
-        (setq $p1 (region-beginning) $p2 (region-end))
-      (progn
-        (if (re-search-backward "\n[ \t]*\n" nil "move")
-            (progn (re-search-forward "\n[ \t]*\n")
-                   (setq $p1 (point)))
-          (setq $p1 (point)))
-        (re-search-forward "\n[ \t]*\n" nil "move")
-        (skip-chars-backward " \t\n" )
-        (setq $p2 (point))))
+    (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
     (save-excursion
       (save-restriction
         (narrow-to-region $p1 $p2)
@@ -1572,43 +1494,15 @@ Version 2018-06-18"
          (message "File path copied: %s" $fpath)
          $fpath )))))
 
-;; (defun xah-delete-text-block ()
-;;   "Delete current/next block or selection, and also copy to `kill-ring'.
-
-;; A “block” is text between blank lines.
-;; The “current block” is the block the cursor is at.
-;; If cursor is not on a block, deletes the next block.
-;; If there is a selection, just delete that region.
-
-;; URL `http://ergoemacs.org/emacs/emacs_delete_block.html'
-;; Version 2016-10-10"
-;;   (interactive)
-;;   (if (use-region-p)
-;;       (kill-region (region-beginning) (region-end))
-;;     (progn
-;;       (beginning-of-line)
-;;       (if (re-search-forward "[[:graph:]]" (line-end-position) "move")
-;;           (xah-delete-current-text-block)
-;;         (when (re-search-forward "[[:graph:]]" )
-;;           (xah-delete-current-text-block))))))
-
 (defun xah-delete-current-text-block ()
   "Delete the current block or selection, and copy to `kill-ring'.
 A “block” is text between blank lines.
 
 URL `http://ergoemacs.org/emacs/emacs_delete_block.html'
-Version 2017-07-09"
+Version 2017-07-09 2021-08-13"
   (interactive)
   (let ($p1 $p2)
-    (if (use-region-p)
-        (setq $p1 (region-beginning) $p2 (region-end))
-      (progn
-        (if (re-search-backward "\n[ \t]*\n+" nil "move")
-            (progn (re-search-forward "\n[ \t]*\n+")
-                   (setq $p1 (point)))
-          (setq $p1 (point)))
-        (re-search-forward "\n[ \t]*\n" nil "move")
-        (setq $p2 (point))))
+    (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
     (kill-region $p1 $p2)))
 
 (defun xah-clear-register-1 ()
@@ -1756,14 +1650,14 @@ version 2020-09-07"
 ;;    (format-time-string "%Y-%m-%dT%T")
 ;;    ((lambda ($x) (format "%s:%s" (substring $x 0 3) (substring $x 3 5))) (format-time-string "%z"))))
 
-(defun xah-insert-bracket-pair (@left-bracket @right-bracket &optional @wrap-method)
+(defun xah-insert-bracket-pair (@LBracket @RBracket &optional @wrapMethod)
   "Insert brackets around selection, word, at point, and maybe move cursor in between.
 
- @left-bracket and @right-bracket are strings. @wrap-method must be either 'line or 'block. 'block means between empty lines.
+ @LBracket and @RBracket are strings. @wrapMethod must be either 'line or 'block. 'block means between empty lines.
 
 • if there is a region, add brackets around region.
-• If @wrap-method is 'line, wrap around line.
-• If @wrap-method is 'block, wrap around block.
+• If @wrapMethod is 'line, wrap around line.
+• If @wrapMethod is 'block, wrap around block.
 • if cursor is at beginning of line and its not empty line and contain at least 1 space, wrap around the line.
 • If cursor is at end of a word or buffer, one of the following will happen:
  xyz▮ → xyz(▮)
@@ -1771,80 +1665,67 @@ version 2020-09-07"
 • wrap brackets around word if any. e.g. xy▮z → (xyz▮). Or just (▮)
 
 URL `http://ergoemacs.org/emacs/elisp_insert_brackets_by_pair.html'
-Version 2017-01-17"
-  (if (use-region-p)
-      (progn ; there is active region
-        (let (
-              ($p1 (region-beginning))
-              ($p2 (region-end)))
-          (goto-char $p2)
-          (insert @right-bracket)
-          (goto-char $p1)
-          (insert @left-bracket)
+Version 2017-01-17 2021-08-12"
+  (if (region-active-p)
+      (progn
+        (let ( ($p1 (region-beginning)) ($p2 (region-end)))
+          (goto-char $p2) (insert @RBracket)
+          (goto-char $p1) (insert @LBracket)
           (goto-char (+ $p2 2))))
-    (progn ; no selection
-      (let ($p1 $p2)
-        (cond
-         ((eq @wrap-method 'line)
-          (setq $p1 (line-beginning-position) $p2 (line-end-position))
+    (let ($p1 $p2)
+      (cond
+       ((eq @wrapMethod 'line)
+        (setq $p1 (line-beginning-position) $p2 (line-end-position))
+        (goto-char $p2)
+        (insert @RBracket)
+        (goto-char $p1)
+        (insert @LBracket)
+        (goto-char (+ $p2 (length @LBracket))))
+       ((eq @wrapMethod 'block)
+        (save-excursion
+          (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
           (goto-char $p2)
-          (insert @right-bracket)
+          (insert @RBracket)
           (goto-char $p1)
-          (insert @left-bracket)
-          (goto-char (+ $p2 (length @left-bracket))))
-         ((eq @wrap-method 'block)
-          (save-excursion
-            (progn
-              (if (re-search-backward "\n[ \t]*\n" nil 'move)
-                  (progn (re-search-forward "\n[ \t]*\n")
-                         (setq $p1 (point)))
-                (setq $p1 (point)))
-              (if (re-search-forward "\n[ \t]*\n" nil 'move)
-                  (progn (re-search-backward "\n[ \t]*\n")
-                         (setq $p2 (point)))
-                (setq $p2 (point))))
+          (insert @LBracket)
+          (goto-char (+ $p2 (length @LBracket)))))
+       ( ;  do line. line must contain space
+        (and
+         (eq (point) (line-beginning-position))
+         ;; (string-match " " (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
+         (not (eq (line-beginning-position) (line-end-position))))
+        (insert @LBracket )
+        (end-of-line)
+        (insert  @RBracket))
+       ((and
+         (or ; cursor is at end of word or buffer. i.e. xyz▮
+          (looking-at "[^-_[:alnum:]]")
+          (eq (point) (point-max)))
+         (not (or
+               (string-equal major-mode "xah-elisp-mode")
+               (string-equal major-mode "emacs-lisp-mode")
+               (string-equal major-mode "lisp-mode")
+               (string-equal major-mode "lisp-interaction-mode")
+               (string-equal major-mode "common-lisp-mode")
+               (string-equal major-mode "clojure-mode")
+               (string-equal major-mode "xah-clojure-mode")
+               (string-equal major-mode "scheme-mode"))))
+        (progn
+          (setq $p1 (point) $p2 (point))
+          (insert @LBracket @RBracket)
+          (search-backward @RBracket )))
+       (t (progn
+            ;; wrap around “word”. basically, want all alphanumeric, plus hyphen and underscore, but don't want space or punctuations. Also want chinese chars
+            ;; 我有一帘幽梦，不知与谁能共。多少秘密在其中，欲诉无人能懂。
+            (skip-chars-backward "-_[:alnum:]")
+            (setq $p1 (point))
+            (skip-chars-forward "-_[:alnum:]")
+            (setq $p2 (point))
             (goto-char $p2)
-            (insert @right-bracket)
+            (insert @RBracket)
             (goto-char $p1)
-            (insert @left-bracket)
-            (goto-char (+ $p2 (length @left-bracket)))))
-         ( ;  do line. line must contain space
-          (and
-           (eq (point) (line-beginning-position))
-           ;; (string-match " " (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
-           (not (eq (line-beginning-position) (line-end-position))))
-          (insert @left-bracket )
-          (end-of-line)
-          (insert  @right-bracket))
-         ((and
-           (or ; cursor is at end of word or buffer. i.e. xyz▮
-            (looking-at "[^-_[:alnum:]]")
-            (eq (point) (point-max)))
-           (not (or
-                 (string-equal major-mode "xah-elisp-mode")
-                 (string-equal major-mode "emacs-lisp-mode")
-                 (string-equal major-mode "lisp-mode")
-                 (string-equal major-mode "lisp-interaction-mode")
-                 (string-equal major-mode "common-lisp-mode")
-                 (string-equal major-mode "clojure-mode")
-                 (string-equal major-mode "xah-clojure-mode")
-                 (string-equal major-mode "scheme-mode"))))
-          (progn
-            (setq $p1 (point) $p2 (point))
-            (insert @left-bracket @right-bracket)
-            (search-backward @right-bracket )))
-         (t (progn
-              ;; wrap around “word”. basically, want all alphanumeric, plus hyphen and underscore, but don't want space or punctuations. Also want chinese chars
-              ;; 我有一帘幽梦，不知与谁能共。多少秘密在其中，欲诉无人能懂。
-              (skip-chars-backward "-_[:alnum:]")
-              (setq $p1 (point))
-              (skip-chars-forward "-_[:alnum:]")
-              (setq $p2 (point))
-              (goto-char $p2)
-              (insert @right-bracket)
-              (goto-char $p1)
-              (insert @left-bracket)
-              (goto-char (+ $p2 (length @left-bracket))))))))))
+            (insert @LBracket)
+            (goto-char (+ $p2 (length @LBracket)))))))))
 
 (defun xah-insert-paren () (interactive) (xah-insert-bracket-pair "(" ")") )
 (defun xah-insert-square-bracket () (interactive) (xah-insert-bracket-pair "[" "]") )
@@ -1967,25 +1848,11 @@ Version 2021-01-05"
 ;; HHH___________________________________________________________________
 ;; text selection
 
-(defun xah-select-current-block ()
-  "Select the current block of text between blank lines.
-
-URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
-Version 2017-07-02"
-  (interactive)
-  (progn
-    (skip-chars-forward " \n\t")
-    (when (re-search-backward "\n[ \t]*\n" nil "move")
-      (re-search-forward "\n[ \t]*\n"))
-    (push-mark (point) t t)
-    (re-search-forward "\n[ \t]*\n" nil "move")))
-
 (defun xah-select-block ()
-  "Select the current/next block of text between blank lines.
+  "Select the current/next block.
 If region is active, extend selection downward by block.
-
 URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
-Version 2019-12-26 2021-04-04"
+Version 2019-12-26 2021-04-04 2021-08-13"
   (interactive)
   (if (use-region-p)
       (re-search-forward "\n[ \t]*\n[ \t]*\n*" nil "move")
@@ -1995,14 +1862,6 @@ Version 2019-12-26 2021-04-04"
         (re-search-forward "\n[ \t]*\n"))
       (push-mark (point) t t)
       (re-search-forward "\n[ \t]*\n" nil "move"))))
-
-(defun xah-select-current-line ()
-  "Select current line.
-URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
-Version 2016-07-22"
-  (interactive)
-  (end-of-line)
-  (set-mark (line-beginning-position)))
 
 (defun xah-select-line ()
   "Select current line. If region is active, extend selection downward by line.
