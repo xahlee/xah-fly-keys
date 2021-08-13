@@ -182,13 +182,14 @@ Version 2021-08-12"
 (defun xah-pop-local-mark-ring ()
   "Move cursor to last mark position of current buffer.
 Call this repeatedly will cycle all positions in `mark-ring'.
+
 URL `http://ergoemacs.org/emacs/emacs_jump_to_previous_position.html'
 Version 2016-04-04"
   (interactive)
   (set-mark-command t))
 
 (defun xah-beginning-of-line-or-block ()
-  "Move cursor to beginning of line or previous paragraph.
+  "Move cursor to beginning of line or previous block.
 
 • When called first time, move cursor to beginning of char in current line. (if already, move to beginning of line.)
 • When called again, move cursor backward by jumping over any sequence of whitespaces containing 2 blank lines.
@@ -214,7 +215,7 @@ Version 2018-06-04 2021-03-16"
             (beginning-of-line)))))))
 
 (defun xah-end-of-line-or-block ()
-  "Move cursor to end of line or next paragraph.
+  "Move cursor to end of line or next block.
 
 • When called first time, move cursor to end of line.
 • When called again, move cursor forward by jumping over any sequence of whitespaces containing 2 blank lines.
@@ -279,6 +280,7 @@ Version 2017-06-26"
 (defun xah-backward-left-bracket ()
   "Move cursor to the previous occurrence of left bracket.
 The list of brackets to jump to is defined by `xah-left-brackets'.
+
 URL `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
 Version 2015-10-01"
   (interactive)
@@ -287,6 +289,7 @@ Version 2015-10-01"
 (defun xah-forward-right-bracket ()
   "Move cursor to the next occurrence of right bracket.
 The list of brackets to jump to is defined by `xah-right-brackets'.
+
 URL `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
 Version 2015-10-01"
   (interactive)
@@ -296,6 +299,7 @@ Version 2015-10-01"
   "Move cursor to the matching bracket.
 If cursor is not on a bracket, call `backward-up-list'.
 The list of brackets to jump to is defined by `xah-left-brackets' and `xah-right-brackets'.
+
 URL `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
 Version 2016-11-22"
   (interactive)
@@ -314,6 +318,7 @@ Version 2016-11-22"
   "Move cursor to the next occurrence of \".
 If there are consecutive quotes of the same char, keep moving until none.
 Returns `t' if found, else `nil'.
+
 URL `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
 Version 2016-07-23"
   (interactive)
@@ -326,6 +331,7 @@ Version 2016-07-23"
 (defun xah-forward-quote-twice ()
   "Call `xah-forward-quote' twice.
 Returns `t' if found, else `nil'.
+
 URL `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
 Version 2016-07-23"
   (interactive)
@@ -336,6 +342,7 @@ Version 2016-07-23"
   "Move cursor to the current or next string quote.
 Place cursor at the position after the left quote.
 Repeated call will find the next string.
+
 URL `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
 Version 2016-11-22"
   (interactive)
@@ -407,6 +414,7 @@ Version 2015-06-10"
 (defun xah-copy-all-or-region ()
   "Copy buffer or selection content to `kill-ring'.
 Respects `narrow-to-region'.
+
 URL `http://ergoemacs.org/emacs/emacs_copy_cut_all_or_region.html'
 Version 2015-08-22"
   (interactive)
@@ -421,6 +429,7 @@ Version 2015-08-22"
 (defun xah-cut-all-or-region ()
   "Cut buffer or selection content to `kill-ring'.
 Respects `narrow-to-region'.
+
 URL `http://ergoemacs.org/emacs/emacs_copy_cut_all_or_region.html'
 Version 2015-08-22"
   (interactive)
@@ -473,6 +482,7 @@ Version 2017-07-25 2020-09-08"
 
 (defun xah-show-kill-ring ()
   "Insert all `kill-ring' content in a new buffer named *copy history*.
+
 URL `http://ergoemacs.org/emacs/emacs_show_kill_ring.html'
 Version 2019-12-02 2021-07-03"
   (interactive)
@@ -746,6 +756,7 @@ Version 2020-06-26"
 
 (defun xah-toggle-previous-letter-case ()
   "Toggle the letter case of the letter to the left of cursor.
+
 URL `http://ergoemacs.org/emacs/modernization_upcase-word.html'
 Version 2015-12-22"
   (interactive)
@@ -798,6 +809,7 @@ Version 2020-12-08 2020-12-24 2021-08-13"
 Capitalize first letter of each word, except words like {to, of, the, a, in, or, and, …}. If a word already contains cap letters such as HTTP, URL, they are left as is.
 
 When called in a elisp program, @begin @end are region boundaries.
+
 URL `http://ergoemacs.org/emacs/elisp_title_case_text.html'
 Version 2017-01-11 2021-03-30"
   (interactive
@@ -942,6 +954,7 @@ Version 2019-06-13"
 • Line spacing is increased.
 • Proportional width font is used.
 Call again to toggle back.
+
 URL `http://ergoemacs.org/emacs/emacs_novel_reading_mode.html'
 Version 2019-01-30 2021-01-16"
   (interactive)
@@ -1076,6 +1089,7 @@ Version 2021-07-05 2021-08-13"
 (defun xah-reformat-to-sentence-lines ()
   "Reformat current block or selection into multiple lines by ending period.
 After this command is called, press t to repeat it.
+
 URL `http://ergoemacs.org/emacs/elisp_reformat_to_sentence_lines.html'
 Version 2020-12-02 2021-04-14 2021-08-03 2021-08-12"
   (interactive)
@@ -1091,6 +1105,7 @@ Version 2020-12-02 2021-04-14 2021-08-03 2021-08-12"
 
 (defun xah-space-to-newline ()
   "Replace space sequence to a newline char in current block or selection.
+
 URL `http://ergoemacs.org/emacs/emacs_space_to_newline.html'
 Version 2017-08-19 2021-08-12"
   (interactive)
@@ -1301,6 +1316,7 @@ Version 2016-10-04 2020-03-03"
 (defun xah-dired-rename-space-to-hyphen ()
   "In dired, rename current or marked files by replacing space to hyphen -.
 If not in `dired', do nothing.
+
 URL `http://ergoemacs.org/emacs/elisp_dired_rename_space_to_underscore.html'
 Version 2016-10-04 2019-11-24"
   (interactive)
@@ -1321,6 +1337,7 @@ The region to work on is by this order:
  1. if there is a selection, use that.
  2. If cursor is string quote or any type of bracket, and is within current line, work on that region.
  3. else, work on current line.
+
 URL `http://ergoemacs.org/emacs/elisp_change_space-hyphen_underscore.html'
 Version 2019-02-12 2021-08-09"
   (interactive)
@@ -1394,6 +1411,7 @@ Version 2018-06-18"
 
 (defun xah-delete-current-text-block ()
   "Delete the current text block plus a blank line, or selection, and copy to `kill-ring'.
+
 URL `http://ergoemacs.org/emacs/emacs_delete_block.html'
 Version 2017-07-09 2021-08-13"
   (interactive)
@@ -1453,6 +1471,7 @@ Version 2015-12-08 2020-09-08"
 (defun xah-paste-from-register-1 ()
   "Paste text from register 1.
 See also: `xah-copy-to-register-1', `insert-register'.
+
 URL `http://ergoemacs.org/emacs/elisp_copy-paste_register_1.html'
 Version 2015-12-08"
   (interactive)
@@ -1463,6 +1482,7 @@ Version 2015-12-08"
 (defun xah-copy-rectangle-to-kill-ring (@begin @end)
   "Copy region as column (rectangle region) to `kill-ring'
 See also: `kill-rectangle', `copy-to-register'.
+
 URL `http://ergoemacs.org/emacs/emacs_copy_rectangle_text_to_clipboard.html'
 version 2016-07-17"
   ;; extract-rectangle suggested by YoungFrog, 2012-07-25
@@ -1683,6 +1703,7 @@ Version 2017-01-17 2021-08-12"
 
 (defun xah-show-formfeed-as-line ()
   "Display the formfeed ^L char as line.
+
 URL `http://ergoemacs.org/emacs/emacs_form_feed_section_paging.html'
 Version 2018-08-30"
   (interactive)
@@ -1698,6 +1719,7 @@ Version 2018-08-30"
   "Insert letters A to Z vertically, similar to `rectangle-number-lines'.
 The commpand will prompt for a start char, and number of chars to insert.
 The start char can be any char in Unicode.
+
 URL `http://ergoemacs.org/emacs/emacs_insert-alphabets.html'
 Version 2019-03-07"
   (interactive)
@@ -1754,6 +1776,7 @@ Version 2021-01-05"
 (defun xah-select-block ()
   "Select the current/next block plus 1 blankline.
 If region is active, extend selection downward by block.
+
 URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
 Version 2019-12-26 2021-04-04 2021-08-13"
   (interactive)
@@ -1769,6 +1792,7 @@ Version 2019-12-26 2021-04-04 2021-08-13"
 (defun xah-select-line ()
   "Select current line. If region is active, extend selection downward by line.
 If `visual-line-mode' is on, consider line as visual line.
+
 URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
 Version 2017-11-01 2021-03-19"
   (interactive)
@@ -1929,6 +1953,7 @@ Version 2016-06-18"
 (defun xah-next-user-buffer ()
   "Switch to the next user buffer.
 “user buffer” is determined by `xah-user-buffer-q'.
+
 URL `http://ergoemacs.org/emacs/elisp_next_prev_user_buffer.html'
 Version 2016-06-19"
   (interactive)
@@ -1943,6 +1968,7 @@ Version 2016-06-19"
 (defun xah-previous-user-buffer ()
   "Switch to the previous user buffer.
 “user buffer” is determined by `xah-user-buffer-q'.
+
 URL `http://ergoemacs.org/emacs/elisp_next_prev_user_buffer.html'
 Version 2016-06-19"
   (interactive)
@@ -1957,6 +1983,7 @@ Version 2016-06-19"
 (defun xah-next-emacs-buffer ()
   "Switch to the next emacs buffer.
 “emacs buffer” here is buffer whose name starts with *.
+
 URL `http://ergoemacs.org/emacs/elisp_next_prev_user_buffer.html'
 Version 2016-06-19"
   (interactive)
@@ -1968,6 +1995,7 @@ Version 2016-06-19"
 (defun xah-previous-emacs-buffer ()
   "Switch to the previous emacs buffer.
 “emacs buffer” here is buffer whose name starts with *.
+
 URL `http://ergoemacs.org/emacs/elisp_next_prev_user_buffer.html'
 Version 2016-06-19"
   (interactive)
@@ -2043,6 +2071,7 @@ Version 2018-06-11 2021-07-01"
 
 (defun xah-open-last-closed ()
   "Open the last closed file.
+
 URL `http://ergoemacs.org/emacs/elisp_close_buffer_open_last_closed.html'
 Version 2016-06-19"
   (interactive)
@@ -2053,6 +2082,7 @@ Version 2016-06-19"
 (defun xah-open-recently-closed ()
   "Open recently closed file.
 Prompt for a choice.
+
 URL `http://ergoemacs.org/emacs/elisp_close_buffer_open_last_closed.html'
 Version 2016-06-19"
   (interactive)
@@ -2060,6 +2090,7 @@ Version 2016-06-19"
 
 (defun xah-list-recently-closed ()
   "List recently closed file.
+
 URL `http://ergoemacs.org/emacs/elisp_close_buffer_open_last_closed.html'
 Version 2016-06-19"
   (interactive)
@@ -2292,6 +2323,7 @@ Version 2020-09-24 2021-01-21"
 (defun xah-clean-empty-lines ()
   "Replace repeated blank lines to just 1, in whole buffer or selection.
 Respects `narrow-to-region'.
+
 URL `http://ergoemacs.org/emacs/elisp_compact_empty_lines.html'
 Version 2017-09-22 2020-09-08"
   (interactive)
@@ -2369,6 +2401,7 @@ Version 2018-06-06 2020-12-18"
   "Backup of current file and save, or backup dired marked files.
 For detail, see `xah-make-backup'.
 If the current buffer is not associated with a file nor dired, nothing's done.
+
 URL `http://ergoemacs.org/emacs/elisp_make-backup.html'
 Version 2015-10-14"
   (interactive)
@@ -2467,6 +2500,7 @@ Version 2020-02-14 2021-08-06"
 (defun xah-search-current-word ()
   "Call `isearch' on current word or selection.
 “word” here is A to Z, a to z, and hyphen 「-」 and underline 「_」, independent of syntax table.
+
 URL `http://ergoemacs.org/emacs/modernization_isearch.html'
 Version 2015-04-09"
   (interactive)
@@ -2491,6 +2525,7 @@ Version 2015-04-09"
   "Show current file in desktop.
  (Mac Finder, Windows Explorer, Linux file manager)
 This command can be called when in a file buffer or in `dired'.
+
 URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
 Version 2020-11-20 2021-01-31"
   (interactive)
@@ -2550,6 +2585,7 @@ Version 2020-02-13 2021-01-18"
 (defun xah-open-in-external-app (&optional @fname)
   "Open the current file or dired marked files in external app.
 When called in emacs lisp, if @fname is given, open that.
+
 URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
 Version 2019-11-04 2021-07-21"
   (interactive)
@@ -4381,6 +4417,7 @@ Version 2017-07-07"
 
 (define-minor-mode xah-fly-keys
   "A modal keybinding set, like vim, but based on ergonomic principles, like Dvorak layout.
+
 URL `http://ergoemacs.org/misc/ergoemacs_vi_mode.html'"
   :group 'xah-fly-keys
   :global t
