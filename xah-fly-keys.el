@@ -1,9 +1,9 @@
-;;; xah-fly-keys.el --- ergonomic modal keybinding minor mode. -*- coding: utf-8; lexical-binding: t; byte-compile-dynamic: t; -*-
+;;; xah-fly-keys.el --- ergonomic modal keybinding minor mode. -*- coding: utf-8; lexical-binding: t; -*-
 
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 14.6.20210813002036
+;; Version: 14.6.20210813004054
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -157,7 +157,7 @@
   :group 'xah-fly-keys)
 
 (defun xah-get-bounds-of-block ()
-  "Return the boundary (START . END) of block under cursor.
+  "Return the boundary (START . END) of current block.
 Version 2021-08-12"
   (let ( $p1 $p2 ($blankRegex "\n[ \t]*\n"))
     (save-excursion
@@ -417,35 +417,6 @@ Version 2015-03-24"
   (interactive)
   (re-search-backward "\\.+\\|,+\\|;+" nil t))
 
-;; (defun goto-point-min ()
-;;   "Goto the beginning of buffer.
-;; This is different from `beginning-of-buffer'
-;; because that marks the previous position."
-;;   (interactive)
-;;   (goto-char (point-min))
-;; )
-
-;; (defun goto-point-max ()
-;;   "Goto the end of buffer.
-;; This is different from `end-of-buffer'
-;; because that marks the previous position."
-;;   (interactive)
-;;   (goto-char (point-max))
-;; )
-
-;; (defun xah-forward-space ()
-;;   "Move cursor to the next occurrence of white space."
-;;   (interactive)
-;;   (re-search-forward "[ \t\n]+" nil t))
-
-;; (defun xah-backward-space ()
-;;   "Move cursor to the next occurrence of white space."
-;;   (interactive)
-;;   ;; (skip-chars-backward "^ \t\n")
-;;   ;; (re-search-backward "[ \t\n]+" nil t)
-;;   (posix-search-backward "[ \t\n]+" nil t)
-;;   )
-
 ;; HHH___________________________________________________________________
 ;; editing commands
 
@@ -679,17 +650,15 @@ Version 2017-07-02"
       (goto-char $pt)
       (delete-char 1))))
 
-(defun xah-change-bracket-pairs ( @from-chars @to-chars)
-  "Change bracket pairs from one type to another.
-
+(defun xah-change-bracket-pairs ( @fromChars @toChars)
+  "Change bracket pairs to another type or none.
 For example, change all parenthesis () to square brackets [].
+Works on current block or selection.
 
-Works on selected text, or current block.
-
-When called in lisp program, @from-chars or @to-chars is a string of bracket pair. eg \"(paren)\",  \"[bracket]\", etc.
+When called in lisp program, @fromChars or @toChars is a string of bracket pair. eg \"(paren)\",  \"[bracket]\", etc.
 The first and last characters are used. (the middle is for convenience in ido selection.)
 If the string contains “,2”, then the first 2 chars and last 2 chars are used, for example  \"[[bracket,2]]\".
-If @to-chars is equal to string “none”, the brackets are deleted.
+If @toChars is equal to string “none”, the brackets are deleted.
 
 URL `http://ergoemacs.org/emacs/elisp_change_brackets.html'
 Version 2020-11-01 2021-08-12"
@@ -748,50 +717,50 @@ Version 2020-11-01 2021-08-12"
         (narrow-to-region $p1 $p2)
         (let ( (case-fold-search nil) $fromLeft $fromRight $toLeft $toRight)
           (cond
-           ((string-match ",2" @from-chars  )
+           ((string-match ",2" @fromChars  )
             (progn
-              (setq $fromLeft (substring @from-chars 0 2))
-              (setq $fromRight (substring @from-chars -2))))
+              (setq $fromLeft (substring @fromChars 0 2))
+              (setq $fromRight (substring @fromChars -2))))
            (t
             (progn
-              (setq $fromLeft (substring @from-chars 0 1))
-              (setq $fromRight (substring @from-chars -1)))))
+              (setq $fromLeft (substring @fromChars 0 1))
+              (setq $fromRight (substring @fromChars -1)))))
           (cond
-           ((string-match ",2" @to-chars)
+           ((string-match ",2" @toChars)
             (progn
-              (setq $toLeft (substring @to-chars 0 2))
-              (setq $toRight (substring @to-chars -2))))
-           ((string-match "none" @to-chars)
+              (setq $toLeft (substring @toChars 0 2))
+              (setq $toRight (substring @toChars -2))))
+           ((string-match "none" @toChars)
             (progn
               (setq $toLeft "")
               (setq $toRight "")))
            (t
             (progn
-              (setq $toLeft (substring @to-chars 0 1))
-              (setq $toRight (substring @to-chars -1)))))
+              (setq $toLeft (substring @toChars 0 1))
+              (setq $toRight (substring @toChars -1)))))
           (cond
-           ((string-match "markdown" @from-chars)
+           ((string-match "markdown" @fromChars)
             (progn
               (goto-char (point-min))
               (while
                   (re-search-forward "`\\([^`]+?\\)`" nil t)
                 (overlay-put (make-overlay (match-beginning 0) (match-end 0)) 'face 'highlight)
                 (replace-match (concat $toLeft "\\1" $toRight ) t ))))
-           ((string-match "tilde" @from-chars)
+           ((string-match "tilde" @fromChars)
             (progn
               (goto-char (point-min))
               (while
                   (re-search-forward "~\\([^~]+?\\)~" nil t)
                 (overlay-put (make-overlay (match-beginning 0) (match-end 0)) 'face 'highlight)
                 (replace-match (concat $toLeft "\\1" $toRight ) t ))))
-           ((string-match "ascii quote" @from-chars)
+           ((string-match "ascii quote" @fromChars)
             (progn
               (goto-char (point-min))
               (while
                   (re-search-forward "\"\\([^\"]+?\\)\"" nil t)
                 (overlay-put (make-overlay (match-beginning 0) (match-end 0)) 'face 'highlight)
                 (replace-match (concat $toLeft "\\1" $toRight ) t ))))
-           ((string-match "equal" @from-chars)
+           ((string-match "equal" @fromChars)
             (progn
               (goto-char (point-min))
               (while
@@ -902,17 +871,14 @@ Version 2017-01-11 2021-03-30"
   (interactive
    (if (use-region-p)
        (list (region-beginning) (region-end))
-     (let (
-           $p1
-           $p2
-           ($skipChars "^\"<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕"))
+     (let ( $p1 $p2 ($skipChars "^\"<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕"))
        (progn
          (skip-chars-backward $skipChars (line-beginning-position))
          (setq $p1 (point))
          (skip-chars-forward $skipChars (line-end-position))
          (setq $p2 (point)))
        (list $p1 $p2))))
-  (let* (
+  (let (
          ($strPairs [
                      [" A " " a "]
                      [" An " " an "]
@@ -1069,15 +1035,15 @@ URL `http://ergoemacs.org/emacs/modernization_fill-paragraph.html'
 Version 2020-11-22 2021-08-13"
   (interactive)
   ;; This command symbol has a property “'longline-p”, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
-  (let ( ($longline-p (if (eq last-command this-command) (get this-command 'longline-p) t))
+  (let ( ($isLongline (if (eq last-command this-command) (get this-command 'longline-p) t))
          (deactivate-mark nil)
          $p1 $p2 )
     (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
-    (if $longline-p
+    (if $isLongline
         (fill-region $p1 $p2)
       (let ((fill-column most-positive-fixnum ))
         (fill-region $p1 $p2)))
-    (put this-command 'longline-p (not $longline-p))))
+    (put this-command 'longline-p (not $isLongline))))
 
 (defun xah-unfill-paragraph ()
   "Replace newline chars in current paragraph by single spaces.
@@ -1838,18 +1804,18 @@ Version 2019-03-07"
 Version 2021-01-05"
   (interactive)
   (let (
-        (xStr
+        ($str
          (ido-completing-read
           "Insert:" (mapcar
                      (lambda (x)
                        (format "%s %s" (car x) (cdr x))) xah-unicode-list))))
-    (insert (car (split-string xStr " " t)))))
+    (insert (car (split-string $str " " t)))))
 
 ;; HHH___________________________________________________________________
 ;; text selection
 
 (defun xah-select-block ()
-  "Select the current/next block.
+  "Select the current/next block plus 1 blankline.
 If region is active, extend selection downward by block.
 URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
 Version 2019-12-26 2021-04-04 2021-08-13"
@@ -2168,6 +2134,7 @@ Version 2016-06-19"
 (declare-function bookmark-maybe-load-default-file "bookmark" ())
 (defvar bookmark-alist)
 (declare-function bookmark-get-filename "bookmark" (bookmark-name-or-record))
+
 (defun xah-open-file-fast ()
   "Prompt to open a file from bookmark `bookmark-bmenu-list'.
 This command is similar to `bookmark-jump', but use `ido-mode' interface, and ignore cursor position in bookmark.
@@ -2177,11 +2144,8 @@ Version 2019-02-26"
   (interactive)
   (require 'bookmark)
   (bookmark-maybe-load-default-file)
-  (let (($this-bookmark
-         (ido-completing-read "Open bookmark:" (mapcar (lambda ($x) (car $x)) bookmark-alist))))
-    (find-file (bookmark-get-filename $this-bookmark))
-    ;; (bookmark-jump $this-bookmark)
-    ))
+  (let (($thisBookmark (ido-completing-read "Open bookmark:" (mapcar (lambda ($x) (car $x)) bookmark-alist))))
+    (find-file (bookmark-get-filename $thisBookmark))))
 
 (defun xah-open-file-at-cursor ()
   "Open the file path under cursor.
@@ -2193,10 +2157,10 @@ If path does not have a file extension, automatically try with “.el” for eli
 This command is similar to `find-file-at-point' but without prompting for confirmation.
 
 URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'
-Version 2020-10-17 2021-02-24"
+Version 2020-10-17 2021-02-24 2021-08-13"
   (interactive)
-  (let* (
-         ($inputStr
+  (let ( $input $path)
+    (setq $input
           (if (use-region-p)
               (buffer-substring-no-properties (region-beginning) (region-end))
             (let ($p0 $p1 $p2
@@ -2210,13 +2174,14 @@ Version 2020-10-17 2021-02-24"
               (setq $p2 (point))
               (goto-char $p0)
               (buffer-substring-no-properties $p1 $p2))))
-         ($path
+    (setq $path
           (replace-regexp-in-string
            "^/C:/" "/"
            (replace-regexp-in-string
             "^file://" ""
             (replace-regexp-in-string
-             ":\\'" "" $inputStr)))))
+             ":\\'" "" $input))))
+
     (if (string-match-p "\\`https?://" $path)
         (if (fboundp 'xahsite-url-to-filepath)
             (let (($x (xahsite-url-to-filepath $path)))
