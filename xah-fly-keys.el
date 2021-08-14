@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 14.8.20210813025231
+;; Version: 14.9.20210814161938
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -3879,21 +3879,18 @@ minor modes loaded later may override bindings in this map.")
    ("d" . xah-insert-double-curly-quote)
    ("f" . xah-insert-emacs-quote)
    ("g" . xah-insert-ascii-double-quote)
-   ("h" . xah-insert-brace) ; {}
+   ("h" . xah-insert-brace)
    ("i" . xah-insert-curly-single-quote)
    ("l" . xah-insert-formfeed)
    ("m" . xah-insert-corner-bracket)
-   ("n" . xah-insert-square-bracket) ; []
+   ("n" . xah-insert-square-bracket)
    ("p" . xah-insert-single-angle-quote)
    ("r" . xah-insert-tortoise-shell-bracket )
    ("s" . xah-insert-string-assignment)
    ("t" . xah-insert-paren)
    ("u" . xah-insert-date)
    ("w" . xah-insert-angle-bracket)
-   ("y" . xah-insert-double-angle-quote)
-   ;;
-
-   ))
+   ("y" . xah-insert-double-angle-quote)))
 
 (xah-fly--define-keys
  (define-prefix-command 'xah-fly-h-keymap)
@@ -3926,8 +3923,7 @@ minor modes loaded later may override bindings in this map.")
    ("z" . describe-coding-system)))
 
 (xah-fly--define-keys
- ;; commands here are “harmless”, they don't modify text etc.
- ;; they turn on minor/major mode, change display, prompt, start shell, etc.
+ ;; commands here are “harmless”, they don't modify text etc. they turn on modes, change display, prompt, start shell, etc.
  (define-prefix-command 'xah-fly-n-keymap)
  '(
    ("SPC" . whitespace-mode)
@@ -3936,12 +3932,12 @@ minor modes loaded later may override bindings in this map.")
    ;; DEL
    ("," . abbrev-mode)
    ("." . toggle-frame-fullscreen)
-   ("'" . frameset-to-register)
-   (";" . window-configuration-to-register)
+   ;; ("'" . )
+   ;; (";" . )
    ("1" . set-input-method)
    ("2" . global-hl-line-mode)
    ("4" . global-display-line-numbers-mode)
-   ("5" . visual-line-mode)
+   ;; 5
    ("6" . calendar)
    ("7" . calc)
    ;; 8
@@ -3964,11 +3960,12 @@ minor modes loaded later may override bindings in this map.")
    ("o" . variable-pitch-mode)
    ("p" . read-only-mode)
    ;; q
-   ;; r
-   ;; s
+   ;; 2021-08-10 xah-fly-keys, maybe add these
+   ("r" . count-words)
+   ("s" . count-matches)
    ("t" . narrow-to-defun)
    ("u" . shell)
-   ;; v
+   ("v" . visual-line-mode)
    ("w" . eww)
    ("x" . save-some-buffers)
    ("y" . toggle-truncate-lines)
@@ -4149,7 +4146,10 @@ minor modes loaded later may override bindings in this map.")
 ;; HHH___________________________________________________________________
 ;;;; misc
 
-;; the following have keys in emacs, but right now i decided not to give them a key, because either they are rarely used (say, less than once a month by 90% of emacs users), or there is a more efficient command/workflow with key in xah-fly-keys
+;; the following have keys in gnu emacs, but i decided not to give them a key, because either they are rarely used (say, 95% of emacs users usel them less than once a month ), or there is a more efficient command/workflow with key in xah-fly-keys
+
+;; C-x r w → window-configuration-to-register
+;; C-x r f → frameset-to-register
 
 ;; C-x C-p   →   mark-page
 ;; C-x C-l   →   downcase-region
@@ -4198,7 +4198,6 @@ minor modes loaded later may override bindings in this map.")
 ;; C-x 6   →   2C-command
 ;; C-x ;   →   comment-set-column
 
-;; C-x `   →   next-error
 ;; C-x f   →   set-fill-column
 ;; C-x i   →   insert-file
 ;; C-x n   →   Prefix Command
@@ -4215,7 +4214,6 @@ minor modes loaded later may override bindings in this map.")
 ;; C-x C-k RET   →   kmacro-edit-macro
 ;; C-x C-k C-n   →   kmacro-cycle-ring-next
 ;; C-x C-k C-p   →   kmacro-cycle-ring-previous
-;; C-x C-k C-s   →   kmacro-start-macro
 ;; C-x C-k C-t   →   kmacro-swap-ring
 ;; C-x C-k C-v   →   kmacro-view-macro-repeat
 ;; C-x C-k SPC   →   kmacro-step-edit-macro
@@ -4224,8 +4222,6 @@ minor modes loaded later may override bindings in this map.")
 ;; C-x C-k l   →   kmacro-edit-lossage
 ;; C-x C-k n   →   kmacro-name-last-macro
 ;; C-x C-k q   →   kbd-macro-query
-;; C-x C-k r   →   apply-macro-to-region-lines
-;; C-x C-k s   →   kmacro-start-macro
 
 ;; HHH___________________________________________________________________
 
@@ -4244,7 +4240,6 @@ minor modes loaded later may override bindings in this map.")
 ;; C-x 6 2   →   2C-two-columns
 ;; C-x 6 b   →   2C-associate-buffer
 ;; C-x 6 s   →   2C-split
-;; C-x 6 <f2>   →   2C-two-columns
 
 ;; ctl-x-5-map
 
