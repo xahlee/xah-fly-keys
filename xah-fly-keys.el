@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 14.10.20210814173052
+;; Version: 14.10.20210815145918
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1091,16 +1091,21 @@ Version 2021-07-05 2021-08-13"
 After this command is called, press t to repeat it.
 
 URL `http://ergoemacs.org/emacs/elisp_reformat_to_sentence_lines.html'
-Version 2020-12-02 2021-04-14 2021-08-03 2021-08-12"
+Version 2020-12-02 2021-08-15"
   (interactive)
   (let ($p1 $p2)
     (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
     (save-restriction
       (narrow-to-region $p1 $p2)
-      (progn (goto-char (point-min)) (while (search-forward "\n" nil t) (replace-match " " )))
-      (progn (goto-char (point-min)) (while (re-search-forward "  +" nil t) (replace-match " " )))
-      (progn (goto-char (point-min)) (while (re-search-forward "\\. +\\([0-9A-Za-z]+\\)" nil t) (replace-match ".\n\\1" )))
-      (goto-char (point-max)) (while (eq (char-before ) 32) (delete-char -1)) (insert "\n\n")))
+      (progn (goto-char (point-min))
+             (while (search-forward "\n" nil t) (replace-match " " )))
+      (progn (goto-char (point-min))
+             (while (re-search-forward "  +" nil t) (replace-match " " )))
+      (progn (goto-char (point-min))
+             (while (re-search-forward "\\. +\\([0-9A-Za-z]+\\)" nil t) (replace-match ".\n\\1" )))
+      (goto-char (point-max))
+      (while (eq (char-before ) 32) (delete-char -1))))
+  (re-search-forward "\n+" nil 1)
   (set-transient-map (let (($kmap (make-sparse-keymap))) (define-key $kmap (kbd "t") 'xah-reformat-to-sentence-lines ) $kmap)))
 
 (defun xah-space-to-newline ()
