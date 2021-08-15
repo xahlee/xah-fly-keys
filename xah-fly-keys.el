@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 14.9.20210814161938
+;; Version: 14.10.20210814173052
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1410,19 +1410,19 @@ Version 2018-06-18"
          $fpath )))))
 
 (defun xah-delete-current-text-block ()
-  "Delete the current text block plus a blank line, or selection, and copy to `kill-ring'.
+  "Delete the current text block plus blank lines, or selection, and copy to `kill-ring'.
 
 URL `http://ergoemacs.org/emacs/emacs_delete_block.html'
-Version 2017-07-09 2021-08-13"
+Version 2017-07-09 2021-08-14"
   (interactive)
   (let ($p1 $p2)
-    (if (use-region-p)
+    (if (region-active-p)
         (setq $p1 (region-beginning) $p2 (region-end))
       (progn
         (if (re-search-backward "\n[ \t]*\n+" nil 1)
             (setq $p1 (goto-char (match-end 0)))
           (setq $p1 (point)))
-        (re-search-forward "\n[ \t]*\n" nil 1)
+        (re-search-forward "\n[ \t]*\n+" nil 1)
         (setq $p2 (point))))
     (kill-region $p1 $p2)))
 
@@ -2125,16 +2125,14 @@ If path does not have a file extension, automatically try with “.el” for eli
 This command is similar to `find-file-at-point' but without prompting for confirmation.
 
 URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'
-Version 2020-10-17 2021-02-24 2021-08-13"
+Version 2020-10-17 2021-02-24 2021-08-14"
   (interactive)
   (let ( $input $path)
     (setq $input
           (if (use-region-p)
               (buffer-substring-no-properties (region-beginning) (region-end))
-            (let ($p0 $p1 $p2
-                      ;; chars that are likely to be delimiters of file path or url, e.g. whitespace, comma. The colon is a problem. cuz it is in url, but not in file name. Don't want to use just space as delimiter because path or url are often in brackets or quotes as in markdown or html
-                      ($pathStops "^  \t\n\"`'‘’“”|[]{}「」<>〔〕〈〉《》【】〖〗«»‹›❮❯❬❭〘〙·。\\"))
-              (setq $p0 (point))
+            (let (($p0 (point)) $p1 $p2
+                  ($pathStops "^  \t\n\"`'‘’“”|[]{}「」<>〔〕〈〉《》【】〖〗«»‹›❮❯❬❭〘〙·。\\"))
               (skip-chars-backward $pathStops)
               (setq $p1 (point))
               (goto-char $p0)
@@ -2142,14 +2140,7 @@ Version 2020-10-17 2021-02-24 2021-08-13"
               (setq $p2 (point))
               (goto-char $p0)
               (buffer-substring-no-properties $p1 $p2))))
-    (setq $path
-          (replace-regexp-in-string
-           "^/C:/" "/"
-           (replace-regexp-in-string
-            "^file://" ""
-            (replace-regexp-in-string
-             ":\\'" "" $input))))
-
+    (setq $path (replace-regexp-in-string "^/C:/" "/" (replace-regexp-in-string "^file://" "" (replace-regexp-in-string ":\\'" "" $input))))
     (if (string-match-p "\\`https?://" $path)
         (if (fboundp 'xahsite-url-to-filepath)
             (let (($x (xahsite-url-to-filepath $path)))
@@ -2170,14 +2161,13 @@ Version 2020-10-17 2021-02-24 2021-08-13"
                 (when (y-or-n-p (format "file does not exist: 「%s」. Create?" $fpath))
                   (find-file $fpath))))
           (if (string-match "^\\`\\(.+?\\):\\([0-9]+\\)\\(:[0-9]+\\)?\\'" $path)
-              (let (
-                    ($fpath (match-string 1 $path))
-                    ($line-num (string-to-number (match-string 2 $path))))
+              (let (($fpath (match-string-no-properties 1 $path))
+                    ($lineNum (string-to-number (match-string-no-properties 2 $path))))
                 (if (file-exists-p $fpath)
                     (progn
                       (find-file $fpath)
                       (goto-char 1)
-                      (forward-line (1- $line-num)))
+                      (forward-line (1- $lineNum)))
                   (when (y-or-n-p (format "file does not exist: 「%s」. Create?" $fpath))
                     (find-file $fpath))))
             (if (file-exists-p $path)
