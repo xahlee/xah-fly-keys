@@ -2156,7 +2156,7 @@ Version 2020-10-17 2021-02-24 2021-08-14"
               (if (file-exists-p $fpath)
                   (progn
                     (find-file $fpath)
-                    (goto-char 1)
+                    (goto-char (point-min))
                     (search-forward $fractPart ))
                 (when (y-or-n-p (format "file does not exist: 「%s」. Create?" $fpath))
                   (find-file $fpath))))
@@ -2166,7 +2166,7 @@ Version 2020-10-17 2021-02-24 2021-08-14"
                 (if (file-exists-p $fpath)
                     (progn
                       (find-file $fpath)
-                      (goto-char 1)
+                      (goto-char (point-min))
                       (forward-line (1- $lineNum)))
                   (when (y-or-n-p (format "file does not exist: 「%s」. Create?" $fpath))
                     (find-file $fpath))))
