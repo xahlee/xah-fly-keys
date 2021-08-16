@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 14.10.20210815145918
+;; Version: 14.11.20210815232843
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -603,9 +603,9 @@ If the string contains “,2”, then the first 2 chars and last 2 chars are use
 If @toChars is equal to string “none”, the brackets are deleted.
 
 URL `http://ergoemacs.org/emacs/elisp_change_brackets.html'
-Version 2020-11-01 2021-08-12"
+Version 2020-11-01 2021-08-15"
   (interactive
-   (let (($bracketsList
+   (let (($brackets
           '("(paren)"
             "{brace}"
             "[square]"
@@ -614,10 +614,11 @@ Version 2020-11-01 2021-08-12"
             "`markdown`"
             "~tilde~"
             "=equal="
-            "\"ascii quote\""
+            "\"double\""
+            "'single'"
             "[[double square,2]]"
-            "“curly quote”"
-            "‘single quote’"
+            "“curly double”"
+            "‘curly single’"
             "‹french angle›"
             "«french double angle»"
             "「corner」"
@@ -650,8 +651,8 @@ Version 2020-11-01 2021-08-12"
             "none"
             )))
      (list
-      (ido-completing-read "Replace this:" $bracketsList )
-      (ido-completing-read "To:" $bracketsList ))))
+      (ido-completing-read "Replace this:" $brackets )
+      (ido-completing-read "To:" $brackets ))))
   (let ( $p1 $p2 )
     (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
     (save-excursion
@@ -1212,8 +1213,8 @@ Version 2016-10-25"
             (comment-or-uncomment-region $lbp $lep)
             (forward-line )))))))
 
-(defun xah-quote-lines ()
-  "Change current block's lines to quoted lines with comma or other.
+(defun xah-quote-lines (@quoteL @quoteR @sep )
+  "Add quotes/brackets and separator (comma) to lines.
 Act on current block or selection.
 
 For example,
@@ -1234,22 +1235,49 @@ or
  (dog)
  (cow)
 
-If the delimiter is any left bracket, the end delimiter is automatically the matching bracket.
+In lisp code, @quoteL @quoteR @sep are strings.
 
 URL `http://ergoemacs.org/emacs/emacs_quote_lines.html'
-Version 2020-06-26 2021-07-21 2021-08-13"
-  (interactive)
-  (let ( $p1 $p2 $quoteToUse $separator $beginQuote $endQuote )
-    (setq $quoteToUse (read-string "Quote to use:" "\"" nil '( "" "\"" "'" "(" "{" "[" )))
-    (setq $separator (read-string "line separator:" "," nil '( "" "," ";" )))
-    (setq $beginQuote $quoteToUse)
-    (setq $endQuote
-          ;; if begin quote is a bracket, set end quote to the matching one. else, same as begin quote
-          (let (($syntableValue (aref (syntax-table) (string-to-char $beginQuote))))
-            (if (eq (car $syntableValue ) 4) ; ; syntax table, code 4 is open paren
-                (char-to-string (cdr $syntableValue))
-              $quoteToUse
-              )))
+Version 2020-06-26 2021-07-21 2021-08-15"
+  (interactive
+   (let (($brackets
+          '(
+            "\"double\""
+            "'single'"
+            "(paren)"
+            "{brace}"
+            "[square]"
+            "<greater>"
+            "`emacs'"
+            "`markdown`"
+            "~tilde~"
+            "=equal="
+            "“curly double”"
+            "‘curly single’"
+            "‹french angle›"
+            "«french double angle»"
+            "「corner」"
+            "none"
+            "other"
+            )) $bktChoice $sep $sepChoice $quoteL $quoteR)
+     (setq $bktChoice (ido-completing-read "Quote to use:" $brackets ))
+     (setq $sepChoice (ido-completing-read "line separator:" '(  "," ";" "none" "other")))
+     (cond
+      ((string-equal $bktChoice "none")
+       (setq $quoteL "" $quoteR "" ))
+      ((string-equal $bktChoice "other")
+       (let (($x (read-string "Enter 2 chars, for begin/end quote:" )))
+         (setq $quoteL (substring-no-properties $x 0 1)
+               $quoteR (substring-no-properties $x 1 2))))
+      (t (setq $quoteL (substring-no-properties $bktChoice 0 1)
+               $quoteR (substring-no-properties $bktChoice -1))))
+     (setq $sep
+           (cond
+            ((string-equal $sepChoice "none") "")
+            ((string-equal $sepChoice "other") (read-string "Enter separator:" ))
+            (t $sepChoice)))
+     (list $quoteL $quoteR $sep)))
+  (let ( $p1 $p2 ($quoteL @quoteL) ($quoteR @quoteR) ($sep @sep))
     (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
     (save-excursion
       (save-restriction
@@ -1258,12 +1286,12 @@ Version 2020-06-26 2021-07-21 2021-08-13"
         (catch 'EndReached
           (while t
             (skip-chars-forward "\t ")
-            (insert $beginQuote)
+            (insert $quoteL)
             (end-of-line )
-            (insert $endQuote $separator)
+            (insert $quoteR $sep)
             (if (eq (point) (point-max))
                 (throw 'EndReached t)
-              (forward-char 1))))))))
+              (forward-char))))))))
 
 (defun xah-escape-quotes (@begin @end)
   "Add slash before double quote in current line or selection.
