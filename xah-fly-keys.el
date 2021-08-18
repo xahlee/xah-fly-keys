@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 14.12.20210816004047
+;; Version: 14.12.20210818065152
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1089,21 +1089,28 @@ Version 2021-07-05 2021-08-13"
 
 (defun xah-reformat-to-sentence-lines ()
   "Reformat current block or selection into multiple lines by ending period.
+HTML anchor links “<a…>…</a>” is also placed on a new line.
 After this command is called, press space to repeat it.
 
 URL `http://ergoemacs.org/emacs/elisp_reformat_to_sentence_lines.html'
-Version 2020-12-02 2021-08-16"
+Version 2020-12-02 2021-08-17"
   (interactive)
   (let ($p1 $p2)
     (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
     (save-restriction
       (narrow-to-region $p1 $p2)
-      (progn (goto-char (point-min))
-             (while (search-forward "\n" nil t) (replace-match " " )))
-      (progn (goto-char (point-min))
-             (while (re-search-forward "  +" nil t) (replace-match " " )))
-      (progn (goto-char (point-min))
-             (while (re-search-forward "\\. +\\([0-9A-Za-z]+\\)" nil t) (replace-match ".\n\\1" )))
+      (goto-char (point-min))
+      (while (search-forward "\n" nil t) (replace-match " " ))
+      (goto-char (point-min))
+      (while (re-search-forward "  +" nil t) (replace-match " " ))
+      (goto-char (point-min))
+      (while (re-search-forward "\\. +\\([(0-9A-Za-z]+\\)" nil t) (replace-match ".\n\\1" ))
+      (goto-char (point-min))
+      (while (search-forward "<a " nil t) (replace-match "\n<a " ))
+      (goto-char (point-min))
+      (while (search-forward "</a> " nil t) (replace-match "</a>\n" ))
+      (goto-char (point-min))
+      (while (search-forward "</a>," nil t) (replace-match "</a>,\n" ))
       (goto-char (point-max))
       (while (eq (char-before ) 32) (delete-char -1))))
   (re-search-forward "\n+" nil 1)
