@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 14.13.20210818205646
+;; Version: 14.13.20210820194225
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1090,10 +1090,10 @@ Version 2021-07-05 2021-08-13"
 (defun xah-reformat-to-sentence-lines ()
   "Reformat current block or selection into multiple lines by ending period.
 HTML anchor links “<a…>…</a>” is also placed on a new line.
-After this command is called, press e to repeat it.
+After this command is called, press space to repeat it.
 
 URL `http://ergoemacs.org/emacs/elisp_reformat_to_sentence_lines.html'
-Version 2020-12-02 2021-08-17"
+Version 2020-12-02 2021-08-20"
   (interactive)
   (let ($p1 $p2)
     (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
@@ -1114,7 +1114,7 @@ Version 2020-12-02 2021-08-17"
       (goto-char (point-max))
       (while (eq (char-before ) 32) (delete-char -1))))
   (re-search-forward "\n+" nil 1)
-  (set-transient-map (let (($kmap (make-sparse-keymap))) (define-key $kmap (kbd "e") 'xah-reformat-to-sentence-lines ) $kmap)))
+  (set-transient-map (let (($kmap (make-sparse-keymap))) (define-key $kmap (kbd "SPC") 'xah-reformat-to-sentence-lines ) $kmap)))
 
 (defun xah-space-to-newline ()
   "Replace space sequence to a newline char in current block or selection.
@@ -1372,14 +1372,14 @@ Version 2016-10-04 2019-11-24"
 
 (defun xah-cycle-hyphen-lowline-space ( &optional @begin @end )
   "Cycle hyphen/lowline/space chars in selection or inside quote/bracket or line, in that order.
-After this command is called, press e to repeat it.
+After this command is called, press space to repeat it.
 The region to work on is by this order:
  1. if there is a selection, use that.
  2. If cursor is string quote or any type of bracket, and is within current line, work on that region.
  3. else, work on current line.
 
 URL `http://ergoemacs.org/emacs/elisp_change_space-hyphen_underscore.html'
-Version 2019-02-12 2021-08-16"
+Version 2019-02-12 2021-08-20"
   (interactive)
   ;; this function sets a property 'state. Possible values are 0 to length of $charArray.
   (let ($p1 $p2)
@@ -1416,7 +1416,7 @@ Version 2019-02-12 2021-08-16"
         (set-mark $p1)
         (setq deactivate-mark nil))
       (put 'xah-cycle-hyphen-lowline-space 'state (% (+ $nowState 1) $length))))
-  (set-transient-map (let (($kmap (make-sparse-keymap))) (define-key $kmap (kbd "e") 'xah-cycle-hyphen-lowline-space ) $kmap)))
+  (set-transient-map (let (($kmap (make-sparse-keymap))) (define-key $kmap (kbd "SPC") 'xah-cycle-hyphen-lowline-space ) $kmap)))
 
 (defun xah-copy-file-path (&optional @dir-path-only-p)
   "Copy the current buffer's file path or dired path to `kill-ring'.
@@ -3957,9 +3957,6 @@ minor modes loaded later may override bindings in this map.")
  (define-prefix-command 'xah-fly-n-keymap)
  '(
    ("SPC" . whitespace-mode)
-   ;; RET
-   ;; TAB
-   ;; DEL
    ("," . abbrev-mode)
    ("." . toggle-frame-fullscreen)
    ;; ("'" . )
