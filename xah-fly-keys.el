@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 14.13.20210820194225
+;; Version: 14.17.20210822193812
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2060,7 +2060,7 @@ Version 2017-11-01"
     $buf
     ))
 
-(defvar xah-recently-closed-buffers nil "alist of recently closed buffers. Each element is (buffer name, file path). The max number to track is controlled by the variable `xah-recently-closed-buffers-max'.")
+(defvar xah-recently-closed-buffers nil "a Alist of recently closed buffers. Each element is (buffer name, file path). The max number to track is controlled by the variable `xah-recently-closed-buffers-max'.")
 
 (defcustom xah-recently-closed-buffers-max 40 "The maximum length for `xah-recently-closed-buffers'."
   :type 'integer
@@ -2081,7 +2081,7 @@ Similar to `kill-buffer', with the following addition:
 URL `http://ergoemacs.org/emacs/elisp_close_buffer_open_last_closed.html'
 Version 2018-06-11 2021-07-01"
   (interactive)
-  (let (($org-p (string-match "^*Org Src" (buffer-name))))
+  (let (($isOrgMode (string-match "^*Org Src" (buffer-name))))
     (if (active-minibuffer-window) ; if the buffer is minibuffer
         ;; (string-equal major-mode "minibuffer-inactive-mode")
         (minibuffer-keyboard-quit)
@@ -2097,7 +2097,7 @@ Version 2018-06-11 2021-07-01"
               (save-buffer)
             (set-buffer-modified-p nil)))
         (when (and (buffer-modified-p)
-                   $org-p)
+                   $isOrgMode)
           (if (y-or-n-p (format "Buffer %s modified; Do you want to save? " (buffer-name)))
               (org-edit-src-save)
             (set-buffer-modified-p nil)))
@@ -2443,87 +2443,31 @@ Version 2015-10-14"
     (progn
       (xah-make-backup))))
 
-(defun xah-delete-current-file-make-backup (&optional @no-backup-p)
-  "Delete current file, makes a backup~, closes the buffer.
+(defun xah-delete-current-file-make-backup ()
+  "Delete current file, makes a backup~, close the buffer.
 
-Backup filename is “‹name›~‹date time stamp›~”. Existing file of the same name is overwritten. If the file is not associated with buffer, the backup file name starts with “xx_”.
+Backup filename is “‹name›~‹dateTimeStamp›~”. Existing file of the same name is overwritten. If buffer is not a file, the backup file name starts with “xx_”.
 
-When `universal-argument' is called first, don't create backup.
+Call `xah-open-last-closed' to open the backup file.
 
 URL `http://ergoemacs.org/emacs/elisp_delete-current-file.html'
-Version 2018-05-15 2020-12-18"
-  (interactive "P")
-  (let* (
-         ($fname (buffer-file-name))
-         ($buffer-is-file-p $fname)
-         ($date-time-format "%Y%m%d_%H%M%S")
-         ($backup-suffix
-          (concat "~" (format-time-string $date-time-format) "~")))
-    (if $buffer-is-file-p
+Version 2018-05-15 2021-08-22"
+  (interactive)
+  (let* ( ($fname (buffer-file-name))
+          ($backupPath
+           (concat (if $fname $fname (format "%sxx" default-directory))
+                   (format "~%s~" (format-time-string "%Y%m%d_%H%M%S")))))
+    (if $fname
         (progn
           (save-buffer $fname)
-          (when (not @no-backup-p)
-            (copy-file
-             $fname
-             (concat $fname $backup-suffix)
-             t))
-          (delete-file $fname)
-          (message "Deleted. Backup created at 「%s」." (concat $fname $backup-suffix)))
-      (when (not @no-backup-p)
+          (copy-file $fname $backupPath t)
+          (delete-file $fname))
+      (progn
         (widen)
-        (write-region (point-min) (point-max) (concat "xx" $backup-suffix))
-        (message "Backup created at 「%s」." (concat "xx" $backup-suffix))))
-    (kill-buffer (current-buffer))))
-
-(defun xah-delete-current-file-copy-to-kill-ring ()
-  "Delete current buffer/file and close the buffer, push content to `kill-ring',
-unless buffer is greater than 1 mega bytes.
-
-URL `http://ergoemacs.org/emacs/elisp_delete-current-file.html'
-Version 2019-03-22"
-  (interactive)
-  (let (($bstr (buffer-string)))
-    (when (> (length $bstr) 0)
-      (if (< (point-max) 1000000)
-          (progn
-            (kill-new $bstr)
-            (message "Content copied to kill-ring."))
-        (message "Content not copied. buffer size is greater than 1 megabytes.")))
-    (when (buffer-file-name)
-      (when (file-exists-p (buffer-file-name))
-        (progn
-          (delete-file (buffer-file-name))
-          (message "Deleted file: 「%s」." (buffer-file-name)))))
-    (let ((buffer-offer-save nil))
-      (set-buffer-modified-p nil)
-      (kill-buffer (current-buffer)))))
-
-(defun xah-delete-current-file (&optional @no-backup-p)
-  "Delete current file.
-If buffer is a file, make a backup~, push content to `kill-ring' (unless buffer is greater than 1 mega bytes.), then delete it.
-If buffer is not associate with a file, push content to `kill-ring' (unless buffer is greater than 1 mega bytes.), then kill it.
-If buffer is dired, do nothing.
-
-URL `http://ergoemacs.org/emacs/elisp_delete-current-file.html'
-Version 2020-02-14 2021-08-06"
-  (interactive "P")
-  (if (eq major-mode 'dired-mode)
-      (message "you in dired. nothing is done.")
-    (let (($bstr (buffer-string)))
-      (when (> (length $bstr) 0)
-        (if (< (point-max) 1000000)
-            (kill-new $bstr)
-          (message "Content not copied. buffer size is greater than 1 megabytes.")))
-      (if (buffer-file-name)
-          (xah-delete-current-file-make-backup @no-backup-p)
-        (when (buffer-file-name)
-          (when (file-exists-p (buffer-file-name))
-            (progn
-              (delete-file (buffer-file-name))
-              (message "Deleted file: 「%s」." (buffer-file-name)))))
-        (let ((buffer-offer-save nil))
-          (set-buffer-modified-p nil)
-          (kill-buffer (current-buffer)))))))
+        (write-region (point-min) (point-max) $backupPath)))
+    (kill-buffer (current-buffer))
+    (push (cons nil $backupPath) xah-recently-closed-buffers)
+    (message "Backup created. Call `xah-open-last-closed' to open it at 「%s」." $backupPath)))
 
 ;; HHH___________________________________________________________________
 
@@ -4073,7 +4017,7 @@ minor modes loaded later may override bindings in this map.")
 (xah-fly--define-keys
  (define-prefix-command 'xah-fly-w-keymap)
  '(
-   ("d" . xah-delete-current-file)
+   ("d" . xah-delete-current-file-make-backup)
    ("." . eval-buffer)
    ("e" . eval-defun)
    ("m" . eval-last-sexp)
