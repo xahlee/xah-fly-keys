@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 14.17.20210827044123
+;; Version: 14.17.20210828120248
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -568,9 +568,9 @@ Version 2017-07-02"
     (push-mark (point) t)
     (goto-char (- $p0 2))))
 
-(defun xah-delete-forward-bracket-pairs ( &optional @delete-inner-text-p)
+(defun xah-delete-forward-bracket-pairs ( &optional DeleteInnerTextQ)
   "Delete the matching brackets/quotes to the right of cursor.
-If @delete-inner-text-p is true, also delete the inner text.
+If DeleteInnerTextQ is true, also delete the inner text.
 
 After the command, mark is set at the left matching bracket position, so you can `exchange-point-and-mark' to select it.
 
@@ -581,7 +581,7 @@ What char is considered bracket or quote is determined by current syntax table.
 URL `http://ergoemacs.org/emacs/emacs_delete_backward_char_or_bracket_text.html'
 Version 2017-07-02"
   (interactive)
-  (if @delete-inner-text-p
+  (if DeleteInnerTextQ
       (progn
         (mark-sexp)
         (kill-region (region-beginning) (region-end)))
@@ -592,15 +592,15 @@ Version 2017-07-02"
       (goto-char $pt)
       (delete-char 1))))
 
-(defun xah-change-bracket-pairs ( @fromChars @toChars)
+(defun xah-change-bracket-pairs ( FromChars ToChars)
   "Change bracket pairs to another type or none.
 For example, change all parenthesis () to square brackets [].
 Works on current block or selection.
 
-When called in lisp program, @fromChars or @toChars is a string of bracket pair. eg \"(paren)\",  \"[bracket]\", etc.
+When called in lisp program, FromChars or ToChars is a string of bracket pair. eg \"(paren)\",  \"[bracket]\", etc.
 The first and last characters are used. (the middle is for convenience in ido selection.)
 If the string contains “,2”, then the first 2 chars and last 2 chars are used, for example  \"[[bracket,2]]\".
-If @toChars is equal to string “none”, the brackets are deleted.
+If ToChars is equal to string “none”, the brackets are deleted.
 
 URL `http://ergoemacs.org/emacs/elisp_change_brackets.html'
 Version 2020-11-01 2021-08-15"
@@ -660,50 +660,50 @@ Version 2020-11-01 2021-08-15"
         (narrow-to-region $p1 $p2)
         (let ( (case-fold-search nil) $fromLeft $fromRight $toLeft $toRight)
           (cond
-           ((string-match ",2" @fromChars  )
+           ((string-match ",2" FromChars  )
             (progn
-              (setq $fromLeft (substring @fromChars 0 2))
-              (setq $fromRight (substring @fromChars -2))))
+              (setq $fromLeft (substring FromChars 0 2))
+              (setq $fromRight (substring FromChars -2))))
            (t
             (progn
-              (setq $fromLeft (substring @fromChars 0 1))
-              (setq $fromRight (substring @fromChars -1)))))
+              (setq $fromLeft (substring FromChars 0 1))
+              (setq $fromRight (substring FromChars -1)))))
           (cond
-           ((string-match ",2" @toChars)
+           ((string-match ",2" ToChars)
             (progn
-              (setq $toLeft (substring @toChars 0 2))
-              (setq $toRight (substring @toChars -2))))
-           ((string-match "none" @toChars)
+              (setq $toLeft (substring ToChars 0 2))
+              (setq $toRight (substring ToChars -2))))
+           ((string-match "none" ToChars)
             (progn
               (setq $toLeft "")
               (setq $toRight "")))
            (t
             (progn
-              (setq $toLeft (substring @toChars 0 1))
-              (setq $toRight (substring @toChars -1)))))
+              (setq $toLeft (substring ToChars 0 1))
+              (setq $toRight (substring ToChars -1)))))
           (cond
-           ((string-match "markdown" @fromChars)
+           ((string-match "markdown" FromChars)
             (progn
               (goto-char (point-min))
               (while
                   (re-search-forward "`\\([^`]+?\\)`" nil t)
                 (overlay-put (make-overlay (match-beginning 0) (match-end 0)) 'face 'highlight)
                 (replace-match (concat $toLeft "\\1" $toRight ) t ))))
-           ((string-match "tilde" @fromChars)
+           ((string-match "tilde" FromChars)
             (progn
               (goto-char (point-min))
               (while
                   (re-search-forward "~\\([^~]+?\\)~" nil t)
                 (overlay-put (make-overlay (match-beginning 0) (match-end 0)) 'face 'highlight)
                 (replace-match (concat $toLeft "\\1" $toRight ) t ))))
-           ((string-match "ascii quote" @fromChars)
+           ((string-match "ascii quote" FromChars)
             (progn
               (goto-char (point-min))
               (while
                   (re-search-forward "\"\\([^\"]+?\\)\"" nil t)
                 (overlay-put (make-overlay (match-beginning 0) (match-end 0)) 'face 'highlight)
                 (replace-match (concat $toLeft "\\1" $toRight ) t ))))
-           ((string-match "equal" @fromChars)
+           ((string-match "equal" FromChars)
             (progn
               (goto-char (point-min))
               (while
@@ -805,11 +805,11 @@ Version 2020-12-08 2020-12-24 2021-08-13"
               (upcase-region (match-beginning 2) (match-end 2))
               (overlay-put (make-overlay (match-beginning 2) (match-end 2)) 'face 'highlight))))))))
 
-(defun xah-title-case-region-or-line (@begin @end)
+(defun xah-title-case-region-or-line (Begin End)
   "Title case text between nearest brackets, or current line or selection.
 Capitalize first letter of each word, except words like {to, of, the, a, in, or, and, …}. If a word already contains cap letters such as HTTP, URL, they are left as is.
 
-When called in a elisp program, @begin @end are region boundaries.
+When called in a elisp program, Begin End are region boundaries.
 
 URL `http://ergoemacs.org/emacs/elisp_title_case_text.html'
 Version 2017-01-11 2021-03-30"
@@ -852,7 +852,7 @@ Version 2017-01-11 2021-03-30"
                      ]))
     (save-excursion
       (save-restriction
-        (narrow-to-region @begin @end)
+        (narrow-to-region Begin End)
         (upcase-initials-region (point-min) (point-max))
         (let ((case-fold-search nil))
           (mapc
@@ -1001,7 +1001,7 @@ Version 2016-07-13"
   (let ((fill-column most-positive-fixnum))
     (fill-paragraph)))
 
-(defun xah-unfill-region (@begin @end)
+(defun xah-unfill-region (Begin End)
   "Replace newline chars in region by single spaces.
 This command does the inverse of `fill-region'.
 
@@ -1009,9 +1009,9 @@ URL `http://ergoemacs.org/emacs/emacs_unfill-paragraph.html'
 Version 2016-07-13"
   (interactive "r")
   (let ((fill-column most-positive-fixnum))
-    (fill-region @begin @end)))
+    (fill-region Begin End)))
 
-(defun xah-change-newline-chars-to-one (@begin @end)
+(defun xah-change-newline-chars-to-one (Begin End)
   "Replace newline char sequence by just one.
 
 URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
@@ -1019,11 +1019,11 @@ Version 2021-07-06"
   (interactive "r")
   (save-excursion
     (save-restriction
-      (narrow-to-region @begin @end)
+      (narrow-to-region Begin End)
       (goto-char (point-min))
       (while (re-search-forward "\n\n+" nil 1) (replace-match "\n")))))
 
-(defun xah-reformat-whitespaces-to-one-space (@begin @end)
+(defun xah-reformat-whitespaces-to-one-space (Begin End)
   "Replace whitespaces by one space.
 
 URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
@@ -1031,7 +1031,7 @@ Version 2017-01-11"
   (interactive "r")
   (save-excursion
     (save-restriction
-      (narrow-to-region @begin @end)
+      (narrow-to-region Begin End)
       (goto-char (point-min))
       (while
           (search-forward "\n" nil 1)
@@ -1045,7 +1045,7 @@ Version 2017-01-11"
           (re-search-forward "  +" nil 1)
         (replace-match " ")))))
 
-(defun xah-reformat-to-multi-lines ( &optional @begin @end @minLength)
+(defun xah-reformat-to-multi-lines ( &optional Begin End MinLength)
   "Replace spaces by a newline at ~70 chars, on current block or selection.
 If `universal-argument' is called first, ask user for max width.
 
@@ -1053,9 +1053,9 @@ URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
 Version 2018-12-16 2021-07-06 2021-08-12"
   (interactive)
   (let ( $p1 $p2 $minlen )
-    (setq $minlen (if @minLength @minLength (if current-prefix-arg (prefix-numeric-value current-prefix-arg) fill-column)))
-    (if (and @begin @end)
-        (setq $p1 @begin $p2 @end)
+    (setq $minlen (if MinLength MinLength (if current-prefix-arg (prefix-numeric-value current-prefix-arg) fill-column)))
+    (if (and Begin End)
+        (setq $p1 Begin $p2 End)
       (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds))))
     (save-excursion
       (save-restriction
@@ -1065,7 +1065,7 @@ Version 2018-12-16 2021-07-06 2021-08-12"
           (when (> (- (point) (line-beginning-position)) $minlen)
             (replace-match "\n" )))))))
 
-(defun xah-reformat-lines ( &optional @width)
+(defun xah-reformat-lines ( &optional Width)
   "Reformat current block or selection into short lines or 1 long line.
 When called for the first time, change to one long line. Second call change it to multiple short lines. Repeated call toggles.
 If `universal-argument' is called first, ask user to type max length of line. By default, it is 70.
@@ -1076,7 +1076,7 @@ Version 2021-07-05 2021-08-13"
   (interactive)
   ;; This command symbol has a property 'is-long-p, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
   (let ( $isLong $width $p1 $p2)
-    (setq $width (if @width @width (if current-prefix-arg (prefix-numeric-value current-prefix-arg) 70 )))
+    (setq $width (if Width Width (if current-prefix-arg (prefix-numeric-value current-prefix-arg) 70 )))
     (setq $isLong (if (eq last-command this-command) (get this-command 'is-long-p) nil))
     (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
     (progn
@@ -1220,7 +1220,7 @@ Version 2016-10-25"
             (comment-or-uncomment-region $lbp $lep)
             (forward-line )))))))
 
-(defun xah-quote-lines (@quoteL @quoteR @sep )
+(defun xah-quote-lines (QuoteL QuoteR Sep )
   "Add quotes/brackets and separator (comma) to lines.
 Act on current block or selection.
 
@@ -1242,7 +1242,7 @@ or
  (dog)
  (cow)
 
-In lisp code, @quoteL @quoteR @sep are strings.
+In lisp code, QuoteL QuoteR Sep are strings.
 
 URL `http://ergoemacs.org/emacs/emacs_quote_lines.html'
 Version 2020-06-26 2021-07-21 2021-08-15"
@@ -1284,7 +1284,7 @@ Version 2020-06-26 2021-07-21 2021-08-15"
             ((string-equal $sepChoice "other") (read-string "Enter separator:" ))
             (t $sepChoice)))
      (list $quoteL $quoteR $sep)))
-  (let ( $p1 $p2 ($quoteL @quoteL) ($quoteR @quoteR) ($sep @sep))
+  (let ( $p1 $p2 ($quoteL QuoteL) ($quoteR QuoteR) ($sep Sep))
     (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
     (save-excursion
       (save-restriction
@@ -1300,7 +1300,7 @@ Version 2020-06-26 2021-07-21 2021-08-15"
                 (throw 'EndReached t)
               (forward-char))))))))
 
-(defun xah-escape-quotes (@begin @end)
+(defun xah-escape-quotes (Begin End)
   "Add slash before double quote in current line or selection.
 Double quote is codepoint 34.
 See also: `xah-unescape-quotes'
@@ -1312,12 +1312,12 @@ Version 2017-01-11"
      (list (line-beginning-position) (line-end-position))))
   (save-excursion
       (save-restriction
-        (narrow-to-region @begin @end)
+        (narrow-to-region Begin End)
         (goto-char (point-min))
         (while (search-forward "\"" nil t)
           (replace-match "\\\"" t t)))))
 
-(defun xah-unescape-quotes (@begin @end)
+(defun xah-unescape-quotes (Begin End)
   "Replace  「\\\"」 by 「\"」 in current line or selection.
 See also: `xah-escape-quotes'
 
@@ -1329,7 +1329,7 @@ Version 2017-01-11"
      (list (line-beginning-position) (line-end-position))))
   (save-excursion
     (save-restriction
-      (narrow-to-region @begin @end)
+      (narrow-to-region Begin End)
       (goto-char (point-min))
       (while (search-forward "\\\"" nil t)
         (replace-match "\"" t t)))))
@@ -1370,7 +1370,7 @@ Version 2016-10-04 2019-11-24"
         (revert-buffer))
     (user-error "Not in dired")))
 
-(defun xah-cycle-hyphen-lowline-space ( &optional @begin @end )
+(defun xah-cycle-hyphen-lowline-space ( &optional Begin End )
   "Cycle hyphen/lowline/space chars in selection or inside quote/bracket or line, in that order.
 After this command is called, press space to repeat it.
 The region to work on is by this order:
@@ -1383,8 +1383,8 @@ Version 2019-02-12 2021-08-20"
   (interactive)
   ;; this function sets a property 'state. Possible values are 0 to length of $charArray.
   (let ($p1 $p2)
-    (if (and @begin @end)
-        (setq $p1 @begin $p2 @end)
+    (if (and Begin End)
+        (setq $p1 Begin $p2 End)
       (if (use-region-p)
           (setq $p1 (region-beginning) $p2 (region-end))
         (if (nth 3 (syntax-ppss))
@@ -1418,7 +1418,7 @@ Version 2019-02-12 2021-08-20"
       (put 'xah-cycle-hyphen-lowline-space 'state (% (+ $nowState 1) $length))))
   (set-transient-map (let (($kmap (make-sparse-keymap))) (define-key $kmap (kbd "SPC") 'xah-cycle-hyphen-lowline-space ) $kmap)))
 
-(defun xah-copy-file-path (&optional @dir-path-only-p)
+(defun xah-copy-file-path (&optional DirPathOnlyQ)
   "Copy the current buffer's file path or dired path to `kill-ring'.
 Result is full path.
 If `universal-argument' is called first, copy only the dir path.
@@ -1441,7 +1441,7 @@ Version 2018-06-18"
                (buffer-file-name)
              (expand-file-name default-directory)))))
     (kill-new
-     (if @dir-path-only-p
+     (if DirPathOnlyQ
          (progn
            (message "Directory copied: %s" (file-name-directory $fpath))
            (file-name-directory $fpath))
@@ -1519,7 +1519,7 @@ Version 2015-12-08"
     (delete-region (region-beginning) (region-end)))
   (insert-register ?1 t))
 
-(defun xah-copy-rectangle-to-kill-ring (@begin @end)
+(defun xah-copy-rectangle-to-kill-ring (Begin End)
   "Copy region as column (rectangle region) to `kill-ring'
 See also: `kill-rectangle', `copy-to-register'.
 
@@ -1528,7 +1528,7 @@ version 2016-07-17"
   ;; extract-rectangle suggested by YoungFrog, 2012-07-25
   (interactive "r")
   (require 'rect)
-  (kill-new (mapconcat 'identity (extract-rectangle @begin @end) "\n")))
+  (kill-new (mapconcat 'identity (extract-rectangle Begin End) "\n")))
 
 ;; HHH___________________________________________________________________
 ;; insertion commands
@@ -1613,14 +1613,14 @@ version 2020-09-07"
 ;;    (format-time-string "%Y-%m-%dT%T")
 ;;    ((lambda ($x) (format "%s:%s" (substring $x 0 3) (substring $x 3 5))) (format-time-string "%z"))))
 
-(defun xah-insert-bracket-pair (@LBracket @RBracket &optional @wrapMethod)
+(defun xah-insert-bracket-pair (LBracket RBracket &optional WrapMethod)
   "Insert brackets around selection, word, at point, and maybe move cursor in between.
 
- @LBracket and @RBracket are strings. @wrapMethod must be either 'line or 'block. 'block means between empty lines.
+ LBracket and RBracket are strings. WrapMethod must be either 'line or 'block. 'block means between empty lines.
 
 • if there is a region, add brackets around region.
-• If @wrapMethod is 'line, wrap around line.
-• If @wrapMethod is 'block, wrap around block.
+• If WrapMethod is 'line, wrap around line.
+• If WrapMethod is 'block, wrap around block.
 • if cursor is at beginning of line and its not empty line and contain at least 1 space, wrap around the line.
 • If cursor is at end of a word or buffer, one of the following will happen:
  xyz▮ → xyz(▮)
@@ -1632,34 +1632,34 @@ Version 2017-01-17 2021-08-12"
   (if (region-active-p)
       (progn
         (let ( ($p1 (region-beginning)) ($p2 (region-end)))
-          (goto-char $p2) (insert @RBracket)
-          (goto-char $p1) (insert @LBracket)
+          (goto-char $p2) (insert RBracket)
+          (goto-char $p1) (insert LBracket)
           (goto-char (+ $p2 2))))
     (let ($p1 $p2)
       (cond
-       ((eq @wrapMethod 'line)
+       ((eq WrapMethod 'line)
         (setq $p1 (line-beginning-position) $p2 (line-end-position))
         (goto-char $p2)
-        (insert @RBracket)
+        (insert RBracket)
         (goto-char $p1)
-        (insert @LBracket)
-        (goto-char (+ $p2 (length @LBracket))))
-       ((eq @wrapMethod 'block)
+        (insert LBracket)
+        (goto-char (+ $p2 (length LBracket))))
+       ((eq WrapMethod 'block)
         (save-excursion
           (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
           (goto-char $p2)
-          (insert @RBracket)
+          (insert RBracket)
           (goto-char $p1)
-          (insert @LBracket)
-          (goto-char (+ $p2 (length @LBracket)))))
+          (insert LBracket)
+          (goto-char (+ $p2 (length LBracket)))))
        ( ;  do line. line must contain space
         (and
          (eq (point) (line-beginning-position))
          ;; (string-match " " (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
          (not (eq (line-beginning-position) (line-end-position))))
-        (insert @LBracket )
+        (insert LBracket )
         (end-of-line)
-        (insert  @RBracket))
+        (insert  RBracket))
        ((and
          (or ; cursor is at end of word or buffer. i.e. xyz▮
           (looking-at "[^-_[:alnum:]]")
@@ -1675,8 +1675,8 @@ Version 2017-01-17 2021-08-12"
                (string-equal major-mode "scheme-mode"))))
         (progn
           (setq $p1 (point) $p2 (point))
-          (insert @LBracket @RBracket)
-          (search-backward @RBracket )))
+          (insert LBracket RBracket)
+          (search-backward RBracket )))
        (t (progn
             ;; wrap around “word”. basically, want all alphanumeric, plus hyphen and underscore, but don't want space or punctuations. Also want chinese chars
             ;; 我有一帘幽梦，不知与谁能共。多少秘密在其中，欲诉无人能懂。
@@ -1685,10 +1685,10 @@ Version 2017-01-17 2021-08-12"
             (skip-chars-forward "-_[:alnum:]")
             (setq $p2 (point))
             (goto-char $p2)
-            (insert @RBracket)
+            (insert RBracket)
             (goto-char $p1)
-            (insert @LBracket)
-            (goto-char (+ $p2 (length @LBracket)))))))))
+            (insert LBracket)
+            (goto-char (+ $p2 (length LBracket)))))))))
 
 (defun xah-insert-paren () (interactive) (xah-insert-bracket-pair "(" ")") )
 (defun xah-insert-square-bracket () (interactive) (xah-insert-bracket-pair "[" "]") )
@@ -2438,13 +2438,14 @@ Version 2015-10-14"
 
 (defun xah-delete-current-file-make-backup ()
   "Delete current file, makes a backup~, close the buffer.
+If buffer is not a file, copy content to `kill-ring', delete buffer.
 
 Backup filename is “‹name›~‹dateTimeStamp›~”. Existing file of the same name is overwritten. If buffer is not a file, the backup file name starts with “xx_”.
 
 Call `xah-open-last-closed' to open the backup file.
 
 URL `http://ergoemacs.org/emacs/elisp_delete-current-file.html'
-Version 2018-05-15 2021-08-22"
+Version 2018-05-15 2021-08-28"
   (interactive)
   (let* ( ($fname (buffer-file-name))
           ($backupPath
@@ -2454,13 +2455,14 @@ Version 2018-05-15 2021-08-22"
         (progn
           (save-buffer $fname)
           (copy-file $fname $backupPath t)
-          (delete-file $fname))
+          (delete-file $fname)
+          (push (cons nil $backupPath) xah-recently-closed-buffers)
+          (message "Backup created. Call `xah-open-last-closed' to open it at 「%s」." $backupPath))
       (progn
         (widen)
-        (write-region (point-min) (point-max) $backupPath)))
-    (kill-buffer (current-buffer))
-    (push (cons nil $backupPath) xah-recently-closed-buffers)
-    (message "Backup created. Call `xah-open-last-closed' to open it at 「%s」." $backupPath)))
+        ;; (write-region (point-min) (point-max) $backupPath)
+        (kill-new  (buffer-string))))
+    (kill-buffer (current-buffer))))
 
 ;; HHH___________________________________________________________________
 
@@ -2549,17 +2551,17 @@ Version 2020-02-13 2021-01-18"
      ((string-equal system-type "gnu/linux")
       (shell-command (format "code %s" (shell-quote-argument $path)))))))
 
-(defun xah-open-in-external-app (&optional @fname)
+(defun xah-open-in-external-app (&optional Fname)
   "Open the current file or dired marked files in external app.
-When called in emacs lisp, if @fname is given, open that.
+When called in emacs lisp, if Fname is given, open that.
 
 URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
 Version 2019-11-04 2021-07-21"
   (interactive)
   (let ($fileList $doIt )
     (setq $fileList
-          (if @fname
-              (list @fname)
+          (if Fname
+              (list Fname)
             (if (string-equal major-mode "dired-mode")
                 (dired-get-marked-files)
               (list (buffer-file-name)))))
@@ -3444,14 +3446,14 @@ If the value is nil, it is automatically set to \"dvorak\"."
           (const :tag "QWERTZ" qwertz)
           (const :tag "Workman" workman))
   :group 'xah-fly-keys
-  :set (lambda (@layout-var @new-layout)
+  :set (lambda (Layout-var New-layout)
          ;; Only reload xah-fly-keys if it was already loaded and the new layout is different:
          (if (and (featurep 'xah-fly-keys)
-                  (not (eq @new-layout (symbol-value @layout-var))))
+                  (not (eq New-layout (symbol-value Layout-var))))
              (progn
-               (set @layout-var @new-layout)
+               (set Layout-var New-layout)
                (load "xah-fly-keys"))
-           (set @layout-var @new-layout))))
+           (set Layout-var New-layout))))
 (if xah-fly-key-current-layout nil (setq xah-fly-key-current-layout 'dvorak))
 
 (defvar xah-fly--current-layout-kmap nil
@@ -3467,21 +3469,21 @@ Value is automatically set from value of `xah-fly-key-current-layout'. Do not ma
                   xah-fly-key-current-layout)
                 "-kmap"))))
 
-(defun xah-fly--key-char (@charstr)
-  "Return the corresponding char @charstr according to `xah-fly--current-layout-kmap'.
-@charstr must be a string of single char. If more than 1 char, return it unchanged.
+(defun xah-fly--key-char (Charstr)
+  "Return the corresponding char Charstr according to `xah-fly--current-layout-kmap'.
+Charstr must be a string of single char. If more than 1 char, return it unchanged.
 Version 2020-04-18"
   (interactive)
-  (if (> (length @charstr) 1)
-      @charstr
-    (let (($result (assoc @charstr xah-fly--current-layout-kmap)))
-      (if $result (cdr $result) @charstr ))))
+  (if (> (length Charstr) 1)
+      Charstr
+    (let (($result (assoc Charstr xah-fly--current-layout-kmap)))
+      (if $result (cdr $result) Charstr ))))
 
-(defmacro xah-fly--define-keys (@keymap-name @key-cmd-alist &optional @direct-q)
-  "Map `define-key' over a alist @key-cmd-alist, with key layout remap.
+(defmacro xah-fly--define-keys (Keymap-name Key-cmd-alist &optional Direct-q)
+  "Map `define-key' over a alist Key-cmd-alist, with key layout remap.
 The key is remapped from Dvorak to the current keyboard layout
 by `xah-fly--key-char'.
-If @direct-q is t, do not remap key to current keyboard layout.
+If Direct-q is t, do not remap key to current keyboard layout.
 Example usage:
 ;; (xah-fly--define-keys
 ;;  (define-prefix-command 'xah-fly-dot-keymap)
@@ -3492,14 +3494,14 @@ Example usage:
 ;;    (\"w\" . isearch-forward-word)))
 Version 2020-04-18"
   (let (($keymap-name (make-symbol "keymap-name")))
-    `(let ((,$keymap-name , @keymap-name))
+    `(let ((,$keymap-name , Keymap-name))
        ,@(mapcar
           (lambda ($pair)
             `(define-key
                ,$keymap-name
-               (kbd (,(if @direct-q #'identity #'xah-fly--key-char) ,(car $pair)))
+               (kbd (,(if Direct-q #'identity #'xah-fly--key-char) ,(car $pair)))
                ,(list 'quote (cdr $pair))))
-          (cadr @key-cmd-alist)))))
+          (cadr Key-cmd-alist)))))
 
 ;; HHH___________________________________________________________________
 ;; keymaps
@@ -4250,7 +4252,7 @@ minor modes loaded later may override bindings in this map.")
                             xah-fly-insert-map
                           xah-fly-command-map)))
 
-(defun xah-fly-keys-set-layout (@layout)
+(defun xah-fly-keys-set-layout (Layout)
   "Set a keyboard layout.
 Argument must be one of:
 
@@ -4284,7 +4286,7 @@ Version 2021-05-19"
                                      "New keyboard layout: ")))
   (funcall (get 'xah-fly-key-current-layout 'custom-set)
            'xah-fly-key-current-layout
-           @layout))
+           Layout))
 
 (defun xah-fly-command-mode-init ()
   "Set command mode keys.
