@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 14.17.20210828120248
+;; Version: 14.18.20210908083244
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1093,7 +1093,7 @@ HTML anchor links “<a…>…</a>” is also placed on a new line.
 After this command is called, press space to repeat it.
 
 URL `http://ergoemacs.org/emacs/elisp_reformat_to_sentence_lines.html'
-Version 2020-12-02 2021-08-20"
+Version 2020-12-02 2021-08-31"
   (interactive)
   (let ($p1 $p2)
     (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
@@ -1108,9 +1108,7 @@ Version 2020-12-02 2021-08-20"
       (goto-char (point-min))
       (while (search-forward "<a " nil t) (replace-match "\n<a " ))
       (goto-char (point-min))
-      (while (search-forward "</a> " nil t) (replace-match "</a>\n" ))
-      (goto-char (point-min))
-      (while (search-forward "</a>," nil t) (replace-match "</a>,\n" ))
+      (while (re-search-forward "<br */> *" nil t) (replace-match "<br />\n" ))
       (goto-char (point-max))
       (while (eq (char-before ) 32) (delete-char -1))))
   (re-search-forward "\n+" nil 1)
@@ -2445,24 +2443,26 @@ Backup filename is “‹name›~‹dateTimeStamp›~”. Existing file of the s
 Call `xah-open-last-closed' to open the backup file.
 
 URL `http://ergoemacs.org/emacs/elisp_delete-current-file.html'
-Version 2018-05-15 2021-08-28"
+Version 2018-05-15 2021-08-31"
   (interactive)
-  (let* ( ($fname (buffer-file-name))
-          ($backupPath
-           (concat (if $fname $fname (format "%sxx" default-directory))
-                   (format "~%s~" (format-time-string "%Y%m%d_%H%M%S")))))
-    (if $fname
+  (if (string-equal 'dired-mode major-mode)
+      (message "In dired. Nothing is done.")
+    (let* (($fname (buffer-file-name))
+           ($backupPath
+            (concat (if $fname $fname (format "%sxx" default-directory))
+                    (format "~%s~" (format-time-string "%Y%m%dT%H%M%S")))))
+      (if $fname
+          (progn
+            (save-buffer $fname)
+            (copy-file $fname $backupPath t)
+            (when (boundp 'xah-recently-closed-buffers)
+              (push (cons nil $backupPath) xah-recently-closed-buffers))
+            (message "Backup created. Call `xah-open-last-closed' to open it at 「%s」." $backupPath)
+            (delete-file $fname))
         (progn
-          (save-buffer $fname)
-          (copy-file $fname $backupPath t)
-          (delete-file $fname)
-          (push (cons nil $backupPath) xah-recently-closed-buffers)
-          (message "Backup created. Call `xah-open-last-closed' to open it at 「%s」." $backupPath))
-      (progn
-        (widen)
-        ;; (write-region (point-min) (point-max) $backupPath)
-        (kill-new  (buffer-string))))
-    (kill-buffer (current-buffer))))
+          (widen)
+          (kill-new  (buffer-string))))
+      (kill-buffer (current-buffer)))))
 
 ;; HHH___________________________________________________________________
 
@@ -4053,11 +4053,7 @@ minor modes loaded later may override bindings in this map.")
    ("." . xah-fly-dot-keymap)
    ("'" . xah-fill-or-unfill)
    ("," . xah-fly-comma-keymap)
-   ("-" . xah-show-formfeed-as-line)
-   ;; /
-   ;; ;
-   ;; =
-   ;; [
+   ;; - / ; = [
    ("\\" . toggle-input-method)
    ;; `
 
