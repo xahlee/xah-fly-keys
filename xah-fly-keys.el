@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 14.18.20210908083244
+;; Version: 14.19.20210911231957
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1129,13 +1129,13 @@ Version 2017-08-19 2021-08-12"
         (while (re-search-forward " +" nil t)
           (replace-match "\n" ))))))
 
-(defun xah-slash-to-backslash (&optional pos1 pos2)
+(defun xah-slash-to-backslash (&optional Begin End)
   "Replace slash by backslash on current line or region.
 Version 2021-07-14"
   (interactive)
   (let ($p1 $p2)
-    (if pos1
-        (setq $p1 pos1 $p2 pos2)
+    (if Begin
+        (setq $p1 Begin $p2 End)
       (if (region-active-p)
           (setq $p1 (region-beginning) $p2 (region-end))
         (setq $p1 (line-beginning-position) $p2 (line-end-position))))
@@ -1146,13 +1146,30 @@ Version 2021-07-14"
         (while (search-forward "/" nil t)
           (replace-match "\\\\"))))))
 
-(defun xah-slash-to-double-backslash (&optional pos1 pos2)
+(defun xah-backslash-to-slash (&optional Begin End)
+  "Replace backslash by slash on current line or region.
+Version 2021-09-11"
+  (interactive)
+  (let ($p1 $p2)
+    (if Begin
+        (setq $p1 Begin $p2 End)
+      (if (region-active-p)
+          (setq $p1 (region-beginning) $p2 (region-end))
+        (setq $p1 (line-beginning-position) $p2 (line-end-position))))
+    (save-restriction
+      (narrow-to-region $p1 $p2)
+      (let ((case-fold-search nil))
+        (goto-char (point-min))
+        (while (search-forward "\\" nil t)
+          (replace-match "/"))))))
+
+(defun xah-slash-to-double-backslash (&optional Begin End)
   "Replace slash by double backslash on current line or region.
 Version 2021-07-14"
   (interactive)
   (let ($p1 $p2)
-    (if pos1
-        (setq $p1 pos1 $p2 pos2)
+    (if Begin
+        (setq $p1 Begin $p2 End)
       (if (region-active-p)
           (setq $p1 (region-beginning) $p2 (region-end))
         (setq $p1 (line-beginning-position) $p2 (line-end-position))))
@@ -1163,13 +1180,13 @@ Version 2021-07-14"
         (while (search-forward "/" nil t)
           (replace-match "\\\\\\\\"))))))
 
-(defun xah-double-backslash-to-slash (&optional pos1 pos2)
+(defun xah-double-backslash-to-slash (&optional Begin End)
   "Replace double backslash by slash on current line or region.
 Version 2021-07-14"
   (interactive)
   (let ($p1 $p2)
-    (if pos1
-        (setq $p1 pos1 $p2 pos2)
+    (if Begin
+        (setq $p1 Begin $p2 End)
       (if (region-active-p)
           (setq $p1 (region-beginning) $p2 (region-end))
         (setq $p1 (line-beginning-position) $p2 (line-end-position))))
@@ -1179,24 +1196,6 @@ Version 2021-07-14"
         (goto-char (point-min))
         (while (search-forward "\\\\" nil t)
           (replace-match "/"))))))
-
-;; (defun xah-first-slash (&optional pos1 pos2)
-;;   "change slash to/from (double) backslash in current line or region.
-;; Version 2021-07-14"
-;;   (interactive)
-;;   (let (p1 p2)
-;;     (if (region-active-p)
-;;         (setq p1 (region-beginning) p2 (region-end))
-;;       (setq p1 (line-beginning-position) p2 (line-end-position)))
-;;     (save-restriction
-;;       (narrow-to-region p1 p2)
-;;       (goto-char (point-min))
-;;       (skip-chars-forward "/\\" )
-;;       (let ((cc (char-after )))
-;;         (if (or (char-equal ?/ cc)
-;;                 (char-equal ?\\ cc))
-;;             (progn "/")
-;;           (progn "\\" ))))))
 
 (defun xah-comment-dwim ()
   "Like `comment-dwim', but toggle comment if cursor is not at end of line.
