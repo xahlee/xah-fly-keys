@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 14.19.20210911231957
+;; Version: 14.19.20210913001359
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1118,23 +1118,21 @@ Version 2020-12-02 2021-08-31"
   "Replace space sequence to a newline char in current block or selection.
 
 URL `http://ergoemacs.org/emacs/emacs_space_to_newline.html'
-Version 2017-08-19 2021-08-12"
+Version 2017-08-19 2021-08-12 2021-09-12"
   (interactive)
-  (let ( $p1 $p2 )
-    (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
-    (save-excursion
-      (save-restriction
-        (narrow-to-region $p1 $p2)
-        (goto-char (point-min))
-        (while (re-search-forward " +" nil t)
-          (replace-match "\n" ))))))
+  (let* (($bds (xah-get-bounds-of-block-or-region))
+         ($p1 (car $bds))
+         ($p2 (cdr $bds)))
+    (goto-char $p1)
+    (while (re-search-forward " +" $p2 t)
+      (replace-match "\n"))))
 
 (defun xah-slash-to-backslash (&optional Begin End)
   "Replace slash by backslash on current line or region.
-Version 2021-07-14"
+Version 2021-07-14 2021-09-12"
   (interactive)
   (let ($p1 $p2)
-    (if Begin
+    (if (and Begin End)
         (setq $p1 Begin $p2 End)
       (if (region-active-p)
           (setq $p1 (region-beginning) $p2 (region-end))
@@ -1151,7 +1149,7 @@ Version 2021-07-14"
 Version 2021-09-11"
   (interactive)
   (let ($p1 $p2)
-    (if Begin
+    (if (and Begin End)
         (setq $p1 Begin $p2 End)
       (if (region-active-p)
           (setq $p1 (region-beginning) $p2 (region-end))
@@ -1168,7 +1166,7 @@ Version 2021-09-11"
 Version 2021-07-14"
   (interactive)
   (let ($p1 $p2)
-    (if Begin
+    (if (and Begin End)
         (setq $p1 Begin $p2 End)
       (if (region-active-p)
           (setq $p1 (region-beginning) $p2 (region-end))
@@ -1185,7 +1183,7 @@ Version 2021-07-14"
 Version 2021-07-14"
   (interactive)
   (let ($p1 $p2)
-    (if Begin
+    (if (and Begin End)
         (setq $p1 Begin $p2 End)
       (if (region-active-p)
           (setq $p1 (region-beginning) $p2 (region-end))
@@ -3939,28 +3937,35 @@ minor modes loaded later may override bindings in this map.")
 (xah-fly--define-keys
  ;; kinda replacement related
  (define-prefix-command 'xah-fly-r-keymap)
- '(
-   ("SPC" . rectangle-mark-mode)
+ '(("SPC" . rectangle-mark-mode)
    ("," . apply-macro-to-region-lines)
    ("." . kmacro-start-macro)
    ("3" . number-to-register)
    ("4" . increment-register)
+   ;; a b
    ("c" . replace-rectangle)
    ("d" . delete-rectangle)
    ("e" . call-last-kbd-macro)
+   ;; f
    ("g" . kill-rectangle)
    ("h" . xah-change-bracket-pairs)
    ("i" . xah-space-to-newline)
    ("j" . xah-slash-to-backslash)
    ("k" . xah-slash-to-double-backslash)
    ("l" . clear-rectangle)
+   ;; m
    ("n" . rectangle-number-lines)
    ("o" . open-rectangle)
    ("p" . kmacro-end-macro)
+   ;; q
    ("r" . yank-rectangle)
+   ;; s t
    ("u" . xah-quote-lines)
+   ;; v w
    ("x" . xah-double-backslash-to-slash)
-   ("y" . delete-whitespace-rectangle)))
+   ("y" . delete-whitespace-rectangle)
+   ;; z
+   ))
 
 (xah-fly--define-keys
  (define-prefix-command 'xah-fly-t-keymap)
