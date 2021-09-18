@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 14.19.20210913001359
+;; Version: 15.20.20210918082330
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1215,7 +1215,7 @@ Version 2016-10-25"
             (comment-or-uncomment-region $lbp $lep)
             (forward-line )))))))
 
-(defun xah-quote-lines (QuoteL QuoteR Sep )
+(defun xah-quote-lines (Begin End QuoteL QuoteR Sep)
   "Add quotes/brackets and separator (comma) to lines.
 Act on current block or selection.
 
@@ -1240,9 +1240,12 @@ or
 In lisp code, QuoteL QuoteR Sep are strings.
 
 URL `http://ergoemacs.org/emacs/emacs_quote_lines.html'
-Version 2020-06-26 2021-07-21 2021-08-15"
+Version 2020-06-26 2021-07-21 2021-08-15 2021-09-15"
   (interactive
-   (let (($brackets
+   (let* (($bds (xah-get-bounds-of-block-or-region))
+         ($p1 (car $bds))
+         ($p2 (cdr $bds))
+         ($brackets
           '(
             "\"double\""
             "'single'"
@@ -1262,13 +1265,13 @@ Version 2020-06-26 2021-07-21 2021-08-15"
             "none"
             "other"
             )) $bktChoice $sep $sepChoice $quoteL $quoteR)
-     (setq $bktChoice (ido-completing-read "Quote to use:" $brackets ))
-     (setq $sepChoice (ido-completing-read "line separator:" '(  "," ";" "none" "other")))
+     (setq $bktChoice (ido-completing-read "Quote to use:" $brackets))
+     (setq $sepChoice (ido-completing-read "line separator:" '("," ";" "none" "other")))
      (cond
       ((string-equal $bktChoice "none")
-       (setq $quoteL "" $quoteR "" ))
+       (setq $quoteL "" $quoteR ""))
       ((string-equal $bktChoice "other")
-       (let (($x (read-string "Enter 2 chars, for begin/end quote:" )))
+       (let (($x (read-string "Enter 2 chars, for begin/end quote:")))
          (setq $quoteL (substring-no-properties $x 0 1)
                $quoteR (substring-no-properties $x 1 2))))
       (t (setq $quoteL (substring-no-properties $bktChoice 0 1)
@@ -1276,11 +1279,10 @@ Version 2020-06-26 2021-07-21 2021-08-15"
      (setq $sep
            (cond
             ((string-equal $sepChoice "none") "")
-            ((string-equal $sepChoice "other") (read-string "Enter separator:" ))
+            ((string-equal $sepChoice "other") (read-string "Enter separator:"))
             (t $sepChoice)))
-     (list $quoteL $quoteR $sep)))
-  (let ( $p1 $p2 ($quoteL QuoteL) ($quoteR QuoteR) ($sep Sep))
-    (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
+     (list $p1 $p2 $quoteL $quoteR $sep)))
+  (let (($p1 Begin) ($p2 End) ($quoteL QuoteL) ($quoteR QuoteR) ($sep Sep))
     (save-excursion
       (save-restriction
         (narrow-to-region $p1 $p2)
@@ -1289,7 +1291,7 @@ Version 2020-06-26 2021-07-21 2021-08-15"
           (while t
             (skip-chars-forward "\t ")
             (insert $quoteL)
-            (end-of-line )
+            (end-of-line)
             (insert $quoteR $sep)
             (if (eq (point) (point-max))
                 (throw 'EndReached t)
@@ -2279,26 +2281,27 @@ Version 2018-10-12"
 (setq
  xah-run-current-file-map
  '(
+   ("clj" . "clj")
+   ("go" . "go run")
+   ("hs" . "runhaskell")
+   ("java" . "javac")
+   ("js" . "deno run")
+   ("latex" . "pdflatex")
+   ("mjs" . "node --experimental-modules ")
+   ("ml" . "ocaml")
    ("php" . "php")
    ("pl" . "perl")
+   ("ps1" . "pwsh")
    ("py" . "python")
    ("py2" . "python2")
    ("py3" . "python3")
    ("rb" . "ruby")
-   ("go" . "go run")
-   ("hs" . "runhaskell")
-   ("js" . "deno run")
+   ("rkt" . "racket")
+   ("sh" . "bash")
+   ("tex" . "pdflatex")
    ("ts" . "deno run") ; TypeScript
    ("tsx" . "tsc")
-   ("mjs" . "node --experimental-modules ")
-   ("sh" . "bash")
-   ("clj" . "clj")
-   ("rkt" . "racket")
-   ("ml" . "ocaml")
    ("vbs" . "cscript")
-   ("tex" . "pdflatex")
-   ("latex" . "pdflatex")
-   ("java" . "javac")
    ;; ("pov" . "/usr/local/bin/povray +R2 +A0.1 +J1.2 +Am2 +Q9 +H480 +W640")
    ))
 
@@ -3415,7 +3418,6 @@ Version 2017-01-29"
 
   "A alist, each element is of the form (\"e\" . \"d\"). First char is Dvorak, second is corresponding BEPO layout. Not all chars are in the list. When not in this alist, they are assumed to be the same.")
 
-(define-obsolete-variable-alias 'xah-fly-key--current-layout 'xah-fly-key-current-layout "2020-04-09")
 (defcustom xah-fly-key-current-layout nil
   "The current keyboard layout. Use `xah-fly-keys-set-layout' to set the layout.
 If the value is nil, it is automatically set to \"dvorak\"."
@@ -3451,7 +3453,7 @@ If the value is nil, it is automatically set to \"dvorak\"."
                (set Layout-var New-layout)
                (load "xah-fly-keys"))
            (set Layout-var New-layout))))
-(if xah-fly-key-current-layout nil (setq xah-fly-key-current-layout 'dvorak))
+(if xah-fly-key-current-layout nil (setq xah-fly-key-current-layout 'qwerty))
 
 (defvar xah-fly--current-layout-kmap nil
   "The current keyboard layout key map. Value is a alist. e.g. the value of `xah--dvorak-to-qwerty-kmap'.
@@ -4256,34 +4258,37 @@ minor modes loaded later may override bindings in this map.")
   "Set a keyboard layout.
 Argument must be one of:
 
- 'adnw
- 'azerty
- 'azerty-be
- 'beopy
- 'bepo
- 'carpalx-qfmlwy
- 'carpalx-qgmlwb
- 'carpalx-qgmlwy
- 'colemak
- 'colemak-mod-dh
- 'colemak-mod-dh-new
- 'dvorak
- 'koy
- 'neo2
- 'norman
- 'programer-dvorak
- 'pt-nativo
- 'qwerty
- 'qwerty-abnt
- 'qwerty-no (qwerty Norwegian)
- 'qwertz
- 'workman
+ adnw
+ azerty
+ azerty-be
+ beopy
+ bepo
+ carpalx-qfmlwy
+ carpalx-qgmlwb
+ carpalx-qgmlwy
+ colemak
+ colemak-mod-dh
+ colemak-mod-dh-new
+ dvorak
+ koy
+ neo2
+ norman
+ programer-dvorak
+ pt-nativo
+ qwerty
+ qwerty-abnt
+ qwerty-no (qwerty Norwegian)
+ qwertz
+ workman
 
-For backwards compatibility, a string that is the name of one of the above symbols is also acceptable (case-sensitive).
-Version 2021-05-19"
-  (interactive (list
-                (widget-prompt-value (get 'xah-fly-key-current-layout 'custom-type)
-                                     "New keyboard layout: ")))
+In elisp, those should be strings.
+
+Version 2021-05-19 2021-09-17"
+  (interactive
+   (list
+    (widget-prompt-value
+     (get 'xah-fly-key-current-layout 'custom-type)
+     "New keyboard layout: ")))
   (funcall (get 'xah-fly-key-current-layout 'custom-set)
            'xah-fly-key-current-layout
            Layout))
