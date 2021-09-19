@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 15.20.20210918082330
+;; Version: 15.21.20210919060619
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2621,11 +2621,6 @@ Version 2017-01-29"
       (other-frame 1)
     (delete-other-windows)))
 
-(defun xah-describe-major-mode ()
-  "Display inline doc for current `major-mode'."
-  (interactive)
-  (describe-function major-mode))
-
 ;; HHH___________________________________________________________________
 ;; key maps for conversion
 
@@ -3877,7 +3872,7 @@ minor modes loaded later may override bindings in this map.")
    ("j" . man)
    ("k" . describe-key)
    ("l" . view-lossage)
-   ("m" . xah-describe-major-mode)
+   ("m" . describe-mode)
    ("n" . describe-variable)
    ("o" . describe-language-environment)
    ;; p
