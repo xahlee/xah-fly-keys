@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 15.21.20210919060619
+;; Version: 15.21.20210919065447
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -498,7 +498,8 @@ Version 2019-12-02 2021-07-03"
     (goto-char (point-min))))
 
 (defun xah-delete-backward-char-or-bracket-text ()
-  "Delete backward 1 character, but if it is a \"quote\" or bracket ()[]{}【】「」 etc, delete bracket and the inner text, push the deleted text to `kill-ring'.
+  "Delete backward 1 character or delete quote/bracket pair and inner text.
+If the char to the left of cursor is a matching pair, delete it and inner text, push the deleted text to `kill-ring'.
 
 What char is considered bracket or quote is determined by current syntax table.
 
@@ -805,25 +806,29 @@ Version 2020-12-08 2020-12-24 2021-08-13"
               (upcase-region (match-beginning 2) (match-end 2))
               (overlay-put (make-overlay (match-beginning 2) (match-end 2)) 'face 'highlight))))))))
 
-(defun xah-title-case-region-or-line (Begin End)
+(defun xah-title-case-region-or-line (&optional Begin End)
   "Title case text between nearest brackets, or current line or selection.
 Capitalize first letter of each word, except words like {to, of, the, a, in, or, and, …}. If a word already contains cap letters such as HTTP, URL, they are left as is.
 
 When called in a elisp program, Begin End are region boundaries.
 
 URL `http://ergoemacs.org/emacs/elisp_title_case_text.html'
-Version 2017-01-11 2021-03-30"
-  (interactive
-   (if (use-region-p)
-       (list (region-beginning) (region-end))
-     (let ( $p1 $p2 ($skipChars "^\"<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕"))
-       (progn
-         (skip-chars-backward $skipChars (line-beginning-position))
-         (setq $p1 (point))
-         (skip-chars-forward $skipChars (line-end-position))
-         (setq $p2 (point)))
-       (list $p1 $p2))))
-  (let (
+Version 2017-01-11 2021-03-30 2021-09-19"
+  (interactive)
+  (let* (($skipChars "^\"<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕")
+         ($p0 (point))
+         ($p1 (if Begin
+                  Begin
+                (if (region-active-p)
+                    (region-beginning)
+                  (progn
+                    (skip-chars-backward $skipChars (line-beginning-position)) (point)))))
+         ($p2 (if End
+                  End
+                (if (region-active-p)
+                    (region-end)
+                  (progn (goto-char $p0)
+                         (skip-chars-forward $skipChars (line-end-position)) (point)))))
          ($strPairs [
                      [" A " " a "]
                      [" An " " an "]
@@ -852,7 +857,7 @@ Version 2017-01-11 2021-03-30"
                      ]))
     (save-excursion
       (save-restriction
-        (narrow-to-region Begin End)
+        (narrow-to-region $p1 $p2)
         (upcase-initials-region (point-min) (point-max))
         (let ((case-fold-search nil))
           (mapc
@@ -860,9 +865,7 @@ Version 2017-01-11 2021-03-30"
              (goto-char (point-min))
              (while
                  (search-forward (aref $x 0) nil t)
-               (replace-match (aref $x 1) t t))
-             ;;
-             )
+               (replace-match (aref $x 1) t t)))
            $strPairs))))))
 
 (defun xah-delete-blank-lines ()
@@ -1367,7 +1370,7 @@ Version 2016-10-04 2019-11-24"
         (revert-buffer))
     (user-error "Not in dired")))
 
-(defun xah-cycle-hyphen-lowline-space ( &optional Begin End )
+(defun xah-cycle-hyphen-lowline-space (&optional Begin End)
   "Cycle hyphen/lowline/space chars in selection or inside quote/bracket or line, in that order.
 After this command is called, press space to repeat it.
 The region to work on is by this order:
@@ -1396,11 +1399,11 @@ Version 2019-02-12 2021-08-20"
             (skip-chars-forward $skipChars (line-end-position))
             (setq $p2 (point))
             (set-mark $p1)))))
-    (let ( $charArray $length $regionWasActive-p $nowState $changeTo)
+    (let ($charArray $length $regionWasActive-p $nowState $changeTo)
       (setq $charArray ["-" "_" " "])
       (setq $length (length $charArray))
       (setq $regionWasActive-p (region-active-p))
-      (setq $nowState (if (eq last-command this-command) (get 'xah-cycle-hyphen-lowline-space 'state) 0 ))
+      (setq $nowState (if (eq last-command this-command) (get 'xah-cycle-hyphen-lowline-space 'state) 0))
       (setq $changeTo (elt $charArray $nowState))
       (save-excursion
         (save-restriction
@@ -1413,7 +1416,7 @@ Version 2019-02-12 2021-08-20"
         (set-mark $p1)
         (setq deactivate-mark nil))
       (put 'xah-cycle-hyphen-lowline-space 'state (% (+ $nowState 1) $length))))
-  (set-transient-map (let (($kmap (make-sparse-keymap))) (define-key $kmap (kbd "SPC") 'xah-cycle-hyphen-lowline-space ) $kmap)))
+  (set-transient-map (let (($kmap (make-sparse-keymap))) (define-key $kmap (kbd "SPC") 'xah-cycle-hyphen-lowline-space) $kmap)))
 
 (defun xah-copy-file-path (&optional DirPathOnlyQ)
   "Copy the current buffer's file path or dired path to `kill-ring'.
@@ -1486,7 +1489,7 @@ Version 2017-01-23"
          (setq $p1 (region-beginning) $p2 (region-end))
       (setq $p1 (line-beginning-position) $p2 (line-end-position)))
     (copy-to-register ?1 $p1 $p2)
-    (message "Copied to register 1: 「%s」." (buffer-substring-no-properties $p1 $p2))))
+    (message "Copied to register 1: [%s]." (buffer-substring-no-properties $p1 $p2))))
 
 (defun xah-append-to-register-1 ()
   "Append current line or selection to register 1.
@@ -1503,7 +1506,7 @@ Version 2015-12-08 2020-09-08"
     (append-to-register ?1 $p1 $p2)
     (with-temp-buffer (insert "\n")
                       (append-to-register ?1 (point-min) (point-max)))
-    (message "Appended to register 1: 「%s」." (buffer-substring-no-properties $p1 $p2))))
+    (message "Appended to register 1: [%s]." (buffer-substring-no-properties $p1 $p2))))
 
 (defun xah-paste-from-register-1 ()
   "Paste text from register 1.
@@ -1600,15 +1603,6 @@ version 2020-09-07"
        )
       (t
        (format-time-string "%Y-%m-%d"))))))
-
-;; (defun xah-current-date-time-string ()
-;;   "Returns current date-time string in full ISO 8601 format.
-;; Example: 「2012-04-05T21:08:24-07:00」.
-
-;; Note, for the time zone offset, both the formats 「hhmm」 and 「hh:mm」 are valid ISO 8601. However, Atom Webfeed spec seems to require 「hh:mm」."
-;;   (concat
-;;    (format-time-string "%Y-%m-%dT%T")
-;;    ((lambda ($x) (format "%s:%s" (substring $x 0 3) (substring $x 3 5))) (format-time-string "%z"))))
 
 (defun xah-insert-bracket-pair (LBracket RBracket &optional WrapMethod)
   "Insert brackets around selection, word, at point, and maybe move cursor in between.
@@ -2162,10 +2156,9 @@ If path does not have a file extension, automatically try with “.el” for eli
 This command is similar to `find-file-at-point' but without prompting for confirmation.
 
 URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'
-Version 2020-10-17 2021-02-24 2021-08-14"
+Version 2020-10-17 2021-02-24 2021-08-14 2021-09-19"
   (interactive)
-  (let ( $input $path)
-    (setq $input
+  (let* (($input
           (if (use-region-p)
               (buffer-substring-no-properties (region-beginning) (region-end))
             (let (($p0 (point)) $p1 $p2
@@ -2177,25 +2170,24 @@ Version 2020-10-17 2021-02-24 2021-08-14"
               (setq $p2 (point))
               (goto-char $p0)
               (buffer-substring-no-properties $p1 $p2))))
-    (setq $path (replace-regexp-in-string "^/C:/" "/" (replace-regexp-in-string "^file://" "" (replace-regexp-in-string ":\\'" "" $input))))
+         ($path (replace-regexp-in-string "^/C:/" "/" (replace-regexp-in-string "^file://" "" (replace-regexp-in-string ":\\'" "" $input)))))
     (if (string-match-p "\\`https?://" $path)
         (if (fboundp 'xahsite-url-to-filepath)
             (let (($x (xahsite-url-to-filepath $path)))
-              (if (string-match "^http" $x )
+              (if (string-match "^http" $x)
                   (browse-url $x)
                 (find-file $x)))
           (progn (browse-url $path)))
       (progn ; not starting “http://”
-        (if (string-match "#" $path )
-            (let (
-                  ( $fpath (substring $path 0 (match-beginning 0)))
-                  ( $fractPart (substring $path (1+ (match-beginning 0)))))
+        (if (string-match "#" $path)
+            (let (($fpath (substring $path 0 (match-beginning 0)))
+                  ($fractPart (substring $path (1+ (match-beginning 0)))))
               (if (file-exists-p $fpath)
                   (progn
                     (find-file $fpath)
                     (goto-char (point-min))
-                    (search-forward $fractPart ))
-                (when (y-or-n-p (format "file does not exist: 「%s」. Create?" $fpath))
+                    (search-forward $fractPart))
+                (when (y-or-n-p (format "file does not exist: [%s]. Create?" $fpath))
                   (find-file $fpath))))
           (if (string-match "^\\`\\(.+?\\):\\([0-9]+\\)\\(:[0-9]+\\)?\\'" $path)
               (let (($fpath (match-string-no-properties 1 $path))
@@ -2205,7 +2197,7 @@ Version 2020-10-17 2021-02-24 2021-08-14"
                       (find-file $fpath)
                       (goto-char (point-min))
                       (forward-line (1- $lineNum)))
-                  (when (y-or-n-p (format "file does not exist: 「%s」. Create?" $fpath))
+                  (when (y-or-n-p (format "file does not exist: [%s]. Create?" $fpath))
                     (find-file $fpath))))
             (if (file-exists-p $path)
                 (progn ; open f.ts instead of f.js
@@ -2217,8 +2209,8 @@ Version 2020-10-17 2021-02-24 2021-08-14"
                       (find-file $path))))
               (if (file-exists-p (concat $path ".el"))
                   (find-file (concat $path ".el"))
-                (when (y-or-n-p (format "file does not exist: 「%s」. Create?" $path))
-                  (find-file $path ))))))))))
+                (when (y-or-n-p (format "file does not exist: [%s]. Create?" $path))
+                  (find-file $path))))))))))
 
 (if (version<= emacs-version "26.0.50")
     (defalias 'xah-display-line-numbers-mode #'linum-mode)
@@ -2307,7 +2299,7 @@ Version 2018-10-12"
 
 (defun xah-run-current-file ()
   "Execute the current file.
-For example, if the current buffer is x.py, then it'll call 「python x.py」 in a shell.
+For example, if the current buffer is x.py, then it'll call [python x.py] in a shell.
 Output is printed to buffer “*xah-run output*”.
 File suffix is used to determine which program to run, set in the variable `xah-run-current-file-map'.
 
@@ -2457,7 +2449,7 @@ Version 2018-05-15 2021-08-31"
             (copy-file $fname $backupPath t)
             (when (boundp 'xah-recently-closed-buffers)
               (push (cons nil $backupPath) xah-recently-closed-buffers))
-            (message "Backup created. Call `xah-open-last-closed' to open it at 「%s」." $backupPath)
+            (message "Backup created. Call `xah-open-last-closed' to open it at [%s]." $backupPath)
             (delete-file $fname))
         (progn
           (widen)
@@ -2468,7 +2460,7 @@ Version 2018-05-15 2021-08-31"
 
 (defun xah-search-current-word ()
   "Call `isearch' on current word or selection.
-“word” here is A to Z, a to z, and hyphen 「-」 and underline 「_」, independent of syntax table.
+“word” here is A to Z, a to z, and hyphen [-] and lowline [_], independent of syntax table.
 
 URL `http://ergoemacs.org/emacs/modernization_isearch.html'
 Version 2015-04-09"
