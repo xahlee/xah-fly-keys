@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 15.21.20210919065447
+;; Version: 15.21.20211008231809
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -371,7 +371,7 @@ Version 2019-10-30"
     (if current-prefix-arg
         (progn
           (copy-region-as-kill (point-min) (point-max)))
-      (if (use-region-p)
+      (if (region-active-p)
           (progn
             (copy-region-as-kill (region-beginning) (region-end)))
         (if (eq last-command this-command)
@@ -407,7 +407,7 @@ Version 2015-06-10"
       (progn ; not using kill-region because we don't want to include previous kill
         (kill-new (buffer-string))
         (delete-region (point-min) (point-max)))
-    (progn (if (use-region-p)
+    (progn (if (region-active-p)
                (kill-region (region-beginning) (region-end) t)
              (kill-region (line-beginning-position) (line-beginning-position 2))))))
 
@@ -418,7 +418,7 @@ Respects `narrow-to-region'.
 URL `http://ergoemacs.org/emacs/emacs_copy_cut_all_or_region.html'
 Version 2015-08-22"
   (interactive)
-  (if (use-region-p)
+  (if (region-active-p)
       (progn
         (kill-new (buffer-substring (region-beginning) (region-end)))
         (message "Text selection copied."))
@@ -433,7 +433,7 @@ Respects `narrow-to-region'.
 URL `http://ergoemacs.org/emacs/emacs_copy_cut_all_or_region.html'
 Version 2015-08-22"
   (interactive)
-  (if (use-region-p)
+  (if (region-active-p)
       (progn
         (kill-new (buffer-substring (region-beginning) (region-end)))
         (delete-region (region-beginning) (region-end)))
@@ -731,7 +731,7 @@ URL `http://ergoemacs.org/emacs/modernization_upcase-word.html'
 Version 2020-06-26"
   (interactive)
   (let ( (deactivate-mark nil) $p1 $p2)
-    (if (use-region-p)
+    (if (region-active-p)
         (setq $p1 (region-beginning) $p2 (region-end))
       (save-excursion
         (skip-chars-backward "[:alpha:]")
@@ -1307,7 +1307,7 @@ See also: `xah-unescape-quotes'
 URL `http://ergoemacs.org/emacs/elisp_escape_quotes.html'
 Version 2017-01-11"
   (interactive
-   (if (use-region-p)
+   (if (region-active-p)
        (list (region-beginning) (region-end))
      (list (line-beginning-position) (line-end-position))))
   (save-excursion
@@ -1324,7 +1324,7 @@ See also: `xah-escape-quotes'
 URL `http://ergoemacs.org/emacs/elisp_escape_quotes.html'
 Version 2017-01-11"
   (interactive
-   (if (use-region-p)
+   (if (region-active-p)
        (list (region-beginning) (region-end))
      (list (line-beginning-position) (line-end-position))))
   (save-excursion
@@ -1382,53 +1382,47 @@ URL `http://ergoemacs.org/emacs/elisp_change_space-hyphen_underscore.html'
 Version 2019-02-12 2021-08-20"
   (interactive)
   ;; this function sets a property 'state. Possible values are 0 to length of $charArray.
-  (let ($p1 $p2)
+  (let* ($p1
+         $p2
+         ($charArray ["-" "_" " "])
+         ($n (length $charArray))
+         ($regionWasActive-p (region-active-p))
+         ($nowState (if (eq last-command this-command) (get 'xah-cycle-hyphen-lowline-space 'state) 0))
+         ($changeTo (elt $charArray $nowState)))
     (if (and Begin End)
         (setq $p1 Begin $p2 End)
-      (if (use-region-p)
+      (if (region-active-p)
           (setq $p1 (region-beginning) $p2 (region-end))
-        (if (nth 3 (syntax-ppss))
-            (save-excursion
-              (skip-chars-backward "^\"")
-              (setq $p1 (point))
-              (skip-chars-forward "^\"")
-              (setq $p2 (point)))
-          (let (($skipChars "^\"<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕（）"))
-            (skip-chars-backward $skipChars (line-beginning-position))
-            (setq $p1 (point))
-            (skip-chars-forward $skipChars (line-end-position))
-            (setq $p2 (point))
-            (set-mark $p1)))))
-    (let ($charArray $length $regionWasActive-p $nowState $changeTo)
-      (setq $charArray ["-" "_" " "])
-      (setq $length (length $charArray))
-      (setq $regionWasActive-p (region-active-p))
-      (setq $nowState (if (eq last-command this-command) (get 'xah-cycle-hyphen-lowline-space 'state) 0))
-      (setq $changeTo (elt $charArray $nowState))
-      (save-excursion
-        (save-restriction
-          (narrow-to-region $p1 $p2)
-          (goto-char (point-min))
-          (while (re-search-forward (elt $charArray (% (+ $nowState 2) $length)) (point-max) 1)
-            (replace-match $changeTo t t))))
-      (when (or (string-equal $changeTo " ") $regionWasActive-p)
-        (goto-char $p2)
-        (set-mark $p1)
-        (setq deactivate-mark nil))
-      (put 'xah-cycle-hyphen-lowline-space 'state (% (+ $nowState 1) $length))))
+        (let (($skipChars "^\"<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕（）"))
+          (skip-chars-backward $skipChars (line-beginning-position))
+          (setq $p1 (point))
+          (skip-chars-forward $skipChars (line-end-position))
+          (setq $p2 (point))
+          (set-mark $p1))))
+    (save-excursion
+      (save-restriction
+        (narrow-to-region $p1 $p2)
+        (goto-char (point-min))
+        (while (re-search-forward (elt $charArray (% (+ $nowState 2) $n)) (point-max) 1)
+          (replace-match $changeTo t t))))
+    (when (or (string-equal $changeTo " ") $regionWasActive-p)
+      (goto-char $p2)
+      (set-mark $p1)
+      (setq deactivate-mark nil))
+    (put 'xah-cycle-hyphen-lowline-space 'state (% (+ $nowState 1) $n)))
   (set-transient-map (let (($kmap (make-sparse-keymap))) (define-key $kmap (kbd "SPC") 'xah-cycle-hyphen-lowline-space) $kmap)))
 
 (defun xah-copy-file-path (&optional DirPathOnlyQ)
-  "Copy the current buffer's file path or dired path to `kill-ring'.
+  "Copy current buffer file path or dired path.
 Result is full path.
 If `universal-argument' is called first, copy only the dir path.
 
-If in dired, copy the file/dir cursor is on, or marked files.
+If in dired, copy the current or marked files.
 
-If a buffer is not file and not dired, copy value of `default-directory' (which is usually the “current” dir when that buffer was created)
+If a buffer is not file and not dired, copy value of `default-directory'.
 
 URL `http://ergoemacs.org/emacs/emacs_copy_file_path.html'
-Version 2018-06-18"
+Version 2018-06-18 2021-09-30"
   (interactive "P")
   (let (($fpath
          (if (string-equal major-mode 'dired-mode)
@@ -1485,7 +1479,7 @@ URL `http://ergoemacs.org/emacs/elisp_copy-paste_register_1.html'
 Version 2017-01-23"
   (interactive)
   (let ($p1 $p2)
-    (if (use-region-p)
+    (if (region-active-p)
          (setq $p1 (region-beginning) $p2 (region-end))
       (setq $p1 (line-beginning-position) $p2 (line-end-position)))
     (copy-to-register ?1 $p1 $p2)
@@ -1500,7 +1494,7 @@ URL `http://ergoemacs.org/emacs/emacs_copy_append.html'
 Version 2015-12-08 2020-09-08"
   (interactive)
   (let ($p1 $p2)
-    (if (use-region-p)
+    (if (region-active-p)
          (setq $p1 (region-beginning) $p2 (region-end))
       (setq $p1 (line-beginning-position) $p2 (line-end-position)))
     (append-to-register ?1 $p1 $p2)
@@ -1515,7 +1509,7 @@ See also: `xah-copy-to-register-1', `insert-register'.
 URL `http://ergoemacs.org/emacs/elisp_copy-paste_register_1.html'
 Version 2015-12-08"
   (interactive)
-  (when (use-region-p)
+  (when (region-active-p)
     (delete-region (region-beginning) (region-end)))
   (insert-register ?1 t))
 
@@ -1560,7 +1554,7 @@ version 2020-09-07"
                   )) 0 1))
            0
            )))
-    (when (use-region-p) (delete-region (region-beginning) (region-end)))
+    (when (region-active-p) (delete-region (region-beginning) (region-end)))
     (insert
      (cond
       ((= $style 0)
@@ -2159,7 +2153,7 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'
 Version 2020-10-17 2021-02-24 2021-08-14 2021-09-19"
   (interactive)
   (let* (($input
-          (if (use-region-p)
+          (if (region-active-p)
               (buffer-substring-no-properties (region-beginning) (region-end))
             (let (($p0 (point)) $p1 $p2
                   ($pathStops "^  \t\n\"`'‘’“”|[]{}「」<>〔〕〈〉《》【】〖〗«»‹›❮❯❬❭〘〙·。\\"))
@@ -2348,7 +2342,7 @@ URL `http://ergoemacs.org/emacs/elisp_compact_empty_lines.html'
 Version 2017-09-22 2020-09-08"
   (interactive)
   (let ($begin $end)
-    (if (use-region-p)
+    (if (region-active-p)
         (setq $begin (region-beginning) $end (region-end))
       (setq $begin (point-min) $end (point-max)))
     (save-excursion
@@ -2368,7 +2362,7 @@ URL `http://ergoemacs.org/emacs/elisp_compact_empty_lines.html'
 Version 2017-09-22 2021-08-27"
   (interactive)
   (let ($begin $end)
-    (if (use-region-p)
+    (if (region-active-p)
         (setq $begin (region-beginning) $end (region-end))
       (setq $begin (point-min) $end (point-max)))
     (save-excursion
@@ -2435,7 +2429,7 @@ Backup filename is “‹name›~‹dateTimeStamp›~”. Existing file of the s
 Call `xah-open-last-closed' to open the backup file.
 
 URL `http://ergoemacs.org/emacs/elisp_delete-current-file.html'
-Version 2018-05-15 2021-08-31"
+Version 2018-05-15 2021-08-31 2021-09-27"
   (interactive)
   (if (string-equal 'dired-mode major-mode)
       (message "In dired. Nothing is done.")
@@ -2449,7 +2443,7 @@ Version 2018-05-15 2021-08-31"
             (copy-file $fname $backupPath t)
             (when (boundp 'xah-recently-closed-buffers)
               (push (cons nil $backupPath) xah-recently-closed-buffers))
-            (message "Backup created. Call `xah-open-last-closed' to open it at [%s]." $backupPath)
+            (message "Deleted. Backup at [%s]. Call `xah-open-last-closed' to open." $backupPath)
             (delete-file $fname))
         (progn
           (widen)
@@ -2465,8 +2459,8 @@ Version 2018-05-15 2021-08-31"
 URL `http://ergoemacs.org/emacs/modernization_isearch.html'
 Version 2015-04-09"
   (interactive)
-  (let ( $p1 $p2 )
-    (if (use-region-p)
+  (let ($p1 $p2)
+    (if (region-active-p)
         (setq $p1 (region-beginning) $p2 (region-end))
       (save-excursion
         (skip-chars-backward "-_A-Za-z0-9")
@@ -3601,7 +3595,7 @@ minor modes loaded later may override bindings in this map.")
    ("t" . next-line)
    ("u" . xah-fly-insert-mode-activate)
    ("v" . xah-forward-right-bracket)
-   ("w" . xah-next-window-or-frame)
+   ("w" . next-window-any-frame)
    ("x" . xah-toggle-letter-case)
    ("y" . set-mark-command)
    ("z" . xah-goto-matching-bracket)))
