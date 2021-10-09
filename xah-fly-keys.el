@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 15.21.20211008231809
+;; Version: 15.21.20211009110616
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -3595,7 +3595,7 @@ minor modes loaded later may override bindings in this map.")
    ("t" . next-line)
    ("u" . xah-fly-insert-mode-activate)
    ("v" . xah-forward-right-bracket)
-   ("w" . next-window-any-frame)
+   ("w" . xah-next-window-or-frame)
    ("x" . xah-toggle-letter-case)
    ("y" . set-mark-command)
    ("z" . xah-goto-matching-bracket)))
