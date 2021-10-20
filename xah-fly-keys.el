@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 15.21.20211009110616
+;; Version: 15.22.20211020103605
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -152,7 +152,7 @@
   :type 'boolean
   :group 'xah-fly-keys)
 (defcustom xah-fly-use-isearch-arrows t
-  "If nil, do not bind the arrow keys to move between matches in Isearch."
+  "If nil, no change to any key in isearch (`isearch-forward'). Otherwise, arrow keys are for moving between occurrences, and C-v is paste."
   :type 'boolean
   :group 'xah-fly-keys)
 
@@ -2140,6 +2140,8 @@ Version 2019-02-26"
   (let (($thisBookmark (ido-completing-read "Open bookmark:" (mapcar (lambda ($x) (car $x)) bookmark-alist))))
     (find-file (bookmark-get-filename $thisBookmark))))
 
+(defvar xah-open-file-at-cursor-pre-hook nil "Hook for `xah-open-file-at-cursor'. Functions in the hook will be called in order, each given the path as arg. The first return non-nil, its value is given to `xah-open-file-at-cursor' as input. This is useful for transforming certain url into file path (your website url), so instead of opening in browser, it opens in emacs as file.")
+
 (defun xah-open-file-at-cursor ()
   "Open the file path under cursor.
 If there is selection, use it for path.
@@ -2147,10 +2149,13 @@ If the path starts with “http://”, open the URL in browser.
 Input path can be {relative, full path, URL}.
 Path may have a trailing “:‹n›” that indicates line number, or “:‹n›:‹m›” with line and column number. If so, jump to that line number.
 If path does not have a file extension, automatically try with “.el” for elisp files.
+
+See also `xah-open-file-at-cursor-pre-hook'.
+
 This command is similar to `find-file-at-point' but without prompting for confirmation.
 
 URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'
-Version 2020-10-17 2021-02-24 2021-08-14 2021-09-19"
+Version 2020-10-17 2021-02-24 2021-08-14 2021-09-19 2021-10-16"
   (interactive)
   (let* (($input
           (if (region-active-p)
@@ -2164,14 +2169,16 @@ Version 2020-10-17 2021-02-24 2021-08-14 2021-09-19"
               (setq $p2 (point))
               (goto-char $p0)
               (buffer-substring-no-properties $p1 $p2))))
-         ($path (replace-regexp-in-string "^/C:/" "/" (replace-regexp-in-string "^file://" "" (replace-regexp-in-string ":\\'" "" $input)))))
+         $input2 $path
+         )
+    (setq $input2
+          (if (> (length xah-open-file-at-cursor-pre-hook) 0)
+              (let (($x (run-hook-with-args-until-success 'xah-open-file-at-cursor-pre-hook $input)))
+                (if $x $x $input))
+            $input))
+    (setq $path (replace-regexp-in-string "^/C:/" "/" (replace-regexp-in-string "^file://" "" (replace-regexp-in-string ":\\'" "" $input2))))
     (if (string-match-p "\\`https?://" $path)
-        (if (fboundp 'xahsite-url-to-filepath)
-            (let (($x (xahsite-url-to-filepath $path)))
-              (if (string-match "^http" $x)
-                  (browse-url $x)
-                (find-file $x)))
-          (progn (browse-url $path)))
+        (browse-url $path)
       (progn ; not starting “http://”
         (if (string-match "#" $path)
             (let (($fpath (substring $path 0 (match-beginning 0)))
@@ -3715,7 +3722,7 @@ minor modes loaded later may override bindings in this map.")
   ;; (global-set-key (kbd "C-g") 'nil)
   ;; (global-set-key (kbd "C-h") 'nil)
   ;; (global-set-key (kbd "C-i") 'nil)
-  (global-set-key (kbd "C-j") 'nil)
+  ;; (global-set-key (kbd "C-j") 'nil)
   (global-set-key (kbd "C-k") 'nil)
   (global-set-key (kbd "C-l") 'nil)
   ;; (global-set-key (kbd "C-m") 'nil)
@@ -3741,7 +3748,8 @@ minor modes loaded later may override bindings in this map.")
    '(("<up>" . isearch-ring-retreat)
      ("<down>" . isearch-ring-advance)
      ("<left>" . isearch-repeat-backward)
-     ("<right>" . isearch-repeat-forward))
+     ("<right>" . isearch-repeat-forward)
+     ( "C-v" . isearch-yank-kill))
    :direct)
   (xah-fly--define-keys
    minibuffer-local-isearch-map
