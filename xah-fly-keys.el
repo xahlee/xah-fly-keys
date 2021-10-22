@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 15.23.20211021221336
+;; Version: 15.24.20211022153141
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2270,78 +2270,80 @@ Version 2018-10-12"
       ;;
       )))
 
-(defvar xah-run-current-file-map nil "A association list that maps file extension to program path, used by `xah-run-current-file'. First element is file suffix, second is program name or path. A file path will be appended to it to run the program. You can add items to this list.")
-(setq
- xah-run-current-file-map
- '(
-   ("clj" . "clj")
-   ("go" . "go run")
-   ("hs" . "runhaskell")
-   ("java" . "javac")
-   ("js" . "deno run")
-   ("latex" . "pdflatex")
-   ("m" . "wolframscript -file")
-   ("mjs" . "node --experimental-modules ")
-   ("ml" . "ocaml")
-   ("php" . "php")
-   ("pl" . "perl")
-   ("ps1" . "pwsh")
-   ("py" . "python")
-   ("py2" . "python2")
-   ("py3" . "python3")
-   ("rb" . "ruby")
-   ("rkt" . "racket")
-   ("sh" . "bash")
-   ("tex" . "pdflatex")
-   ("ts" . "deno run") ; TypeScript
-   ("tsx" . "tsc")
-   ("vbs" . "cscript")
-   ("wl" . "wolframscript -file")
-   ("wls" . "wolframscript -file")
-   ;; ("pov" . "/usr/local/bin/povray +R2 +A0.1 +J1.2 +Am2 +Q9 +H480 +W640")
-   ))
+(defvar xah-run-current-file-hashtable nil "A hashtable. key is file name extension, value is string of program name/path. Used by `xah-run-current-file'. A file path will be appended to the program path to run the program. You can modify the hashtable for customization.")
+(setq xah-run-current-file-hashtable
+      #s(hash-table
+         size 100
+         test equal
+         data
+         (
+          "clj" "clj"
+          "go" "go run"
+          "hs" "runhaskell"
+          "java" "javac"
+          "js" "deno run"
+          "latex" "pdflatex"
+          "m" "wolframscript -file"
+          "mjs" "node --experimental-modules "
+          "ml" "ocaml"
+          "php" "php"
+          "pl" "perl"
+          "ps1" "pwsh"
+          "py" "python"
+          "py2" "python2"
+          "py3" "python3"
+          "rb" "ruby"
+          "rkt" "racket"
+          "sh" "bash"
+          "tex" "pdflatex"
+          "ts" "deno run"
+          "tsx" "tsc"
+          "vbs" "cscript"
+          "wl" "wolframscript -file"
+          "wls" "wolframscript -file"
+          ;; "pov" "/usr/local/bin/povray +R2 +A0.1 +J1.2 +Am2 +Q9 +H480 +W640"
+          )))
 
 (defun xah-run-current-file ()
   "Execute the current file.
 For example, if the current buffer is x.py, then it'll call [python x.py] in a shell.
 Output is printed to buffer “*xah-run output*”.
-File suffix is used to determine which program to run, set in the variable `xah-run-current-file-map'.
+File suffix is used to determine which program to run, set in the variable `xah-run-current-file-hashtable'.
 
 If the file is modified or not saved, save it automatically before run.
 
 URL `http://ergoemacs.org/emacs/elisp_run_current_file.html'
-Version 2020-09-24 2021-01-21"
+Version 2020-09-24 2021-01-21 2021-10-22"
   (interactive)
-  (let (
-        ($outBuffer "*xah-run output*")
+  (let (($outBuffer "*xah-run output*")
         (resize-mini-windows nil)
-        ($suffixMap xah-run-current-file-map )
+        ($extHash xah-run-current-file-hashtable)
         $fname
-        $fSuffix
+        $fExt
         $progName
         $cmdStr)
     (when (not (buffer-file-name)) (save-buffer))
     (when (buffer-modified-p) (save-buffer))
     (setq $fname (buffer-file-name))
-    (setq $fSuffix (file-name-extension $fname))
-    (setq $progName (cdr (assoc $fSuffix $suffixMap)))
+    (setq $fExt (file-name-extension $fname))
+    (setq $progName (gethash $fExt $extHash))
     (setq $cmdStr (concat $progName " \""   $fname "\" &"))
     (run-hooks 'xah-run-current-file-before-hook)
     (cond
-     ((string-equal $fSuffix "el")
+     ((string-equal $fExt "el")
       (load $fname))
-     ((string-equal $fSuffix "go")
+     ((string-equal $fExt "go")
       (xah-run-current-go-file))
-     ((string-equal $fSuffix "java")
+     ((string-equal $fExt "java")
       (progn
-        (shell-command (format "javac %s" $fname) $outBuffer )
+        (shell-command (format "javac %s" $fname) $outBuffer)
         (shell-command (format "java %s" (file-name-sans-extension
-                                          (file-name-nondirectory $fname))) $outBuffer )))
+                                          (file-name-nondirectory $fname))) $outBuffer)))
      (t (if $progName
             (progn
               (message "Running")
-              (shell-command $cmdStr $outBuffer ))
-          (error "No recognized program file suffix for this file."))))
+              (shell-command $cmdStr $outBuffer))
+          (error "Unknown file extension: %s" $fExt))))
     (run-hooks 'xah-run-current-file-after-hook)))
 
 (defun xah-clean-empty-lines ()
