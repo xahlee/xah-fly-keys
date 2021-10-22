@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 15.22.20211020103605
+;; Version: 15.23.20211021221336
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2270,7 +2270,7 @@ Version 2018-10-12"
       ;;
       )))
 
-(defvar xah-run-current-file-map nil "A association list that maps file extension to program path, used by `xah-run-current-file'. First element is file suffix, second is program name or path. You can add items to it.")
+(defvar xah-run-current-file-map nil "A association list that maps file extension to program path, used by `xah-run-current-file'. First element is file suffix, second is program name or path. A file path will be appended to it to run the program. You can add items to this list.")
 (setq
  xah-run-current-file-map
  '(
@@ -2280,6 +2280,7 @@ Version 2018-10-12"
    ("java" . "javac")
    ("js" . "deno run")
    ("latex" . "pdflatex")
+   ("m" . "wolframscript -file")
    ("mjs" . "node --experimental-modules ")
    ("ml" . "ocaml")
    ("php" . "php")
@@ -2295,6 +2296,8 @@ Version 2018-10-12"
    ("ts" . "deno run") ; TypeScript
    ("tsx" . "tsc")
    ("vbs" . "cscript")
+   ("wl" . "wolframscript -file")
+   ("wls" . "wolframscript -file")
    ;; ("pov" . "/usr/local/bin/povray +R2 +A0.1 +J1.2 +Am2 +Q9 +H480 +W640")
    ))
 
