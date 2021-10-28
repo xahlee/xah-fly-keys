@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 15.24.20211022153141
+;; Version: 15.25.20211027200737
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2109,9 +2109,9 @@ Version 2016-06-19"
 Prompt for a choice.
 
 URL `http://ergoemacs.org/emacs/elisp_close_buffer_open_last_closed.html'
-Version 2016-06-19"
+Version 2016-06-19 2021-10-27"
   (interactive)
-  (find-file (ido-completing-read "open:" (mapcar (lambda (f) (cdr f)) xah-recently-closed-buffers))))
+  (find-file (ido-completing-read "Open:" (mapcar (lambda (f) (cdr f)) xah-recently-closed-buffers))))
 
 (defun xah-list-recently-closed ()
   "List recently closed file.
@@ -2271,6 +2271,7 @@ Version 2018-10-12"
       )))
 
 (defvar xah-run-current-file-hashtable nil "A hashtable. key is file name extension, value is string of program name/path. Used by `xah-run-current-file'. A file path will be appended to the program path to run the program. You can modify the hashtable for customization.")
+
 (setq xah-run-current-file-hashtable
       #s(hash-table
          size 100
@@ -2315,25 +2316,30 @@ If the file is modified or not saved, save it automatically before run.
 URL `http://ergoemacs.org/emacs/elisp_run_current_file.html'
 Version 2020-09-24 2021-01-21 2021-10-22"
   (interactive)
-  (let (($outBuffer "*xah-run output*")
-        (resize-mini-windows nil)
-        ($extHash xah-run-current-file-hashtable)
-        $fname
-        $fExt
-        $progName
-        $cmdStr)
+  (let* (($outBuffer "*xah-run output*")
+         (resize-mini-windows nil)
+         ($extHash xah-run-current-file-hashtable)
+         ($fname (buffer-file-name))
+         ($fExt (file-name-extension $fname))
+         ($progName (gethash $fExt $extHash))
+         ($cmdStr (concat $progName " \""   $fname "\" &")))
     (when (not (buffer-file-name)) (save-buffer))
     (when (buffer-modified-p) (save-buffer))
-    (setq $fname (buffer-file-name))
-    (setq $fExt (file-name-extension $fname))
-    (setq $progName (gethash $fExt $extHash))
-    (setq $cmdStr (concat $progName " \""   $fname "\" &"))
+
     (run-hooks 'xah-run-current-file-before-hook)
     (cond
      ((string-equal $fExt "el")
       (load $fname))
      ((string-equal $fExt "go")
       (xah-run-current-go-file))
+     ((string-match "wsl\\|ws\\|m\\|nb" $fExt)
+      (if (fboundp 'xah-run-wolfram-script)
+          (xah-run-wolfram-script $fname nil current-prefix-arg)
+        (if $progName
+            (progn
+              (message "Running")
+              (shell-command $cmdStr $outBuffer))
+          (error "Unknown file extension: %s" $fExt))))
      ((string-equal $fExt "java")
       (progn
         (shell-command (format "javac %s" $fname) $outBuffer)
