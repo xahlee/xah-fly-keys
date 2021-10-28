@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 15.25.20211027200737
+;; Version: 15.25.20211027203149
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2252,7 +2252,7 @@ Version 2018-10-12"
   (when (buffer-modified-p) (save-buffer))
   (let* (
          ($outputb "*xah-run output*")
-         (resize-mini-windows nil)
+         ;; (resize-mini-windows nil)
          ($fname (buffer-file-name))
          ;; ($fSuffix (file-name-extension $fname))
          ($progName "go")
@@ -2314,10 +2314,10 @@ File suffix is used to determine which program to run, set in the variable `xah-
 If the file is modified or not saved, save it automatically before run.
 
 URL `http://ergoemacs.org/emacs/elisp_run_current_file.html'
-Version 2020-09-24 2021-01-21 2021-10-22"
+Version 2020-09-24 2021-01-21 2021-10-27"
   (interactive)
   (let* (($outBuffer "*xah-run output*")
-         (resize-mini-windows nil)
+         ;; (resize-mini-windows nil)
          ($extHash xah-run-current-file-hashtable)
          ($fname (buffer-file-name))
          ($fExt (file-name-extension $fname))
@@ -2325,16 +2325,16 @@ Version 2020-09-24 2021-01-21 2021-10-22"
          ($cmdStr (concat $progName " \""   $fname "\" &")))
     (when (not (buffer-file-name)) (save-buffer))
     (when (buffer-modified-p) (save-buffer))
-
     (run-hooks 'xah-run-current-file-before-hook)
     (cond
      ((string-equal $fExt "el")
       (load $fname))
      ((string-equal $fExt "go")
       (xah-run-current-go-file))
-     ((string-match "wsl\\|ws\\|m\\|nb" $fExt)
+     ((string-match "wsl\\|wl\\|m\\|nb" $fExt)
       (if (fboundp 'xah-run-wolfram-script)
-          (xah-run-wolfram-script $fname nil current-prefix-arg)
+          (progn
+            (xah-run-wolfram-script nil current-prefix-arg))
         (if $progName
             (progn
               (message "Running")
