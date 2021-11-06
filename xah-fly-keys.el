@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 16.0.20211106142546
+;; Version: 16.1.20211106142814
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1962,7 +1962,7 @@ Version 2020-11-24 2021-07-11"
 ;; HHH___________________________________________________________________
 ;; misc
 
-(defun xah-user-buffer-q ()
+(defun xah-user-buffer-p ()
   "Return t if current buffer is a user buffer, else nil.
 Typically, if buffer name starts with *, it is not considered a user buffer.
 This function is used by buffer switching command and close buffer command, so that next buffer shown is a user buffer.
@@ -1977,7 +1977,7 @@ Version 2016-06-18"
 
 (defun xah-next-user-buffer ()
   "Switch to the next user buffer.
-“user buffer” is determined by `xah-user-buffer-q'.
+“user buffer” is determined by `xah-user-buffer-p'.
 
 URL `http://ergoemacs.org/emacs/elisp_next_prev_user_buffer.html'
 Version 2016-06-19"
@@ -1985,14 +1985,14 @@ Version 2016-06-19"
   (next-buffer)
   (let ((i 0))
     (while (< i 20)
-      (if (not (xah-user-buffer-q))
+      (if (not (xah-user-buffer-p))
           (progn (next-buffer)
                  (setq i (1+ i)))
         (progn (setq i 100))))))
 
 (defun xah-previous-user-buffer ()
   "Switch to the previous user buffer.
-“user buffer” is determined by `xah-user-buffer-q'.
+“user buffer” is determined by `xah-user-buffer-p'.
 
 URL `http://ergoemacs.org/emacs/elisp_next_prev_user_buffer.html'
 Version 2016-06-19"
@@ -2000,7 +2000,7 @@ Version 2016-06-19"
   (previous-buffer)
   (let ((i 0))
     (while (< i 20)
-      (if (not (xah-user-buffer-q))
+      (if (not (xah-user-buffer-p))
           (progn (previous-buffer)
                  (setq i (1+ i)))
         (progn (setq i 100))))))
@@ -2073,7 +2073,7 @@ Version 2018-06-11 2021-07-01"
       (progn
         ;; Offer to save buffers that are non-empty and modified, even for non-file visiting buffer. (Because `kill-buffer' does not offer to save buffers that are not associated with files.)
         (when (and (buffer-modified-p)
-                   (xah-user-buffer-q)
+                   (xah-user-buffer-p)
                    (not (string-equal major-mode "dired-mode"))
                    (if (equal (buffer-file-name) nil)
                        (if (string-equal "" (save-restriction (widen) (buffer-string))) nil t)
