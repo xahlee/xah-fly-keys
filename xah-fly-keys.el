@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 15.25.20211027203149
+;; Version: 16.0.20211106142546
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -3507,7 +3507,7 @@ Version 2020-04-18"
 (defvar xah-fly-key-map (make-sparse-keymap)
   "Backward-compatibility map for `xah-fly-keys' minor mode.
 
-Points to `xah-fly-insert-map' when `xah-fly-insert-state-q' is non-nil,
+Points to `xah-fly-insert-map' when `xah-fly-insert-state-p' is non-nil,
 and points to `xah-fly-command-map' otherwise (which see).")
 (make-obsolete-variable
  'xah-fly-key-map
@@ -4247,10 +4247,10 @@ minor modes loaded later may override bindings in this map.")
 
 ;; HHH___________________________________________________________________
 
-(defvar xah-fly-insert-state-q t "Boolean value. true means insertion mode is on.")
+(defvar xah-fly-insert-state-p t "non-nil means insertion mode is on.")
 
 (defun xah-fly--update-key-map ()
-  (setq xah-fly-key-map (if xah-fly-insert-state-q
+  (setq xah-fly-key-map (if xah-fly-insert-state-p
                             xah-fly-insert-map
                           xah-fly-command-map)))
 
@@ -4297,7 +4297,7 @@ Version 2021-05-19 2021-09-17"
   "Set command mode keys.
 Version 2020-04-28"
   (interactive)
-  (setq xah-fly-insert-state-q nil)
+  (setq xah-fly-insert-state-p nil)
   (xah-fly--update-key-map)
   (setq xah-fly--deactivate-command-mode-func
         (set-transient-map xah-fly-command-map (lambda () t)))
@@ -4318,7 +4318,7 @@ Version 2018-05-07"
 (defun xah-fly-insert-mode-init (&optional no-indication)
   "Enter insertion mode."
   (interactive)
-  (setq xah-fly-insert-state-q t)
+  (setq xah-fly-insert-state-p t)
   (xah-fly--update-key-map)
   (funcall xah-fly--deactivate-command-mode-func)
   (unless no-indication
@@ -4330,7 +4330,7 @@ Version 2018-05-07"
 (defun xah-fly-mode-toggle ()
   "Switch between {insertion, command} modes."
   (interactive)
-  (if xah-fly-insert-state-q
+  (if xah-fly-insert-state-p
       (xah-fly-command-mode-activate)
     (xah-fly-insert-mode-activate)))
 
