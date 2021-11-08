@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 16.1.20211106142814
+;; Version: 16.2.20211107171144
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1534,7 +1534,7 @@ If `universal-argument' is called first, prompt for a format to use.
 If there is selection, delete it first.
 
 URL `http://ergoemacs.org/emacs/elisp_insert-date-time.html'
-version 2020-09-07"
+version 2020-09-07 2021-11-07"
   (interactive)
   (let (($style
          (if current-prefix-arg
@@ -1543,14 +1543,15 @@ version 2020-09-07"
                (ido-completing-read
                 "Style:"
                 '(
-                  "1 → 2018-04-12 Thursday"
-                  "2 → 20180412224611"
+                  "1 → 20180412224611"
+                  "2 → 2018-04-12_224611"
                   "3 → 2018-04-12T22:46:11-07:00"
                   "4 → 2018-04-12 22:46:11-07:00"
-                  "5 → Thursday, April 12, 2018"
-                  "6 → Thu, Apr 12, 2018"
-                  "7 → April 12, 2018"
-                  "8 → Apr 12, 2018"
+                  "5 → 2018-04-12 Thursday"
+                  "6 → Thursday, April 12, 2018"
+                  "7 → Thu, Apr 12, 2018"
+                  "8 → April 12, 2018"
+                  "9 → Apr 12, 2018"
                   )) 0 1))
            0
            )))
@@ -1561,40 +1562,36 @@ version 2020-09-07"
        ;; "2016-10-10"
        (format-time-string "%Y-%m-%d"))
       ((= $style 1)
-       ;; "2018-04-12 Thursday"
-
-       (format-time-string "%Y-%m-%d %A"))
-      ((= $style 2)
-       ;; "20180412224015"
+       ;; "1 → 20180412224611"
        (replace-regexp-in-string ":" "" (format-time-string "%Y%m%d%T")))
+      ((= $style 2)
+       ;; "2 → 2018-04-12_224611"
+       (replace-regexp-in-string ":" "" (format-time-string "%Y-%m-%d_%T")))
       ((= $style 3)
+       ;; "3 → 2018-04-12T22:46:11-07:00"
        (concat
         (format-time-string "%Y-%m-%dT%T")
-        (funcall (lambda ($x) (format "%s:%s" (substring $x 0 3) (substring $x 3 5))) (format-time-string "%z")))
-       ;; "2018-04-12T22:45:26-07:00"
-       )
+        (funcall (lambda ($x) (format "%s:%s" (substring $x 0 3) (substring $x 3 5))) (format-time-string "%z"))))
       ((= $style 4)
+       ;; "4 → 2018-04-12 22:46:11-07:00"
        (concat
         (format-time-string "%Y-%m-%d %T")
-        (funcall (lambda ($x) (format "%s:%s" (substring $x 0 3) (substring $x 3 5))) (format-time-string "%z")))
-       ;; "2018-04-12 22:46:11-07:00"
-       )
+        (funcall (lambda ($x) (format "%s:%s" (substring $x 0 3) (substring $x 3 5))) (format-time-string "%z"))))
       ((= $style 5)
-       (format-time-string "%A, %B %d, %Y")
-       ;; "Thursday, April 12, 2018"
-       )
+       ;; "5 → 2018-04-12 Thursday"
+       (format-time-string "%Y-%m-%d %A"))
       ((= $style 6)
-       (format-time-string "%a, %b %d, %Y")
-       ;; "Thu, Apr 12, 2018"
-       )
+       ;; "6 → Thursday, April 12, 2018"
+       (format-time-string "%A, %B %d, %Y"))
       ((= $style 7)
-       (format-time-string "%B %d, %Y")
-       ;; "April 12, 2018"
-       )
+       ;; "7 → Thu, Apr 12, 2018"
+       (format-time-string "%a, %b %d, %Y"))
       ((= $style 8)
-       (format-time-string "%b %d, %Y")
-       ;; "Apr 12, 2018"
-       )
+       ;; "8 → April 12, 2018"
+       (format-time-string "%B %d, %Y"))
+      ((= $style 9)
+       ;; "9 → Apr 12, 2018"
+       (format-time-string "%b %d, %Y"))
       (t
        (format-time-string "%Y-%m-%d"))))))
 
@@ -3477,11 +3474,11 @@ Version 2020-04-18"
     (let (($result (assoc Charstr xah-fly--current-layout-kmap)))
       (if $result (cdr $result) Charstr ))))
 
-(defmacro xah-fly--define-keys (Keymap-name Key-cmd-alist &optional Direct-q)
-  "Map `define-key' over a alist Key-cmd-alist, with key layout remap.
+(defmacro xah-fly--define-keys (KeymapName KeyCmdAlist &optional DirectQ)
+  "Map `define-key' over a alist KeyCmdAlist, with key layout remap.
 The key is remapped from Dvorak to the current keyboard layout
 by `xah-fly--key-char'.
-If Direct-q is t, do not remap key to current keyboard layout.
+If DirectQ is t, do not remap key to current keyboard layout.
 Example usage:
 ;; (xah-fly--define-keys
 ;;  (define-prefix-command 'xah-fly-dot-keymap)
@@ -3491,15 +3488,15 @@ Example usage:
 ;;    (\"1\" . hi-lock-find-patterns)
 ;;    (\"w\" . isearch-forward-word)))
 Version 2020-04-18"
-  (let (($keymap-name (make-symbol "keymap-name")))
-    `(let ((,$keymap-name , Keymap-name))
+  (let (($keymapName (make-symbol "keymap-name")))
+    `(let ((,$keymapName , KeymapName))
        ,@(mapcar
           (lambda ($pair)
             `(define-key
-               ,$keymap-name
-               (kbd (,(if Direct-q #'identity #'xah-fly--key-char) ,(car $pair)))
+               ,$keymapName
+               (kbd (,(if DirectQ #'identity #'xah-fly--key-char) ,(car $pair)))
                ,(list 'quote (cdr $pair))))
-          (cadr Key-cmd-alist)))))
+          (cadr KeyCmdAlist)))))
 
 ;; HHH___________________________________________________________________
 ;; keymaps
