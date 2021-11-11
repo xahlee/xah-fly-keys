@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 16.2.20211107171144
+;; Version: 16.3.20211111093605
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1163,6 +1163,40 @@ Version 2021-09-11"
         (goto-char (point-min))
         (while (search-forward "\\" nil t)
           (replace-match "/"))))))
+
+(defun xah-double-backslash (&optional Begin End)
+  "Replace backslash by two backslash on current line or region.
+Version 2021-11-09"
+  (interactive)
+  (let ($p1 $p2)
+    (if (and Begin End)
+        (setq $p1 Begin $p2 End)
+      (if (region-active-p)
+          (setq $p1 (region-beginning) $p2 (region-end))
+        (setq $p1 (line-beginning-position) $p2 (line-end-position))))
+    (save-restriction
+      (narrow-to-region $p1 $p2)
+      (let ((case-fold-search nil))
+        (goto-char (point-min))
+        (while (search-forward "\\" nil t)
+          (replace-match "\\\\\\\\"))))))
+
+(defun xah-double-backslash-to-single (&optional Begin End)
+  "Replace double backslash by single backslash on current line or region.
+Version 2021-11-09"
+  (interactive)
+  (let ($p1 $p2)
+    (if (and Begin End)
+        (setq $p1 Begin $p2 End)
+      (if (region-active-p)
+          (setq $p1 (region-beginning) $p2 (region-end))
+        (setq $p1 (line-beginning-position) $p2 (line-end-position))))
+    (save-restriction
+      (narrow-to-region $p1 $p2)
+      (let ((case-fold-search nil))
+        (goto-char (point-min))
+        (while (search-forward "\\\\"  nil t)
+          (replace-match "\\\\"))))))
 
 (defun xah-slash-to-double-backslash (&optional Begin End)
   "Replace slash by double backslash on current line or region.
