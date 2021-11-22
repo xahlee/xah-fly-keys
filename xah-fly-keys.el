@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 16.4.20211121102321
+;; Version: 16.5.20211122155358
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2531,25 +2531,26 @@ Version 2015-04-09"
 This command can be called when in a file buffer or in `dired'.
 
 URL `http://xahlee.info/emacs/emacs/emacs_dired_open_file_in_ext_apps.html'
-Version 2020-11-20 2021-01-31 2021-11-12"
+Version 2020-11-20 2021-01-31 2021-11-12 2021-11-22"
   (interactive)
   (let (($path (if (eq major-mode 'dired-mode)
-                   (if (eq nil (dired-get-marked-files ))
+                   (if (eq nil (dired-get-marked-files))
                        default-directory
-                     (car (dired-get-marked-files )))
+                     (car (dired-get-marked-files)))
                  (if (buffer-file-name) (buffer-file-name) default-directory))))
     (cond
      ((string-equal system-type "windows-nt")
-      (shell-command (format "PowerShell -Command invoke-item '%s'" (expand-file-name default-directory )))
-      ;; (let ( ($cmd (format "Explorer /select,%s"  (shell-quote-argument (replace-regexp-in-string "/" "\\" $path t t )))))
-      ;;   (shell-command $cmd))
-      )
+      ;; (shell-command (format "PowerShell -Command invoke-item '%s'" (expand-file-name default-directory )))
+      (let (($cmd (format "Explorer /select,%s"
+                          (replace-regexp-in-string "/" "\\" $path t t)
+                          ;; (shell-quote-argument (replace-regexp-in-string "/" "\\" $path t t ))
+                          )))
+        (shell-command $cmd)))
      ((string-equal system-type "darwin")
       (shell-command
        (concat "open -R " (shell-quote-argument $path))))
      ((string-equal system-type "gnu/linux")
-      (let (
-            (process-connection-type nil)
+      (let ((process-connection-type nil)
             (openFileProgram (if (file-exists-p "/usr/bin/gvfs-open")
                                  "/usr/bin/gvfs-open"
                                "/usr/bin/xdg-open")))
