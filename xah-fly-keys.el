@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 16.5.20211122155358
+;; Version: 16.5.2021-11-26_173728
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -893,23 +893,22 @@ Version 2019-06-13"
     (delete-region p1 p2)))
 
 (defun xah-shrink-whitespaces ()
-  "Remove whitespaces around cursor to just one, or none.
+  "Remove whitespaces around cursor .
 
-Shrink any neighboring space tab newline characters to 1 or none.
-If cursor neighbor has space/tab, toggle between 1 or 0 space.
-If cursor neighbor are newline, shrink them to just 1.
-If already has just 1 whitespace, delete it.
+If cursor neighbor has space/tab, shrink them to 1 space.
+If cursor neighbor has newline, shrink them to 1 newline.
+If cursor neighbor has only 1 newline, delete that newline.
+Repeating the command will eventually collapse all whitespace to just 1 space.
 
 URL `http://xahlee.info/emacs/emacs/emacs_shrink_whitespace.html'
-Version 2019-06-13"
+Version 2014-10-21 2021-11-26"
   (interactive)
-  (let* (
-         ($eol-count 0)
+  (let* (($eol-count 0)
          ($p0 (point))
          $p1 ; whitespace begin
          $p2 ; whitespace end
          ($charBefore (char-before))
-         ($charAfter (char-after ))
+         ($charAfter (char-after))
          ($space-neighbor-p (or (eq $charBefore 32) (eq $charBefore 9) (eq $charAfter 32) (eq $charAfter 9)))
          $just-1-space-p
          )
@@ -919,17 +918,17 @@ Version 2019-06-13"
     (skip-chars-forward " \n\t　")
     (setq $p2 (point))
     (goto-char $p1)
-    (while (search-forward "\n" $p2 t )
+    (while (search-forward "\n" $p2 t)
       (setq $eol-count (1+ $eol-count)))
     (setq $just-1-space-p (eq (- $p2 $p1) 1))
     (goto-char $p0)
     (cond
      ((eq $eol-count 0)
       (if $just-1-space-p
-          (xah-fly-delete-spaces)
+          ;; (xah-fly-delete-spaces)
+          nil
         (progn (xah-fly-delete-spaces)
-               (insert " ")))
-      )
+               (insert " "))))
      ((eq $eol-count 1)
       (if $space-neighbor-p
           (xah-fly-delete-spaces)
@@ -945,11 +944,11 @@ Version 2019-06-13"
           (xah-fly-delete-spaces)
         (progn
           (goto-char $p2)
-          (search-backward "\n" )
+          (search-backward "\n")
           (delete-region $p1 (point))
           (insert "\n"))))
      (t (progn
-          (message "nothing done. logic error 40873. shouldn't reach here" ))))))
+          (message "nothing done. logic error 40873. shouldn't reach here"))))))
 
 (defun xah-toggle-read-novel-mode ()
   "Setup current frame to be suitable for reading long novel/article text.
