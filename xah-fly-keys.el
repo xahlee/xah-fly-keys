@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 16.5.2021-11-26_173728
+;; Version: 16.5.20211128075607
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -909,9 +909,7 @@ Version 2014-10-21 2021-11-26"
          $p2 ; whitespace end
          ($charBefore (char-before))
          ($charAfter (char-after))
-         ($space-neighbor-p (or (eq $charBefore 32) (eq $charBefore 9) (eq $charAfter 32) (eq $charAfter 9)))
-         $just-1-space-p
-         )
+         ($space-neighbor-p (or (eq $charBefore 32) (eq $charBefore 9) (eq $charAfter 32) (eq $charAfter 9))))
     (skip-chars-backward " \n\t　")
     (setq $p1 (point))
     (goto-char $p0)
@@ -920,15 +918,11 @@ Version 2014-10-21 2021-11-26"
     (goto-char $p1)
     (while (search-forward "\n" $p2 t)
       (setq $eol-count (1+ $eol-count)))
-    (setq $just-1-space-p (eq (- $p2 $p1) 1))
     (goto-char $p0)
     (cond
      ((eq $eol-count 0)
-      (if $just-1-space-p
-          ;; (xah-fly-delete-spaces)
-          nil
-        (progn (xah-fly-delete-spaces)
-               (insert " "))))
+      (progn (delete-region $p1 $p2)
+             (insert " ")))
      ((eq $eol-count 1)
       (if $space-neighbor-p
           (xah-fly-delete-spaces)
@@ -3656,7 +3650,7 @@ minor modes loaded later may override bindings in this map.")
  xah-fly-shared-map
  '(("<home>" . xah-fly-command-mode-activate)
    ("<menu>" . xah-fly-command-mode-activate)
-   ("<f8>" . xah-fly-command-mode-activate-hook))
+   ("<f8>" . xah-fly-command-mode-activate))
  :direct)
 
 (when xah-fly-use-meta-key
