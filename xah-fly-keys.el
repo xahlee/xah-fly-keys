@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 16.5.20211128075607
+;; Version: 16.5.20211128081214
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1114,14 +1114,16 @@ Version 2020-12-02 2021-08-31"
   "Replace space sequence to a newline char in current block or selection.
 
 URL `http://xahlee.info/emacs/emacs/emacs_space_to_newline.html'
-Version 2017-08-19 2021-08-12 2021-09-12"
+Version 2017-08-19 2021-08-12 2021-09-12 2021-11-28"
   (interactive)
   (let* (($bds (xah-get-bounds-of-block-or-region))
          ($p1 (car $bds))
          ($p2 (cdr $bds)))
-    (goto-char $p1)
-    (while (re-search-forward " +" $p2 t)
-      (replace-match "\n"))))
+    (save-restriction
+      (narrow-to-region $p1 $p2)
+      (goto-char (point-min))
+      (while (re-search-forward " +" nil t)
+        (replace-match "\n")))))
 
 (defun xah-slash-to-backslash (&optional Begin End)
   "Replace slash by backslash on current line or region.
