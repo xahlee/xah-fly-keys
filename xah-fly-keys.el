@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 16.5.20211128081214
+;; Version: 16.5.20211128161146
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -4417,6 +4417,8 @@ URL `http://xahlee.info/emacs/misc/ergoemacs_vi_mode.html'"
   :lighter " ∑flykeys"
   :keymap xah-fly-insert-map
   (delete-selection-mode 1)
+  (setq shift-select-mode nil)
+
   (if xah-fly-keys
       ;; Construction:
       (progn
@@ -4429,14 +4431,18 @@ URL `http://xahlee.info/emacs/misc/ergoemacs_vi_mode.html'"
           (set-keymap-parent xah-fly-key-map xah-fly-shared-map)
           (setq xah-fly-shared-map xah-fly-key-map))
         (xah-fly-command-mode-activate))
-    ;; Teardown:
-    (remove-hook 'minibuffer-setup-hook 'xah-fly-insert-mode-activate)
-    (remove-hook 'minibuffer-exit-hook 'xah-fly-command-mode-activate)
-    (remove-hook 'isearch-mode-end-hook 'xah-fly-command-mode-activate)
-    (remove-hook 'eshell-mode-hook 'xah-fly-insert-mode-activate)
-    (remove-hook 'shell-mode-hook 'xah-fly-insert-mode-activate)
-    (xah-fly-insert-mode-init :no-indication)
-    (setq mode-line-front-space '(:eval (if (display-graphic-p) " " "-")))))
+    (progn
+      ;; Teardown:
+      (remove-hook 'minibuffer-setup-hook 'xah-fly-insert-mode-activate)
+      (remove-hook 'minibuffer-exit-hook 'xah-fly-command-mode-activate)
+      (remove-hook 'isearch-mode-end-hook 'xah-fly-command-mode-activate)
+      (remove-hook 'eshell-mode-hook 'xah-fly-insert-mode-activate)
+      (remove-hook 'shell-mode-hook 'xah-fly-insert-mode-activate)
+      (xah-fly-insert-mode-init :no-indication)
+      (setq mode-line-front-space '(:eval (if (display-graphic-p) " " "-")))
+
+      ;;
+      )))
 
 (provide 'xah-fly-keys)
 
