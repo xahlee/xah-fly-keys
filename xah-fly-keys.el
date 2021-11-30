@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 16.5.20211128161146
+;; Version: 16.5.20211130011926
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -895,13 +895,10 @@ Version 2019-06-13"
 (defun xah-shrink-whitespaces ()
   "Remove whitespaces around cursor .
 
-If cursor neighbor has space/tab, shrink them to 1 space.
-If cursor neighbor has newline, shrink them to 1 newline.
-If cursor neighbor has only 1 newline, delete that newline.
-Repeating the command will eventually collapse all whitespace to just 1 space.
+Shrink neighboring spaces, then newlines, then spaces again, leaving one space or newline at each step, till no more white space.
 
 URL `http://xahlee.info/emacs/emacs/emacs_shrink_whitespace.html'
-Version 2014-10-21 2021-11-26"
+Version 2014-10-21 2021-11-26 2021-11-30"
   (interactive)
   (let* (($eol-count 0)
          ($p0 (point))
@@ -921,8 +918,10 @@ Version 2014-10-21 2021-11-26"
     (goto-char $p0)
     (cond
      ((eq $eol-count 0)
-      (progn (delete-region $p1 $p2)
-             (insert " ")))
+      (if (> (- $p2 $p1) 1)
+          (progn
+            (delete-horizontal-space) (insert " "))
+        (progn (delete-horizontal-space))))
      ((eq $eol-count 1)
       (if $space-neighbor-p
           (xah-fly-delete-spaces)
