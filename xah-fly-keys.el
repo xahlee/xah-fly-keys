@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 16.5.20211130011926
+;; Version: 16.6.20211130113127
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -3744,6 +3744,8 @@ minor modes loaded later may override bindings in this map.")
   (global-set-key (kbd "C--") 'text-scale-decrease)
   (global-set-key (kbd "C-=") 'text-scale-increase)
 
+  (global-set-key (kbd "C-SPC") 'xah-fly-command-mode-activate)
+
   (global-set-key (kbd "C-S-n") 'make-frame-command)
   (global-set-key (kbd "C-S-s") 'write-file)
   (global-set-key (kbd "C-S-t") 'xah-open-last-closed)
@@ -3776,6 +3778,8 @@ minor modes loaded later may override bindings in this map.")
   ;; (global-set-key (kbd "C-x") 'nil)
   ;; (global-set-key (kbd "C-y") 'nil)
   (global-set-key (kbd "C-z") 'undo)
+
+
   ;;
   )
 
