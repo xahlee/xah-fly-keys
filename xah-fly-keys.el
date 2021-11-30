@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 16.6.20211130113127
+;; Version: 16.6.20211130113540
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -64,7 +64,7 @@
 
 ;; Important command/insert mode switch keys:
 
-;; xah-fly-command-mode-activate (press 【<home>】 or 【F8】 or 【Alt+Space】 or 【menu】)
+;; xah-fly-command-mode-activate (press <home> or F8 or Alt+Space or Ctrl+Space or menu key)
 
 ;; xah-fly-insert-mode-activate  (when in command mode, press qwerty letter key f. (Dvorak key u))
 
