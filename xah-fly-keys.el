@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 16.6.20211130113540
+;; Version: 16.6.20211201095432
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -158,7 +158,7 @@
 
 (defun xah-get-bounds-of-block ()
   "Return the boundary (START . END) of current block.
-Version 2021-08-12"
+Version: 2021-08-12"
   (let ( $p1 $p2 ($blankRegex "\n[ \t]*\n"))
     (save-excursion
       (setq $p1 (if (re-search-backward $blankRegex nil 1)
@@ -171,7 +171,7 @@ Version 2021-08-12"
 
 (defun xah-get-bounds-of-block-or-region ()
   "If region is active, return its boundary, else same as `xah-get-bounds-of-block'.
-Version 2021-08-12"
+Version: 2021-08-12"
   (if (region-active-p)
       (cons (region-beginning) (region-end))
     (xah-get-bounds-of-block)))
@@ -184,7 +184,7 @@ Version 2021-08-12"
 Call this repeatedly will cycle all positions in `mark-ring'.
 
 URL `http://xahlee.info/emacs/emacs/emacs_jump_to_previous_position.html'
-Version 2016-04-04"
+Version: 2016-04-04"
   (interactive)
   (set-mark-command t))
 
@@ -196,7 +196,7 @@ Version 2016-04-04"
 • if `visual-line-mode' is on, beginning of line means visual line.
 
 URL `http://xahlee.info/emacs/emacs/emacs_keybinding_design_beginning-of-line-or-block.html'
-Version 2018-06-04 2021-03-16"
+Version: 2018-06-04 2021-03-16"
   (interactive)
   (let (($p (point)))
     (if (or (equal (point) (line-beginning-position))
@@ -222,7 +222,7 @@ Version 2018-06-04 2021-03-16"
 • if `visual-line-mode' is on, end of line means visual line.
 
 URL `http://xahlee.info/emacs/emacs/emacs_keybinding_design_beginning-of-line-or-block.html'
-Version 2018-06-04 2021-03-16"
+Version: 2018-06-04 2021-03-16"
   (interactive)
   (if (or (equal (point) (line-end-position))
           (eq last-command this-command))
@@ -265,7 +265,7 @@ Version 2018-06-04 2021-03-16"
 The list of punctuations to jump to is defined by `xah-punctuation-regex'
 
 URL `http://xahlee.info/emacs/emacs/emacs_jump_to_punctuations.html'
-Version 2017-06-26"
+Version: 2017-06-26"
   (interactive "p")
   (re-search-forward xah-punctuation-regex nil t n))
 
@@ -273,7 +273,7 @@ Version 2017-06-26"
   "Move cursor to the previous occurrence of punctuation.
 See `xah-forward-punct'
 URL `http://xahlee.info/emacs/emacs/emacs_jump_to_punctuations.html'
-Version 2017-06-26"
+Version: 2017-06-26"
   (interactive "p")
   (re-search-backward xah-punctuation-regex nil t n))
 
@@ -282,7 +282,7 @@ Version 2017-06-26"
 The list of brackets to jump to is defined by `xah-left-brackets'.
 
 URL `http://xahlee.info/emacs/emacs/emacs_navigating_keys_for_brackets.html'
-Version 2015-10-01"
+Version: 2015-10-01"
   (interactive)
   (re-search-backward (regexp-opt xah-left-brackets) nil t))
 
@@ -291,7 +291,7 @@ Version 2015-10-01"
 The list of brackets to jump to is defined by `xah-right-brackets'.
 
 URL `http://xahlee.info/emacs/emacs/emacs_navigating_keys_for_brackets.html'
-Version 2015-10-01"
+Version: 2015-10-01"
   (interactive)
   (re-search-forward (regexp-opt xah-right-brackets) nil t))
 
@@ -301,7 +301,7 @@ If cursor is not on a bracket, call `backward-up-list'.
 The list of brackets to jump to is defined by `xah-left-brackets' and `xah-right-brackets'.
 
 URL `http://xahlee.info/emacs/emacs/emacs_navigating_keys_for_brackets.html'
-Version 2016-11-22"
+Version: 2016-11-22"
   (interactive)
   (if (nth 3 (syntax-ppss))
       (backward-up-list 1 'ESCAPE-STRINGS 'NO-SYNTAX-CROSSING)
@@ -320,7 +320,7 @@ If there are consecutive quotes of the same char, keep moving until none.
 Returns `t' if found, else `nil'.
 
 URL `http://xahlee.info/emacs/emacs/emacs_navigating_keys_for_brackets.html'
-Version 2016-07-23"
+Version: 2016-07-23"
   (interactive)
   (if (re-search-forward "\\\"+" nil t)
       t
@@ -333,7 +333,7 @@ Version 2016-07-23"
 Returns `t' if found, else `nil'.
 
 URL `http://xahlee.info/emacs/emacs/emacs_navigating_keys_for_brackets.html'
-Version 2016-07-23"
+Version: 2016-07-23"
   (interactive)
   (when (xah-forward-quote)
     (xah-forward-quote)))
@@ -344,7 +344,7 @@ Place cursor at the position after the left quote.
 Repeated call will find the next string.
 
 URL `http://xahlee.info/emacs/emacs/emacs_navigating_keys_for_brackets.html'
-Version 2016-11-22"
+Version: 2016-11-22"
   (interactive)
   (let (($pos (point)))
     (if (nth 3 (syntax-ppss))
@@ -365,7 +365,7 @@ When called repeatedly, append copy subsequent lines.
 When `universal-argument' is called first, copy whole buffer (respects `narrow-to-region').
 
 URL `http://xahlee.info/emacs/emacs/emacs_copy_cut_current_line.html'
-Version 2019-10-30"
+Version: 2019-10-30"
   (interactive)
   (let ((inhibit-field-text-motion nil))
     (if current-prefix-arg
@@ -401,7 +401,7 @@ Version 2019-10-30"
 When `universal-argument' is called first, cut whole buffer (respects `narrow-to-region').
 
 URL `http://xahlee.info/emacs/emacs/emacs_copy_cut_current_line.html'
-Version 2015-06-10"
+Version: 2015-06-10"
   (interactive)
   (if current-prefix-arg
       (progn ; not using kill-region because we don't want to include previous kill
@@ -416,7 +416,7 @@ Version 2015-06-10"
 Respects `narrow-to-region'.
 
 URL `http://xahlee.info/emacs/emacs/emacs_copy_cut_all_or_region.html'
-Version 2015-08-22"
+Version: 2015-08-22"
   (interactive)
   (if (region-active-p)
       (progn
@@ -431,7 +431,7 @@ Version 2015-08-22"
 Respects `narrow-to-region'.
 
 URL `http://xahlee.info/emacs/emacs/emacs_copy_cut_all_or_region.html'
-Version 2015-08-22"
+Version: 2015-08-22"
   (interactive)
   (if (region-active-p)
       (progn
@@ -444,7 +444,7 @@ Version 2015-08-22"
 (defun xah-copy-all ()
   "Put the whole buffer content into the `kill-ring'.
 (respects `narrow-to-region')
-Version 2016-10-06"
+Version: 2016-10-06"
   (interactive)
   (kill-new (buffer-string))
   (message "Buffer content copied."))
@@ -452,7 +452,7 @@ Version 2016-10-06"
 (defun xah-cut-all ()
   "Cut the whole buffer content into the `kill-ring'.
 Respects `narrow-to-region'.
-Version 2017-01-03"
+Version: 2017-01-03"
   (interactive)
   (kill-new (buffer-string))
   (delete-region (point-min) (point-max)))
@@ -464,7 +464,7 @@ This command calls `yank', and if repeated, call `yank-pop'.
 When `universal-argument' is called first with a number arg, paste that many times.
 
 URL `http://xahlee.info/emacs/emacs/emacs_paste_or_paste_previous.html'
-Version 2017-07-25 2020-09-08"
+Version: 2017-07-25 2020-09-08"
   (interactive)
   (progn
     (when (and delete-selection-mode (region-active-p))
@@ -484,7 +484,7 @@ Version 2017-07-25 2020-09-08"
   "Insert all `kill-ring' content in a new buffer named *copy history*.
 
 URL `http://xahlee.info/emacs/emacs/emacs_show_kill_ring.html'
-Version 2019-12-02 2021-07-03"
+Version: 2019-12-02 2021-07-03"
   (interactive)
   (let (($buf (generate-new-buffer "*copy history*"))
         (inhibit-read-only t))
@@ -506,7 +506,7 @@ What char is considered bracket or quote is determined by current syntax table.
 If `universal-argument' is called first, do not delete inner text.
 
 URL `http://xahlee.info/emacs/emacs/emacs_delete_backward_char_or_bracket_text.html'
-Version 2017-07-02"
+Version: 2017-07-02"
   (interactive)
   (if (and delete-selection-mode (region-active-p))
       (delete-region (region-beginning) (region-end))
@@ -541,7 +541,7 @@ This command assumes the left of cursor is a right bracket, and there is a match
 What char is considered bracket or quote is determined by current syntax table.
 
 URL `http://xahlee.info/emacs/emacs/emacs_delete_backward_char_or_bracket_text.html'
-Version 2017-09-21"
+Version: 2017-09-21"
   (interactive)
   (progn
     (forward-sexp -1)
@@ -557,7 +557,7 @@ This command assumes the left of point is a right bracket, and there is a matchi
 What char is considered bracket or quote is determined by current syntax table.
 
 URL `http://xahlee.info/emacs/emacs/emacs_delete_backward_char_or_bracket_text.html'
-Version 2017-07-02"
+Version: 2017-07-02"
   (interactive)
   (let (( $p0 (point)) $p1)
     (forward-sexp -1)
@@ -580,7 +580,7 @@ This command assumes the char to the right of point is a left bracket or quote, 
 What char is considered bracket or quote is determined by current syntax table.
 
 URL `http://xahlee.info/emacs/emacs/emacs_delete_backward_char_or_bracket_text.html'
-Version 2017-07-02"
+Version: 2017-07-02"
   (interactive)
   (if DeleteInnerTextQ
       (progn
@@ -604,7 +604,7 @@ If the string contains “,2”, then the first 2 chars and last 2 chars are use
 If ToChars is equal to string “none”, the brackets are deleted.
 
 URL `http://xahlee.info/emacs/emacs/elisp_change_brackets.html'
-Version 2020-11-01 2021-08-15"
+Version: 2020-11-01 2021-08-15"
   (interactive
    (let (($brackets
           '("(paren)"
@@ -728,7 +728,7 @@ Version 2020-11-01 2021-08-15"
 Always cycle in this order: Init Caps, ALL CAPS, all lower.
 
 URL `http://xahlee.info/emacs/emacs/modernization_upcase-word.html'
-Version 2020-06-26"
+Version: 2020-06-26"
   (interactive)
   (let ( (deactivate-mark nil) $p1 $p2)
     (if (region-active-p)
@@ -760,7 +760,7 @@ Version 2020-06-26"
   "Toggle the letter case of the letter to the left of cursor.
 
 URL `http://xahlee.info/emacs/emacs/modernization_upcase-word.html'
-Version 2015-12-22"
+Version: 2015-12-22"
   (interactive)
   (let ((case-fold-search nil))
     (left-char 1)
@@ -773,7 +773,7 @@ Version 2015-12-22"
   "Upcase first letters of sentences of current block or selection.
 
 URL `http://xahlee.info/emacs/emacs/emacs_upcase_sentence.html'
-Version 2020-12-08 2020-12-24 2021-08-13"
+Version: 2020-12-08 2020-12-24 2021-08-13"
   (interactive)
   (let ($p1 $p2)
     (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
@@ -813,7 +813,7 @@ Capitalize first letter of each word, except words like {to, of, the, a, in, or,
 When called in a elisp program, Begin End are region boundaries.
 
 URL `http://xahlee.info/emacs/emacs/elisp_title_case_text.html'
-Version 2017-01-11 2021-03-30 2021-09-19"
+Version: 2017-01-11 2021-03-30 2021-09-19"
   (interactive)
   (let* (($skipChars "^\"<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕")
          ($p0 (point))
@@ -872,7 +872,7 @@ Version 2017-01-11 2021-03-30 2021-09-19"
   "Delete all newline around cursor.
 
 URL `http://xahlee.info/emacs/emacs/emacs_shrink_whitespace.html'
-Version 2018-04-02"
+Version: 2018-04-02"
   (interactive)
   (let ($p3 $p4)
           (skip-chars-backward "\n")
@@ -883,7 +883,7 @@ Version 2018-04-02"
 
 (defun xah-fly-delete-spaces ()
   "Delete space, tab, IDEOGRAPHIC SPACE (U+3000) around cursor.
-Version 2019-06-13"
+Version: 2019-06-13"
   (interactive)
   (let (p1 p2)
     (skip-chars-forward " \t　")
@@ -898,7 +898,7 @@ Version 2019-06-13"
 Shrink neighboring spaces, then newlines, then spaces again, leaving one space or newline at each step, till no more white space.
 
 URL `http://xahlee.info/emacs/emacs/emacs_shrink_whitespace.html'
-Version 2014-10-21 2021-11-26 2021-11-30"
+Version: 2014-10-21 2021-11-26 2021-11-30"
   (interactive)
   (let* (($eol-count 0)
          ($p0 (point))
@@ -952,7 +952,7 @@ Version 2014-10-21 2021-11-26 2021-11-30"
 Call again to toggle back.
 
 URL `http://xahlee.info/emacs/emacs/emacs_novel_reading_mode.html'
-Version 2019-01-30 2021-01-16"
+Version: 2019-01-30 2021-01-16"
   (interactive)
   (if (eq (frame-parameter (selected-frame) 'width) 70)
       (progn
@@ -973,7 +973,7 @@ First call will break into multiple short lines. Repeated call toggles between s
 This commands calls `fill-region' to do its work. Set `fill-column' for short line length.
 
 URL `http://xahlee.info/emacs/emacs/modernization_fill-paragraph.html'
-Version 2020-11-22 2021-08-13"
+Version: 2020-11-22 2021-08-13"
   (interactive)
   ;; This command symbol has a property “'longline-p”, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
   (let ( ($isLongline (if (eq last-command this-command) (get this-command 'longline-p) t))
@@ -991,7 +991,7 @@ Version 2020-11-22 2021-08-13"
 This command does the inverse of `fill-paragraph'.
 
 URL `http://xahlee.info/emacs/emacs/emacs_unfill-paragraph.html'
-Version 2016-07-13"
+Version: 2016-07-13"
   (interactive)
   (let ((fill-column most-positive-fixnum))
     (fill-paragraph)))
@@ -1001,7 +1001,7 @@ Version 2016-07-13"
 This command does the inverse of `fill-region'.
 
 URL `http://xahlee.info/emacs/emacs/emacs_unfill-paragraph.html'
-Version 2016-07-13"
+Version: 2016-07-13"
   (interactive "r")
   (let ((fill-column most-positive-fixnum))
     (fill-region Begin End)))
@@ -1010,7 +1010,7 @@ Version 2016-07-13"
   "Replace newline char sequence by just one.
 
 URL `http://xahlee.info/emacs/emacs/emacs_reformat_lines.html'
-Version 2021-07-06"
+Version: 2021-07-06"
   (interactive "r")
   (save-excursion
     (save-restriction
@@ -1022,7 +1022,7 @@ Version 2021-07-06"
   "Replace whitespaces by one space.
 
 URL `http://xahlee.info/emacs/emacs/emacs_reformat_lines.html'
-Version 2017-01-11"
+Version: 2017-01-11"
   (interactive "r")
   (save-excursion
     (save-restriction
@@ -1045,7 +1045,7 @@ Version 2017-01-11"
 If `universal-argument' is called first, ask user for max width.
 
 URL `http://xahlee.info/emacs/emacs/emacs_reformat_lines.html'
-Version 2018-12-16 2021-07-06 2021-08-12"
+Version: 2018-12-16 2021-07-06 2021-08-12"
   (interactive)
   (let ( $p1 $p2 $minlen )
     (setq $minlen (if MinLength MinLength (if current-prefix-arg (prefix-numeric-value current-prefix-arg) fill-column)))
@@ -1067,7 +1067,7 @@ If `universal-argument' is called first, ask user to type max length of line. By
 
 URL `http://xahlee.info/emacs/emacs/emacs_reformat_lines.html'
 Created 2016 or before.
-Version 2021-07-05 2021-08-13"
+Version: 2021-07-05 2021-08-13"
   (interactive)
   ;; This command symbol has a property 'is-long-p, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
   (let ( $isLong $width $p1 $p2)
@@ -1088,7 +1088,7 @@ HTML anchor links “<a…>…</a>” is also placed on a new line.
 After this command is called, press space to repeat it.
 
 URL `http://xahlee.info/emacs/emacs/elisp_reformat_to_sentence_lines.html'
-Version 2020-12-02 2021-08-31"
+Version: 2020-12-02 2021-08-31"
   (interactive)
   (let ($p1 $p2)
     (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
@@ -1113,7 +1113,7 @@ Version 2020-12-02 2021-08-31"
   "Replace space sequence to a newline char in current block or selection.
 
 URL `http://xahlee.info/emacs/emacs/emacs_space_to_newline.html'
-Version 2017-08-19 2021-08-12 2021-09-12 2021-11-28"
+Version: 2017-08-19 2021-08-12 2021-09-12 2021-11-28"
   (interactive)
   (let* (($bds (xah-get-bounds-of-block-or-region))
          ($p1 (car $bds))
@@ -1126,7 +1126,7 @@ Version 2017-08-19 2021-08-12 2021-09-12 2021-11-28"
 
 (defun xah-slash-to-backslash (&optional Begin End)
   "Replace slash by backslash on current line or region.
-Version 2021-07-14 2021-09-12"
+Version: 2021-07-14 2021-09-12"
   (interactive)
   (let ($p1 $p2)
     (if (and Begin End)
@@ -1143,7 +1143,7 @@ Version 2021-07-14 2021-09-12"
 
 (defun xah-backslash-to-slash (&optional Begin End)
   "Replace backslash by slash on current line or region.
-Version 2021-09-11"
+Version: 2021-09-11"
   (interactive)
   (let ($p1 $p2)
     (if (and Begin End)
@@ -1160,7 +1160,7 @@ Version 2021-09-11"
 
 (defun xah-double-backslash (&optional Begin End)
   "Replace backslash by two backslash on current line or region.
-Version 2021-11-09"
+Version: 2021-11-09"
   (interactive)
   (let ($p1 $p2)
     (if (and Begin End)
@@ -1177,7 +1177,7 @@ Version 2021-11-09"
 
 (defun xah-double-backslash-to-single (&optional Begin End)
   "Replace double backslash by single backslash on current line or region.
-Version 2021-11-09"
+Version: 2021-11-09"
   (interactive)
   (let ($p1 $p2)
     (if (and Begin End)
@@ -1194,7 +1194,7 @@ Version 2021-11-09"
 
 (defun xah-slash-to-double-backslash (&optional Begin End)
   "Replace slash by double backslash on current line or region.
-Version 2021-07-14"
+Version: 2021-07-14"
   (interactive)
   (let ($p1 $p2)
     (if (and Begin End)
@@ -1211,7 +1211,7 @@ Version 2021-07-14"
 
 (defun xah-double-backslash-to-slash (&optional Begin End)
   "Replace double backslash by slash on current line or region.
-Version 2021-07-14"
+Version: 2021-07-14"
   (interactive)
   (let ($p1 $p2)
     (if (and Begin End)
@@ -1230,7 +1230,7 @@ Version 2021-07-14"
   "Like `comment-dwim', but toggle comment if cursor is not at end of line.
 
 URL `http://xahlee.info/emacs/emacs/emacs_toggle_comment_by_line.html'
-Version 2016-10-25"
+Version: 2016-10-25"
   (interactive)
   (if (region-active-p)
       (comment-dwim nil)
@@ -1271,7 +1271,7 @@ or
 In lisp code, QuoteL QuoteR Sep are strings.
 
 URL `http://xahlee.info/emacs/emacs/emacs_quote_lines.html'
-Version 2020-06-26 2021-07-21 2021-08-15 2021-09-15"
+Version: 2020-06-26 2021-07-21 2021-08-15 2021-09-15"
   (interactive
    (let* (($bds (xah-get-bounds-of-block-or-region))
          ($p1 (car $bds))
@@ -1333,7 +1333,7 @@ Version 2020-06-26 2021-07-21 2021-08-15 2021-09-15"
 Double quote is codepoint 34.
 See also: `xah-unescape-quotes'
 URL `http://xahlee.info/emacs/emacs/elisp_escape_quotes.html'
-Version 2017-01-11"
+Version: 2017-01-11"
   (interactive
    (if (region-active-p)
        (list (region-beginning) (region-end))
@@ -1350,7 +1350,7 @@ Version 2017-01-11"
 See also: `xah-escape-quotes'
 
 URL `http://xahlee.info/emacs/emacs/elisp_escape_quotes.html'
-Version 2017-01-11"
+Version: 2017-01-11"
   (interactive
    (if (region-active-p)
        (list (region-beginning) (region-end))
@@ -1367,7 +1367,7 @@ Version 2017-01-11"
 If not in `dired', do nothing.
 
 URL `http://xahlee.info/emacs/emacs/elisp_dired_rename_space_to_underscore.html'
-Version 2016-10-04 2020-03-03"
+Version: 2016-10-04 2020-03-03"
   (interactive)
   (require 'dired-aux)
   (if (eq major-mode 'dired-mode)
@@ -1386,7 +1386,7 @@ Version 2016-10-04 2020-03-03"
 If not in `dired', do nothing.
 
 URL `http://xahlee.info/emacs/emacs/elisp_dired_rename_space_to_underscore.html'
-Version 2016-10-04 2019-11-24"
+Version: 2016-10-04 2019-11-24"
   (interactive)
   (require 'dired-aux)
   (if (eq major-mode 'dired-mode)
@@ -1407,7 +1407,7 @@ The region to work on is by this order:
  3. else, work on current line.
 
 URL `http://xahlee.info/emacs/emacs/elisp_change_space-hyphen_underscore.html'
-Version 2019-02-12 2021-08-20"
+Version: 2019-02-12 2021-08-20"
   (interactive)
   ;; this function sets a property 'state. Possible values are 0 to length of $charArray.
   (let* ($p1
@@ -1450,7 +1450,7 @@ If in dired, copy the current or marked files.
 If a buffer is not file and not dired, copy value of `default-directory'.
 
 URL `http://xahlee.info/emacs/emacs/emacs_copy_file_path.html'
-Version 2018-06-18 2021-09-30"
+Version: 2018-06-18 2021-09-30"
   (interactive "P")
   (let (($fpath
          (if (string-equal major-mode 'dired-mode)
@@ -1475,7 +1475,7 @@ Version 2018-06-18 2021-09-30"
   "Delete the current text block plus blank lines, or selection, and copy to `kill-ring'.
 
 URL `http://xahlee.info/emacs/emacs/emacs_delete_block.html'
-Version 2017-07-09 2021-08-14"
+Version: 2017-07-09 2021-08-14"
   (interactive)
   (let ($p1 $p2)
     (if (region-active-p)
@@ -1493,7 +1493,7 @@ Version 2017-07-09 2021-08-14"
 See also: `xah-paste-from-register-1', `copy-to-register'.
 
 URL `http://xahlee.info/emacs/emacs/elisp_copy-paste_register_1.html'
-Version 2015-12-08"
+Version: 2015-12-08"
   (interactive)
   (progn
     (copy-to-register ?1 (point-min) (point-min))
@@ -1504,7 +1504,7 @@ Version 2015-12-08"
 See also: `xah-paste-from-register-1', `copy-to-register'.
 
 URL `http://xahlee.info/emacs/emacs/elisp_copy-paste_register_1.html'
-Version 2017-01-23"
+Version: 2017-01-23"
   (interactive)
   (let ($p1 $p2)
     (if (region-active-p)
@@ -1519,7 +1519,7 @@ When no selection, append current line, with newline char.
 See also: `xah-paste-from-register-1', `copy-to-register'.
 
 URL `http://xahlee.info/emacs/emacs/emacs_copy_append.html'
-Version 2015-12-08 2020-09-08"
+Version: 2015-12-08 2020-09-08"
   (interactive)
   (let ($p1 $p2)
     (if (region-active-p)
@@ -1535,7 +1535,7 @@ Version 2015-12-08 2020-09-08"
 See also: `xah-copy-to-register-1', `insert-register'.
 
 URL `http://xahlee.info/emacs/emacs/elisp_copy-paste_register_1.html'
-Version 2015-12-08"
+Version: 2015-12-08"
   (interactive)
   (when (region-active-p)
     (delete-region (region-beginning) (region-end)))
@@ -1638,7 +1638,7 @@ version 2020-09-07 2021-11-07"
 • wrap brackets around word if any. e.g. xy▮z → (xyz▮). Or just (▮)
 
 URL `http://xahlee.info/emacs/emacs/elisp_insert_brackets_by_pair.html'
-Version 2017-01-17 2021-08-12"
+Version: 2017-01-17 2021-08-12"
   (if (region-active-p)
       (progn
         (let ( ($p1 (region-beginning)) ($p2 (region-end)))
@@ -1755,7 +1755,7 @@ Version 2017-01-17 2021-08-12"
   "Display the formfeed ^L char as line.
 
 URL `http://xahlee.info/emacs/emacs/emacs_form_feed_section_paging.html'
-Version 2018-08-30"
+Version: 2018-08-30"
   (interactive)
   ;; 2016-10-11 thanks to Steve Purcell's page-break-lines.el
   (progn
@@ -1771,7 +1771,7 @@ The commpand will prompt for a start char, and number of chars to insert.
 The start char can be any char in Unicode.
 
 URL `http://xahlee.info/emacs/emacs/emacs_insert-alphabets.html'
-Version 2019-03-07"
+Version: 2019-03-07"
   (interactive)
   (let (
         ($startChar (string-to-char (read-string "Start char: " "a")))
@@ -1810,7 +1810,7 @@ Version 2019-03-07"
 
 (defun xah-insert-unicode ()
   "Insert a unicode from a custom list `xah-unicode-list'.
-Version 2021-01-05"
+Version: 2021-01-05"
   (interactive)
   (let (
         ($str
@@ -1828,7 +1828,7 @@ Version 2021-01-05"
 If region is active, extend selection downward by block.
 
 URL `http://xahlee.info/emacs/emacs/modernization_mark-word.html'
-Version 2019-12-26 2021-04-04 2021-08-13"
+Version: 2019-12-26 2021-04-04 2021-08-13"
   (interactive)
   (if (region-active-p)
       (re-search-forward "\n[ \t]*\n[ \t]*\n*" nil 1)
@@ -1844,7 +1844,7 @@ Version 2019-12-26 2021-04-04 2021-08-13"
 If `visual-line-mode' is on, consider line as visual line.
 
 URL `http://xahlee.info/emacs/emacs/modernization_mark-word.html'
-Version 2017-11-01 2021-03-19"
+Version: 2017-11-01 2021-03-19"
   (interactive)
   (if (region-active-p)
       (if visual-line-mode
@@ -1874,7 +1874,7 @@ when there is no selection,
 when there is a selection, the selection extension behavior is still experimental. But when cursor is on a any type of bracket (parenthesis, quote), it extends selection to outer bracket.
 
 URL `http://xahlee.info/emacs/emacs/modernization_mark-word.html'
-Version 2020-02-04"
+Version: 2020-02-04"
   (interactive)
   (if (region-active-p)
       (progn
@@ -1975,7 +1975,7 @@ This command select between any bracket chars, does not consider nesting. For ex
 the selected char is “c”, not “a(b)c”.
 
 URL `http://xahlee.info/emacs/emacs/modernization_mark-word.html'
-Version 2020-11-24 2021-07-11"
+Version: 2020-11-24 2021-07-11"
   (interactive)
   (let ( $skipChars $p1 )
     (setq $skipChars "^\"`<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕（）〘〙")
@@ -1992,7 +1992,7 @@ Version 2020-11-24 2021-07-11"
 Typically, if buffer name starts with *, it is not considered a user buffer.
 This function is used by buffer switching command and close buffer command, so that next buffer shown is a user buffer.
 You can override this function to get your idea of “user buffer”.
-Version 2016-06-18"
+Version: 2016-06-18"
   (interactive)
   (cond
    ((string-equal "*" (substring (buffer-name) 0 1)) nil)
@@ -2005,7 +2005,7 @@ Version 2016-06-18"
 “user buffer” is determined by `xah-user-buffer-p'.
 
 URL `http://xahlee.info/emacs/emacs/elisp_next_prev_user_buffer.html'
-Version 2016-06-19"
+Version: 2016-06-19"
   (interactive)
   (next-buffer)
   (let ((i 0))
@@ -2020,7 +2020,7 @@ Version 2016-06-19"
 “user buffer” is determined by `xah-user-buffer-p'.
 
 URL `http://xahlee.info/emacs/emacs/elisp_next_prev_user_buffer.html'
-Version 2016-06-19"
+Version: 2016-06-19"
   (interactive)
   (previous-buffer)
   (let ((i 0))
@@ -2035,7 +2035,7 @@ Version 2016-06-19"
 “emacs buffer” here is buffer whose name starts with *.
 
 URL `http://xahlee.info/emacs/emacs/elisp_next_prev_user_buffer.html'
-Version 2016-06-19"
+Version: 2016-06-19"
   (interactive)
   (next-buffer)
   (let ((i 0))
@@ -2047,7 +2047,7 @@ Version 2016-06-19"
 “emacs buffer” here is buffer whose name starts with *.
 
 URL `http://xahlee.info/emacs/emacs/elisp_next_prev_user_buffer.html'
-Version 2016-06-19"
+Version: 2016-06-19"
   (interactive)
   (previous-buffer)
   (let ((i 0))
@@ -2061,7 +2061,7 @@ New buffer will be named “untitled” or “untitled<2>”, “untitled<3>”,
 It returns the buffer (for elisp programing).
 
 URL `http://xahlee.info/emacs/emacs/emacs_new_empty_buffer.html'
-Version 2017-11-01"
+Version: 2017-11-01"
   (interactive)
   (let (($buf (generate-new-buffer "untitled")))
     (switch-to-buffer $buf)
@@ -2089,7 +2089,7 @@ Similar to `kill-buffer', with the following addition:
 • If the buffer is a file, add the path to the list `xah-recently-closed-buffers'.
 
 URL `http://xahlee.info/emacs/emacs/elisp_close_buffer_open_last_closed.html'
-Version 2018-06-11 2021-07-01"
+Version: 2018-06-11 2021-07-01"
   (interactive)
   (let (($isOrgMode (string-match "^*Org Src" (buffer-name))))
     (if (active-minibuffer-window) ; if the buffer is minibuffer
@@ -2123,7 +2123,7 @@ Version 2018-06-11 2021-07-01"
   "Open the last closed file.
 
 URL `http://xahlee.info/emacs/emacs/elisp_close_buffer_open_last_closed.html'
-Version 2016-06-19"
+Version: 2016-06-19"
   (interactive)
   (if (> (length xah-recently-closed-buffers) 0)
       (find-file (cdr (pop xah-recently-closed-buffers)))
@@ -2134,7 +2134,7 @@ Version 2016-06-19"
 Prompt for a choice.
 
 URL `http://xahlee.info/emacs/emacs/elisp_close_buffer_open_last_closed.html'
-Version 2016-06-19 2021-10-27"
+Version: 2016-06-19 2021-10-27"
   (interactive)
   (find-file (ido-completing-read "Open:" (mapcar (lambda (f) (cdr f)) xah-recently-closed-buffers))))
 
@@ -2142,7 +2142,7 @@ Version 2016-06-19 2021-10-27"
   "List recently closed file.
 
 URL `http://xahlee.info/emacs/emacs/elisp_close_buffer_open_last_closed.html'
-Version 2016-06-19"
+Version: 2016-06-19"
   (interactive)
   (let (($buf (generate-new-buffer "*recently closed*")))
     (switch-to-buffer $buf)
@@ -2158,7 +2158,7 @@ Version 2016-06-19"
 This command is similar to `bookmark-jump', but use `ido-mode' interface, and ignore cursor position in bookmark.
 
 URL `http://xahlee.info/emacs/emacs/emacs_hotkey_open_file_fast.html'
-Version 2019-02-26"
+Version: 2019-02-26"
   (interactive)
   (require 'bookmark)
   (bookmark-maybe-load-default-file)
@@ -2180,7 +2180,7 @@ See also `xah-open-file-at-cursor-pre-hook'.
 This command is similar to `find-file-at-point' but without prompting for confirmation.
 
 URL `http://xahlee.info/emacs/emacs/emacs_open_file_path_fast.html'
-Version 2020-10-17 2021-02-24 2021-08-14 2021-09-19 2021-10-16"
+Version: 2020-10-17 2021-02-24 2021-08-14 2021-09-19 2021-10-16"
   (interactive)
   (let* (($input
           (if (region-active-p)
@@ -2249,7 +2249,7 @@ Version 2020-10-17 2021-02-24 2021-08-14 2021-09-19 2021-10-16"
 (defun xah-fly-M-x ()
   "Calls `execute-extended-command' or an alternative.
 If `xah-fly-M-x-command' is non-nil, call it, else call one of the following, in order: `smex', `helm-M-x', `counsel-M-x', `execute-extended-command'.
-Version 2020-04-09 2021-02-24"
+Version: 2020-04-09 2021-02-24"
   (interactive)
   (command-execute
    (cond
@@ -2271,7 +2271,7 @@ Version 2020-04-09 2021-02-24"
 (defun xah-run-current-go-file ()
   "Run or build current golang file.
 To build, call `universal-argument' first.
-Version 2018-10-12"
+Version: 2018-10-12"
   (interactive)
   (when (not (buffer-file-name)) (save-buffer))
   (when (buffer-modified-p) (save-buffer))
@@ -2339,7 +2339,7 @@ File suffix is used to determine which program to run, set in the variable `xah-
 If the file is modified or not saved, save it automatically before run.
 
 URL `http://xahlee.info/emacs/emacs/elisp_run_current_file.html'
-Version 2020-09-24 2021-01-21 2021-10-27"
+Version: 2020-09-24 2021-01-21 2021-10-27"
   (interactive)
   (let* (($outBuffer "*xah-run output*")
          ;; (resize-mini-windows nil)
@@ -2382,7 +2382,7 @@ Version 2020-09-24 2021-01-21 2021-10-27"
 Respects `narrow-to-region'.
 
 URL `http://xahlee.info/emacs/emacs/elisp_compact_empty_lines.html'
-Version 2017-09-22 2020-09-08"
+Version: 2017-09-22 2020-09-08"
   (interactive)
   (let ($begin $end)
     (if (region-active-p)
@@ -2402,7 +2402,7 @@ Only space and tab is considered whitespace here.
 Works on whole buffer or selection, respects `narrow-to-region'.
 
 URL `http://xahlee.info/emacs/emacs/elisp_compact_empty_lines.html'
-Version 2017-09-22 2021-08-27"
+Version: 2017-09-22 2021-08-27"
   (interactive)
   (let ($begin $end)
     (if (region-active-p)
@@ -2428,7 +2428,7 @@ in the same dir. If such a file already exist, it is overwritten.
 If the current buffer is not associated with a file, nothing's done.
 
 URL `http://xahlee.info/emacs/emacs/elisp_make-backup.html'
-Version 2018-06-06 2020-12-18"
+Version: 2018-06-06 2020-12-18"
   (interactive)
   (let (($fname (buffer-file-name))
         ($date-time-format "%Y%m%d_%H%M%S"))
@@ -2453,7 +2453,7 @@ For detail, see `xah-make-backup'.
 If the current buffer is not associated with a file nor dired, nothing's done.
 
 URL `http://xahlee.info/emacs/emacs/elisp_make-backup.html'
-Version 2015-10-14"
+Version: 2015-10-14"
   (interactive)
   (if (buffer-file-name)
       (progn
@@ -2472,7 +2472,7 @@ Backup filename is “‹name›~‹dateTimeStamp›~”. Existing file of the s
 Call `xah-open-last-closed' to open the backup file.
 
 URL `http://xahlee.info/emacs/emacs/elisp_delete-current-file.html'
-Version 2018-05-15 2021-08-31 2021-09-27"
+Version: 2018-05-15 2021-08-31 2021-09-27"
   (interactive)
   (if (string-equal 'dired-mode major-mode)
       (message "In dired. Nothing is done.")
@@ -2500,7 +2500,7 @@ Version 2018-05-15 2021-08-31 2021-09-27"
 “word” here is A to Z, a to z, and hyphen [-] and lowline [_], independent of syntax table.
 
 URL `http://xahlee.info/emacs/emacs/modernization_isearch.html'
-Version 2015-04-09"
+Version: 2015-04-09"
   (interactive)
   (let ($p1 $p2)
     (if (region-active-p)
@@ -2525,7 +2525,7 @@ Version 2015-04-09"
 This command can be called when in a file buffer or in `dired'.
 
 URL `http://xahlee.info/emacs/emacs/emacs_dired_open_file_in_ext_apps.html'
-Version 2020-11-20 2021-01-31 2021-11-12 2021-11-22"
+Version: 2020-11-20 2021-01-31 2021-11-12 2021-11-22"
   (interactive)
   (let (($path (if (eq major-mode 'dired-mode)
                    (if (eq nil (dired-get-marked-files))
@@ -2556,7 +2556,7 @@ Version 2020-11-20 2021-01-31 2021-11-12 2021-11-22"
   "Open current file or dir in vscode.
 
 URL `http://xahlee.info/emacs/emacs/emacs_dired_open_file_in_ext_apps.html'
-Version 2020-02-13 2021-01-18"
+Version: 2020-02-13 2021-01-18"
   (interactive)
   (let (($path (if (buffer-file-name) (buffer-file-name) (expand-file-name default-directory ))))
     (message "path is %s" $path)
@@ -2586,7 +2586,7 @@ Version 2020-02-13 2021-01-18"
 When called in emacs lisp, if Fname is given, open that.
 
 URL `http://xahlee.info/emacs/emacs/emacs_dired_open_file_in_ext_apps.html'
-Version 2019-11-04 2021-07-21"
+Version: 2019-11-04 2021-07-21"
   (interactive)
   (let ($fileList $doIt )
     (setq $fileList
@@ -2615,7 +2615,7 @@ Version 2019-11-04 2021-07-21"
 On Microsoft Windows, it starts cross-platform PowerShell pwsh. You need to have it installed.
 
 URL `http://xahlee.info/emacs/emacs/emacs_dired_open_file_in_ext_apps.html'
-Version 2020-11-21 2021-07-21"
+Version: 2020-11-21 2021-07-21"
   (interactive)
   (cond
    ((string-equal system-type "windows-nt")
@@ -2635,7 +2635,7 @@ Version 2020-11-21 2021-07-21"
   "Switch to next window or frame.
 If current frame has only one window, switch to next frame.
 If `universal-argument' is called first, do switch frame.
-Version 2017-01-27"
+Version: 2017-01-27"
   (interactive)
   (if current-prefix-arg
       (other-frame 1)
@@ -2645,7 +2645,7 @@ Version 2017-01-27"
 
 (defun xah-unsplit-window-or-next-frame ()
   "Unsplit window. If current frame has only one window, switch to next frame.
-Version 2017-01-29"
+Version: 2017-01-29"
   (interactive)
   (if (one-window-p)
       (other-frame 1)
@@ -3482,7 +3482,7 @@ If the value is nil, it is automatically set to \"dvorak\"."
 
 (defvar xah-fly--current-layout-kmap nil
   "The current keyboard layout key map. Value is a alist. e.g. the value of `xah--dvorak-to-qwerty-kmap'.
-Value is automatically set from value of `xah-fly-key-current-layout'. Do not manually set this variable. Version 2019-02-12."
+Value is automatically set from value of `xah-fly-key-current-layout'. Do not manually set this variable. Version: 2019-02-12."
   )
 (setq xah-fly--current-layout-kmap
       (symbol-value
@@ -3496,7 +3496,7 @@ Value is automatically set from value of `xah-fly-key-current-layout'. Do not ma
 (defun xah-fly--key-char (Charstr)
   "Return the corresponding char Charstr according to `xah-fly--current-layout-kmap'.
 Charstr must be a string of single char. If more than 1 char, return it unchanged.
-Version 2020-04-18"
+Version: 2020-04-18"
   (interactive)
   (if (> (length Charstr) 1)
       Charstr
@@ -3516,7 +3516,7 @@ Example usage:
 ;;    (\".\" . isearch-forward-symbol-at-point)
 ;;    (\"1\" . hi-lock-find-patterns)
 ;;    (\"w\" . isearch-forward-word)))
-Version 2020-04-18"
+Version: 2020-04-18"
   (let (($keymapName (make-symbol "keymap-name")))
     `(let ((,$keymapName , KeymapName))
        ,@(mapcar
@@ -4313,7 +4313,7 @@ Argument must be one of:
 
 In elisp, those should be strings.
 
-Version 2021-05-19 2021-09-17"
+Version: 2021-05-19 2021-09-17"
   (interactive
    (list
     (widget-prompt-value
@@ -4325,7 +4325,7 @@ Version 2021-05-19 2021-09-17"
 
 (defun xah-fly-command-mode-init ()
   "Set command mode keys.
-Version 2020-04-28"
+Version: 2020-04-28"
   (interactive)
   (setq xah-fly-insert-state-p nil)
   (xah-fly--update-key-map)
@@ -4339,7 +4339,7 @@ Version 2020-04-28"
 (defun xah-fly-space-key ()
   "Switch to command mode if the char before cursor is a space.
 experimental
-Version 2018-05-07"
+Version: 2018-05-07"
   (interactive)
   (if (eq (char-before ) 32)
       (xah-fly-command-mode-activate)
@@ -4372,20 +4372,20 @@ Version 2018-05-07"
 
 (defun xah-fly-command-mode-activate ()
   "Activate command mode and run `xah-fly-command-mode-activate-hook'
-Version 2017-07-07"
+Version: 2017-07-07"
   (interactive)
   (xah-fly-command-mode-init)
   (run-hooks 'xah-fly-command-mode-activate-hook))
 
 (defun xah-fly-command-mode-activate-no-hook ()
   "Activate command mode. Does not run `xah-fly-command-mode-activate-hook'
-Version 2017-07-07"
+Version: 2017-07-07"
   (interactive)
   (xah-fly-command-mode-init))
 
 (defun xah-fly-insert-mode-activate ()
   "Activate insertion mode.
-Version 2017-07-07"
+Version: 2017-07-07"
   (interactive)
   (xah-fly-insert-mode-init)
   (run-hooks 'xah-fly-insert-mode-activate-hook))
