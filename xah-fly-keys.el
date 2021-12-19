@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 16.6.20211210141037
+;; Version: 16.7.20211219140528
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -4001,8 +4001,7 @@ minor modes loaded later may override bindings in this map.")
 
 (xah-fly--define-keys
  (define-prefix-command 'xah-fly-t-keymap)
- '(
-   ("SPC" . xah-clean-whitespace)
+ '(("SPC" . xah-clean-whitespace)
    ("TAB" . move-to-column)
 
    ("1" . xah-append-to-register-1)
@@ -4022,15 +4021,15 @@ minor modes loaded later may override bindings in this map.")
    ("c" . goto-char)
    ("d" . mark-defun)
    ("e" . list-matching-lines)
-   ("f" . goto-line )
+   ("f" . goto-line)
    ;; g
-   ;; ("h" . xah-close-current-buffer )
+   ("h" . repeat-complex-command)
    ("i" . delete-non-matching-lines)
    ("j" . copy-to-register)
    ("k" . insert-register)
    ("l" . xah-escape-quotes)
    ("m" . xah-make-backup-and-save)
-   ("n" . repeat-complex-command)
+   ;; n
    ;; o
    ("p" . query-replace-regexp)
    ;; q
@@ -4043,7 +4042,7 @@ minor modes loaded later may override bindings in this map.")
    ;; x
    ("y" . delete-duplicate-lines)
    ;; z
-))
+   ))
 
 (xah-fly--define-keys
  (define-prefix-command 'xah-fly-w-keymap)
