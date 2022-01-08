@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 16.8.20211221114128
+;; Version: 16.9.20220108144047
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1022,23 +1022,17 @@ Version: 2021-07-06"
   "Replace whitespaces by one space.
 
 URL `http://xahlee.info/emacs/emacs/emacs_reformat_lines.html'
-Version: 2017-01-11"
+Version: 2017-01-11 2022-01-08"
   (interactive "r")
-  (save-excursion
-    (save-restriction
+  (save-restriction
       (narrow-to-region Begin End)
       (goto-char (point-min))
-      (while
-          (search-forward "\n" nil 1)
-        (replace-match " "))
+      (while (search-forward "\n" nil 1) (replace-match " "))
       (goto-char (point-min))
-      (while
-          (search-forward "\t" nil 1)
-        (replace-match " "))
+      (while (search-forward "\t" nil 1) (replace-match " "))
       (goto-char (point-min))
-      (while
-          (re-search-forward "  +" nil 1)
-        (replace-match " ")))))
+      (while (re-search-forward " +" nil 1) (replace-match " "))
+      (goto-char (point-max))))
 
 (defun xah-reformat-to-multi-lines ( &optional Begin End MinLength)
   "Replace spaces by a newline at ~70 chars, on current block or selection.
@@ -1060,7 +1054,7 @@ Version: 2018-12-16 2021-07-06 2021-08-12"
           (when (> (- (point) (line-beginning-position)) $minlen)
             (replace-match "\n" )))))))
 
-(defun xah-reformat-lines ( &optional Width)
+(defun xah-reformat-lines (&optional Width)
   "Reformat current block or selection into short lines or 1 long line.
 When called for the first time, change to one long line. Second call change it to multiple short lines. Repeated call toggles.
 If `universal-argument' is called first, ask user to type max length of line. By default, it is 70.
@@ -1070,8 +1064,8 @@ Created 2016 or before.
 Version: 2021-07-05 2021-08-13"
   (interactive)
   ;; This command symbol has a property 'is-long-p, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
-  (let ( $isLong $width $p1 $p2)
-    (setq $width (if Width Width (if current-prefix-arg (prefix-numeric-value current-prefix-arg) 70 )))
+  (let ($isLong $width $p1 $p2)
+    (setq $width (if Width Width (if current-prefix-arg (prefix-numeric-value current-prefix-arg) 70)))
     (setq $isLong (if (eq last-command this-command) (get this-command 'is-long-p) nil))
     (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
     (progn
@@ -1079,13 +1073,14 @@ Version: 2021-07-05 2021-08-13"
           (xah-reformat-to-multi-lines $p1 $p2 $width)
         (if $isLong
             (xah-reformat-to-multi-lines $p1 $p2 $width)
-          (xah-reformat-whitespaces-to-one-space $p1 $p2)))
+          (progn
+            (xah-reformat-whitespaces-to-one-space $p1 $p2))))
       (put this-command 'is-long-p (not $isLong)))))
 
 (defun xah-reformat-to-sentence-lines ()
   "Reformat current block or selection into multiple lines by ending period.
 HTML anchor links “<a…>…</a>” is also placed on a new line.
-After this command is called, press t to repeat it.
+After this command is called, press y to repeat it.
 
 URL `http://xahlee.info/emacs/emacs/elisp_reformat_to_sentence_lines.html'
 Version: 2020-12-02 2021-08-31"
@@ -1107,7 +1102,7 @@ Version: 2020-12-02 2021-08-31"
       (goto-char (point-max))
       (while (eq (char-before ) 32) (delete-char -1))))
   (re-search-forward "\n+" nil 1)
-  (set-transient-map (let (($kmap (make-sparse-keymap))) (define-key $kmap (kbd "t") 'xah-reformat-to-sentence-lines ) $kmap)))
+  (set-transient-map (let (($kmap (make-sparse-keymap))) (define-key $kmap (kbd "y") 'xah-reformat-to-sentence-lines ) $kmap)))
 
 (defun xah-space-to-newline ()
   "Replace space sequence to a newline char in current block or selection.
@@ -1400,7 +1395,7 @@ Version: 2016-10-04 2019-11-24"
 
 (defun xah-cycle-hyphen-lowline-space (&optional Begin End)
   "Cycle hyphen/lowline/space chars in selection or inside quote/bracket or line, in that order.
-After this command is called, press t to repeat it.
+After this command is called, press y to repeat it.
 The region to work on is by this order:
  1. if there is a selection, use that.
  2. If cursor is string quote or any type of bracket, and is within current line, work on that region.
@@ -1438,7 +1433,7 @@ Version: 2019-02-12 2021-08-20"
       (set-mark $p1)
       (setq deactivate-mark nil))
     (put 'xah-cycle-hyphen-lowline-space 'state (% (+ $nowState 1) $n)))
-  (set-transient-map (let (($kmap (make-sparse-keymap))) (define-key $kmap (kbd "t") 'xah-cycle-hyphen-lowline-space) $kmap)))
+  (set-transient-map (let (($kmap (make-sparse-keymap))) (define-key $kmap (kbd "y") 'xah-cycle-hyphen-lowline-space) $kmap)))
 
 (defun xah-copy-file-path (&optional DirPathOnlyQ)
   "Copy current buffer file path or dired path.
