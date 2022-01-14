@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 16.9.20220108144047
+;; Version: 16.9.20220114151006
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -144,13 +144,15 @@
 (defvar xah-fly-insert-mode-activate-hook nil "Hook for `xah-fly-insert-mode-activate'")
 
 (defcustom xah-fly-use-control-key t
-  "If nil, do not bind any control key. When t, standard keys for open, close, paste, are bound."
+  "If nil, do not bind any control key. When t, standard keys for open, close, copy, paste etc, are bound."
   :type 'boolean
   :group 'xah-fly-keys)
+
 (defcustom xah-fly-use-meta-key t
   "If nil, do not bind any meta key."
   :type 'boolean
   :group 'xah-fly-keys)
+
 (defcustom xah-fly-use-isearch-arrows t
   "If nil, no change to any key in isearch (`isearch-forward'). Otherwise, arrow keys are for moving between occurrences, and C-v is paste."
   :type 'boolean
@@ -1083,26 +1085,24 @@ HTML anchor links “<a…>…</a>” is also placed on a new line.
 After this command is called, press - to repeat it.
 
 URL `http://xahlee.info/emacs/emacs/elisp_reformat_to_sentence_lines.html'
-Version: 2020-12-02 2021-08-31"
+Version: 2020-12-02 2021-08-31 2022-01-13"
   (interactive)
   (let ($p1 $p2)
     (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
     (save-restriction
       (narrow-to-region $p1 $p2)
       (goto-char (point-min))
-      (while (search-forward "\n" nil t) (replace-match " " ))
+      (while (search-forward "\n" nil t) (replace-match " "))
       (goto-char (point-min))
-      (while (re-search-forward "  +" nil t) (replace-match " " ))
+      (while (re-search-forward "  +" nil t) (replace-match " "))
       (goto-char (point-min))
-      (while (re-search-forward "\\. +\\([(0-9A-Za-z]+\\)" nil t) (replace-match ".\n\\1" ))
+      (while (re-search-forward "\\. +\\([(0-9A-Za-z]+\\)" nil t) (replace-match ".\n\\1"))
       (goto-char (point-min))
-      (while (search-forward "<a " nil t) (replace-match "\n<a " ))
-      (goto-char (point-min))
-      (while (re-search-forward "<br */> *" nil t) (replace-match "<br />\n" ))
+      (while (re-search-forward "<br */> *" nil t) (replace-match "<br />\n"))
       (goto-char (point-max))
-      (while (eq (char-before ) 32) (delete-char -1))))
+      (while (eq (char-before) 32) (delete-char -1))))
   (re-search-forward "\n+" nil 1)
-  (set-transient-map (let (($kmap (make-sparse-keymap))) (define-key $kmap (kbd "-") 'xah-reformat-to-sentence-lines ) $kmap)))
+  (set-transient-map (let (($kmap (make-sparse-keymap))) (define-key $kmap (kbd "-") 'xah-reformat-to-sentence-lines) $kmap)))
 
 (defun xah-space-to-newline ()
   "Replace space sequence to a newline char in current block or selection.
