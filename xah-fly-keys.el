@@ -143,6 +143,11 @@
 (defvar xah-fly-command-mode-activate-hook nil "Hook for `xah-fly-command-mode-activate'")
 (defvar xah-fly-insert-mode-activate-hook nil "Hook for `xah-fly-insert-mode-activate'")
 
+(defvar xah-fly-command-mode-indicator "c"
+  "Character in mode line indicating command mode is active.")
+(defvar xah-fly-insert-mode-indicator "i"
+  "Character in mode line indicating insert mode is active.")
+
 (defcustom xah-fly-use-control-key t
   "If nil, do not bind any control key. When t, standard keys for open, close, paste, are bound."
   :type 'boolean
@@ -4326,7 +4331,7 @@ Version: 2020-04-28"
         (set-transient-map xah-fly-command-map (lambda () t)))
   (modify-all-frames-parameters (list (cons 'cursor-type 'box)))
   ;; (set-face-background 'cursor "red")
-  (setq mode-line-front-space "c")
+  (setq mode-line-front-space xah-fly-command-mode-indicator)
   (force-mode-line-update))
 
 (defun xah-fly-space-key ()
@@ -4347,7 +4352,7 @@ Version: 2018-05-07"
   (unless no-indication
     (modify-all-frames-parameters '((cursor-type . bar)))
     ;; (set-face-background 'cursor "black")
-    (setq mode-line-front-space "i"))
+    (setq mode-line-front-space xah-fly-insert-mode-indicator))
   (force-mode-line-update))
 
 (defun xah-fly-mode-toggle ()
