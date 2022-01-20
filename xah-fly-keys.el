@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 16.9.20220114151006
+;; Version: 16.10.20220120140027
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -874,6 +874,24 @@ Version: 2017-01-11 2021-03-30 2021-09-19"
                  (search-forward (aref $x 0) nil t)
                (replace-match (aref $x 1) t t)))
            $strPairs))))))
+
+(defun xah-add-space-after-comma ()
+  "Add a space after comma of current block or selection.
+and highlight changes made.
+Version 2022-01-20"
+  (interactive)
+  (let ($p1 $p2)
+    (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
+    (save-restriction
+      (narrow-to-region $p1 $p2)
+      (goto-char (point-min))
+      (while
+          (re-search-forward ",\\b" nil t)
+        (replace-match ", ")
+        (overlay-put
+         (make-overlay
+          (match-beginning 0)
+          (match-end 0)) 'face 'highlight)))))
 
 (defun xah-delete-blank-lines ()
   "Delete all newline around cursor.
