@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 16.10.20220120140027
+;; Version: 16.11.20220122154358
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -504,9 +504,16 @@ Version: 2019-12-02 2021-07-03"
        kill-ring))
     (goto-char (point-min))))
 
+
+(defun xah-delete-backward-char ()
+  "Delete backward 1 character
+Version: 2022-01-22"
+  (interactive)
+  (delete-char -1))
+
 (defun xah-delete-backward-char-or-bracket-text ()
-  "Delete backward 1 character or delete quote/bracket pair and inner text.
-If the char to the left of cursor is a matching pair, delete it and inner text, push the deleted text to `kill-ring'.
+  "Delete 1 character or delete quote/bracket pair and inner text.
+If the char to the left of cursor is a matching pair, delete it alone with inner text, push the deleted text to `kill-ring'.
 
 What char is considered bracket or quote is determined by current syntax table.
 
@@ -3626,7 +3633,7 @@ minor modes loaded later may override bindings in this map.")
    ("2" . xah-select-line)
    ("3" . delete-other-windows)
    ("4" . split-window-below)
-   ("5" . delete-char)
+   ("5" . xah-delete-backward-char-or-bracket-text)
    ("6" . xah-select-block)
    ("7" . xah-select-line)
    ("8" . xah-extend-selection)
@@ -3637,7 +3644,7 @@ minor modes loaded later may override bindings in this map.")
    ("b" . isearch-forward)
    ("c" . previous-line)
    ("d" . xah-beginning-of-line-or-block)
-   ("e" . xah-delete-backward-char-or-bracket-text)
+   ("e" . xah-delete-backward-char)
    ("f" . undo)
    ("g" . backward-word)
    ("h" . backward-char)
@@ -3734,7 +3741,8 @@ minor modes loaded later may override bindings in this map.")
   ;;    ;; etc
   ;;    )
   ;;  :direct)
-  ;; this is a problem. because the control key and meta are not supposed to change by keyboard layout such as dvorak. They should be letter direct. Also, by setting them with xah-fly-shared-map, it becomes unchangeable, that is, if a major mode set a key for C-t, it will have no effect. Current solution is just to use global-set-key. The disadvantage is that these changes leak, that is, xah-fly-keys is turned off, these ctrl keys are still changed. Still, this is better, because xah fly keys is not really meant to be turned off. You learn it, like it, use it, or leave it. Removing the tons of default emacs control and meta keys is desirable. because there are hundres of them, confusing, and mostly useless.
+
+  ;; this is a problem. because the control keybinding and meta keybinding are not supposed to change by keyboard layout such as dvorak. They should be letter direct. Also, by setting them with xah-fly-shared-map, it becomes unchangeable, that is, if a major mode set a key for C-t, it will have no effect. Current solution is just to use global-set-key. The disadvantage is that these changes leak, that is, xah-fly-keys is turned off, these ctrl keys are still changed. Still, this is better, because xah fly keys is not really meant to be turned off. You learn it, like it, use it, or leave it. Removing the tons of default emacs control and meta keys is desirable. because there are hundres of them, confusing, and mostly useless.
   (global-set-key (kbd "<C-S-prior>") 'xah-previous-emacs-buffer)
   (global-set-key (kbd "<C-S-next>") 'xah-next-emacs-buffer)
 
