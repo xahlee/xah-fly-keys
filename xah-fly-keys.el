@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 16.11.20220122154358
+;; Version: 16.11.20220122165601
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -505,11 +505,14 @@ Version: 2019-12-02 2021-07-03"
     (goto-char (point-min))))
 
 
-(defun xah-delete-backward-char ()
-  "Delete backward 1 character
+(defun xah-delete-left-char-or-selection ()
+  "Delete backward 1 character, or selection.
 Version: 2022-01-22"
   (interactive)
-  (delete-char -1))
+  (if (region-active-p)
+    (progn (delete-region (region-beginning) (region-end)))
+  (delete-char -1)
+))
 
 (defun xah-delete-backward-char-or-bracket-text ()
   "Delete 1 character or delete quote/bracket pair and inner text.
@@ -3644,7 +3647,7 @@ minor modes loaded later may override bindings in this map.")
    ("b" . isearch-forward)
    ("c" . previous-line)
    ("d" . xah-beginning-of-line-or-block)
-   ("e" . xah-delete-backward-char)
+   ("e" . xah-delete-left-char-or-selection)
    ("f" . undo)
    ("g" . backward-word)
    ("h" . backward-char)
