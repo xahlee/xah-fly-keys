@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 16.11.20220122165601
+;; Version: 16.12.20220122201825
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -363,6 +363,26 @@ Version: 2016-11-22"
     (when (<= (point) $pos)
       (progn (re-search-forward "\\\"" nil t)))))
 
+(defun xah-narrow-to-region ()
+  "Same as `narrow-to-region', but if no selection, narrow to the current block.
+Version 2022-01-22"
+  (interactive)
+  (if (region-active-p)
+      (progn
+        (narrow-to-region (region-beginning) (region-end)))
+    (progn
+      (let ($p1 $p2)
+        (save-excursion
+          (if (re-search-backward "\n[ \t]*\n" nil "move")
+              (progn (goto-char (match-end 0))
+                     (setq $p1 (point)))
+            (setq $p1 (point)))
+          (if (re-search-forward "\n[ \t]*\n" nil "move")
+              (progn (goto-char (match-beginning 0))
+                     (setq $p2 (point)))
+            (setq $p2 (point))))
+        (narrow-to-region $p1 $p2)))))
+
 ;; HHH___________________________________________________________________
 ;; editing commands
 
@@ -504,15 +524,13 @@ Version: 2019-12-02 2021-07-03"
        kill-ring))
     (goto-char (point-min))))
 
-
 (defun xah-delete-left-char-or-selection ()
   "Delete backward 1 character, or selection.
 Version: 2022-01-22"
   (interactive)
   (if (region-active-p)
-    (progn (delete-region (region-beginning) (region-end)))
-  (delete-char -1)
-))
+      (progn (delete-region (region-beginning) (region-end)))
+    (delete-char -1)))
 
 (defun xah-delete-backward-char-or-bracket-text ()
   "Delete 1 character or delete quote/bracket pair and inner text.
@@ -3979,7 +3997,7 @@ minor modes loaded later may override bindings in this map.")
    ("k" . menu-bar-open)
    ("l" . toggle-word-wrap)
    ("m" . jump-to-register)
-   ("n" . narrow-to-region)
+   ("n" . xah-narrow-to-region)
    ("o" . variable-pitch-mode)
    ("p" . read-only-mode)
    ;; q
