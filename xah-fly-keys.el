@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 16.12.20220122201825
+;; Version: 16.13.20220122215609
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -363,25 +363,21 @@ Version: 2016-11-22"
     (when (<= (point) $pos)
       (progn (re-search-forward "\\\"" nil t)))))
 
+(defun xah-sort-lines ()
+  "Like `sort-lines' but if no region, do the current block.
+Version 2022-01-22"
+  (interactive)
+  (let ($p1 $p2)
+    (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
+    (sort-lines t $p1 $p2)))
+
 (defun xah-narrow-to-region ()
   "Same as `narrow-to-region', but if no selection, narrow to the current block.
 Version 2022-01-22"
   (interactive)
-  (if (region-active-p)
-      (progn
-        (narrow-to-region (region-beginning) (region-end)))
-    (progn
-      (let ($p1 $p2)
-        (save-excursion
-          (if (re-search-backward "\n[ \t]*\n" nil "move")
-              (progn (goto-char (match-end 0))
-                     (setq $p1 (point)))
-            (setq $p1 (point)))
-          (if (re-search-forward "\n[ \t]*\n" nil "move")
-              (progn (goto-char (match-beginning 0))
-                     (setq $p2 (point)))
-            (setq $p2 (point))))
-        (narrow-to-region $p1 $p2)))))
+  (let ($p1 $p2)
+    (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
+    (narrow-to-region $p1 $p2)))
 
 ;; HHH___________________________________________________________________
 ;; editing commands
@@ -3654,7 +3650,7 @@ minor modes loaded later may override bindings in this map.")
    ("2" . xah-select-line)
    ("3" . delete-other-windows)
    ("4" . split-window-below)
-   ("5" . xah-delete-backward-char-or-bracket-text)
+   ("5" . delete-char)
    ("6" . xah-select-block)
    ("7" . xah-select-line)
    ("8" . xah-extend-selection)
@@ -3665,7 +3661,8 @@ minor modes loaded later may override bindings in this map.")
    ("b" . isearch-forward)
    ("c" . previous-line)
    ("d" . xah-beginning-of-line-or-block)
-   ("e" . xah-delete-left-char-or-selection)
+   ;; ("e" . xah-delete-left-char-or-selection)
+   ("e" . xah-delete-backward-char-or-bracket-text)
    ("f" . undo)
    ("g" . backward-word)
    ("h" . backward-char)
@@ -4059,7 +4056,7 @@ minor modes loaded later may override bindings in this map.")
    ("8" . xah-clear-register-1)
    ("7" . xah-append-to-register-1)
 
-   ("." . sort-lines)
+   ("." . xah-sort-lines)
    ("," . sort-numeric-fields)
    ("'" . reverse-region)
    ;; a
