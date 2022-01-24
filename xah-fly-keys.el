@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 16.13.20220122215609
+;; Version: 16.13.20220123180127
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -365,11 +365,11 @@ Version: 2016-11-22"
 
 (defun xah-sort-lines ()
   "Like `sort-lines' but if no region, do the current block.
-Version 2022-01-22"
+Version 2022-01-22 2022-01-23"
   (interactive)
   (let ($p1 $p2)
     (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
-    (sort-lines t $p1 $p2)))
+    (sort-lines current-prefix-arg $p1 $p2)))
 
 (defun xah-narrow-to-region ()
   "Same as `narrow-to-region', but if no selection, narrow to the current block.
