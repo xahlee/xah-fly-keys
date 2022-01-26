@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2022 by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 16.13.20220123180127
+;; Version: 16.13.20220126112648
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1128,18 +1128,18 @@ Version: 2021-07-05 2021-08-13"
 
 (defun xah-reformat-to-sentence-lines ()
   "Reformat current block or selection into multiple lines by ending period.
-HTML anchor links “<a…>…</a>” is also placed on a new line.
 After this command is called, press - to repeat it.
 
 URL `http://xahlee.info/emacs/emacs/elisp_reformat_to_sentence_lines.html'
-Version: 2020-12-02 2021-08-31 2022-01-13"
+Version: 2020-12-02 2021-08-31 2022-01-13 2022-01-26"
   (interactive)
   (let ($p1 $p2)
     (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
     (save-restriction
       (narrow-to-region $p1 $p2)
       (goto-char (point-min))
-      (while (search-forward "\n" nil t) (replace-match " "))
+      (while (re-search-forward "\\([A-Za-z0-9]+\\)\n\\([A-Za-z0-9]+\\)" nil t)
+        (replace-match "\\1 \\2"))
       (goto-char (point-min))
       (while (re-search-forward "  +" nil t) (replace-match " "))
       (goto-char (point-min))
