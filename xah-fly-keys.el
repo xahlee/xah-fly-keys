@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2022 by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 16.13.20220126112648
+;; Version: 16.13.20220211085834
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1131,21 +1131,22 @@ Version: 2021-07-05 2021-08-13"
 After this command is called, press - to repeat it.
 
 URL `http://xahlee.info/emacs/emacs/elisp_reformat_to_sentence_lines.html'
-Version: 2020-12-02 2021-08-31 2022-01-13 2022-01-26"
+Version: 2020-12-02 2022-01-26 2022-02-04 2022-02-10 2022-02-11"
   (interactive)
   (let ($p1 $p2)
     (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
     (save-restriction
       (narrow-to-region $p1 $p2)
       (goto-char (point-min))
-      (while (re-search-forward "\\([A-Za-z0-9]+\\)\n\\([A-Za-z0-9]+\\)" nil t)
+      (while (re-search-forward "\\([A-Za-z0-9]+\\)[ \t]*\n[ \t]*\\([A-Za-z0-9]+\\)" nil t)
+        (replace-match "\\1 \\2"))
+      (goto-char (point-min))
+      (while (re-search-forward "\\([,]\\)[ \t]*\n[ \t]*\\([A-Za-z0-9]+\\)" nil t)
         (replace-match "\\1 \\2"))
       (goto-char (point-min))
       (while (re-search-forward "  +" nil t) (replace-match " "))
       (goto-char (point-min))
       (while (re-search-forward "\\. +\\([(0-9A-Za-z]+\\)" nil t) (replace-match ".\n\\1"))
-      (goto-char (point-min))
-      (while (re-search-forward "<br */> *" nil t) (replace-match "<br />\n"))
       (goto-char (point-max))
       (while (eq (char-before) 32) (delete-char -1))))
   (re-search-forward "\n+" nil 1)
@@ -3573,9 +3574,8 @@ Version: 2020-04-18"
 
 (defvar xah-fly-key-map (make-sparse-keymap)
   "Backward-compatibility map for `xah-fly-keys' minor mode.
+If `xah-fly-insert-state-p' is true, point to `xah-fly-insert-map', else, point to points to `xah-fly-command-map'.")
 
-Points to `xah-fly-insert-map' when `xah-fly-insert-state-p' is non-nil,
-and points to `xah-fly-command-map' otherwise (which see).")
 (make-obsolete-variable
  'xah-fly-key-map
  "Put bindings for command mode in `xah-fly-command-map', bindings for
