@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2022 by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 16.13.20220211085834
+;; Version: 16.13.20220213005539
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2381,16 +2381,18 @@ File suffix is used to determine which program to run, set in the variable `xah-
 If the file is modified or not saved, save it automatically before run.
 
 URL `http://xahlee.info/emacs/emacs/elisp_run_current_file.html'
-Version: 2020-09-24 2021-01-21 2021-10-27"
+Version: 2020-09-24 2021-01-21 2021-10-27 2022-02-12"
   (interactive)
-  (let* (($outBuffer "*xah-run output*")
-         ;; (resize-mini-windows nil)
-         ($extHash xah-run-current-file-hashtable)
-         ($fname (buffer-file-name))
-         ($fExt (file-name-extension $fname))
-         ($progName (gethash $fExt $extHash))
-         ($cmdStr (concat $progName " \""   $fname "\" &")))
+  (let (($outBuffer "*xah-run output*")
+        ;; (resize-mini-windows nil)
+        ($extHash xah-run-current-file-hashtable)
+        $fname $fExt $progName $cmdStr)
     (when (not (buffer-file-name)) (save-buffer))
+    (setq $fname (buffer-file-name))
+    (setq $fExt (file-name-extension $fname))
+    (setq $progName (gethash $fExt $extHash))
+    (setq $cmdStr (concat $progName " \""   $fname "\" &"))
+
     (when (buffer-modified-p) (save-buffer))
     (run-hooks 'xah-run-current-file-before-hook)
     (cond
@@ -2473,18 +2475,18 @@ URL `http://xahlee.info/emacs/emacs/elisp_make-backup.html'
 Version: 2018-06-06 2020-12-18"
   (interactive)
   (let (($fname (buffer-file-name))
-        ($date-time-format "%Y%m%d_%H%M%S"))
+        ($dateTimeFormat "%Y%m%d_%H%M%S"))
     (if $fname
-        (let (($backup-name
-               (concat $fname "~" (format-time-string $date-time-format) "~")))
-          (copy-file $fname $backup-name t)
-          (message (concat "Backup saved at: " $backup-name)))
+        (let (($backupName
+               (concat $fname "~" (format-time-string $dateTimeFormat) "~")))
+          (copy-file $fname $backupName t)
+          (message (concat "Backup saved at: " $backupName)))
       (if (eq major-mode 'dired-mode)
           (progn
             (mapc (lambda ($x)
-                    (let (($backup-name
-                           (concat $x "~" (format-time-string $date-time-format) "~")))
-                      (copy-file $x $backup-name t)))
+                    (let (($backupName
+                           (concat $x "~" (format-time-string $dateTimeFormat) "~")))
+                      (copy-file $x $backupName t)))
                   (dired-get-marked-files))
             (revert-buffer))
         (user-error "buffer not file nor dired")))))
