@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2022 by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 16.13.20220213005539
+;; Version: 16.13.20220216220117
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -3816,7 +3816,7 @@ minor modes loaded later may override bindings in this map.")
   ;; (global-set-key (kbd "C-q") 'nil)
   ;; (global-set-key (kbd "C-r") 'nil)
   (global-set-key (kbd "C-s") 'save-buffer)
-  (global-set-key (kbd "C-t") 'nil)
+  (global-set-key (kbd "C-t") 'hippie-expand)
   ;; (global-set-key (kbd "C-u") 'nil)
   (global-set-key (kbd "C-v") 'yank)
   (global-set-key (kbd "C-w") 'xah-close-current-buffer)
