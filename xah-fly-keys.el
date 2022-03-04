@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2022 by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 16.13.20220216220117
+;; Version: 16.14.20220304152948
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -519,6 +519,78 @@ Version: 2019-12-02 2021-07-03"
          (insert x xah-show-kill-ring-separator ))
        kill-ring))
     (goto-char (point-min))))
+
+(defun xah-move-block-up ()
+  "Swap the current text block with the previous.
+After this command is called, press - to repeat it.
+Version 2022-03-04"
+  (interactive)
+  (let (($p0 (point))
+        $c1 ; current block begin
+        $c2 ; current Block End
+        $p1 ; prev Block Begin
+        $p2 ; prev Block end
+        )
+    (if (re-search-forward "\n[ \t]*\n+" nil "move")
+        (setq $c2 (match-beginning 0))
+      (setq $c2 (point)))
+    (goto-char $p0)
+    (if (re-search-backward "\n[ \t]*\n+" nil "move")
+        (progn
+          (skip-chars-backward "\n \t")
+          (setq $p2 (point))
+          (skip-chars-forward "\n \t")
+          (setq $c1 (point)))
+      (error "No previous block."))
+    (goto-char $p2)
+    (if (re-search-backward "\n[ \t]*\n+" nil "move")
+        (progn
+          (setq $p1 (match-end 0)))
+      (setq $p1 (point)))
+    (transpose-regions $p1 $p2 $c1 $c2)
+    (goto-char $p1)
+    (set-transient-map
+     (let (($kmap (make-sparse-keymap)))
+       (define-key $kmap (kbd "-") 'xah-move-block-up)
+       (define-key $kmap (kbd "<up>") 'xah-move-block-up)
+       (define-key $kmap (kbd "<down>") 'xah-move-block-down)
+       $kmap))))
+
+(defun xah-move-block-down ()
+  "Swap the current text block with the next.
+After this command is called, press - to repeat it.
+Version 2022-03-04"
+  (interactive)
+  (let (($p0 (point))
+        $c1 ; current block begin
+        $c2 ; current Block End
+        $n1 ; next Block Begin
+        $n2 ; next Block end
+        )
+    (if (eq (point-min) (point))
+        (setq $c1 (point))
+      (if (re-search-backward "\n\n+" nil "move")
+          (progn
+            (setq $c1 (match-end 0)))
+        (setq $c1 (point))))
+    (goto-char $p0)
+    (if (re-search-forward "\n[ \t]*\n+" nil "move")
+        (progn
+          (setq $c2 (match-beginning 0))
+          (setq $n1 (match-end 0)))
+      (error "No next block."))
+    (if (re-search-forward "\n[ \t]*\n+" nil "move")
+        (progn
+          (setq $n2 (match-beginning 0)))
+      (setq $n2 (point)))
+    (transpose-regions $c1 $c2 $n1 $n2)
+    (goto-char $n2))
+  (set-transient-map
+   (let (($kmap (make-sparse-keymap)))
+     (define-key $kmap (kbd "-") 'xah-move-block-down)
+     (define-key $kmap (kbd "<up>") 'xah-move-block-up)
+     (define-key $kmap (kbd "<down>") 'xah-move-block-down)
+     $kmap)))
 
 (defun xah-delete-left-char-or-selection ()
   "Delete backward 1 character, or selection.
@@ -2589,10 +2661,10 @@ Version: 2020-11-20 2021-01-31 2021-11-12 2021-11-22"
        (concat "open -R " (shell-quote-argument $path))))
      ((string-equal system-type "gnu/linux")
       (let ((process-connection-type nil)
-            (openFileProgram (if (file-exists-p "/usr/bin/gvfs-open")
+            ($openFileProgram (if (file-exists-p "/usr/bin/gvfs-open")
                                  "/usr/bin/gvfs-open"
                                "/usr/bin/xdg-open")))
-        (start-process "" nil openFileProgram (shell-quote-argument $path)))
+        (start-process "" nil $openFileProgram (shell-quote-argument $path)))
       ;; (shell-command "xdg-open .") ;; 2013-02-10 this sometimes froze emacs till the folder is closed. eg with nautilus
       ))))
 
@@ -4048,6 +4120,9 @@ minor modes loaded later may override bindings in this map.")
  (define-prefix-command 'xah-fly-t-keymap)
  '(("SPC" . xah-clean-whitespace)
    ("TAB" . move-to-column)
+
+   ("<up>"  . xah-move-block-up)
+   ("<down>"  . xah-move-block-down)
 
    ("1" . xah-append-to-register-1)
    ("2" . xah-clear-register-1)
