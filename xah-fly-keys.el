@@ -3,11 +3,11 @@
 ;; Copyright © 2013-2022 by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 16.14.20220304152948
+;; Version: 16.14.20220313004708
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
-;; License: GPL v2. Tell your friends to buy a copy.
+;; License: GPL v3. Tell your friends to buy a copy.
 ;; Homepage: http://xahlee.info/emacs/misc/ergoemacs_vi_mode.html
 
 ;; This file is not part of GNU Emacs.
@@ -208,12 +208,9 @@ Version: 2018-06-04 2021-03-16"
   (let (($p (point)))
     (if (or (equal (point) (line-beginning-position))
             (eq last-command this-command))
-        (if (re-search-backward "\n[\t\n ]*\n+" nil 1)
-            (progn
-              (skip-chars-backward "\n\t ")
-              ;; (forward-char )
-              )
-          (goto-char (point-min)))
+        (when
+          (re-search-backward "\n[\t\n ]*\n+" nil 1)
+          (skip-chars-backward "\n\t "))
       (if visual-line-mode
           (beginning-of-visual-line)
         (progn
@@ -229,11 +226,11 @@ Version: 2018-06-04 2021-03-16"
 • if `visual-line-mode' is on, end of line means visual line.
 
 URL `http://xahlee.info/emacs/emacs/emacs_keybinding_design_beginning-of-line-or-block.html'
-Version: 2018-06-04 2021-03-16"
+Version: 2018-06-04 2021-03-16 2022-03-05"
   (interactive)
   (if (or (equal (point) (line-end-position))
           (eq last-command this-command))
-      (re-search-forward "\n[\t\n ]*\n+" nil 1 )
+      (re-search-forward "\n[\t\n ]*\n+" nil 1)
     (if visual-line-mode
         (end-of-visual-line)
       (end-of-line))))
@@ -1176,27 +1173,26 @@ Version: 2018-12-16 2021-07-06 2021-08-12"
             (replace-match "\n" )))))))
 
 (defun xah-reformat-lines (&optional Width)
-  "Reformat current block or selection into short lines or 1 long line.
-When called for the first time, change to one long line. Second call change it to multiple short lines. Repeated call toggles.
+  "Reformat current block or selection into 1 long line or short lines.
+When called for the first time, change to one long line. Second call change it to short lines. Repeated call toggles.
 If `universal-argument' is called first, ask user to type max length of line. By default, it is 70.
 
 URL `http://xahlee.info/emacs/emacs/emacs_reformat_lines.html'
 Created 2016 or before.
-Version: 2021-07-05 2021-08-13"
+Version: 2021-07-05 2021-08-13 2022-03-12"
   (interactive)
   ;; This command symbol has a property 'is-long-p, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
   (let ($isLong $width $p1 $p2)
     (setq $width (if Width Width (if current-prefix-arg (prefix-numeric-value current-prefix-arg) 70)))
     (setq $isLong (if (eq last-command this-command) (get this-command 'is-long-p) nil))
     (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
-    (progn
-      (if current-prefix-arg
+    (if current-prefix-arg
+        (xah-reformat-to-multi-lines $p1 $p2 $width)
+      (if $isLong
           (xah-reformat-to-multi-lines $p1 $p2 $width)
-        (if $isLong
-            (xah-reformat-to-multi-lines $p1 $p2 $width)
-          (progn
-            (xah-reformat-whitespaces-to-one-space $p1 $p2))))
-      (put this-command 'is-long-p (not $isLong)))))
+        (progn
+          (xah-reformat-whitespaces-to-one-space $p1 $p2))))
+    (put this-command 'is-long-p (not $isLong))))
 
 (defun xah-reformat-to-sentence-lines ()
   "Reformat current block or selection into multiple lines by ending period.
