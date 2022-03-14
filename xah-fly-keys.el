@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2022 by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 16.14.20220313004708
+;; Version: 16.15.20220314145449
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2451,6 +2451,7 @@ If the file is modified or not saved, save it automatically before run.
 URL `http://xahlee.info/emacs/emacs/elisp_run_current_file.html'
 Version: 2020-09-24 2021-01-21 2021-10-27 2022-02-12"
   (interactive)
+  (setenv "NO_COLOR" "1")
   (let (($outBuffer "*xah-run output*")
         ;; (resize-mini-windows nil)
         ($extHash xah-run-current-file-hashtable)
@@ -2459,8 +2460,8 @@ Version: 2020-09-24 2021-01-21 2021-10-27 2022-02-12"
     (setq $fname (buffer-file-name))
     (setq $fExt (file-name-extension $fname))
     (setq $progName (gethash $fExt $extHash))
-    (setq $cmdStr (concat $progName " \""   $fname "\" &"))
-
+    (setq $cmdStr (concat $progName " \""   $fname "\""))
+    (setq $cmdStr (format "%s \"%s\" &" $progName $fname))
     (when (buffer-modified-p) (save-buffer))
     (run-hooks 'xah-run-current-file-before-hook)
     (cond
@@ -2484,10 +2485,11 @@ Version: 2020-09-24 2021-01-21 2021-10-27 2022-02-12"
                                           (file-name-nondirectory $fname))) $outBuffer)))
      (t (if $progName
             (progn
-              (message "Running")
+              (message "Running 「%s」" $cmdStr)
               (shell-command $cmdStr $outBuffer))
           (error "Unknown file extension: %s" $fExt))))
-    (run-hooks 'xah-run-current-file-after-hook)))
+    (run-hooks 'xah-run-current-file-after-hook))
+  (setenv "NO_COLOR"))
 
 (defun xah-clean-empty-lines ()
   "Replace repeated blank lines to just 1, in whole buffer or selection.
