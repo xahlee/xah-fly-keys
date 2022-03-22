@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2022 by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 16.16.20220320015635
+;; Version: 16.17.20220322080844
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1199,7 +1199,7 @@ Version: 2021-07-05 2021-08-13 2022-03-12"
 After this command is called, press - to repeat it.
 
 URL `http://xahlee.info/emacs/emacs/elisp_reformat_to_sentence_lines.html'
-Version: 2020-12-02 2022-01-26 2022-02-04 2022-02-10 2022-02-11"
+Version: 2020-12-02 2022-03-22"
   (interactive)
   (let ($p1 $p2)
     (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
@@ -1218,13 +1218,13 @@ Version: 2020-12-02 2022-01-26 2022-02-04 2022-02-10 2022-02-11"
       (goto-char (point-max))
       (while (eq (char-before) 32) (delete-char -1))))
   (re-search-forward "\n+" nil 1)
-  (set-transient-map (let (($kmap (make-sparse-keymap))) (define-key $kmap (kbd "-") 'xah-reformat-to-sentence-lines) $kmap)))
+  (set-transient-map (let (($kmap (make-sparse-keymap))) (define-key $kmap (kbd "-") this-command) $kmap)))
 
 (defun xah-space-to-newline ()
   "Replace space sequence to a newline char in current block or selection.
 
 URL `http://xahlee.info/emacs/emacs/emacs_space_to_newline.html'
-Version: 2017-08-19 2021-08-12 2021-09-12 2021-11-28"
+Version: 2017-08-19 2021-11-28"
   (interactive)
   (let* (($bds (xah-get-bounds-of-block-or-region))
          ($p1 (car $bds))
@@ -1382,7 +1382,7 @@ or
 In lisp code, QuoteL QuoteR Sep are strings.
 
 URL `http://xahlee.info/emacs/emacs/emacs_quote_lines.html'
-Version: 2020-06-26 2021-07-21 2021-08-15 2021-09-15"
+Version: 2020-06-26 2021-09-15"
   (interactive
    (let* (($bds (xah-get-bounds-of-block-or-region))
          ($p1 (car $bds))
@@ -1518,7 +1518,7 @@ The region to work on is by this order:
  3. else, work on current line.
 
 URL `http://xahlee.info/emacs/emacs/elisp_change_space-hyphen_underscore.html'
-Version: 2019-02-12 2021-08-20"
+Version: 2019-02-12 2021-08-20 2022-03-22"
   (interactive)
   ;; this function sets a property 'state. Possible values are 0 to length of $charArray.
   (let* ($p1
@@ -1549,7 +1549,7 @@ Version: 2019-02-12 2021-08-20"
       (set-mark $p1)
       (setq deactivate-mark nil))
     (put 'xah-cycle-hyphen-lowline-space 'state (% (+ $nowState 1) $n)))
-  (set-transient-map (let (($kmap (make-sparse-keymap))) (define-key $kmap (kbd "-") 'xah-cycle-hyphen-lowline-space) $kmap)))
+  (set-transient-map (let (($kmap (make-sparse-keymap))) (define-key $kmap (kbd "-") this-command) $kmap)))
 
 (defun xah-copy-file-path (&optional DirPathOnlyQ)
   "Copy current buffer file path or dired path.
@@ -2198,8 +2198,10 @@ Similar to `kill-buffer', with the following addition:
 • If the buffer is editing a source file in an `org-mode' file, prompt the user to save before closing.
 • If the buffer is a file, add the path to the list `xah-recently-closed-buffers'.
 
+After this command is called, press - to repeat it.
+
 URL `http://xahlee.info/emacs/emacs/elisp_close_buffer_open_last_closed.html'
-Version: 2018-06-11 2021-07-01"
+Version: 2018-06-11 2021-07-01 2022-03-22"
   (interactive)
   (let (($isOrgMode (string-match "^*Org Src" (buffer-name))))
     (if (active-minibuffer-window) ; if the buffer is minibuffer
@@ -2227,7 +2229,8 @@ Version: 2018-06-11 2021-07-01"
                 (cons (cons (buffer-name) (buffer-file-name)) xah-recently-closed-buffers))
           (when (> (length xah-recently-closed-buffers) xah-recently-closed-buffers-max)
             (setq xah-recently-closed-buffers (butlast xah-recently-closed-buffers 1))))
-        (kill-buffer (current-buffer))))))
+        (kill-buffer (current-buffer)))))
+  (set-transient-map (let (($kmap (make-sparse-keymap))) (define-key $kmap (kbd "-") this-command) $kmap)))
 
 (defun xah-open-last-closed ()
   "Open the last closed file.
@@ -2290,7 +2293,7 @@ See also `xah-open-file-at-cursor-pre-hook'.
 This command is similar to `find-file-at-point' but without prompting for confirmation.
 
 URL `http://xahlee.info/emacs/emacs/emacs_open_file_path_fast.html'
-Version: 2020-10-17 2021-02-24 2021-08-14 2021-09-19 2021-10-16"
+Version: 2020-10-17 2021-10-16"
   (interactive)
   (let* (($input
           (if (region-active-p)
