@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2022 by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 16.17.20220322080844
+;; Version: 16.18.20220322231657
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2198,8 +2198,6 @@ Similar to `kill-buffer', with the following addition:
 • If the buffer is editing a source file in an `org-mode' file, prompt the user to save before closing.
 • If the buffer is a file, add the path to the list `xah-recently-closed-buffers'.
 
-After this command is called, press - to repeat it.
-
 URL `http://xahlee.info/emacs/emacs/elisp_close_buffer_open_last_closed.html'
 Version: 2018-06-11 2021-07-01 2022-03-22"
   (interactive)
@@ -2229,14 +2227,12 @@ Version: 2018-06-11 2021-07-01 2022-03-22"
                 (cons (cons (buffer-name) (buffer-file-name)) xah-recently-closed-buffers))
           (when (> (length xah-recently-closed-buffers) xah-recently-closed-buffers-max)
             (setq xah-recently-closed-buffers (butlast xah-recently-closed-buffers 1))))
-        (kill-buffer (current-buffer)))))
-  (set-transient-map (let (($kmap (make-sparse-keymap))) (define-key $kmap (kbd "-") this-command) $kmap)))
+        (kill-buffer (current-buffer))))))
 
 (defun xah-open-last-closed ()
   "Open the last closed file.
-
 URL `http://xahlee.info/emacs/emacs/elisp_close_buffer_open_last_closed.html'
-Version: 2016-06-19"
+Version: 2016-06-19 2022-03-22"
   (interactive)
   (if (> (length xah-recently-closed-buffers) 0)
       (find-file (cdr (pop xah-recently-closed-buffers)))
