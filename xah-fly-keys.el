@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2022 by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 16.18.20220322231657
+;; Version: 16.19.20220326000656
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -235,31 +235,38 @@ Version: 2018-06-04 2021-03-16 2022-03-05"
         (end-of-visual-line)
       (end-of-line))))
 
-(defvar xah-brackets nil "string of left/right brackets pairs.")
-(setq xah-brackets "()[]{}<>＜＞（）［］｛｝⦅⦆〚〛⦃⦄“”‘’‹›«»「」〈〉《》【】〔〕⦗⦘『』〖〗〘〙｢｣⟦⟧⟨⟩⟪⟫⟮⟯⟬⟭⌈⌉⌊⌋⦇⦈⦉⦊❛❜❝❞❨❩❪❫❴❵❬❭❮❯❰❱❲❳〈〉⦑⦒⧼⧽﹙﹚﹛﹜﹝﹞⁽⁾₍₎⦋⦌⦍⦎⦏⦐⁅⁆⸢⸣⸤⸥⟅⟆⦓⦔⦕⦖⸦⸧⸨⸩｟｠")
+;; (defvar xah-brackets nil "A string, each pairs of chars is a left bracket and a matching right bracket, no space in between.")
 
-(defvar xah-left-brackets '( "(" "{" "[" "<" "〔" "【" "〖" "〈" "《" "「" "『" "“" "‘" "‹" "«" "〘")
-  "List of left bracket chars.")
+;; (setq xah-brackets "“”()[]{}<>＜＞（）［］｛｝⦅⦆〚〛⦃⦄‹›«»「」〈〉《》【】〔〕⦗⦘『』〖〗〘〙｢｣⟦⟧⟨⟩⟪⟫⟮⟯⟬⟭⌈⌉⌊⌋⦇⦈⦉⦊❛❜❝❞❨❩❪❫❴❵❬❭❮❯❰❱❲❳〈〉⦑⦒⧼⧽﹙﹚﹛﹜﹝﹞⁽⁾₍₎⦋⦌⦍⦎⦏⦐⁅⁆⸢⸣⸤⸥⟅⟆⦓⦔⦕⦖⸦⸧⸨⸩｟｠")
 
-(progn
-;; make xah-left-brackets based on xah-brackets
-  (setq xah-left-brackets '())
-  (dotimes ($x (- (length xah-brackets) 1))
-    (when (= (% $x 2) 0)
-      (push (char-to-string (elt xah-brackets $x))
-            xah-left-brackets)))
-  (setq xah-left-brackets (reverse xah-left-brackets)))
+;; (progn
+;; ;; make xah-left-brackets based on xah-brackets
+;;   (setq xah-left-brackets '())
+;;   (dotimes ($x (- (length xah-brackets) 1))
+;;     (when (= (% $x 2) 0)
+;;       (push (char-to-string (elt xah-brackets $x))
+;;             xah-left-brackets)))
+;;   (setq xah-left-brackets (reverse xah-left-brackets)))
 
-(defvar xah-right-brackets '( ")" "]" "}" ">" "〕" "】" "〗" "〉" "》" "」" "』" "”" "’" "›" "»" "〙")
-  "list of right bracket chars.")
+;; (progn
+;;   (setq xah-right-brackets '())
+;;   (dotimes ($x (- (length xah-brackets) 1))
+;;     (when (= (% $x 2) 1)
+;;       (push (char-to-string (elt xah-brackets $x))
+;;             xah-right-brackets)))
+;;   (setq xah-right-brackets (reverse xah-right-brackets)))
 
-(progn
-  (setq xah-right-brackets '())
-  (dotimes ($x (- (length xah-brackets) 1))
-    (when (= (% $x 2) 1)
-      (push (char-to-string (elt xah-brackets $x))
-            xah-right-brackets)))
-  (setq xah-right-brackets (reverse xah-right-brackets)))
+(defvar xah-brackets nil "A list of strings, each element is a string of 2 chars, the left bracket and a matching right bracket.")
+
+(setq xah-brackets '( "“”" "()" "[]" "{}" "<>" "＜＞" "（）" "［］" "｛｝" "⦅⦆" "〚〛" "⦃⦄" "‹›" "«»" "「」" "〈〉" "《》" "【】" "〔〕" "⦗⦘" "『』" "〖〗" "〘〙" "｢｣" "⟦⟧" "⟨⟩" "⟪⟫" "⟮⟯" "⟬⟭" "⌈⌉" "⌊⌋" "⦇⦈" "⦉⦊" "❛❜" "❝❞" "❨❩" "❪❫" "❴❵" "❬❭" "❮❯" "❰❱" "❲❳" "〈〉" "⦑⦒" "⧼⧽" "﹙﹚" "﹛﹜" "﹝﹞" "⁽⁾" "₍₎" "⦋⦌" "⦍⦎" "⦏⦐" "⁅⁆" "⸢⸣" "⸤⸥" "⟅⟆" "⦓⦔" "⦕⦖" "⸦⸧" "⸨⸩" "｟｠" ))
+
+(defvar xah-left-brackets nil "List of left bracket chars.")
+
+(setq xah-left-brackets (mapcar (lambda (x) (substring x 0 1)) xah-brackets ))
+
+(defvar xah-right-brackets nil "List of right bracket chars.")
+
+(setq xah-right-brackets (mapcar (lambda (x) (substring x 1 2)) xah-brackets ))
 
 (defvar xah-punctuation-regex nil "A regex string for the purpose of moving cursor to a punctuation.")
 (setq xah-punctuation-regex "[!\?\"\.,`'#$%&*+:;=@^|~]+")
@@ -2086,9 +2093,9 @@ This command ignores nesting. For example, if text is
 the selected char is “c”, not “a(b)c”.
 
 URL `http://xahlee.info/emacs/emacs/modernization_mark-word.html'
-Version: 2020-11-24 2021-07-11 2021-12-21"
+Version: 2020-11-24 2021-07-11 2021-12-21 2022-03-26"
   (interactive)
-  (let (($skipChars (concat "^\"`" xah-brackets)) $p1)
+  (let (($skipChars (concat "^\"`" (mapconcat 'identity xah-brackets ""))) $p1)
     (skip-chars-backward $skipChars)
     (setq $p1 (point))
     (skip-chars-forward $skipChars)
