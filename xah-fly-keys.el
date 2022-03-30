@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2022 by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 16.20.20220330141616
+;; Version: 16.21.20220330144240
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -3716,7 +3716,7 @@ minor modes loaded later may override bindings in this map.")
    ("-" . xah-cycle-hyphen-lowline-space)
    ("." . backward-kill-word)
    (";" . xah-comment-dwim)
-   ("/" . hippie-expand)
+   ;; ("/" . hippie-expand)
    ("\\" . nil)
    ("=" . nil)
    ("[" . xah-backward-punct )
