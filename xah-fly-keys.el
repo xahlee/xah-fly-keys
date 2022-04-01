@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2022 by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 16.21.20220330144240
+;; Version: 16.22.20220331215750
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -506,7 +506,7 @@ Version: 2017-07-25 2020-09-08"
         (yank)))))
 
 (defvar xah-show-kill-ring-separator nil "A line divider for `xah-show-kill-ring'.")
-(setq xah-show-kill-ring-separator "\n\nss_____________________________________________________________________________\n\n")
+(setq xah-show-kill-ring-separator "\n\nSfR2h________________________________________________________________________\n\n")
 
 (defun xah-show-kill-ring ()
   "Insert all `kill-ring' content in a new buffer named *copy history*.
@@ -3710,13 +3710,12 @@ minor modes loaded later may override bindings in this map.")
    (":" . nil)
 
    ("SPC" . xah-fly-leader-key-map)
-   ;; ("DEL" . xah-fly-leader-key-map)
    ("'" . xah-reformat-lines)
    ("," . xah-shrink-whitespaces)
    ("-" . xah-cycle-hyphen-lowline-space)
    ("." . backward-kill-word)
    (";" . xah-comment-dwim)
-   ;; ("/" . hippie-expand)
+   ("/" . hippie-expand)
    ("\\" . nil)
    ("=" . nil)
    ("[" . xah-backward-punct )
@@ -4207,7 +4206,6 @@ minor modes loaded later may override bindings in this map.")
  (define-prefix-command 'xah-fly-leader-key-map)
  '(
    ("SPC" . xah-fly-insert-mode-activate)
-   ("DEL" . xah-fly-insert-mode-activate)
    ("RET" . xah-fly-M-x)
    ("TAB" . xah-fly--tab-key-map)
    ("." . xah-fly-dot-keymap)
