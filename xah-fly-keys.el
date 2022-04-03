@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2022 by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 16.22.20220331215750
+;; Version: 17.0.20220403155747
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2279,8 +2279,8 @@ Version: 2019-02-26"
   (interactive)
   (require 'bookmark)
   (bookmark-maybe-load-default-file)
-  (let (($thisBookmark (ido-completing-read "Open bookmark:" (mapcar (lambda ($x) (car $x)) bookmark-alist))))
-    (find-file (bookmark-get-filename $thisBookmark))))
+  (let (($xBookmark (ido-completing-read "Open bookmark:" (mapcar (lambda ($x) (car $x)) bookmark-alist))))
+    (find-file (bookmark-get-filename $xBookmark))))
 
 (defvar xah-open-file-at-cursor-pre-hook nil "Hook for `xah-open-file-at-cursor'. Functions in the hook will be called in order, each given the path as arg. The first return non-nil, its value is given to `xah-open-file-at-cursor' as input. This is useful for transforming certain url into file path (your website url), so instead of opening in browser, it opens in emacs as file.")
 
@@ -3631,7 +3631,7 @@ by `xah-fly--key-char'.
 If DirectQ is t, do not remap key to current keyboard layout.
 Example usage:
 ;; (xah-fly--define-keys
-;;  (define-prefix-command 'xah-fly-dot-keymap)
+;;  (define-prefix-command 'xah-fly-Lp2p1-key-map)
 ;;  '(
 ;;    (\"h\" . highlight-symbol-at-point)
 ;;    (\".\" . isearch-forward-symbol-at-point)
@@ -3920,9 +3920,21 @@ minor modes loaded later may override bindings in this map.")
    :direct))
 
 ;; HHH___________________________________________________________________
+
+;; 2022-04-03 There's a new notation for key, based on finger.
+;; For example the qwerty e key is Lp2p1.
+;; The notation is like this: [left or rigt hand][column number][row number]. 
+;; L means left hand, R means right hand
+;; Column position, pointing finger is 1, index is 2, ring finger is 3, pinky is 4, and so on in that direction. Thumb is 0. In the thumb direction is -1, -2 etc.
+;; Row position, home row is 0. Above is 1, below is -1.
+;; Positive number are written with p in front. Eg p1, p2. Zero is p0. Negative can be written with n in front, eg n1, n2.
+;; This system is a notation system for keyboard physical layout, which also indicates associated finger for that key.
+;; The advantage is that it's a logical system, not based on arbitrary table lookup.
+;; Qwerty, dvorak, etc can then be mapped to this logical system.
+
 ;; commands related to highlight
 (xah-fly--define-keys
- (define-prefix-command 'xah-fly-dot-keymap)
+ (define-prefix-command 'xah-fly-Lp2p1-key-map)
  ;; 2019-02-22 experiment. this is now empty. so you can use this key space for all major mode custom keys or personal keys. These highlight command isn't used much in my experience
  '(
    ("." . highlight-symbol-at-point)
@@ -3930,9 +3942,9 @@ minor modes loaded later may override bindings in this map.")
    ("c" . highlight-lines-matching-regexp)
    ("h" . highlight-regexp)
    ("t" . highlight-phrase)
-   ;; ("p" . isearch-forward-symbol-at-point)
-   ;; ("c" . isearch-forward-symbol)
-   ;; ("h" . isearch-forward-word)
+   ("e" . isearch-forward-symbol-at-point)
+   ("u" . isearch-forward-symbol)
+   ("p " . isearch-forward-word)
    ))
 
 (xah-fly--define-keys
@@ -3966,7 +3978,7 @@ minor modes loaded later may override bindings in this map.")
 ;; HHH___________________________________________________________________
 
 (xah-fly--define-keys
- (define-prefix-command 'xah-fly-c-keymap)
+ (define-prefix-command 'xah-fly-Rp2p1-key-map)
  '(
    ("," . xah-open-in-external-app)
    ("." . find-file)
@@ -3987,7 +3999,7 @@ minor modes loaded later may override bindings in this map.")
    ))
 
 (xah-fly--define-keys
- (define-prefix-command 'xah-fly-e-keymap)
+ (define-prefix-command 'xah-fly-Lp2p0-key-map)
  '(
    ("RET" . insert-char)
    ("SPC" . xah-insert-unicode)
@@ -4012,7 +4024,7 @@ minor modes loaded later may override bindings in this map.")
    ("y" . xah-insert-double-angle-quote)))
 
 (xah-fly--define-keys
- (define-prefix-command 'xah-fly-h-keymap)
+ (define-prefix-command 'xah-fly-Rp1p0-key-map)
  '(
    ;; ',.
    ;; ;
@@ -4043,7 +4055,7 @@ minor modes loaded later may override bindings in this map.")
 
 (xah-fly--define-keys
  ;; commands here are “harmless”, they don't modify text etc. they turn on modes, change display, prompt, start shell, etc.
- (define-prefix-command 'xah-fly-n-keymap)
+ (define-prefix-command 'xah-fly-Rp3p0-key-map)
  '(
    ("SPC" . whitespace-mode)
    ("," . abbrev-mode)
@@ -4089,7 +4101,7 @@ minor modes loaded later may override bindings in this map.")
 
 (xah-fly--define-keys
  ;; kinda replacement related
- (define-prefix-command 'xah-fly-r-keymap)
+ (define-prefix-command 'xah-fly-Rp3p1-key-map)
  '(("SPC" . rectangle-mark-mode)
    ("," . apply-macro-to-region-lines)
    ("." . kmacro-start-macro)
@@ -4121,7 +4133,7 @@ minor modes loaded later may override bindings in this map.")
    ))
 
 (xah-fly--define-keys
- (define-prefix-command 'xah-fly-t-keymap)
+ (define-prefix-command 'xah-fly-Rp2p0-key-map)
  '(("SPC" . xah-clean-whitespace)
    ("TAB" . move-to-column)
 
@@ -4169,7 +4181,7 @@ minor modes loaded later may override bindings in this map.")
    ))
 
 (xah-fly--define-keys
- (define-prefix-command 'xah-fly-w-keymap)
+ (define-prefix-command 'xah-fly-Rp2n1-key-map)
  '(
    ("d" . xah-delete-current-file-make-backup)
    ("." . eval-buffer)
@@ -4197,7 +4209,7 @@ minor modes loaded later may override bindings in this map.")
 
 (xah-fly--define-keys
  ;; kinda replacement related
- (define-prefix-command 'xah-fly-comma-keymap)
+ (define-prefix-command 'xah-fly-Lp3p1-key-map)
  '(
    ("t" . xref-find-definitions)
    ("n" . xref-pop-marker-stack)))
@@ -4208,9 +4220,9 @@ minor modes loaded later may override bindings in this map.")
    ("SPC" . xah-fly-insert-mode-activate)
    ("RET" . xah-fly-M-x)
    ("TAB" . xah-fly--tab-key-map)
-   ("." . xah-fly-dot-keymap)
+   ("." . xah-fly-Lp2p1-key-map)
    ("'" . xah-fill-or-unfill)
-   ("," . xah-fly-comma-keymap)
+   ("," . xah-fly-Lp3p1-key-map)
    ;; - / ; = [
    ("\\" . toggle-input-method)
    ;; `
@@ -4228,27 +4240,27 @@ minor modes loaded later may override bindings in this map.")
 
    ("a" . mark-whole-buffer)
    ("b" . end-of-buffer)
-   ("c" . xah-fly-c-keymap)
+   ("c" . xah-fly-Rp2p1-key-map)
    ("d" . beginning-of-buffer)
-   ("e" . xah-fly-e-keymap)
+   ("e" . xah-fly-Lp2p0-key-map)
    ("f" . xah-search-current-word)
    ("g" . xah-close-current-buffer)
-   ("h" . xah-fly-h-keymap)
+   ("h" . xah-fly-Rp1p0-key-map)
    ("i" . kill-line)
    ("j" . xah-copy-all-or-region)
    ;; k
    ("l" . recenter-top-bottom)
    ("m" . dired-jump)
-   ("n" . xah-fly-n-keymap)
+   ("n" . xah-fly-Rp3p0-key-map)
    ("o" . exchange-point-and-mark)
    ("p" . query-replace)
    ("q" . xah-cut-all-or-region)
-   ("r" . xah-fly-r-keymap)
+   ("r" . xah-fly-Rp3p1-key-map)
    ("s" . save-buffer)
-   ("t" . xah-fly-t-keymap)
+   ("t" . xah-fly-Rp2p0-key-map)
    ("u" . switch-to-buffer)
    ;; v
-   ("w" . xah-fly-w-keymap)
+   ("w" . xah-fly-Rp2n1-key-map)
    ("x" . xah-toggle-previous-letter-case)
    ("y" . xah-show-kill-ring)
    ;; z
