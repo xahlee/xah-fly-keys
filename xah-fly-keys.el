@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2022 by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 17.0.20220403155747
+;; Version: 17.1.20220405132618
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -127,14 +127,14 @@
 
 ;; If you like this project, Buy Xah Emacs Tutorial http://xahlee.info/emacs/emacs/buy_xah_emacs_tutorial.html or make a donation. Thanks.
 
-;; HHH___________________________________________________________________
+;; ssss---------------------------------------------------
 ;;; Code:
 
 (require 'dired) ; in emacs
 (require 'dired-x) ; in emacs
 (require 'ido) ; in emacs
 
-;; HHH___________________________________________________________________
+;; ssss---------------------------------------------------
 
 (defgroup xah-fly-keys nil
   "Ergonomic modal keybinding minor mode."
@@ -183,7 +183,7 @@ Version: 2021-08-12"
       (cons (region-beginning) (region-end))
     (xah-get-bounds-of-block)))
 
-;; HHH___________________________________________________________________
+;; ssss---------------------------------------------------
 ;; cursor movement
 
 (defun xah-pop-local-mark-ring ()
@@ -384,7 +384,7 @@ Version 2022-01-22"
     (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
     (narrow-to-region $p1 $p2)))
 
-;; HHH___________________________________________________________________
+;; ssss---------------------------------------------------
 ;; editing commands
 
 (defun xah-copy-line-or-region ()
@@ -1671,7 +1671,7 @@ version 2016-07-17"
   (require 'rect)
   (kill-new (mapconcat 'identity (extract-rectangle Begin End) "\n")))
 
-;; HHH___________________________________________________________________
+;; ssss---------------------------------------------------
 ;; insertion commands
 
 (defun xah-insert-date ()
@@ -1939,7 +1939,7 @@ Version: 2021-01-05"
                        (format "%s %s" (car x) (cdr x))) xah-unicode-list))))
     (insert (car (split-string $str " " t)))))
 
-;; HHH___________________________________________________________________
+;; ssss---------------------------------------------------
 ;; text selection
 
 (defun xah-select-block ()
@@ -2102,7 +2102,7 @@ Version: 2020-11-24 2021-07-11 2021-12-21 2022-03-26"
     (skip-chars-forward $skipChars)
     (set-mark $p1)))
 
-;; HHH___________________________________________________________________
+;; ssss---------------------------------------------------
 ;; misc
 
 (defun xah-user-buffer-p ()
@@ -2172,19 +2172,36 @@ Version: 2016-06-19"
     (while (and (not (string-equal "*" (substring (buffer-name) 0 1))) (< i 20))
       (setq i (1+ i)) (previous-buffer))))
 
+(defvar xah-temp-dir-path (concat user-emacs-directory "temp/" ) "Path to temp dir used by xah commands.")
+;; "~/.emacs.d/temp/"
+
+(defvar xah-new-buffer-offer-save nil "Offer to save file new buffer when closing. Used by `xah-new-empty-buffer'. 
+If t, ask user if want to save, on close or quit.
+If 'auto, save it in `xah-temp-dir-path'.
+If nil or other, don't offer to save on close.
+")
+(setq xah-new-buffer-offer-save 'auto)
+
 (defun xah-new-empty-buffer ()
   "Create a new empty buffer.
 New buffer will be named “untitled” or “untitled<2>”, “untitled<3>”, etc.
 
-It returns the buffer (for elisp programing).
+It returns the buffer.
 
 URL `http://xahlee.info/emacs/emacs/emacs_new_empty_buffer.html'
-Version: 2017-11-01"
+Version: 2017-11-01 2022-04-05"
   (interactive)
   (let (($buf (generate-new-buffer "untitled")))
     (switch-to-buffer $buf)
     (funcall initial-major-mode)
-    (setq buffer-offer-save t)
+    (cond
+     ((eq xah-new-buffer-offer-save t)(setq buffer-offer-save t))
+     ((eq xah-new-buffer-offer-save 'auto)
+      (write-file
+       (concat
+        (expand-file-name xah-temp-dir-path)
+        (format "untitled_%s_%x.txt" (format-time-string "%Y%m%d_%H%M") (random 4095)))))
+     (t nil))
     $buf
     ))
 
@@ -2379,7 +2396,7 @@ Version: 2020-04-09 2021-02-24"
    nil
    :special))
 
-;; HHH___________________________________________________________________
+;; ssss---------------------------------------------------
 
 (defvar xah-run-current-file-before-hook nil "Hook for `xah-run-current-file'. Before the file is run.")
 
@@ -2614,7 +2631,7 @@ Version: 2018-05-15 2021-08-31 2021-09-27"
           (kill-new  (buffer-string))))
       (kill-buffer (current-buffer)))))
 
-;; HHH___________________________________________________________________
+;; ssss---------------------------------------------------
 
 (defun xah-search-current-word ()
   "Call `isearch' on current word or selection.
@@ -2772,7 +2789,7 @@ Version: 2017-01-29"
       (other-frame 1)
     (delete-other-windows)))
 
-;; HHH___________________________________________________________________
+;; ssss---------------------------------------------------
 ;; key maps for conversion
 
 (defvar xah--dvorak-to-azerty-kmap
@@ -3648,7 +3665,7 @@ Version: 2020-04-18"
                ,(list 'quote (cdr $pair))))
           (cadr KeyCmdAlist)))))
 
-;; HHH___________________________________________________________________
+;; ssss---------------------------------------------------
 ;; keymaps
 
 (defvar xah-fly-key-map (make-sparse-keymap)
@@ -3700,7 +3717,7 @@ minor modes loaded later may override bindings in this map.")
 
 (defvar xah-fly--deactivate-command-mode-func nil)
 
-;; HHH___________________________________________________________________
+;; ssss---------------------------------------------------
 ;; setting keys
 
 (xah-fly--define-keys
@@ -3764,7 +3781,7 @@ minor modes loaded later may override bindings in this map.")
    ("y" . set-mark-command)
    ("z" . xah-goto-matching-bracket)))
 
-;; HHH___________________________________________________________________
+;; ssss---------------------------------------------------
 ;; set control meta, etc keys
 
 (xah-fly--define-keys
@@ -3919,7 +3936,7 @@ minor modes loaded later may override bindings in this map.")
      ("<right>" . isearch-forward-exit-minibuffer))
    :direct))
 
-;; HHH___________________________________________________________________
+;; ssss---------------------------------------------------
 
 ;; 2022-04-03 There's a new notation for key, based on finger.
 ;; For example the qwerty e key is Lp2p1.
@@ -3975,7 +3992,7 @@ minor modes loaded later may override bindings in this map.")
    ("0" . expand-jump-to-next-slot)
    ("=" . expand-jump-to-previous-slot)))
 
-;; HHH___________________________________________________________________
+;; ssss---------------------------------------------------
 
 (xah-fly--define-keys
  (define-prefix-command 'xah-fly-Rp2p1-key-map)
@@ -4267,7 +4284,7 @@ minor modes loaded later may override bindings in this map.")
    ;;
    ))
 
-;; HHH___________________________________________________________________
+;; ssss---------------------------------------------------
 ;; Movement key integrations with built-in Emacs packages
 
 (xah-fly--define-keys
@@ -4275,7 +4292,7 @@ minor modes loaded later may override bindings in this map.")
  '(("h" . indent-rigidly-left)
    ("n" . indent-rigidly-right)))
 
-;; HHH___________________________________________________________________
+;; ssss---------------------------------------------------
 ;;;; misc
 
 ;; the following have keys in gnu emacs, but i decided not to give them a key, because either they are rarely used (say, 95% of emacs users usel them less than once a month ), or there is a more efficient command/workflow with key in xah-fly-keys
@@ -4310,7 +4327,7 @@ minor modes loaded later may override bindings in this map.")
 ;; C-x l   →   count-lines-page
 ;; C-x m   →   compose-mail
 
-;; HHH___________________________________________________________________
+;; ssss---------------------------------------------------
 ;; undecided yet
 
 ;; C-x e   →   kmacro-end-and-call-macro
@@ -4355,7 +4372,7 @@ minor modes loaded later may override bindings in this map.")
 ;; C-x C-k n   →   kmacro-name-last-macro
 ;; C-x C-k q   →   kbd-macro-query
 
-;; HHH___________________________________________________________________
+;; ssss---------------------------------------------------
 
 ;; C-x 4 C-f   →   find-file-other-window
 ;; C-x 4 C-o   →   display-buffer
@@ -4409,7 +4426,7 @@ minor modes loaded later may override bindings in this map.")
 ;;    ("v" . vc-next-action)
 ;;    ("~" . vc-revision-other-window)))
 
-;; HHH___________________________________________________________________
+;; ssss---------------------------------------------------
 
 (defvar xah-fly-insert-state-p t "non-nil means insertion mode is on.")
 
@@ -4543,7 +4560,7 @@ Version: 2017-07-07"
   (xah-fly-insert-mode-activate)
   (left-char))
 
-;; HHH___________________________________________________________________
+;; ssss---------------------------------------------------
 
 (define-minor-mode xah-fly-keys
   "A modal keybinding set, like vim, but based on ergonomic principles, like Dvorak layout.
