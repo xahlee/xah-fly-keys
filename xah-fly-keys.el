@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2022 by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 17.1.20220405163038
+;; Version: 17.1.20220405165136
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2175,19 +2175,11 @@ Version: 2016-06-19"
     (while (and (not (string-equal "*" (substring (buffer-name) 0 1))) (< i 20))
       (setq i (1+ i)) (previous-buffer))))
 
-(defvar xah-temp-dir-path (concat user-emacs-directory "temp/" ) "Path to temp dir used by xah commands.")
-;; "~/.emacs.d/temp/"
-
-(defvar xah-new-buffer-offer-save nil "Offer to save file new buffer when closing. Used by `xah-new-empty-buffer'. 
-If t, ask user if want to save, on close or quit.
-If 'auto, save it in `xah-temp-dir-path'.
-If nil or other, don't offer to save on close.
-")
-(setq xah-new-buffer-offer-save 'auto)
-
 (defun xah-new-empty-buffer ()
   "Create a new empty buffer.
-New buffer will be named “untitled” or “untitled<2>”, “untitled<3>”, etc.
+New buffer is named untitled, untitled<2>, etc.
+
+On emacs quit, if you want emacs to prompt for save, set `buffer-offer-save' to t.
 
 It returns the buffer.
 
@@ -2197,14 +2189,6 @@ Version: 2017-11-01 2022-04-05"
   (let (($buf (generate-new-buffer "untitled")))
     (switch-to-buffer $buf)
     (funcall initial-major-mode)
-    (cond
-     ((eq xah-new-buffer-offer-save t)(setq buffer-offer-save t))
-     ((eq xah-new-buffer-offer-save 'auto)
-      (write-file
-       (concat
-        (expand-file-name xah-temp-dir-path)
-        (format "untitled_%s_%x.txt" (format-time-string "%Y%m%d_%H%M") (random 4095)))))
-     (t nil))
     $buf
     ))
 
