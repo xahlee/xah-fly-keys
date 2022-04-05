@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2022 by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 17.1.20220405132618
+;; Version: 17.1.20220405163038
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1108,7 +1108,7 @@ Version: 2020-11-22 2021-08-13"
     (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
     (if $isLongline
         (fill-region $p1 $p2)
-      (let ((fill-column most-positive-fixnum ))
+      (let ((fill-column 99999 ))
         (fill-region $p1 $p2)))
     (put this-command 'longline-p (not $isLongline))))
 
@@ -1185,9 +1185,12 @@ Version: 2018-12-16 2021-07-06 2021-08-12"
 When called for the first time, change to one long line. Second call change it to short lines. Repeated call toggles.
 If `universal-argument' is called first, ask user to type max length of line. By default, it is 70.
 
+Note: this command is different from emacs `fill-region' and related commands.
+This command, never adds or delete chars. It only exchange whitespaces.
+
 URL `http://xahlee.info/emacs/emacs/emacs_reformat_lines.html'
 Created 2016 or before.
-Version: 2021-07-05 2021-08-13 2022-03-12"
+Version: 2021-07-05 2021-08-13 2022-03-12 2022-04-05"
   (interactive)
   ;; This command symbol has a property 'is-long-p, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
   (let ($isLong $width $p1 $p2)
