@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2022 by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 17.1.20220405165136
+;; Version: 17.2.20220406024811
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -72,8 +72,8 @@
 ;; 【f】 (or Dvorak 【u】) activates insertion mode.
 ;; 【Space】 is a leader key. For example, 【SPACE r】 (Dvorak 【SPACE p】) calls query-replace. Press 【SPACE C-h】 to see the full list.
 ;; 【Space Space】 also activates insertion mode.
-;; 【Space Enter】 calls execute-extended-command or alternative.
-;; 【a】 calls execute-extended-command or alternative.
+;; 【Space Enter】 calls execute-extended-command.
+;; 【a】 calls execute-extended-command.
 
 ;; The leader key sequence basically replace ALL emacs commands that starts with C-x key.
 
@@ -2363,26 +2363,6 @@ Version: 2020-10-17 2021-10-16"
     (defalias 'xah-display-line-numbers-mode #'linum-mode)
   (defalias 'xah-display-line-numbers-mode #'global-display-line-numbers-mode))
 
-(defvar xah-fly-M-x-command nil "Command to call for emacs `execute-extended-command' replacement, used by `xah-fly-M-x'. Value should be a lisp symbol.")
-
-(setq xah-fly-M-x-command nil)
-
-(defun xah-fly-M-x ()
-  "Calls `execute-extended-command' or an alternative.
-If `xah-fly-M-x-command' is non-nil, call it, else call one of the following, in order: `smex', `helm-M-x', `counsel-M-x', `execute-extended-command'.
-Version: 2020-04-09 2021-02-24"
-  (interactive)
-  (command-execute
-   (cond
-    ((and (boundp 'xah-fly-M-x-command) xah-fly-M-x-command) xah-fly-M-x-command )
-    ((fboundp 'smex) 'smex)
-    ((fboundp 'helm-M-x) 'helm-M-x)
-    ((fboundp 'counsel-M-x) 'counsel-M-x)
-    (t 'execute-extended-command))
-   nil
-   nil
-   :special))
-
 ;; ssss---------------------------------------------------
 
 (defvar xah-run-current-file-before-hook nil "Hook for `xah-run-current-file'. Before the file is run.")
@@ -3739,7 +3719,7 @@ minor modes loaded later may override bindings in this map.")
    ("9" . xah-select-text-in-quote)
    ("0" . xah-pop-local-mark-ring)
 
-   ("a" . xah-fly-M-x)
+   ("a" . execute-extended-command)
    ("b" . isearch-forward)
    ("c" . previous-line)
    ("d" . xah-beginning-of-line-or-block)
@@ -4220,9 +4200,8 @@ minor modes loaded later may override bindings in this map.")
 
 (xah-fly--define-keys
  (define-prefix-command 'xah-fly-leader-key-map)
- '(
-   ("SPC" . xah-fly-insert-mode-activate)
-   ("RET" . xah-fly-M-x)
+ '(("SPC" . xah-fly-insert-mode-activate)
+   ("RET" . execute-extended-command)
    ("TAB" . xah-fly--tab-key-map)
    ("." . xah-fly-Lp2p1-key-map)
    ("'" . xah-fill-or-unfill)
