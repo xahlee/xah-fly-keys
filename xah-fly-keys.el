@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2022 by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 17.2.20220406024811
+;; Version: 17.3.20220407141446
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -712,7 +712,7 @@ If the string contains “,2”, then the first 2 chars and last 2 chars are use
 If ToChars is equal to string “none”, the brackets are deleted.
 
 URL `http://xahlee.info/emacs/emacs/elisp_change_brackets.html'
-Version: 2020-11-01 2021-08-15"
+Version: 2020-11-01 2021-08-15 2022-04-07"
   (interactive
    (let (($brackets
           '("(paren)"
@@ -760,8 +760,8 @@ Version: 2020-11-01 2021-08-15"
             "none"
             )))
      (list
-      (ido-completing-read "Replace this:" $brackets )
-      (ido-completing-read "To:" $brackets ))))
+      (completing-read "Replace this:" $brackets )
+      (completing-read "To:" $brackets ))))
   (let ( $p1 $p2 )
     (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
     (save-excursion
@@ -1393,7 +1393,7 @@ or
 In lisp code, QuoteL QuoteR Sep are strings.
 
 URL `http://xahlee.info/emacs/emacs/emacs_quote_lines.html'
-Version: 2020-06-26 2021-09-15"
+Version: 2020-06-26 2021-09-15 2022-04-07"
   (interactive
    (let* (($bds (xah-get-bounds-of-block-or-region))
          ($p1 (car $bds))
@@ -1418,8 +1418,8 @@ Version: 2020-06-26 2021-09-15"
             "none"
             "other"
             )) $bktChoice $sep $sepChoice $quoteL $quoteR)
-     (setq $bktChoice (ido-completing-read "Quote to use:" $brackets))
-     (setq $sepChoice (ido-completing-read "line separator:" '("," ";" "none" "other")))
+     (setq $bktChoice (completing-read "Quote to use:" $brackets))
+     (setq $sepChoice (completing-read "line separator:" '("," ";" "none" "other")))
      (cond
       ((string-equal $bktChoice "none")
        (setq $quoteL "" $quoteR ""))
@@ -1684,13 +1684,13 @@ If `universal-argument' is called first, prompt for a format to use.
 If there is selection, delete it first.
 
 URL `http://xahlee.info/emacs/emacs/elisp_insert-date-time.html'
-version 2020-09-07 2021-11-07"
+version 2020-09-07 2021-11-07 2022-04-07"
   (interactive)
   (let (($style
          (if current-prefix-arg
              (string-to-number
               (substring
-               (ido-completing-read
+               (completing-read
                 "Style:"
                 '(
                   "1 → 20180412224611"
@@ -1906,7 +1906,7 @@ Version: 2019-03-07"
         (beginning-of-line)
         (forward-char $colpos)))))
 
-(defvar xah-unicode-list nil "Associative list of Unicode symbols. First element is a Unicode character, second element is a string used as key shortcut in `ido-completing-read'")
+(defvar xah-unicode-list nil "Associative list of Unicode symbols. First element is a Unicode character, second element is a string used as key shortcut in `completing-read'")
 (setq xah-unicode-list
       '(
         ;; format: (str . nameOrFastKey)
@@ -1932,11 +1932,11 @@ Version: 2019-03-07"
 
 (defun xah-insert-unicode ()
   "Insert a unicode from a custom list `xah-unicode-list'.
-Version: 2021-01-05"
+Version: 2021-01-05 2022-04-07"
   (interactive)
   (let (
         ($str
-         (ido-completing-read
+         (completing-read
           "Insert:" (mapcar
                      (lambda (x)
                        (format "%s %s" (car x) (cdr x))) xah-unicode-list))))
@@ -2255,9 +2255,9 @@ Version: 2016-06-19 2022-03-22"
 Prompt for a choice.
 
 URL `http://xahlee.info/emacs/emacs/elisp_close_buffer_open_last_closed.html'
-Version: 2016-06-19 2021-10-27"
+Version: 2016-06-19 2021-10-27 2022-04-07"
   (interactive)
-  (find-file (ido-completing-read "Open:" (mapcar (lambda (f) (cdr f)) xah-recently-closed-buffers))))
+  (find-file (completing-read "Open:" (mapcar (lambda (f) (cdr f)) xah-recently-closed-buffers))))
 
 (defun xah-list-recently-closed ()
   "List recently closed file.
@@ -2276,14 +2276,14 @@ Version: 2016-06-19"
 
 (defun xah-open-file-fast ()
   "Prompt to open a file from bookmark `bookmark-bmenu-list'.
-This command is similar to `bookmark-jump', but use `ido-mode' interface, and ignore cursor position in bookmark.
+This command is similar to `bookmark-jump'.
 
 URL `http://xahlee.info/emacs/emacs/emacs_hotkey_open_file_fast.html'
-Version: 2019-02-26"
+Version: 2019-02-26 2022-04-07"
   (interactive)
   (require 'bookmark)
   (bookmark-maybe-load-default-file)
-  (let (($xBookmark (ido-completing-read "Open bookmark:" (mapcar (lambda ($x) (car $x)) bookmark-alist))))
+  (let (($xBookmark (completing-read "Open bookmark:" (mapcar (lambda ($x) (car $x)) bookmark-alist))))
     (find-file (bookmark-get-filename $xBookmark))))
 
 (defvar xah-open-file-at-cursor-pre-hook nil "Hook for `xah-open-file-at-cursor'. Functions in the hook will be called in order, each given the path as arg. The first return non-nil, its value is given to `xah-open-file-at-cursor' as input. This is useful for transforming certain url into file path (your website url), so instead of opening in browser, it opens in emacs as file.")
