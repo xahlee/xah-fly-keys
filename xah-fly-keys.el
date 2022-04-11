@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2022 by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 17.3.20220407141446
+;; Version: 17.4.20220411113753
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -69,10 +69,10 @@
 ;; xah-fly-insert-mode-activate  (when in command mode, press qwerty letter key f. (Dvorak key u))
 
 ;; When in command mode:
-;; 【f】 (or Dvorak 【u】) activates insertion mode.
-;; 【Space】 is a leader key. For example, 【SPACE r】 (Dvorak 【SPACE p】) calls query-replace. Press 【SPACE C-h】 to see the full list.
+;; f → xah-fly-insert-mode-activate.
+;; Space is a leader key. For example, 【SPACE r】 → query-replace. Press 【SPACE C-h】 to see the full list.
 ;; 【Space Space】 also activates insertion mode.
-;; 【Space Enter】 calls execute-extended-command.
+;; 【Space Enter】 calls execute-extended-command-for-buffer (if emacs 28), else execute-extended-command.
 ;; 【a】 calls execute-extended-command.
 
 ;; The leader key sequence basically replace ALL emacs commands that starts with C-x key.
@@ -89,9 +89,9 @@
 ;; You NEVER need to press Ctrl+x
 
 ;; Any emacs command that has a keybinding starting with C-x, has also a key sequence binding in xah-fly-keys. For example,
-;; 【C-x b】 switch-to-buffer is 【SPACE f】 (Dvorak 【SPACE u】)
-;; 【C-x C-f】 find-file is 【SPACE i e】 (Dvorak 【SPACE c .】)
-;; 【C-x n n】 narrow-to-region is 【SPACE l l】 (Dvorak 【SPACE n n】)
+;; 【C-x b】 switch-to-buffer is 【SPACE f】
+;; 【C-x C-f】 find-file is 【SPACE i e】
+;; 【C-x n n】 narrow-to-region is 【SPACE l l】
 ;; The first key we call it leader key. In the above examples, the SPACE is the leader key.
 
 ;; When in command mode, the 【SPACE】 is a leader key.
@@ -132,7 +132,6 @@
 
 (require 'dired) ; in emacs
 (require 'dired-x) ; in emacs
-(require 'ido) ; in emacs
 
 ;; ssss---------------------------------------------------
 
@@ -3751,6 +3750,15 @@ minor modes loaded later may override bindings in this map.")
 ;; ssss---------------------------------------------------
 ;; set control meta, etc keys
 
+(defcustom xah-fly-unset-useless-key t
+  "If true, unbind many obsolete or useless or redundant keybinding. e.g. <help>, <f1>."
+  :type 'boolean
+  :group 'xah-fly-keys)
+
+(when xah-fly-unset-useless-key
+  (global-set-key (kbd "<help>") nil)
+  (global-set-key (kbd "<f1>") nil))
+
 (xah-fly--define-keys
  xah-fly-shared-map
  '(("<home>" . xah-fly-command-mode-activate)
@@ -3884,7 +3892,6 @@ minor modes loaded later may override bindings in this map.")
   ;; (global-set-key (kbd "C-y") 'nil)
   (global-set-key (kbd "C-z") 'undo)
 
-
   ;;
   )
 
@@ -3907,7 +3914,7 @@ minor modes loaded later may override bindings in this map.")
 
 ;; 2022-04-03 There's a new notation for key, based on finger.
 ;; For example the qwerty e key is Lp2p1.
-;; The notation is like this: [left or rigt hand][column number][row number]. 
+;; The notation is like this: [left or rigt hand][column number][row number].
 ;; L means left hand, R means right hand
 ;; Column position, pointing finger is 1, index is 2, ring finger is 3, pinky is 4, and so on in that direction. Thumb is 0. In the thumb direction is -1, -2 etc.
 ;; Row position, home row is 0. Above is 1, below is -1.
@@ -4198,10 +4205,13 @@ minor modes loaded later may override bindings in this map.")
    ("t" . xref-find-definitions)
    ("n" . xref-pop-marker-stack)))
 
+(when (version< emacs-version "28.1")
+  (defalias 'execute-extended-command-for-buffer 'execute-extended-command))
+
 (xah-fly--define-keys
  (define-prefix-command 'xah-fly-leader-key-map)
  '(("SPC" . xah-fly-insert-mode-activate)
-   ("RET" . execute-extended-command)
+   ("RET" . execute-extended-command-for-buffer)
    ("TAB" . xah-fly--tab-key-map)
    ("." . xah-fly-Lp2p1-key-map)
    ("'" . xah-fill-or-unfill)
