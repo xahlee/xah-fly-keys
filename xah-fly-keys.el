@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2022 by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 17.4.20220411113753
+;; Version: 17.4.20220413170540
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -14,50 +14,8 @@
 
 ;;; Commentary:
 
-;; xah-fly-keys is a efficient keybinding for emacs. (more efficient than vim)
+;; xah-fly-keys is a efficient keybinding for emacs. It is modal like vi, but key choices are based on statistics of command call frequency.
 
-;; It is a modal mode like vi, but key choices are based on statistics of command call frequency.
-
-;; --------------------------------------------------
-;; MANUAL INSTALL
-
-;; put the file xah-fly-keys.el in ~/.emacs.d/lisp/
-;; create the dir if doesn't exist.
-
-;; put the following in your emacs init file:
-
-;; (add-to-list 'load-path "~/.emacs.d/lisp/")
-;; (require 'xah-fly-keys)
-;; (xah-fly-keys-set-layout "qwerty") ; required
-
-;; possible layout values:
-
-;; adnw
-;; azerty
-;; azerty-be
-;; beopy
-;; bepo
-;; carpalx-qfmlwy
-;; carpalx-qgmlwb
-;; carpalx-qgmlwy
-;; colemak
-;; colemak-mod-dh
-;; colemak-mod-dh-new
-;; dvorak
-;; koy
-;; neo2
-;; norman
-;; programer-dvorak
-;; pt-nativo
-;; qwerty
-;; qwerty-abnt
-;; qwerty-no (qwerty Norwegian)
-;; qwertz
-;; workman
-
-;; (xah-fly-keys 1)
-
-;; --------------------------------------------------
 ;; HOW TO USE
 
 ;; M-x xah-fly-keys to toggle the mode on/off.
@@ -66,7 +24,7 @@
 
 ;; xah-fly-command-mode-activate (press <home> or F8 or Alt+Space or Ctrl+Space or menu key)
 
-;; xah-fly-insert-mode-activate  (when in command mode, press qwerty letter key f. (Dvorak key u))
+;; xah-fly-insert-mode-activate (when in command mode, press qwerty letter key f. (Dvorak key u))
 
 ;; When in command mode:
 ;; f → xah-fly-insert-mode-activate.
@@ -127,13 +85,54 @@
 
 ;; If you like this project, Buy Xah Emacs Tutorial http://xahlee.info/emacs/emacs/buy_xah_emacs_tutorial.html or make a donation. Thanks.
 
-;; ssss---------------------------------------------------
+;;; Installation:
+;; here's how to manual install
+
+;; put the file xah-fly-keys.el in ~/.emacs.d/lisp/
+;; create the dir if doesn't exist.
+
+;; put the following in your emacs init file:
+
+;; (add-to-list 'load-path "~/.emacs.d/lisp/")
+;; (require 'xah-fly-keys)
+;; (xah-fly-keys-set-layout "qwerty") ; required
+
+;; possible layout values:
+
+;; adnw
+;; azerty
+;; azerty-be
+;; beopy
+;; bepo
+;; carpalx-qfmlwy
+;; carpalx-qgmlwb
+;; carpalx-qgmlwy
+;; colemak
+;; colemak-mod-dh
+;; colemak-mod-dh-new
+;; dvorak
+;; koy
+;; neo2
+;; norman
+;; programer-dvorak
+;; pt-nativo
+;; qwerty
+;; qwerty-abnt
+;; qwerty-no (qwerty Norwegian)
+;; qwertz
+;; workman
+
+;; (xah-fly-keys 1)
+
+
 ;;; Code:
 
 (require 'dired) ; in emacs
 (require 'dired-x) ; in emacs
 
-;; ssss---------------------------------------------------
+(setq byte-compile-docstring-max-column 999)
+
+
 
 (defgroup xah-fly-keys nil
   "Ergonomic modal keybinding minor mode."
@@ -182,7 +181,7 @@ Version: 2021-08-12"
       (cons (region-beginning) (region-end))
     (xah-get-bounds-of-block)))
 
-;; ssss---------------------------------------------------
+
 ;; cursor movement
 
 (defun xah-pop-local-mark-ring ()
@@ -383,7 +382,7 @@ Version 2022-01-22"
     (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
     (narrow-to-region $p1 $p2)))
 
-;; ssss---------------------------------------------------
+
 ;; editing commands
 
 (defun xah-copy-line-or-region ()
@@ -1392,15 +1391,15 @@ or
 In lisp code, QuoteL QuoteR Sep are strings.
 
 URL `http://xahlee.info/emacs/emacs/emacs_quote_lines.html'
-Version: 2020-06-26 2021-09-15 2022-04-07"
+Version: 2020-06-26 2021-09-15 2022-04-07 2022-04-13"
   (interactive
    (let* (($bds (xah-get-bounds-of-block-or-region))
          ($p1 (car $bds))
          ($p2 (cdr $bds))
          ($brackets
           '(
-            "\"double\""
-            "'single'"
+            "\"double quote\""
+            "'single quote'"
             "(paren)"
             "{brace}"
             "[square]"
@@ -1673,7 +1672,7 @@ version 2016-07-17"
   (require 'rect)
   (kill-new (mapconcat 'identity (extract-rectangle Begin End) "\n")))
 
-;; ssss---------------------------------------------------
+
 ;; insertion commands
 
 (defun xah-insert-date ()
@@ -1941,7 +1940,7 @@ Version: 2021-01-05 2022-04-07"
                        (format "%s %s" (car x) (cdr x))) xah-unicode-list))))
     (insert (car (split-string $str " " t)))))
 
-;; ssss---------------------------------------------------
+
 ;; text selection
 
 (defun xah-select-block ()
@@ -2104,7 +2103,7 @@ Version: 2020-11-24 2021-07-11 2021-12-21 2022-03-26"
     (skip-chars-forward $skipChars)
     (set-mark $p1)))
 
-;; ssss---------------------------------------------------
+
 ;; misc
 
 (defun xah-user-buffer-p ()
@@ -2362,7 +2361,7 @@ Version: 2020-10-17 2021-10-16"
     (defalias 'xah-display-line-numbers-mode #'linum-mode)
   (defalias 'xah-display-line-numbers-mode #'global-display-line-numbers-mode))
 
-;; ssss---------------------------------------------------
+
 
 (defvar xah-run-current-file-before-hook nil "Hook for `xah-run-current-file'. Before the file is run.")
 
@@ -2597,7 +2596,7 @@ Version: 2018-05-15 2021-08-31 2021-09-27"
           (kill-new  (buffer-string))))
       (kill-buffer (current-buffer)))))
 
-;; ssss---------------------------------------------------
+
 
 (defun xah-search-current-word ()
   "Call `isearch' on current word or selection.
@@ -2716,7 +2715,8 @@ Version: 2019-11-04 2021-07-21"
 
 (defun xah-open-in-terminal ()
   "Open the current dir in a new terminal window.
-On Microsoft Windows, it starts cross-platform PowerShell pwsh. You need to have it installed.
+On Microsoft Windows, it starts cross-platform PowerShell pwsh. You
+need to have it installed.
 
 URL `http://xahlee.info/emacs/emacs/emacs_dired_open_file_in_ext_apps.html'
 Version: 2020-11-21 2021-07-21"
@@ -2755,7 +2755,7 @@ Version: 2017-01-29"
       (other-frame 1)
     (delete-other-windows)))
 
-;; ssss---------------------------------------------------
+
 ;; key maps for conversion
 
 (defvar xah--dvorak-to-azerty-kmap
@@ -2806,7 +2806,7 @@ Version: 2017-01-29"
     ("0" . "à")
     ("\\" . "*")
     ("`" . "²"))
-  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding AZERTY. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+  "A alist, similar to `xah--dvorak-to-qwerty-kmap'")
 
 (defvar xah--dvorak-to-azerty-be-kmap
   '(("." . "e")
@@ -2856,7 +2856,7 @@ Version: 2017-01-29"
     ("0" . "à")
     ("\\" . "µ")
     ("`" . "²"))
-  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding AZERTY-BE. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+  "A alist, similar to `xah--dvorak-to-qwerty-kmap'")
 
 (defvar xah--dvorak-to-beopy-kmap
   '(("." . "o")
@@ -2931,7 +2931,7 @@ Version: 2017-01-29"
     ("w" . ",")
     ("v" . ".")
     ("z" . "/"))
-  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding Colemak layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+  "A alist, similar to `xah--dvorak-to-qwerty-kmap'")
 
 (defvar xah--dvorak-to-colemak-mod-dh-kmap
   '(("'" . "q")
@@ -2962,7 +2962,7 @@ Version: 2017-01-29"
     ("w" . ",")
     ("v" . ".")
     ("z" . "/"))
-  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding Colemak Mod-DH layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+  "A alist, similar to `xah--dvorak-to-qwerty-kmap'")
 
 (defvar xah--dvorak-to-colemak-mod-dh-new-kmap
   '(("'" . "q")
@@ -2993,11 +2993,9 @@ Version: 2017-01-29"
     ("w" . ",")
     ("v" . ".")
     ("z" . "/"))
-  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding Colemak Mod-DH layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+  "A alist, similar to `xah--dvorak-to-qwerty-kmap'")
 
-(defvar xah--dvorak-to-dvorak-kmap
-  '()
-  "A alist, dvorak to dvorak.")
+(defvar xah--dvorak-to-dvorak-kmap nil "A alist, dvorak to dvorak.")
 
 (defvar xah--dvorak-to-programer-dvorak-kmap
   '(
@@ -3038,7 +3036,7 @@ Version: 2017-01-29"
     ("=" . "@")
     ("+" . "^")
     )
-  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding Programer Dvorak layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+  "A alist, similar to `xah--dvorak-to-qwerty-kmap'")
 
 (defvar xah--dvorak-to-qwerty-kmap
   '(("." . "e")
@@ -3075,7 +3073,10 @@ Version: 2017-01-29"
     ("x" . "b")
     ("y" . "t")
     ("z" . "/"))
-  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding QWERTY. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+  "A alist, each element is of the form(\"e\" . \"d\"). First char is
+Dvorak, second is corresponding QWERTY. Not all chars are in the
+list, such as digits. When not in this alist, they are assumed to be
+the same.")
 
 (defvar xah--dvorak-to-qwerty-no-kmap
   '(("." . "e")
@@ -3111,7 +3112,7 @@ Version: 2017-01-29"
     ("x" . "b")
     ("y" . "t")
     ("z" . "-"))
-  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding QWERTY-NO. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+  "A alist, similar to `xah--dvorak-to-qwerty-kmap'")
 
 (defvar xah--dvorak-to-qwerty-abnt-kmap
   '(("." . "e")
@@ -3147,7 +3148,7 @@ Version: 2017-01-29"
     ("x" . "b")
     ("y" . "t")
     ("z" . ";"))
-  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding ABNT. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+  "A alist, similar to `xah--dvorak-to-qwerty-kmap'")
 
 (defvar xah--dvorak-to-qwertz-kmap
   '(("." . "e")
@@ -3183,7 +3184,7 @@ Version: 2017-01-29"
     ("x" . "b")
     ("y" . "t")
     ("z" . "-"))
-  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding QWERTZ. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+  "A alist, similar to `xah--dvorak-to-qwerty-kmap'")
 
 (defvar xah--dvorak-to-workman-kmap
   '(("'" . "q")
@@ -3215,7 +3216,7 @@ Version: 2017-01-29"
     ("w" . ",")
     ("v" . ".")
     ("z" . "/"))
-  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding Workman layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+  "A alist, similar to `xah--dvorak-to-qwerty-kmap'")
 
 (defvar xah--dvorak-to-norman-kmap
   '(
@@ -3251,7 +3252,7 @@ Version: 2017-01-29"
     ("w" . ",")
     ("v" . ".")
     ("z" . "/"))
-  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding Norman layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+  "A alist, similar to `xah--dvorak-to-qwerty-kmap'")
 
 (defvar xah--dvorak-to-neo2-kmap
   '(
@@ -3292,7 +3293,7 @@ Version: 2017-01-29"
     ("/" . "ß")
     ("[" . "-")
     ("-" . "y"))
-  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding neo2 layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+  "A alist, similar to `xah--dvorak-to-qwerty-kmap'")
 
 (defvar xah--dvorak-to-koy-kmap
   '(
@@ -3321,7 +3322,7 @@ Version: 2017-01-29"
     ("m" . "p")
     ("v" . "m")
     ("z" . "j"))
-  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding koy layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+  "A alist, similar to `xah--dvorak-to-qwerty-kmap'")
 
 (defvar xah--dvorak-to-adnw-kmap
   '(
@@ -3353,7 +3354,7 @@ Version: 2017-01-29"
 
     ("m" . "p")
     ("v" . "m"))
-  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding adnw layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+  "A alist, similar to `xah--dvorak-to-qwerty-kmap'")
 
 (defvar xah--dvorak-to-pt-nativo-kmap
   '((";" . "«")
@@ -3386,7 +3387,8 @@ Version: 2017-01-29"
     ("w" . "g")
     ("x" . "k")
     ("y" . "x"))
-  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding PT-Nativo. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+  "A alist, similar to `xah--dvorak-to-qwerty-kmap'"
+  )
 
 (defvar xah--dvorak-to-carpalx-qgmlwy-kmap
   '(("." . "m")
@@ -3424,7 +3426,7 @@ Version: 2017-01-29"
     ("x" . "j")
     ("y" . "w")
     ("z" . "/"))
-  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding Carpalx QGMLWY layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+  "A alist, similar to `xah--dvorak-to-qwerty-kmap'")
 
 (defvar xah--dvorak-to-carpalx-qgmlwb-kmap
   '(("." . "m")
@@ -3462,7 +3464,7 @@ Version: 2017-01-29"
     ("x" . "j")
     ("y" . "w")
     ("z" . "/"))
-  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding Carpalx QGMLWB layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+  "A alist, similar to `xah--dvorak-to-qwerty-kmap'")
 
 (defvar xah--dvorak-to-carpalx-qfmlwy-kmap
   '(("." . "m")
@@ -3499,7 +3501,7 @@ Version: 2017-01-29"
     ("w" . ",")
     ("y" . "w")
     ("z" . "/"))
-  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding Carpalx QFMLWY layout. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
+  "A alist, similar to `xah--dvorak-to-qwerty-kmap'")
 
 (defvar xah--dvorak-to-bepo-kmap
   '(("'" . "b")
@@ -3544,8 +3546,7 @@ Version: 2017-01-29"
     ("7" . "+")
     ("8" . "-")
     ("9" . "/"))
-
-  "A alist, each element is of the form (\"e\" . \"d\"). First char is Dvorak, second is corresponding BEPO layout. Not all chars are in the list. When not in this alist, they are assumed to be the same.")
+  "A alist, similar to `xah--dvorak-to-qwerty-kmap'")
 
 (defcustom xah-fly-key-current-layout nil
   "The current keyboard layout. Use `xah-fly-keys-set-layout' to set the layout.
@@ -3585,8 +3586,11 @@ If the value is nil, it is automatically set to \"dvorak\"."
 (if xah-fly-key-current-layout nil (setq xah-fly-key-current-layout 'qwerty))
 
 (defvar xah-fly--current-layout-kmap nil
-  "The current keyboard layout key map. Value is a alist. e.g. the value of `xah--dvorak-to-qwerty-kmap'.
-Value is automatically set from value of `xah-fly-key-current-layout'. Do not manually set this variable. Version: 2019-02-12."
+  "The current keyboard layout key map. Value is a alist. e.g. the
+value of `xah--dvorak-to-qwerty-kmap'. Value is automatically set from
+value of `xah-fly-key-current-layout'. Do not manually set this
+variable.
+Version: 2019-02-12."
   )
 (setq xah-fly--current-layout-kmap
       (symbol-value
@@ -3598,8 +3602,9 @@ Value is automatically set from value of `xah-fly-key-current-layout'. Do not ma
                 "-kmap"))))
 
 (defun xah-fly--key-char (Charstr)
-  "Return the corresponding char Charstr according to `xah-fly--current-layout-kmap'.
-Charstr must be a string of single char. If more than 1 char, return it unchanged.
+  "Return the corresponding char Charstr according to
+`xah-fly--current-layout-kmap'. Charstr must be a string of single
+char. If more than 1 char, return it unchanged.
 Version: 2020-04-18"
   (interactive)
   (if (> (length Charstr) 1)
@@ -3631,12 +3636,13 @@ Version: 2020-04-18"
                ,(list 'quote (cdr $pair))))
           (cadr KeyCmdAlist)))))
 
-;; ssss---------------------------------------------------
+
 ;; keymaps
 
 (defvar xah-fly-key-map (make-sparse-keymap)
-  "Backward-compatibility map for `xah-fly-keys' minor mode.
-If `xah-fly-insert-state-p' is true, point to `xah-fly-insert-map', else, point to points to `xah-fly-command-map'.")
+  "Backward-compatibility map for `xah-fly-keys' minor mode. If
+`xah-fly-insert-state-p' is true, point to `xah-fly-insert-map', else,
+point to points to `xah-fly-command-map'.")
 
 (make-obsolete-variable
  'xah-fly-key-map
@@ -3683,7 +3689,7 @@ minor modes loaded later may override bindings in this map.")
 
 (defvar xah-fly--deactivate-command-mode-func nil)
 
-;; ssss---------------------------------------------------
+
 ;; setting keys
 
 (xah-fly--define-keys
@@ -3747,11 +3753,12 @@ minor modes loaded later may override bindings in this map.")
    ("y" . set-mark-command)
    ("z" . xah-goto-matching-bracket)))
 
-;; ssss---------------------------------------------------
+
 ;; set control meta, etc keys
 
 (defcustom xah-fly-unset-useless-key t
-  "If true, unbind many obsolete or useless or redundant keybinding. e.g. <help>, <f1>."
+  "If true, unbind many obsolete or useless or redundant
+  keybinding. e.g. <help>, <f1>."
   :type 'boolean
   :group 'xah-fly-keys)
 
@@ -3910,7 +3917,7 @@ minor modes loaded later may override bindings in this map.")
      ("<right>" . isearch-forward-exit-minibuffer))
    :direct))
 
-;; ssss---------------------------------------------------
+
 
 ;; 2022-04-03 There's a new notation for key, based on finger.
 ;; For example the qwerty e key is Lp2p1.
@@ -3966,7 +3973,7 @@ minor modes loaded later may override bindings in this map.")
    ("0" . expand-jump-to-next-slot)
    ("=" . expand-jump-to-previous-slot)))
 
-;; ssss---------------------------------------------------
+
 
 (xah-fly--define-keys
  (define-prefix-command 'xah-fly-Rp2p1-key-map)
@@ -4260,7 +4267,7 @@ minor modes loaded later may override bindings in this map.")
    ;;
    ))
 
-;; ssss---------------------------------------------------
+
 ;; Movement key integrations with built-in Emacs packages
 
 (xah-fly--define-keys
@@ -4268,7 +4275,7 @@ minor modes loaded later may override bindings in this map.")
  '(("h" . indent-rigidly-left)
    ("n" . indent-rigidly-right)))
 
-;; ssss---------------------------------------------------
+
 ;;;; misc
 
 ;; the following have keys in gnu emacs, but i decided not to give them a key, because either they are rarely used (say, 95% of emacs users usel them less than once a month ), or there is a more efficient command/workflow with key in xah-fly-keys
@@ -4303,7 +4310,7 @@ minor modes loaded later may override bindings in this map.")
 ;; C-x l   →   count-lines-page
 ;; C-x m   →   compose-mail
 
-;; ssss---------------------------------------------------
+
 ;; undecided yet
 
 ;; C-x e   →   kmacro-end-and-call-macro
@@ -4348,7 +4355,7 @@ minor modes loaded later may override bindings in this map.")
 ;; C-x C-k n   →   kmacro-name-last-macro
 ;; C-x C-k q   →   kbd-macro-query
 
-;; ssss---------------------------------------------------
+
 
 ;; C-x 4 C-f   →   find-file-other-window
 ;; C-x 4 C-o   →   display-buffer
@@ -4402,7 +4409,7 @@ minor modes loaded later may override bindings in this map.")
 ;;    ("v" . vc-next-action)
 ;;    ("~" . vc-revision-other-window)))
 
-;; ssss---------------------------------------------------
+
 
 (defvar xah-fly-insert-state-p t "non-nil means insertion mode is on.")
 
@@ -4536,12 +4543,14 @@ Version: 2017-07-07"
   (xah-fly-insert-mode-activate)
   (left-char))
 
-;; ssss---------------------------------------------------
+
 
+;;;###autoload
 (define-minor-mode xah-fly-keys
-  "A modal keybinding set, like vim, but based on ergonomic principles, like Dvorak layout.
+  "A modal keybinding set, like vim, but based on ergonomic
+  principles, like Dvorak layout.
 
-URL `http://xahlee.info/emacs/misc/ergoemacs_vi_mode.html'"
+URL`http://xahlee.info/emacs/misc/ergoemacs_vi_mode.html'"
   :group 'xah-fly-keys
   :global t
   :lighter " ∑flykeys"
