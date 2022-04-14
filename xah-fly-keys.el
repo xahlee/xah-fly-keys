@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2022 by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 17.4.20220413170540
+;; Version: 17.4.20220414142333
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -24,59 +24,54 @@
 
 ;; xah-fly-command-mode-activate (press <home> or F8 or Alt+Space or Ctrl+Space or menu key)
 
-;; xah-fly-insert-mode-activate (when in command mode, press qwerty letter key f. (Dvorak key u))
+;; xah-fly-insert-mode-activate (when in command mode, press qwerty letter key f.)
 
 ;; When in command mode:
-;; f → xah-fly-insert-mode-activate.
-;; Space is a leader key. For example, 【SPACE r】 → query-replace. Press 【SPACE C-h】 to see the full list.
-;; 【Space Space】 also activates insertion mode.
-;; 【Space Enter】 calls execute-extended-command-for-buffer (if emacs 28), else execute-extended-command.
-;; 【a】 calls execute-extended-command.
+;; "f" calls `xah-fly-insert-mode-activate'.
+;; Space is a leader key. For example, "SPC r" calls `query-replace'. Press "SPC C-h" to see the full list.
+;; "SPC SPC" also activates insertion mode.
+;; "SPC RET" calls `execute-extended-command-for-buffer' (if emacs 28), else `execute-extended-command'.
+;; "a" calls `execute-extended-command'.
 
 ;; The leader key sequence basically replace ALL emacs commands that starts with C-x key.
 
 ;; When using xah-fly-keys, you don't need to press Control or Meta, with the following exceptions:
 
-;; C-c for major mode commands.
-;; C-g for cancel.
-;; C-q for quoted-insert.
-;; C-h for getting a list of keys following a prefix/leader key.
+;; "C-c" for major mode commands.
+;; "C-g" for cancel.
+;; "C-q" for quoted-insert.
+;; "C-h" for getting a list of keys following a prefix/leader key.
 
 ;; Leader key
 
-;; You NEVER need to press Ctrl+x
+;; You NEVER need to press "C-x"
 
 ;; Any emacs command that has a keybinding starting with C-x, has also a key sequence binding in xah-fly-keys. For example,
-;; 【C-x b】 switch-to-buffer is 【SPACE f】
-;; 【C-x C-f】 find-file is 【SPACE i e】
-;; 【C-x n n】 narrow-to-region is 【SPACE l l】
-;; The first key we call it leader key. In the above examples, the SPACE is the leader key.
+;; "C-x b" for `switch-to-buffer' is "SPC f"
+;; "C-x C-f" for `find-file' is "SPC i e"
+;; "C-x n n" for `narrow-to-region' is "SPC l l"
+;; The first key we call it leader key. In the above examples, the SPC is the leader key.
 
-;; When in command mode, the 【SPACE】 is a leader key.
+;; When in command mode, the "SPC" is a leader key.
 
 ;; the following standard keys with Control are supported:
 
- ;; 【Ctrl+tab】 'xah-next-user-buffer
- ;; 【Ctrl+shift+tab】 'xah-previous-user-buffer
- ;; 【Ctrl+v】 paste
- ;; 【Ctrl+w】 close
- ;; 【Ctrl+z】 undo
- ;; 【Ctrl+n】 new
- ;; 【Ctrl+o】 open
- ;; 【Ctrl+s】 save
- ;; 【Ctrl+shift+s】 save as
- ;; 【Ctrl+shift+t】 open last closed
- ;; 【Ctrl++】 'text-scale-increase
- ;; 【Ctrl+-】 'text-scale-decrease
+ ;; "C-TAB" `xah-next-user-buffer'
+ ;; "C-S-TAB" `xah-previous-user-buffer'
+ ;; "C-v" paste
+ ;; "C-w" close
+ ;; "C-z" undo
+ ;; "C-n" new
+ ;; "C-o" open
+ ;; "C-s" save
+ ;; "C-S-s" save as
+ ;; "C-S-t" open last closed
+ ;; "C-+" `text-scale-increase'
+ ;; "C--" `text-scale-decrease'
 
 ;; To disable both Control and Meta shortcut keys, add the following lines to you init.el before (require 'xah-fly-keys):
 ;; (setq xah-fly-use-control-key nil)
 ;; (setq xah-fly-use-meta-key nil)
-
-;; I highly recommend setting 【capslock】 to send 【Home】. So that it acts as `xah-fly-command-mode-activate'.
-;; see
-;; How to Make the CapsLock Key do Home Key
-;; http://xahlee.info/emacs/misc/capslock_do_home_key.html
 
 ;; If you have a bug, post on github.
 
@@ -129,8 +124,6 @@
 
 (require 'dired) ; in emacs
 (require 'dired-x) ; in emacs
-
-(setq byte-compile-docstring-max-column 999)
 
 
 
@@ -4584,5 +4577,9 @@ URL`http://xahlee.info/emacs/misc/ergoemacs_vi_mode.html'"
       )))
 
 (provide 'xah-fly-keys)
+
+;; Local Variables:
+;; byte-compile-docstring-max-column: 999
+;; End:
 
 ;;; xah-fly-keys.el ends here
