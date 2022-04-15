@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2022 by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 17.4.20220414142333
+;; Version: 17.5.20220415142016
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -3970,52 +3970,110 @@ minor modes loaded later may override bindings in this map.")
 
 (xah-fly--define-keys
  (define-prefix-command 'xah-fly-Rp2p1-key-map)
+ ;; dvorak c
  '(
+   ;;
+
+   ("'" . nil)
+   ("," . nil)
+   ("." . nil)
+
+   ("1" . nil)
+   ("2" . nil)
+   ("3" . nil)
+   ("4" . nil)
+   ("5" . nil)
+   ("6" . nil)
+   ("7" . nil)
+   ("8" . nil)
+   ("9" . nil)
+   ("0" . nil)
+
    ("," . xah-open-in-external-app)
    ("." . find-file)
+   ("a" . nil)
+   ("b" . nil)
    ("c" . bookmark-bmenu-list)
+   ("d" . nil)
    ("e" . ibuffer)
    ("f" . xah-open-recently-closed)
    ("g" . xah-open-in-terminal)
    ("h" . recentf-open-files)
    ("i" . xah-copy-file-path)
+   ("j" . nil)
+   ("k" . nil)
    ("l" . bookmark-set)
+   ("m" . nil)
    ("n" . xah-new-empty-buffer)
    ("o" . xah-show-in-desktop)
    ("p" . xah-open-last-closed)
+   ("q" . nil)
    ("r" . xah-open-file-fast)
    ("s" . write-file)
+   ("t" . nil)
    ("u" . xah-open-file-at-cursor)
+   ("v" . nil)
+   ("w" . nil)
+   ("x" . nil)
    ("y" . xah-list-recently-closed)
+   ("z" . nil)
+
+   ;;
    ))
 
 (xah-fly--define-keys
  (define-prefix-command 'xah-fly-Lp2p0-key-map)
+ ;; dvorak e
  '(
-   ("RET" . insert-char)
-   ("SPC" . xah-insert-unicode)
+   ;;
+   ("'" . nil)
+   ("," . nil)
+   ("." . nil)
 
-   ("W" . xah-insert-double-angle-bracket)
+   ("1" . nil)
+   ("2" . nil)
+   ("3" . nil)
+   ("4" . nil)
+   ("5" . nil)
+   ("6" . nil)
+   ("7" . nil)
+   ("8" . nil)
+   ("9" . nil)
+   ("0" . nil)
+
+   ("a" . xah-insert-double-angle-bracket)
    ("b" . xah-insert-black-lenticular-bracket)
    ("c" . xah-insert-ascii-single-quote)
    ("d" . xah-insert-double-curly-quote)
+   ("e" . xah-insert-unicode)
    ("f" . xah-insert-emacs-quote)
    ("g" . xah-insert-ascii-double-quote)
    ("h" . xah-insert-brace)
    ("i" . xah-insert-curly-single-quote)
+   ("j" . insert-char)
+   ("k" . nil)
    ("l" . xah-insert-formfeed)
    ("m" . xah-insert-corner-bracket)
    ("n" . xah-insert-square-bracket)
+   ("o" . nil)
    ("p" . xah-insert-single-angle-quote)
-   ("r" . xah-insert-tortoise-shell-bracket )
+   ("q" . nil)
+   ("r" . xah-insert-tortoise-shell-bracket)
    ("s" . xah-insert-string-assignment)
    ("t" . xah-insert-paren)
    ("u" . xah-insert-date)
+   ("v" . nil)
    ("w" . xah-insert-angle-bracket)
-   ("y" . xah-insert-double-angle-quote)))
+   ("x" . nil)
+   ("y" . xah-insert-double-angle-quote)
+   ("z" . nil)
+
+   ;;
+   ))
 
 (xah-fly--define-keys
  (define-prefix-command 'xah-fly-Rp1p0-key-map)
+ ;; dvorak h
  '(
    ;; ',.
    ;; ;
@@ -4047,12 +4105,15 @@ minor modes loaded later may override bindings in this map.")
 (xah-fly--define-keys
  ;; commands here are “harmless”, they don't modify text etc. they turn on modes, change display, prompt, start shell, etc.
  (define-prefix-command 'xah-fly-Rp3p0-key-map)
+ ;; dvorak n
  '(
+   ;;
    ("SPC" . whitespace-mode)
    ("," . abbrev-mode)
    ("." . toggle-frame-fullscreen)
    ;; ("'" . )
    ;; (";" . )
+
    ("1" . set-input-method)
    ("2" . global-hl-line-mode)
    ("4" . global-display-line-numbers-mode)
@@ -4062,6 +4123,7 @@ minor modes loaded later may override bindings in this map.")
    ;; 8
    ("9" . shell-command)
    ("0" . shell-command-on-region)
+
    ("a" . text-scale-adjust)
    ("b" . toggle-debug-on-error)
    ("c" . toggle-case-fold-search)
@@ -4079,7 +4141,6 @@ minor modes loaded later may override bindings in this map.")
    ("o" . variable-pitch-mode)
    ("p" . read-only-mode)
    ;; q
-   ;; 2021-08-10 xah-fly-keys, maybe add these
    ("r" . count-words)
    ("s" . count-matches)
    ("t" . narrow-to-defun)
@@ -4093,87 +4154,116 @@ minor modes loaded later may override bindings in this map.")
 (xah-fly--define-keys
  ;; kinda replacement related
  (define-prefix-command 'xah-fly-Rp3p1-key-map)
- '(("SPC" . rectangle-mark-mode)
+ ;; dvorak r
+ '(
+   ;;
+
+   ("SPC" . rectangle-mark-mode)
+   ("'" . nil)
    ("," . apply-macro-to-region-lines)
    ("." . kmacro-start-macro)
+
+   ("0" . nil)
+   ("1" . nil)
+   ("2" . nil)
    ("3" . number-to-register)
    ("4" . increment-register)
-   ;; a b
+   ("5" . nil)
+   ("6" . nil)
+   ("7" . nil)
+   ("8" . nil)
+   ("9" . nil)
+
+   ("a" . nil)
+   ("b" . nil)
    ("c" . replace-rectangle)
    ("d" . delete-rectangle)
    ("e" . call-last-kbd-macro)
-   ;; f
+   ("f" . nil)
    ("g" . kill-rectangle)
    ("h" . xah-change-bracket-pairs)
    ("i" . xah-space-to-newline)
    ("j" . xah-slash-to-backslash)
    ("k" . xah-slash-to-double-backslash)
    ("l" . clear-rectangle)
-   ;; m
+   ("m" . nil)
    ("n" . rectangle-number-lines)
    ("o" . open-rectangle)
    ("p" . kmacro-end-macro)
-   ;; q
+   ("q" . nil)
    ("r" . yank-rectangle)
-   ;; s t
+   ("s" . nil)
+   ("t" . nil)
    ("u" . xah-quote-lines)
-   ;; v w
+   ("v" . nil)
+   ("w" . nil)
    ("x" . xah-double-backslash-to-slash)
    ("y" . delete-whitespace-rectangle)
-   ;; z
+   ("z" . nil)
+   ;;
    ))
 
 (xah-fly--define-keys
  (define-prefix-command 'xah-fly-Rp2p0-key-map)
- '(("SPC" . xah-clean-whitespace)
-   ("TAB" . move-to-column)
+ ;; dvorak t
+ '(
+   ;;
 
    ("<up>"  . xah-move-block-up)
    ("<down>"  . xah-move-block-down)
 
+   ("'" . reverse-region)
+   ("," . sort-numeric-fields)
+   ("." . xah-sort-lines)
+
+   ("0" . nil)
    ("1" . xah-append-to-register-1)
    ("2" . xah-clear-register-1)
-
    ("3" . xah-copy-to-register-1)
    ("4" . xah-paste-from-register-1)
-
-   ("8" . xah-clear-register-1)
+   ("5" . nil)
+   ("6" . nil)
    ("7" . xah-append-to-register-1)
+   ("8" . xah-clear-register-1)
+   ("9" . nil)
 
-   ("." . xah-sort-lines)
-   ("," . sort-numeric-fields)
-   ("'" . reverse-region)
-   ;; a
+   ("a" . nil)
    ("b" . xah-reformat-to-sentence-lines)
    ("c" . goto-char)
    ("d" . mark-defun)
    ("e" . list-matching-lines)
    ("f" . goto-line)
-   ;; g
+   ("g" . move-to-column)
    ("h" . repeat-complex-command)
    ("i" . delete-non-matching-lines)
    ("j" . copy-to-register)
    ("k" . insert-register)
    ("l" . xah-escape-quotes)
    ("m" . xah-make-backup-and-save)
-   ;; n
-   ;; o
+   ("n" . nil)
+   ("o" . xah-clean-whitespace)
    ("p" . query-replace-regexp)
-   ;; q
+   ("q" . nil)
    ("r" . copy-rectangle-to-register)
-   ;; s
+   ("s" . nil)
    ("t" . repeat)
    ("u" . delete-matching-lines)
-   ;; v
+   ("v" . nil)
    ("w" . xah-next-window-or-frame)
-   ;; x
+   ("x" . nil)
    ("y" . delete-duplicate-lines)
-   ;; z
+   ("y" . nil)
+   ("z" . nil)
+
+   ;;
+
    ))
 
 (xah-fly--define-keys
  (define-prefix-command 'xah-fly-Rp2n1-key-map)
+ ;; dvorak w
  '(
+   ;;
    ("d" . xah-delete-current-file-make-backup)
    ("." . eval-buffer)
    ("e" . eval-defun)
@@ -4213,6 +4303,7 @@ minor modes loaded later may override bindings in this map.")
  '(("SPC" . xah-fly-insert-mode-activate)
    ("RET" . execute-extended-command-for-buffer)
    ("TAB" . xah-fly--tab-key-map)
+
    ("." . xah-fly-Lp2p1-key-map)
    ("'" . xah-fill-or-unfill)
    ("," . xah-fly-Lp3p1-key-map)
@@ -4220,16 +4311,16 @@ minor modes loaded later may override bindings in this map.")
    ("\\" . toggle-input-method)
    ;; `
 
-   ;; 1
-   ;; 2
+   ("0" . nil)
+   ("1" . nil)
+   ("2" . nil)
    ("3" . delete-window)
    ("4" . split-window-right)
    ("5" . balance-windows)
    ("6" . xah-upcase-sentence)
-   ;; 7
-   ;; 8
+   ("7" . nil)
+   ("8" . nil)
    ("9" . ispell-word)
-   ;; 0
 
    ("a" . mark-whole-buffer)
    ("b" . end-of-buffer)
@@ -4241,7 +4332,7 @@ minor modes loaded later may override bindings in this map.")
    ("h" . xah-fly-Rp1p0-key-map)
    ("i" . kill-line)
    ("j" . xah-copy-all-or-region)
-   ;; k
+   ("k" . nil)
    ("l" . recenter-top-bottom)
    ("m" . dired-jump)
    ("n" . xah-fly-Rp3p0-key-map)
@@ -4252,11 +4343,12 @@ minor modes loaded later may override bindings in this map.")
    ("s" . save-buffer)
    ("t" . xah-fly-Rp2p0-key-map)
    ("u" . switch-to-buffer)
-   ;; v
+   ("v" . nil)
    ("w" . xah-fly-Rp2n1-key-map)
    ("x" . xah-toggle-previous-letter-case)
    ("y" . xah-show-kill-ring)
-   ;; z
+   ("z" . nil)
+
    ;;
    ))
 
