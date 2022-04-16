@@ -13,43 +13,48 @@ http://ergoemacs.org/misc/ergoemacs_vi_mode.html
 
 Major key engine rewrite by Dan Langlois (https://github.com/DanLanglois) and Will Dey (https://github.com/wi11dey) .
 
-The old stable version is available at
-http://ergoemacs.org/misc/i/xah-fly-keys_old_2020-04-18.el
-
 QWERTY layout
 -------------------
 ![xah-fly-keys qwerty layout](xah_fly_keys_qwerty_layout_2020-04-18_4fgyk.png)
 
-Documentation
+Manual Install
 -------------------
 
-Add the following to `.emacs` after installing manually or via MELPA:
+put the file xah-fly-keys.el in ~/.emacs.d/lisp/
+create the dir if doesn't exist.
+
+put the following in your emacs init file:
+
 ```elisp
+(add-to-list 'load-path "~/.emacs.d/lisp/")
 (require 'xah-fly-keys)
 (xah-fly-keys-set-layout "qwerty") ; required
 ```
 
 The following keyboard layouts are supported:
 
-* "azerty"
-* "azerty-be"
-* "colemak"
-* "colemak-mod-dh"
-* "colemak-mod-dh-new"
-* "dvorak"
-* "programer-dvorak"
-* "qwerty"
-* "qwerty-abnt"
-* "qwertz"
-* "workman"
-* "norman"
-* ["neo2"](https://neo-layout.org/)
-* "koy"
-* "adnw"
-* "pt-nativo"
-* "carpalx-qgmlwy"
-* "carpalx-qgmlwb"
-* "carpalx-qfmlwy"
+* adnw
+* azerty
+* azerty-be
+* beopy
+* bepo
+* carpalx-qfmlwy
+* carpalx-qgmlwb
+* carpalx-qgmlwy
+* colemak
+* colemak-mod-dh
+* colemak-mod-dh-new
+* dvorak
+* koy
+* neo2
+* norman
+* programer-dvorak
+* pt-nativo
+* qwerty
+* qwerty-abnt
+* qwerty-no (qwerty Norwegian)
+* qwertz
+* workman
 
 Full Documentation
 -------------------
