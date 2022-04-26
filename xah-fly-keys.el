@@ -3,11 +3,12 @@
 ;; Copyright © 2013-2022 by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 17.5.20220416101054
+;; Maintainer: Xah Lee <xah@xahlee.org>
+;; Version: 17.6.20220426002628
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
-;; License: GPL v3. Tell your friends to buy a copy.
+;; License: GPL v3.
 ;; Homepage: http://xahlee.info/emacs/misc/ergoemacs_vi_mode.html
 
 ;; This file is not part of GNU Emacs.
@@ -2642,7 +2643,7 @@ Version: 2015-04-09"
 This command can be called when in a file buffer or in `dired'.
 
 URL `http://xahlee.info/emacs/emacs/emacs_dired_open_file_in_ext_apps.html'
-Version: 2020-11-20 2021-01-31 2021-11-12 2021-11-22"
+Version: 2020-11-20 2022-04-20"
   (interactive)
   (let (($path (if (eq major-mode 'dired-mode)
                    (if (eq nil (dired-get-marked-files))
@@ -2651,12 +2652,13 @@ Version: 2020-11-20 2021-01-31 2021-11-12 2021-11-22"
                  (if (buffer-file-name) (buffer-file-name) default-directory))))
     (cond
      ((string-equal system-type "windows-nt")
-      ;; (shell-command (format "PowerShell -Command invoke-item '%s'" (expand-file-name default-directory )))
-      (let (($cmd (format "Explorer /select,%s"
-                          (replace-regexp-in-string "/" "\\" $path t t)
-                          ;; (shell-quote-argument (replace-regexp-in-string "/" "\\" $path t t ))
-                          )))
-        (shell-command $cmd)))
+      (shell-command (format "PowerShell -Command invoke-item '%s'" (expand-file-name default-directory )))
+      ;; (let (($cmd (format "Explorer /select,%s"
+      ;;                     (replace-regexp-in-string "/" "\\" $path t t)
+      ;;                     ;; (shell-quote-argument (replace-regexp-in-string "/" "\\" $path t t ))
+      ;;                     )))
+      ;;   (shell-command $cmd))
+      )
      ((string-equal system-type "darwin")
       (shell-command
        (concat "open -R " (shell-quote-argument $path))))
@@ -4384,7 +4386,7 @@ minor modes loaded later may override bindings in this map.")
 
 ;;;; misc
 
-;; the following have keys in gnu emacs, but i decided not to give them a key, because either they are rarely used (say, 95% of emacs users usel them less than once a month ), or there is a more efficient command/workflow with key in xah-fly-keys
+;; the following have keys in gnu emacs, but i decided not to give them a key, because either they are rarely used (say, 95% of emacs users use them less than once a month ), or there is a more efficient command/workflow with key in xah-fly-keys
 
 ;; C-x r w → window-configuration-to-register
 ;; C-x r f → frameset-to-register
