@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 17.8.20220516181442
+;; Version: 17.8.20220516182155
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2302,7 +2302,7 @@ Version: 2019-02-26 2022-04-07"
   (let (($xBookmark (completing-read "Open bookmark:" (mapcar (lambda ($x) (car $x)) bookmark-alist))))
     (find-file (bookmark-get-filename $xBookmark))))
 
-(if (version< emacs-version "28.1")
+(if (<= emacs-major-version 28)
     nil
   (defalias 'xah-open-file-fast 'bookmark-jump))
 
@@ -4325,7 +4325,7 @@ minor modes loaded later may override bindings in this map.")
    ("t" . xref-find-definitions)
    ("n" . xref-pop-marker-stack)))
 
-(when (version< emacs-version "28.1")
+(when (<= emacs-major-version 28)
   (defalias 'execute-extended-command-for-buffer 'execute-extended-command))
 
 (xah-fly--define-keys
