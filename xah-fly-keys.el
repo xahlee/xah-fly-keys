@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 17.8.20220516180308
+;; Version: 17.8.20220516181442
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1503,7 +1503,7 @@ Version: 2017-01-11"
 If not in `dired', do nothing.
 
 URL `http://xahlee.info/emacs/emacs/elisp_dired_rename_space_to_underscore.html'
-Version: 2016-10-04 2020-03-03"
+Version: 2016-10-04 2020-03-03 2022-05-16"
   (interactive)
   (require 'dired-aux)
   (if (eq major-mode 'dired-mode)
@@ -1515,14 +1515,14 @@ Version: 2016-10-04 2020-03-03"
         ;; (dired-next-line 1)
         (revert-buffer)
         )
-    (user-error "Not in dired")))
+    (user-error "%s: Not in dired" real-this-command)))
 
 (defun xah-dired-rename-space-to-hyphen ()
   "In dired, rename current or marked files by replacing space to hyphen -.
 If not in `dired', do nothing.
 
 URL `http://xahlee.info/emacs/emacs/elisp_dired_rename_space_to_underscore.html'
-Version: 2016-10-04 2019-11-24"
+Version: 2016-10-04 2019-11-24 2022-05-16"
   (interactive)
   (require 'dired-aux)
   (if (eq major-mode 'dired-mode)
@@ -1532,7 +1532,7 @@ Version: 2016-10-04 2019-11-24"
                   (dired-rename-file x (replace-regexp-in-string " " "-" x) nil)))
               (dired-get-marked-files ))
         (revert-buffer))
-    (user-error "Not in dired")))
+    (user-error "%s: Not in dired" real-this-command)))
 
 (defun xah-cycle-hyphen-lowline-space (&optional Begin End)
   "Cycle hyphen/lowline/space chars in selection or inside quote/bracket or line, in that order.
@@ -2010,7 +2010,7 @@ when there is no selection,
 when there is a selection, the selection extension behavior is still experimental. But when cursor is on a any type of bracket (parenthesis, quote), it extends selection to outer bracket.
 
 URL `http://xahlee.info/emacs/emacs/modernization_mark-word.html'
-Version: 2020-02-04"
+Version: 2020-02-04 2022-05-16"
   (interactive)
   (if (region-active-p)
       (progn
@@ -2054,7 +2054,7 @@ Version: 2020-02-04"
                         ;; (message "multiple lines but end is not eol. make it so" )
                         (goto-char $re)
                         (end-of-line)))))
-                 (t (error "logic error 42946" ))))))
+                 (t (error "%s: logic error 42946" real-this-command ))))))
            ((and (> (point) (line-beginning-position)) (<= (point) (line-end-position)))
             (progn
               ;; (message "less than 1 line" )
@@ -2460,7 +2460,7 @@ File suffix is used to determine which program to run, set in the variable `xah-
 If the file is modified or not saved, save it automatically before run.
 
 URL `http://xahlee.info/emacs/emacs/elisp_run_current_file.html'
-Version: 2020-09-24 2021-01-21 2021-10-27 2022-02-12"
+Version: 2020-09-24 2021-01-21 2021-10-27 2022-02-12 2022-05-16"
   (interactive)
   (setenv "NO_COLOR" "1")
   (let (($outBuffer "*xah-run output*")
@@ -2488,7 +2488,7 @@ Version: 2020-09-24 2021-01-21 2021-10-27 2022-02-12"
             (progn
               (message "Running")
               (shell-command $cmdStr $outBuffer))
-          (error "Unknown file extension: %s" $fExt))))
+          (error "%s: Unknown file extension: %s" real-this-command $fExt))))
      ((string-equal $fExt "java")
       (progn
         (shell-command (format "javac %s" $fname) $outBuffer)
@@ -2498,7 +2498,7 @@ Version: 2020-09-24 2021-01-21 2021-10-27 2022-02-12"
             (progn
               (message "Running 「%s」" $cmdStr)
               (shell-command $cmdStr $outBuffer))
-          (error "Unknown file extension: %s" $fExt))))
+          (error "%s: Unknown file extension: %s" real-this-command $fExt))))
     (run-hooks 'xah-run-current-file-after-hook))
   (setenv "NO_COLOR"))
 
@@ -2570,7 +2570,7 @@ Version: 2018-06-06 2020-12-18"
                       (copy-file $x $backupName t)))
                   (dired-get-marked-files))
             (revert-buffer))
-        (user-error "buffer not file nor dired")))))
+        (user-error "%s: buffer not file nor dired" real-this-command)))))
 
 (defun xah-make-backup-and-save ()
   "Backup of current file and save, or backup dired marked files.
