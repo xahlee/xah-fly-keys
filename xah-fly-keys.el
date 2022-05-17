@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 17.7.20220429090059
+;; Version: 17.8.20220516180308
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -894,38 +894,39 @@ Version: 2015-12-22"
   "Upcase first letters of sentences of current block or selection.
 
 URL `http://xahlee.info/emacs/emacs/emacs_upcase_sentence.html'
-Version: 2020-12-08 2020-12-24 2021-08-13"
+Version: 2020-12-08 2020-12-24 2021-08-13 2022-05-16"
   (interactive)
   (let ($p1 $p2)
     (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
-    (save-excursion
-      (save-restriction
-        (narrow-to-region $p1 $p2)
-        (let ((case-fold-search nil))
-          ;; after period or question mark or exclamation
+    (save-restriction
+      (narrow-to-region $p1 $p2)
+      (let ((case-fold-search nil))
+        ;; after period or question mark or exclamation
+        (goto-char (point-min))
+        (while (re-search-forward "\\(\\.\\|\\?\\|!\\)[ \n]+ *\\([a-z]\\)" nil 1)
+          (upcase-region (match-beginning 2) (match-end 2))
+          (overlay-put (make-overlay (match-beginning 2) (match-end 2)) 'face 'highlight))
+        ;; after a blank line, after a bullet, or beginning of buffer
+        (goto-char (point-min))
+        (while (re-search-forward "\\(\\`\\|• \\|\n\n\\)\\([a-z]\\)" nil 1)
+          (upcase-region (match-beginning 2) (match-end 2))
+          (overlay-put (make-overlay (match-beginning 2) (match-end 2)) 'face 'highlight))
+        ;; for HTML. first letter after tag
+        (when
+            (or
+             (eq major-mode 'xah-html-mode)
+             (eq major-mode 'html-mode)
+             (eq major-mode 'sgml-mode)
+             (eq major-mode 'nxml-mode)
+             (eq major-mode 'xml-mode)
+             (eq major-mode 'mhtml-mode))
           (goto-char (point-min))
-          (while (re-search-forward "\\(\\.\\|\\?\\|!\\)[ \n]+ *\\([a-z]\\)" nil 1)
+          (while
+              (re-search-forward "\\(<h[1-6]>[ \n]?\\|<p>[ \n]?\\|<li>[ \n]?\\|<dd>[ \n]?\\|<td>[ \n]?\\|<br ?/?>[ \n]?\\|<figcaption>[ \n]?\\)\\([a-z]\\)" nil 1)
             (upcase-region (match-beginning 2) (match-end 2))
-            (overlay-put (make-overlay (match-beginning 2) (match-end 2)) 'face 'highlight))
-          ;; after a blank line, after a bullet, or beginning of buffer
-          (goto-char (point-min))
-          (while (re-search-forward "\\(\\`\\|• \\|\n\n\\)\\([a-z]\\)" nil 1)
-            (upcase-region (match-beginning 2) (match-end 2))
-            (overlay-put (make-overlay (match-beginning 2) (match-end 2)) 'face 'highlight))
-          ;; for HTML. first letter after tag
-          (when
-              (or
-               (eq major-mode 'xah-html-mode)
-               (eq major-mode 'html-mode)
-               (eq major-mode 'sgml-mode)
-               (eq major-mode 'nxml-mode)
-               (eq major-mode 'xml-mode)
-               (eq major-mode 'mhtml-mode))
-            (goto-char (point-min))
-            (while
-                (re-search-forward "\\(<h[1-6]>[ \n]?\\|<p>[ \n]?\\|<li>[ \n]?\\|<dd>[ \n]?\\|<td>[ \n]?\\|<br ?/?>[ \n]?\\|<figcaption>[ \n]?\\)\\([a-z]\\)" nil 1)
-              (upcase-region (match-beginning 2) (match-end 2))
-              (overlay-put (make-overlay (match-beginning 2) (match-end 2)) 'face 'highlight))))))))
+            (overlay-put (make-overlay (match-beginning 2) (match-end 2)) 'face 'highlight))))
+      (goto-char (point-max)))
+    (skip-chars-forward " \n\t")))
 
 (defun xah-title-case-region-or-line (&optional Begin End)
   "Title case text between nearest brackets, or current line or selection.
@@ -1194,21 +1195,21 @@ Version: 2018-12-16 2021-07-06 2021-08-12"
             (replace-match "\n" )))))))
 
 (defun xah-reformat-lines (&optional Width)
-  "Reformat current block or selection into 1 long line or short lines.
-When called for the first time, change to one long line. Second call change it to short lines. Repeated call toggles.
+  "Reformat current block or selection into short lines or 1 long line.
+When called for the first time, change to short lines. Second call change it to one long line. Repeated call toggles.
 If `universal-argument' is called first, ask user to type max length of line. By default, it is 70.
 
-Note: this command is different from emacs `fill-region' and related commands.
-This command, never adds or delete chars. It only exchange whitespaces.
+Note: this command is different from emacs `fill-region' or `fill-paragraph'.
+This command never adds or delete non-whitespace chars. It only exchange whitespace sequence.
 
 URL `http://xahlee.info/emacs/emacs/emacs_reformat_lines.html'
 Created 2016 or before.
-Version: 2021-07-05 2021-08-13 2022-03-12 2022-04-05"
+Version: 2021-07-05 2021-08-13 2022-03-12 2022-05-16"
   (interactive)
-  ;; This command symbol has a property 'is-long-p, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
+  ;; This symbol has a property 'is-long-p, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
   (let ($isLong $width $p1 $p2)
-    (setq $width (if Width Width (if current-prefix-arg (prefix-numeric-value current-prefix-arg) 70)))
-    (setq $isLong (if (eq last-command this-command) (get this-command 'is-long-p) nil))
+    (setq $width (if Width Width (if current-prefix-arg (prefix-numeric-value current-prefix-arg) 66)))
+    (setq $isLong (if (eq last-command this-command) (get this-command 'is-long-p) t))
     (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
     (if current-prefix-arg
         (xah-reformat-to-multi-lines $p1 $p2 $width)
@@ -2205,7 +2206,7 @@ Version: 2017-11-01 2022-04-05"
     $buf
     ))
 
-(defvar xah-recently-closed-buffers nil "a Alist of recently closed buffers. Each element is (buffer name, file path). The max number to track is controlled by the variable `xah-recently-closed-buffers-max'.")
+(defvar xah-recently-closed-buffers nil "a Alist of recently closed buffers. Each element is (bufferName . filePath). The max number to track is controlled by the variable `xah-recently-closed-buffers-max'.")
 
 (defcustom xah-recently-closed-buffers-max 40 "The maximum length for `xah-recently-closed-buffers'."
   :type 'integer
@@ -2224,7 +2225,7 @@ Similar to `kill-buffer', with the following addition:
 • If the buffer is a file, add the path to the list `xah-recently-closed-buffers'.
 
 URL `http://xahlee.info/emacs/emacs/elisp_close_buffer_open_last_closed.html'
-Version: 2018-06-11 2021-07-01 2022-03-22"
+Version: 2016-06-19 2021-07-01 2022-03-22 2022-05-13"
   (interactive)
   (let (($isOrgMode (string-match "^*Org Src" (buffer-name))))
     (if (active-minibuffer-window) ; if the buffer is minibuffer
