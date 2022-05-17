@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 17.8.20220516182155
+;; Version: 17.9.20220516184525
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2284,28 +2284,6 @@ Version: 2016-06-19"
     (mapc (lambda ($f) (insert (cdr $f) "\n"))
           xah-recently-closed-buffers)))
 
-(declare-function bookmark-maybe-load-default-file "bookmark" ())
-(defvar bookmark-alist)
-(declare-function bookmark-get-filename "bookmark" (bookmark-name-or-record))
-
-(defun xah-open-file-fast ()
-  "Prompt to open a file from bookmark `bookmark-bmenu-list'.
-This command is similar to `bookmark-jump'.
-
-Note: this command is obsolete in emacs 28.1. Use `bookmark-jump' instead and turn on `fido-vertical-mode'. The purpose of `xah-open-file-fast' was using ido interface for flex matching. Now it's no longer needed.
-
-URL `http://xahlee.info/emacs/emacs/emacs_hotkey_open_file_fast.html'
-Version: 2019-02-26 2022-04-07"
-  (interactive)
-  (require 'bookmark)
-  (bookmark-maybe-load-default-file)
-  (let (($xBookmark (completing-read "Open bookmark:" (mapcar (lambda ($x) (car $x)) bookmark-alist))))
-    (find-file (bookmark-get-filename $xBookmark))))
-
-(if (<= emacs-major-version 28)
-    nil
-  (defalias 'xah-open-file-fast 'bookmark-jump))
-
 (defvar xah-open-file-at-cursor-pre-hook nil "Hook for `xah-open-file-at-cursor'. Functions in the hook will be called in order, each given the path as arg. The first return non-nil, its value is given to `xah-open-file-at-cursor' as input. This is useful for transforming certain url into file path (your website url), so instead of opening in browser, it opens in emacs as file.")
 
 (defun xah-open-file-at-cursor ()
@@ -4038,7 +4016,7 @@ minor modes loaded later may override bindings in this map.")
    ("o" . xah-show-in-desktop)
    ("p" . xah-open-last-closed)
    ("q" . nil)
-   ("r" . xah-open-file-fast)
+   ("r" . bookmark-jump)
    ("s" . write-file)
    ("t" . nil)
    ("u" . xah-open-file-at-cursor)
