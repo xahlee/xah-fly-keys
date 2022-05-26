@@ -1131,9 +1131,9 @@ Version: 2020-11-22 2021-08-13"
 This command does the inverse of `fill-paragraph'.
 
 URL `http://xahlee.info/emacs/emacs/emacs_unfill-paragraph.html'
-Version: 2016-07-13"
+Version: 2010-05-12 2022-05-20"
   (interactive)
-  (let ((fill-column most-positive-fixnum))
+  (let ((fill-column 90002000))
     (fill-paragraph)))
 
 (defun xah-unfill-region (Begin End)
@@ -1141,9 +1141,9 @@ Version: 2016-07-13"
 This command does the inverse of `fill-region'.
 
 URL `http://xahlee.info/emacs/emacs/emacs_unfill-paragraph.html'
-Version: 2016-07-13"
+Version: 2010-05-12 2022-05-20"
   (interactive "r")
-  (let ((fill-column most-positive-fixnum))
+  (let ((fill-column 90002000))
     (fill-region Begin End)))
 
 (defun xah-change-newline-chars-to-one (Begin End)
@@ -2127,12 +2127,13 @@ Version: 2020-11-24 2021-07-11 2021-12-21 2022-03-26"
 Typically, if buffer name starts with *, it is not considered a user buffer.
 This function is used by buffer switching command and close buffer command, so that next buffer shown is a user buffer.
 You can override this function to get your idea of “user buffer”.
-Version: 2016-06-18"
+Version: 2022-05-19"
   (interactive)
   (cond
    ((string-equal "*" (substring (buffer-name) 0 1)) nil)
    ((string-equal major-mode "dired-mode") nil)
    ((string-equal major-mode "eww-mode") nil)
+   ((string-equal major-mode "help-mode") nil)
    (t t)))
 
 (defun xah-next-user-buffer ()
