@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 17.12.20220526010619
+;; Version: 17.13.20220526011611
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -4260,7 +4260,6 @@ minor modes loaded later may override bindings in this map.")
    ("w" . xah-next-window-or-frame)
    ("x" . nil)
    ("y" . delete-duplicate-lines)
-   ("y" . nil)
    ("z" . nil)
 
    ;;
