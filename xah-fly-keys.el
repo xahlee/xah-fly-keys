@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 17.11.20220526004759
+;; Version: 17.12.20220526010619
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1197,7 +1197,7 @@ Version: 2018-12-16 2021-07-06 2021-08-12"
 (defun xah-reformat-lines (&optional Width)
   "Reformat current block or selection into short lines or 1 long line.
 When called for the first time, change to short lines. Second call change it to one long line. Repeated call toggles.
-If `universal-argument' is called first, ask user to type max length of line. By default, it is 70.
+If `universal-argument' is called first, ask user to type max length of line. By default, it is 66.
 
 Note: this command is different from emacs `fill-region' or `fill-paragraph'.
 This command never adds or delete non-whitespace chars. It only exchange whitespace sequence.
@@ -2450,7 +2450,6 @@ Version: 2020-09-24 2021-01-21 2021-10-27 2022-02-12 2022-05-16"
     (setq $fname (buffer-file-name))
     (setq $fExt (file-name-extension $fname))
     (setq $progName (gethash $fExt $extHash))
-    (setq $cmdStr (concat $progName " \""   $fname "\""))
     (setq $cmdStr (format "%s \"%s\" &" $progName $fname))
     (when (buffer-modified-p) (save-buffer))
     (run-hooks 'xah-run-current-file-before-hook)
@@ -3552,7 +3551,7 @@ the same.")
 
 (defcustom xah-fly-key-current-layout nil
   "The current keyboard layout. Use `xah-fly-keys-set-layout' to set the layout.
-If the value is nil, it is automatically set to \"dvorak\"."
+If the value is nil, it is automatically set to \"qwerty\"."
   :type '(choice
           (const :tag "AZERTY" azerty)
           (const :tag "Adnw" adnw)
@@ -3621,8 +3620,8 @@ by `xah-fly--key-char'.
 If DirectQ is t, do not remap key to current keyboard layout.
 Example usage:
 ;; (xah-fly--define-keys
-;;  (define-prefix-command 'xah-fly-Lp2p1-key-map)
-;;  '(
+;;  (define-prefix-command \\='xah-fly-Lp2p1-key-map)
+;;  \\='(
 ;;    (\"h\" . highlight-symbol-at-point)
 ;;    (\".\" . isearch-forward-symbol-at-point)
 ;;    (\"1\" . hi-lock-find-patterns)
@@ -3777,7 +3776,7 @@ minor modes loaded later may override bindings in this map.")
 
 (when xah-fly-use-meta-key
   (global-set-key (kbd "M-SPC") 'xah-fly-command-mode-activate)
-  (global-set-key (kbd "M-\"") 'nil) ; delete-horizontal-space
+  (global-set-key (kbd "M-\\") 'nil) ; delete-horizontal-space
   (global-set-key (kbd "M-!") 'nil)  ; shell-command
   (global-set-key (kbd "M-$") 'nil)  ; ispell-word
   (global-set-key (kbd "M-%") 'nil)  ; query-replace
