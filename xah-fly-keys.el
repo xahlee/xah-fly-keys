@@ -1131,9 +1131,9 @@ Version: 2020-11-22 2021-08-13"
 This command does the inverse of `fill-paragraph'.
 
 URL `http://xahlee.info/emacs/emacs/emacs_unfill-paragraph.html'
-Version: 2016-07-13"
+Version: 2010-05-12 2022-05-20"
   (interactive)
-  (let ((fill-column most-positive-fixnum))
+  (let ((fill-column 90002000))
     (fill-paragraph)))
 
 (defun xah-unfill-region (Begin End)
@@ -1141,9 +1141,9 @@ Version: 2016-07-13"
 This command does the inverse of `fill-region'.
 
 URL `http://xahlee.info/emacs/emacs/emacs_unfill-paragraph.html'
-Version: 2016-07-13"
+Version: 2010-05-12 2022-05-20"
   (interactive "r")
-  (let ((fill-column most-positive-fixnum))
+  (let ((fill-column 90002000))
     (fill-region Begin End)))
 
 (defun xah-change-newline-chars-to-one (Begin End)
