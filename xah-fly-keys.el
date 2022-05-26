@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 17.9.20220519094212
+;; Version: 17.11.20220526004759
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2127,7 +2127,7 @@ Version: 2020-11-24 2021-07-11 2021-12-21 2022-03-26"
 Typically, if buffer name starts with *, it is not considered a user buffer.
 This function is used by buffer switching command and close buffer command, so that next buffer shown is a user buffer.
 You can override this function to get your idea of “user buffer”.
-Version: 2022-05-19"
+Version: 2016-06-18 2022-05-19"
   (interactive)
   (cond
    ((string-equal "*" (substring (buffer-name) 0 1)) nil)
