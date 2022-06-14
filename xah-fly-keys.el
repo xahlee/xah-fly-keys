@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 17.13.20220526011611
+;; Version: 17.13.20220613204648
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2531,10 +2531,10 @@ in the same dir. If such a file already exist, it is overwritten.
 If the current buffer is not associated with a file, nothing's done.
 
 URL `http://xahlee.info/emacs/emacs/elisp_make-backup.html'
-Version: 2018-06-06 2020-12-18"
+Version: 2018-06-06 2020-12-18 2022-06-13"
   (interactive)
   (let (($fname (buffer-file-name))
-        ($dateTimeFormat "%Y%m%d_%H%M%S"))
+        ($dateTimeFormat "%Y-%m-%d_%H%M%S"))
     (if $fname
         (let (($backupName
                (concat $fname "~" (format-time-string $dateTimeFormat) "~")))
