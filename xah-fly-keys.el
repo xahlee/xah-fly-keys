@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 17.13.20220613204648
+;; Version: 17.13.20220615002353
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -4674,6 +4674,14 @@ URL`http://xahlee.info/emacs/misc/ergoemacs_vi_mode.html'"
 
       ;;
       )))
+
+(when (= emacs-major-version 28)
+  ;; 2022-06-14 fix a emacs 28.1 bug.
+  ;; clear-transient-map bug
+  ;; http://xahlee.info/emacs/emacs/clear-transient-map_bug.html
+  (progn
+    (defun xah-clear-pre-command-hook () (setq pre-command-hook nil))
+    (add-hook 'xah-fly-insert-mode-activate-hook 'xah-clear-pre-command-hook)))
 
 (provide 'xah-fly-keys)
 
