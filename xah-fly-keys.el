@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 17.13.20220615002353
+;; Version: 17.14.20220617194258
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1839,6 +1839,9 @@ Version: 2017-01-17 2021-08-12"
 (defun xah-insert-paren () (interactive) (xah-insert-bracket-pair "(" ")") )
 (defun xah-insert-square-bracket () (interactive) (xah-insert-bracket-pair "[" "]") )
 (defun xah-insert-brace () (interactive) (xah-insert-bracket-pair "{" "}") )
+
+(defun xah-insert-markdown-quote () (interactive) (xah-insert-bracket-pair "`" "`") )
+(defun xah-insert-markdown-triple-quote () (interactive) (xah-insert-bracket-pair "```\n" "\n```"))
 
 (defun xah-insert-double-curly-quote () (interactive) (xah-insert-bracket-pair "“" "”") )
 (defun xah-insert-curly-single-quote () (interactive) (xah-insert-bracket-pair "‘" "’") )
@@ -4059,7 +4062,8 @@ minor modes loaded later may override bindings in this map.")
    ("h" . xah-insert-brace)
    ("i" . xah-insert-curly-single-quote)
    ("j" . insert-char)
-   ("k" . nil)
+
+   ("k" . xah-insert-markdown-quote)
    ("l" . xah-insert-formfeed)
    ("m" . xah-insert-corner-bracket)
    ("n" . xah-insert-square-bracket)
@@ -4070,7 +4074,7 @@ minor modes loaded later may override bindings in this map.")
    ("s" . xah-insert-string-assignment)
    ("t" . xah-insert-paren)
    ("u" . xah-insert-date)
-   ("v" . nil)
+   ("v" . xah-insert-markdown-triple-quote)
    ("w" . xah-insert-angle-bracket)
    ("x" . nil)
    ("y" . xah-insert-double-angle-quote)
@@ -4549,6 +4553,15 @@ Version: 2021-05-19 2021-09-17"
            'xah-fly-key-current-layout
            Layout))
 
+(defun xah-fly-space-key ()
+  "Switch to command mode if the char before cursor is a space.
+experimental
+Version: 2018-05-07"
+  (interactive)
+  (if (eq (char-before ) 32)
+      (xah-fly-command-mode-activate)
+    (insert " ")))
+
 (defun xah-fly-command-mode-init ()
   "Set command mode keys.
 Version: 2020-04-28"
@@ -4561,15 +4574,6 @@ Version: 2020-04-28"
   ;; (set-face-background 'cursor "red")
   (setq mode-line-front-space xah-fly-command-mode-indicator)
   (force-mode-line-update))
-
-(defun xah-fly-space-key ()
-  "Switch to command mode if the char before cursor is a space.
-experimental
-Version: 2018-05-07"
-  (interactive)
-  (if (eq (char-before ) 32)
-      (xah-fly-command-mode-activate)
-    (insert " ")))
 
 (defun xah-fly-insert-mode-init (&optional no-indication)
   "Enter insertion mode."
