@@ -6,7 +6,7 @@ A modal keybinding for emacs (like vim), but based on command frequency and ergo
 This is the most efficient editing system in the universe.
 
 Xah Fly Keys home page at
-http://xahlee.info/emacs/misc/ergoemacs_vi_mode.html
+http://xahlee.info/emacs/misc/xah-fly-keys.html
 
 2020-04-18 News: Key Engine Rewrite
 ===================
@@ -59,7 +59,7 @@ The following keyboard layouts are supported:
 Full Documentation
 -------------------
 
-http://xahlee.info/emacs/misc/ergoemacs_vi_mode.html
+http://xahlee.info/emacs/misc/xah-fly-keys.html
 
 Been working on this since 2013, and since 2007 on ergoemacs-mode.
 

@@ -4,12 +4,12 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 17.14.20220617194258
+;; Version: 17.14.20220618104311
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; License: GPL v3.
-;; Homepage: http://xahlee.info/emacs/misc/ergoemacs_vi_mode.html
+;; Homepage: http://xahlee.info/emacs/misc/xah-fly-keys.html
 
 ;; This file is not part of GNU Emacs.
 
@@ -96,7 +96,7 @@
 ;; If you have a bug, post on github.
 
 ;; For detail about design and other info, see home page at
-;; http://xahlee.info/emacs/misc/ergoemacs_vi_mode.html
+;; http://xahlee.info/emacs/misc/xah-fly-keys.html
 
 ;; If you like this project, Buy Xah Emacs Tutorial
 ;; http://xahlee.info/emacs/emacs/buy_xah_emacs_tutorial.html or make
@@ -4646,7 +4646,7 @@ Version: 2017-07-07"
   "A modal keybinding set, like vim, but based on ergonomic
   principles, like Dvorak layout.
 
-URL`http://xahlee.info/emacs/misc/ergoemacs_vi_mode.html'"
+URL`http://xahlee.info/emacs/misc/xah-fly-keys.html'"
   :group 'xah-fly-keys
   :global t
   :lighter " ∑flykeys"
