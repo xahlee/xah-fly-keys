@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 17.14.20220618162127
+;; Version: 17.14.20220624001507
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -627,22 +627,47 @@ What char is considered bracket or quote is determined by current syntax table.
 If `universal-argument' is called first, do not delete inner text.
 
 URL `http://xahlee.info/emacs/emacs/emacs_delete_backward_char_or_bracket_text.html'
-Version: 2017-07-02"
+Version: 2017-07-02 2022-06-23"
   (interactive)
   (if (and delete-selection-mode (region-active-p))
       (delete-region (region-beginning) (region-end))
     (cond
      ((looking-back "\\s)" 1)
-      (if current-prefix-arg
-          (xah-delete-backward-bracket-pair)
-        (xah-delete-backward-bracket-text)))
-     ((looking-back "\\s(" 1)
-      (progn
+      (let ($isComment ($p0 (point)))
         (backward-char)
-        (forward-sexp)
-        (if current-prefix-arg
-            (xah-delete-backward-bracket-pair)
-          (xah-delete-backward-bracket-text))))
+        (setq $isComment (nth 4 (syntax-ppss)))
+        (goto-char $p0)
+        (if $isComment
+            (if (forward-comment -1)
+                (kill-region (point) $p0)
+              (message "error GSNN2:parsing comment failed."))
+          (if current-prefix-arg
+              (xah-delete-backward-bracket-pair)
+            (xah-delete-backward-bracket-text)))))
+     ((looking-back "\\s(" 1)
+      (message "left of cursor is opening bracket")
+      (let ($pOpenBracketLeft
+            ($pOpenBracketRight (point)) $p1 $isComment)
+        (backward-char)
+        (setq $pOpenBracketLeft (point))
+        (goto-char $pOpenBracketRight)
+        (forward-char)
+        (setq $p1 (point))
+        (setq $isComment (nth 4 (syntax-ppss)))
+        (if $isComment
+            (progn
+              (message "cursor is in comment")
+              (goto-char $pOpenBracketLeft)
+              (if (forward-comment 1)
+                  (kill-region (point) $pOpenBracketLeft)
+                (message "error hSnRp: parsing comment failed.")))
+          (progn
+            (message "right 1 char of cursor is not in comment")
+            (goto-char $pOpenBracketLeft)
+            (forward-sexp)
+            (if current-prefix-arg
+                (xah-delete-backward-bracket-pair)
+              (xah-delete-backward-bracket-text))))))
      ((looking-back "\\s\"" 1)
       (if (nth 3 (syntax-ppss))
           (progn
@@ -1698,7 +1723,7 @@ If `universal-argument' is called first, prompt for a format to use.
 If there is selection, delete it first.
 
 URL `http://xahlee.info/emacs/emacs/elisp_insert-date-time.html'
-version 2020-09-07 2021-11-07 2022-04-07"
+Version 2013-05-10 2021-11-07 2022-04-07"
   (interactive)
   (let (($style
          (if current-prefix-arg
