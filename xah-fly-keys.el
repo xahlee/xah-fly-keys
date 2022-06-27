@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 17.14.20220624001507
+;; Version: 17.15.20220627044859
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2423,61 +2423,56 @@ Version: 2018-10-12"
       ;;
       )))
 
-(defvar xah-run-current-file-hashtable nil "A hashtable. key is file name extension, value is string of program name/path. Used by `xah-run-current-file'. A file path will be appended to the program path to run the program. You can modify the hashtable for customization.")
-
-(setq xah-run-current-file-hashtable
-      #s(hash-table
-         size 100
-         test equal
-         data
-         (
-          "clj" "clj"
-          "go" "go run"
-          "hs" "runhaskell"
-          "java" "javac"
-          "js" "deno run"
-          "latex" "pdflatex"
-          "m" "wolframscript -file"
-          "mjs" "node --experimental-modules "
-          "ml" "ocaml"
-          "php" "php"
-          "pl" "perl"
-          "ps1" "pwsh"
-          "py" "python"
-          "py2" "python2"
-          "py3" "python3"
-          "rb" "ruby"
-          "rkt" "racket"
-          "sh" "bash"
-          "tex" "pdflatex"
-          "ts" "deno run"
-          "tsx" "tsc"
-          "vbs" "cscript"
-          "wl" "wolframscript -file"
-          "wls" "wolframscript -file"
-          ;; "pov" "/usr/local/bin/povray +R2 +A0.1 +J1.2 +Am2 +Q9 +H480 +W640"
-          )))
+(defvar xah-run-current-file-map nil "A association list that maps file extension to program path, used by `xah-run-current-file'. First element is file suffix, second is program name or path. You can add items to it.")
+(setq
+ xah-run-current-file-map
+ '(("clj" . "clj")
+   ("go" . "go run")
+   ("hs" . "runhaskell")
+   ("java" . "javac")
+   ("js" . "deno run")
+   ("latex" . "pdflatex")
+   ("m" . "wolframscript -file")
+   ("mjs" . "node --experimental-modules ")
+   ("ml" . "ocaml")
+   ("php" . "php")
+   ("pl" . "perl")
+   ("ps1" . "pwsh")
+   ("py" . "python")
+   ("py2" . "python2")
+   ("py3" . "python3")
+   ("rb" . "ruby")
+   ("rkt" . "racket")
+   ("sh" . "bash")
+   ("tex" . "pdflatex")
+   ("ts" . "deno run")
+   ("tsx" . "tsc")
+   ("vbs" . "cscript")
+   ("wl" . "wolframscript -file")
+   ("wls" . "wolframscript -file")
+   ("pov" . "povray +R2 +A0.1 +J1.2 +Am2 +Q9 +H480 +W640")))
 
 (defun xah-run-current-file ()
   "Execute the current file.
 For example, if the current buffer is x.py, then it'll call [python x.py] in a shell.
 Output is printed to buffer “*xah-run output*”.
-File suffix is used to determine which program to run, set in the variable `xah-run-current-file-hashtable'.
+File suffix is used to determine which program to run, set in the variable `xah-run-current-file-map'.
 
 If the file is modified or not saved, save it automatically before run.
 
 URL `http://xahlee.info/emacs/emacs/elisp_run_current_file.html'
-Version: 2020-09-24 2021-01-21 2021-10-27 2022-02-12 2022-05-16"
+Version: 2020-09-24 2022-05-16 2022-06-27"
   (interactive)
   (setenv "NO_COLOR" "1")
   (let (($outBuffer "*xah-run output*")
         ;; (resize-mini-windows nil)
-        ($extHash xah-run-current-file-hashtable)
+        ($extAppMap xah-run-current-file-map)
         $fname $fExt $progName $cmdStr)
     (when (not (buffer-file-name)) (save-buffer))
     (setq $fname (buffer-file-name))
     (setq $fExt (file-name-extension $fname))
-    (setq $progName (gethash $fExt $extHash))
+    (setq $progName (cdr (assoc $fExt $extAppMap)))
+
     (setq $cmdStr (format "%s \"%s\" &" $progName $fname))
     (when (buffer-modified-p) (save-buffer))
     (run-hooks 'xah-run-current-file-before-hook)
