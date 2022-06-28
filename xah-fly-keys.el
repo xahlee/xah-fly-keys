@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 17.15.20220627044859
+;; Version: 17.15.20220628130211
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -633,26 +633,30 @@ Version: 2017-07-02 2022-06-23"
       (delete-region (region-beginning) (region-end))
     (cond
      ((looking-back "\\s)" 1)
-      (let ($isComment ($p0 (point)))
-        (backward-char)
-        (setq $isComment (nth 4 (syntax-ppss)))
-        (goto-char $p0)
-        (if $isComment
-            (if (forward-comment -1)
-                (kill-region (point) $p0)
-              (message "error GSNN2:parsing comment failed."))
+      (if (string-equal major-mode "xah-wolfram-mode")
+          (let ($isComment ($p0 (point)))
+            (backward-char)
+            (setq $isComment (nth 4 (syntax-ppss)))
+            (goto-char $p0)
+            (if $isComment
+                (if (forward-comment -1)
+                    (kill-region (point) $p0)
+                  (message "error GSNN2:parsing comment failed."))
+              (if current-prefix-arg
+                  (xah-delete-backward-bracket-pair)
+                (xah-delete-backward-bracket-text))))
+        (progn
           (if current-prefix-arg
               (xah-delete-backward-bracket-pair)
             (xah-delete-backward-bracket-text)))))
      ((looking-back "\\s(" 1)
       (message "left of cursor is opening bracket")
       (let ($pOpenBracketLeft
-            ($pOpenBracketRight (point)) $p1 $isComment)
+            ($pOpenBracketRight (point)) $isComment)
         (backward-char)
         (setq $pOpenBracketLeft (point))
         (goto-char $pOpenBracketRight)
         (forward-char)
-        (setq $p1 (point))
         (setq $isComment (nth 4 (syntax-ppss)))
         (if $isComment
             (progn
