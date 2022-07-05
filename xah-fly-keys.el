@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 17.15.20220628130211
+;; Version: 17.15.20220703230000
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -216,7 +216,7 @@ Version: 2016-04-04"
 • if `visual-line-mode' is on, beginning of line means visual line.
 
 URL `http://xahlee.info/emacs/emacs/emacs_keybinding_design_beginning-of-line-or-block.html'
-Version: 2018-06-04 2021-03-16 2022-03-30"
+Version: 2018-06-04 2021-03-16 2022-03-30 2022-07-03"
   (interactive)
   (let (($p (point)))
     (if (or (equal (point) (line-beginning-position))
@@ -227,7 +227,10 @@ Version: 2018-06-04 2021-03-16 2022-03-30"
           (forward-char))
       (if visual-line-mode
           (beginning-of-visual-line)
-        (progn
+        (if (eq major-mode 'eshell-mode)
+            (progn
+              (declare-function eshell-bol "esh-mode.el" ())
+              (eshell-bol))
           (back-to-indentation)
           (when (eq $p (point))
             (beginning-of-line)))))))
