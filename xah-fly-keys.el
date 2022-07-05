@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 17.15.20220703230000
+;; Version: 17.15.20220705140319
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -757,7 +757,7 @@ If the string contains “,2”, then the first 2 chars and last 2 chars are use
 If ToChars is equal to string “none”, the brackets are deleted.
 
 URL `http://xahlee.info/emacs/emacs/elisp_change_brackets.html'
-Version: 2020-11-01 2021-08-15 2022-04-07"
+Version: 2020-11-01 2021-08-15 2022-04-07 2022-07-05"
   (interactive
    (let (($brackets
           '("(paren)"
@@ -765,14 +765,14 @@ Version: 2020-11-01 2021-08-15 2022-04-07"
             "[square]"
             "<greater>"
             "`emacs'"
-            "`markdown`"
+            "`markdown GRAVE ACCENT`"
             "~tilde~"
             "=equal="
-            "\"double\""
+            "\"strait double quote\""
             "'single'"
             "[[double square,2]]"
-            "“curly double”"
-            "‘curly single’"
+            "“curly double quote”"
+            "‘curly single quote’"
             "‹french angle›"
             "«french double angle»"
             "「corner」"
