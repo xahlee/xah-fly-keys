@@ -4591,10 +4591,12 @@ Version: 2018-05-07"
 
 (defun xah-fly-command-mode-init ()
   "Set command mode keys.
-Version: 2020-04-28"
+Version: 2022-07-06"
   (interactive)
   (setq xah-fly-insert-state-p nil)
   (xah-fly--update-key-map)
+  (when xah-fly--deactivate-command-mode-func
+    (funcall xah-fly--deactivate-command-mode-func))
   (setq xah-fly--deactivate-command-mode-func
         (set-transient-map xah-fly-command-map (lambda () t)))
   (modify-all-frames-parameters (list (cons 'cursor-type 'box)))
@@ -4705,14 +4707,6 @@ URL `http://xahlee.info/emacs/misc/xah-fly-keys.html'"
 
       ;;
       )))
-
-(when (= emacs-major-version 28)
-  ;; 2022-06-14 fix a emacs 28.1 bug.
-  ;; clear-transient-map bug
-  ;; http://xahlee.info/emacs/emacs/clear-transient-map_bug.html
-  (progn
-    (defun xah-clear-pre-command-hook () (setq pre-command-hook nil))
-    (add-hook 'xah-fly-insert-mode-activate-hook 'xah-clear-pre-command-hook)))
 
 (provide 'xah-fly-keys)
 
