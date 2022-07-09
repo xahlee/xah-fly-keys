@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 17.15.20220706180000
+;; Version: 17.16.20220708232047
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2605,14 +2605,14 @@ Backup filename is “‹name›~‹dateTimeStamp›~”. Existing file of the s
 Call `xah-open-last-closed' to open the backup file.
 
 URL `http://xahlee.info/emacs/emacs/elisp_delete-current-file.html'
-Version: 2018-05-15 2021-08-31 2021-09-27"
+Version: 2018-05-15 2021-08-31 2021-09-27 2022-07-08"
   (interactive)
   (if (string-equal 'dired-mode major-mode)
       (message "In dired. Nothing is done.")
     (let* (($fname (buffer-file-name))
            ($backupPath
             (concat (if $fname $fname (format "%sxx" default-directory))
-                    (format "~%s~" (format-time-string "%Y%m%dT%H%M%S")))))
+                    (format "~%s~" (format-time-string "%Y-%m-%d_%H%M%S")))))
       (if $fname
           (progn
             (save-buffer $fname)
