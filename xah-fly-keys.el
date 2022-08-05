@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 17.17.20220709145456
+;; Version: 17.18.20220804202952
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1643,7 +1643,7 @@ Version: 2018-06-18 2021-09-30"
   "Delete the current text block plus blank lines, or selection, and copy to `kill-ring'.
 
 URL `http://xahlee.info/emacs/emacs/emacs_delete_block.html'
-Version: 2017-07-09 2021-08-14"
+Version: 2017-07-09 2021-08-14 2022-07-31"
   (interactive)
   (let ($p1 $p2)
     (if (region-active-p)
@@ -1652,8 +1652,9 @@ Version: 2017-07-09 2021-08-14"
         (if (re-search-backward "\n[ \t]*\n+" nil 1)
             (setq $p1 (goto-char (match-end 0)))
           (setq $p1 (point)))
-        (re-search-forward "\n[ \t]*\n+" nil 1)
-        (setq $p2 (point))))
+        (if (re-search-forward "\n\n" nil 1)
+            (setq $p2 (match-end 0))
+          (setq $p2 (point-max)))))
     (kill-region $p1 $p2)))
 
 (defun xah-clear-register-1 ()
@@ -2690,28 +2691,15 @@ Version: 2020-11-20 2022-04-20"
   "Open current file or dir in vscode.
 
 URL `http://xahlee.info/emacs/emacs/emacs_dired_open_file_in_ext_apps.html'
-Version: 2020-02-13 2021-01-18"
+Version: 2020-02-13 2021-01-18 2022-08-04"
   (interactive)
-  (let (($path (if (buffer-file-name) (buffer-file-name) (expand-file-name default-directory ))))
+  (let (($path (if (buffer-file-name) (buffer-file-name) (expand-file-name default-directory))))
     (message "path is %s" $path)
     (cond
      ((string-equal system-type "darwin")
       (shell-command (format "open -a Visual\\ Studio\\ Code.app %s" (shell-quote-argument $path))))
      ((string-equal system-type "windows-nt")
-      ;; 2021-01-18 problem: if gnu findutils is installed, it installs a code.exe program, same name as vscode's executable. and usually in path before vscode.
-;; vs code is usually at home dir
-;; "C:\Users\joe\AppData\Local\Programs\Microsoft VS Code\bin\code.cmd"
-      ;; the following is attemp to work around
-      ;; (shell-command
-      ;;  (format
-      ;;   "PowerShell -Command Invoke-Expression \"%s\\%s\" %s"
-      ;;   (getenv "HOMEPATH")
-      ;;   "AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe"
-      ;;   (shell-quote-argument $path)))
-      ;; (shell-command (concat "PowerShell -Command Start-Process Code.exe -filepath " (shell-quote-argument $path)))
-      (shell-command (format "Code %s" (shell-quote-argument $path)))
-      ;;
-      )
+      (shell-command (format "code.cmd %s" (shell-quote-argument $path))))
      ((string-equal system-type "gnu/linux")
       (shell-command (format "code %s" (shell-quote-argument $path)))))))
 
@@ -2750,17 +2738,15 @@ On Microsoft Windows, it starts cross-platform PowerShell pwsh. You
 need to have it installed.
 
 URL `http://xahlee.info/emacs/emacs/emacs_dired_open_file_in_ext_apps.html'
-Version: 2020-11-21 2021-07-21"
+Version: 2020-11-21 2021-07-21 2022-08-04"
   (interactive)
   (cond
    ((string-equal system-type "windows-nt")
-    (let ((process-connection-type nil)
-          ($cmdstr
+    (let (($cmdstr
            (format "pwsh -Command Start-Process pwsh -WorkingDirectory %s" (shell-quote-argument default-directory))))
-      ;; (start-process "" nil "powershell" "Start-Process" "powershell"  "-WorkingDirectory" default-directory)
       (shell-command $cmdstr)))
    ((string-equal system-type "darwin")
-    (shell-command (concat "open -a terminal " (shell-quote-argument (expand-file-name default-directory )))))
+    (shell-command (concat "open -a terminal " (shell-quote-argument (expand-file-name default-directory)))))
    ((string-equal system-type "gnu/linux")
     (let ((process-connection-type nil)) (start-process "" nil "x-terminal-emulator" (concat "--working-directory=" default-directory))))
    ((string-equal system-type "berkeley-unix")
