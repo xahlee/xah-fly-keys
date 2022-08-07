@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 17.18.20220804202952
+;; Version: 17.19.20220806194323
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2536,7 +2536,7 @@ Only space and tab is considered whitespace here.
 Works on whole buffer or selection, respects `narrow-to-region'.
 
 URL `http://xahlee.info/emacs/emacs/elisp_compact_empty_lines.html'
-Version: 2017-09-22 2021-08-27"
+Version: 2017-09-22 2021-08-27 2022-08-06"
   (interactive)
   (let ($begin $end)
     (if (region-active-p)
@@ -2550,7 +2550,8 @@ Version: 2017-09-22 2021-08-27"
         (goto-char (point-min))
         (while (re-search-forward "\n\n\n+" nil 1) (replace-match "\n\n"))
         (goto-char (point-max))
-        (while (eq (char-before) ? ) (delete-char -1))))))
+        (while (eq (char-before) 32) (delete-char -1)))))
+  (message "%s done" real-this-command))
 
 (defun xah-make-backup ()
   "Make a backup copy of current file or dired marked files.
