@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 17.19.20220806194323
+;; Version: 17.19.20220812194903
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2469,7 +2469,7 @@ File suffix is used to determine which program to run, set in the variable `xah-
 If the file is modified or not saved, save it automatically before run.
 
 URL `http://xahlee.info/emacs/emacs/elisp_run_current_file.html'
-Version: 2020-09-24 2022-05-16 2022-06-27"
+Version: 2020-09-24 2022-05-16 2022-06-27 2022-08-12"
   (interactive)
   (setenv "NO_COLOR" "1")
   (let (($outBuffer "*xah-run output*")
@@ -2489,7 +2489,7 @@ Version: 2020-09-24 2022-05-16 2022-06-27"
       (load $fname))
      ((string-equal $fExt "go")
       (xah-run-current-go-file))
-     ((string-match "wsl\\|wl\\|m\\|nb" $fExt)
+     ((string-match "\.wsl$\\|\.wl$\\|\.m$\\|\.nb$" $fExt)
       (if (fboundp 'xah-run-wolfram-script)
           (progn
             (xah-run-wolfram-script nil current-prefix-arg))
