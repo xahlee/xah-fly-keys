@@ -2680,11 +2680,11 @@ Version: 2020-11-20 2022-04-20"
       (shell-command
        (concat "open -R " (shell-quote-argument $path))))
      ((string-equal system-type "gnu/linux")
-      (let ((process-connection-type nil)
-            ($openFileProgram (if (file-exists-p "/usr/bin/gvfs-open")
-                                 "/usr/bin/gvfs-open"
-                               "/usr/bin/xdg-open")))
-        (start-process "" nil $openFileProgram (shell-quote-argument $path)))
+      (call-process shell-file-name nil nil nil
+                    shell-command-switch
+                    (format "%s %s"
+                            "xdg-open"
+                            (file-name-directory $path)))
       ;; (shell-command "xdg-open .") ;; 2013-02-10 this sometimes froze emacs till the folder is closed. eg with nautilus
       ))))
 
@@ -2729,7 +2729,13 @@ Version: 2019-11-04 2021-07-21"
        ((string-equal system-type "darwin")
         (mapc (lambda ($fpath) (shell-command (concat "open " (shell-quote-argument $fpath)))) $fileList))
        ((string-equal system-type "gnu/linux")
-        (mapc (lambda ($fpath) (let ((process-connection-type nil)) (start-process "" nil "xdg-open" $fpath))) $fileList))
+        (mapc (lambda ($fpath)
+                (call-process shell-file-name nil nil nil
+                              shell-command-switch
+                              (format "%s %s"
+                                      "xdg-open"
+                                      (shell-quote-argument $fpath))))
+              $fileList))
        ((string-equal system-type "berkeley-unix")
         (mapc (lambda ($fpath) (let ((process-connection-type nil)) (start-process "" nil "xdg-open" $fpath))) $fileList))))))
 
