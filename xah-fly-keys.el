@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 17.22.20220909110152
+;; Version: 17.23.20220910102958
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -163,18 +163,15 @@
 
 (defcustom xah-fly-use-control-key t
   "If nil, do not bind any control key. When t, standard keys for open, close, copy, paste etc, are bound."
-  :type 'boolean
-  :group 'xah-fly-keys)
+  :type 'boolean)
 
 (defcustom xah-fly-use-meta-key t
   "If nil, do not bind any meta key."
-  :type 'boolean
-  :group 'xah-fly-keys)
+  :type 'boolean)
 
 (defcustom xah-fly-use-isearch-arrows t
   "If nil, no change to any key in isearch (`isearch-forward'). Otherwise, arrow keys are for moving between occurrences, and C-v is paste."
-  :type 'boolean
-  :group 'xah-fly-keys)
+  :type 'boolean)
 
 (defun xah-get-bounds-of-block ()
   "Return the boundary (START . END) of current block.
@@ -285,8 +282,8 @@ Version: 2018-06-04 2021-03-16 2022-03-05"
 
 (setq xah-right-brackets (mapcar (lambda (x) (substring x 1 2)) xah-brackets ))
 
-(defvar xah-punctuation-regex nil "A regex string for the purpose of moving cursor to a punctuation.")
-(setq xah-punctuation-regex "[!\?\"\.,`'#$%&*+:;=@^|~]+")
+(defconst xah-punctuation-regex "[!?\".,`'#$%&*+:;=@^|~]+"
+  "A regex string for the purpose of moving cursor to a punctuation.")
 
 (defun xah-forward-punct (&optional n)
   "Move cursor to the next occurrence of punctuation.
@@ -521,8 +518,8 @@ Version: 2017-07-25 2020-09-08"
           (yank-pop 1)
         (yank)))))
 
-(defvar xah-show-kill-ring-separator nil "A line divider for `xah-show-kill-ring'.")
-(setq xah-show-kill-ring-separator "\n\nSfR2h________________________________________________________________________\n\n")
+(defconst xah-show-kill-ring-separator "\n\nSfR2h________________________________________________________________________\n\n"
+  "A line divider for `xah-show-kill-ring'.")
 
 (defun xah-show-kill-ring ()
   "Insert all `kill-ring' content in a new buffer named *copy history*.
@@ -572,9 +569,9 @@ Version 2022-03-04"
     (goto-char $p1)
     (set-transient-map
      (let (($kmap (make-sparse-keymap)))
-       (define-key $kmap (kbd "-") 'xah-move-block-up)
-       (define-key $kmap (kbd "<up>") 'xah-move-block-up)
-       (define-key $kmap (kbd "<down>") 'xah-move-block-down)
+       (define-key $kmap (kbd "-") #'xah-move-block-up)
+       (define-key $kmap (kbd "<up>") #'xah-move-block-up)
+       (define-key $kmap (kbd "<down>") #'xah-move-block-down)
        $kmap))))
 
 (defun xah-move-block-down ()
@@ -608,9 +605,9 @@ Version 2022-03-04"
     (goto-char $n2))
   (set-transient-map
    (let (($kmap (make-sparse-keymap)))
-     (define-key $kmap (kbd "-") 'xah-move-block-down)
-     (define-key $kmap (kbd "<up>") 'xah-move-block-up)
-     (define-key $kmap (kbd "<down>") 'xah-move-block-down)
+     (define-key $kmap (kbd "-") #'xah-move-block-down)
+     (define-key $kmap (kbd "<up>") #'xah-move-block-up)
+     (define-key $kmap (kbd "<down>") #'xah-move-block-down)
      $kmap)))
 
 (defun xah-delete-left-char-or-selection ()
@@ -1623,7 +1620,8 @@ Version: 2018-06-18 2021-09-30"
   (let (($fpath
          (if (string-equal major-mode 'dired-mode)
              (progn
-               (let (($result (mapconcat 'identity (dired-get-marked-files) "\n")))
+               (let (($result (mapconcat #'identity
+                                         (dired-get-marked-files) "\n")))
                  (if (equal (length $result) 0)
                      (progn default-directory )
                    (progn $result))))
@@ -1719,7 +1717,7 @@ version 2016-07-17"
   ;; extract-rectangle suggested by YoungFrog, 2012-07-25
   (interactive "r")
   (require 'rect)
-  (kill-new (mapconcat 'identity (extract-rectangle Begin End) "\n")))
+  (kill-new (mapconcat #'identity (extract-rectangle Begin End) "\n")))
 
 
 ;; insertion commands
@@ -1795,11 +1793,11 @@ Version 2013-05-10 2021-11-07 2022-04-07"
 (defun xah-insert-bracket-pair (LBracket RBracket &optional WrapMethod)
   "Insert brackets around selection, word, at point, and maybe move cursor in between.
 
- LBracket and RBracket are strings. WrapMethod must be either 'line or 'block. 'block means between empty lines.
+ LBracket and RBracket are strings. WrapMethod must be either `line' or `block'. `block' means between empty lines.
 
 • if there is a region, add brackets around region.
-• If WrapMethod is 'line, wrap around line.
-• If WrapMethod is 'block, wrap around block.
+• If WrapMethod is `line', wrap around line.
+• If WrapMethod is `block', wrap around block.
 • if cursor is at beginning of line and its not empty line and contain at least 1 space, wrap around the line.
 • If cursor is at end of a word or buffer, one of the following will happen:
  xyz▮ → xyz(▮)
@@ -2143,17 +2141,16 @@ Version: 2020-02-04 2022-05-16"
   "Select text between the nearest left and right delimiters.
 Delimiters here includes the following chars: \" ` and anything in `xah-brackets'.
 This command ignores nesting. For example, if text is
-(a(b)c▮)
+    (a(b)c▮)
 the selected char is “c”, not “a(b)c”.
 
 URL `http://xahlee.info/emacs/emacs/modernization_mark-word.html'
 Version: 2020-11-24 2021-07-11 2021-12-21 2022-03-26"
   (interactive)
-  (let (($skipChars (concat "^\"`" (mapconcat 'identity xah-brackets ""))) $p1)
+  (let (($skipChars (concat "^\"`" (mapconcat #'identity xah-brackets ""))))
     (skip-chars-backward $skipChars)
-    (setq $p1 (point))
-    (skip-chars-forward $skipChars)
-    (set-mark $p1)))
+    (set-mark (point))
+    (skip-chars-forward $skipChars)))
 
 
 ;; misc
@@ -2246,8 +2243,7 @@ Version: 2017-11-01 2022-04-05"
 (defvar xah-recently-closed-buffers nil "a Alist of recently closed buffers. Each element is (bufferName . filePath). The max number to track is controlled by the variable `xah-recently-closed-buffers-max'.")
 
 (defcustom xah-recently-closed-buffers-max 40 "The maximum length for `xah-recently-closed-buffers'."
-  :type 'integer
-  :group 'xah-fly-keys)
+  :type 'integer)
 
 (declare-function minibuffer-keyboard-quit "delsel" ())
 (declare-function org-edit-src-save "org-src" ())
@@ -2394,9 +2390,10 @@ Version: 2020-10-17 2021-10-16"
                 (when (y-or-n-p (format "file does not exist: [%s]. Create?" $path))
                   (find-file $path))))))))))
 
-(if (version<= emacs-version "26.0.50")
-    (defalias 'xah-display-line-numbers-mode #'linum-mode)
-  (defalias 'xah-display-line-numbers-mode #'global-display-line-numbers-mode))
+(defalias 'xah-display-line-numbers-mode
+  (if (fboundp 'global-display-line-numbers-mode)
+      #'global-display-line-numbers-mode
+    #'linum-mode))
 
 
 
@@ -2409,21 +2406,20 @@ Version: 2020-10-17 2021-10-16"
 To build, call `universal-argument' first.
 Version: 2018-10-12"
   (interactive)
-  (when (not (buffer-file-name)) (save-buffer))
+  (when (not buffer-file-name) (save-buffer))
   (when (buffer-modified-p) (save-buffer))
   (let* (
          ($outputb "*xah-run output*")
          ;; (resize-mini-windows nil)
-         ($fname (buffer-file-name))
+         ($fname buffer-file-name)
          ;; ($fSuffix (file-name-extension $fname))
          ($progName "go")
-         $cmdStr)
-    (setq $cmdStr (concat $progName " \""   $fname "\" &"))
-    (if current-prefix-arg
-        (progn
-          (setq $cmdStr (format "%s build \"%s\" " $progName $fname)))
-      (progn
-        (setq $cmdStr (format "%s run \"%s\" &" $progName $fname))))
+         ($cmdStr
+          (concat $progName " \""   $fname "\" &")))
+    (setq $cmdStr (format (if current-prefix-arg
+                              "%s build \"%s\" "
+                            "%s run \"%s\" &")
+                          $progName $fname))
     (progn
       (message "running %s" $fname)
       (message "%s" $cmdStr)
@@ -2431,34 +2427,33 @@ Version: 2018-10-12"
       ;;
       )))
 
-(defvar xah-run-current-file-map nil "A association list that maps file extension to program path, used by `xah-run-current-file'. First element is file suffix, second is program name or path. You can add items to it.")
-(setq
- xah-run-current-file-map
- '(("clj" . "clj")
-   ("go" . "go run")
-   ("hs" . "runhaskell")
-   ("java" . "javac")
-   ("js" . "deno run")
-   ("latex" . "pdflatex")
-   ("m" . "wolframscript -file")
-   ("mjs" . "node --experimental-modules ")
-   ("ml" . "ocaml")
-   ("php" . "php")
-   ("pl" . "perl")
-   ("ps1" . "pwsh")
-   ("py" . "python")
-   ("py2" . "python2")
-   ("py3" . "python3")
-   ("rb" . "ruby")
-   ("rkt" . "racket")
-   ("sh" . "bash")
-   ("tex" . "pdflatex")
-   ("ts" . "deno run")
-   ("tsx" . "tsc")
-   ("vbs" . "cscript")
-   ("wl" . "wolframscript -file")
-   ("wls" . "wolframscript -file")
-   ("pov" . "povray +R2 +A0.1 +J1.2 +Am2 +Q9 +H480 +W640")))
+(defconst xah-run-current-file-map
+  '(("clj" . "clj")
+    ("go" . "go run")
+    ("hs" . "runhaskell")
+    ("java" . "javac")
+    ("js" . "deno run")
+    ("latex" . "pdflatex")
+    ("m" . "wolframscript -file")
+    ("mjs" . "node --experimental-modules ")
+    ("ml" . "ocaml")
+    ("php" . "php")
+    ("pl" . "perl")
+    ("ps1" . "pwsh")
+    ("py" . "python")
+    ("py2" . "python2")
+    ("py3" . "python3")
+    ("rb" . "ruby")
+    ("rkt" . "racket")
+    ("sh" . "bash")
+    ("tex" . "pdflatex")
+    ("ts" . "deno run")
+    ("tsx" . "tsc")
+    ("vbs" . "cscript")
+    ("wl" . "wolframscript -file")
+    ("wls" . "wolframscript -file")
+    ("pov" . "povray +R2 +A0.1 +J1.2 +Am2 +Q9 +H480 +W640"))
+  "A association list that maps file extension to program name, used by `xah-run-current-file'. Each item is (ext . program), both strings. ext is file suffix (without the dot prefix), program is program name or path, with possibly command options. You can customize this alist.")
 
 (defun xah-run-current-file ()
   "Execute the current file.
@@ -2471,17 +2466,25 @@ If the file is modified or not saved, save it automatically before run.
 URL `http://xahlee.info/emacs/emacs/elisp_run_current_file.html'
 Version: 2020-09-24 2022-05-16 2022-06-27 2022-08-12"
   (interactive)
-  (setenv "NO_COLOR" "1")
-  (let (($outBuffer "*xah-run output*")
-        ;; (resize-mini-windows nil)
-        ($extAppMap xah-run-current-file-map)
-        $fname $fExt $progName $cmdStr)
-    (when (not (buffer-file-name)) (save-buffer))
-    (setq $fname (buffer-file-name))
-    (setq $fExt (file-name-extension $fname))
-    (setq $progName (cdr (assoc $fExt $extAppMap)))
+  (setenv "NO_COLOR" "1") ; 2022-09-10 for deno. default color has yellow parts, hard to see
+  (when (not buffer-file-name) (save-buffer))
+  (let* (($outBuffer "*xah-run output*")
+         ;; (resize-mini-windows nil)
+         ($extAppMap xah-run-current-file-map)
+         ($fname buffer-file-name)
+         ($fExt (file-name-extension $fname))
+         ($progName (cdr (assoc $fExt $extAppMap)))
+         $cmdStr
+         )
 
-    (setq $cmdStr (format "%s \"%s\" &" $progName $fname))
+    ;; FIXME: Rather than `shell-command' with an `&', better use
+    ;; `make-process' or `start-process' since we're not using the shell at all
+    ;; (worse, we need to use `shell-quote-argument' to circumvent the shell).
+    (setq $cmdStr
+          (when $progName
+            (format "%s %s &"
+                    (shell-quote-argument $progName)
+                    (shell-quote-argument $fname))))
     (when (buffer-modified-p) (save-buffer))
     (run-hooks 'xah-run-current-file-before-hook)
     (cond
@@ -2489,7 +2492,7 @@ Version: 2020-09-24 2022-05-16 2022-06-27 2022-08-12"
       (load $fname))
      ((string-equal $fExt "go")
       (xah-run-current-go-file))
-     ((string-match "\.wsl$\\|\.wl$\\|\.m$\\|\.nb$" $fExt)
+     ((string-match "\\.\\(ws?l\\|m\\|nb\\)\\'" $fExt)
       (if (fboundp 'xah-run-wolfram-script)
           (progn
             (xah-run-wolfram-script nil current-prefix-arg))
@@ -2500,9 +2503,12 @@ Version: 2020-09-24 2022-05-16 2022-06-27 2022-08-12"
           (error "%s: Unknown file extension: %s" real-this-command $fExt))))
      ((string-equal $fExt "java")
       (progn
+        ;; FIXME: Better use `call-process', or else at least use
+        ;; `shell-quote-argument'.
         (shell-command (format "javac %s" $fname) $outBuffer)
         (shell-command (format "java %s" (file-name-sans-extension
-                                          (file-name-nondirectory $fname))) $outBuffer)))
+                                          (file-name-nondirectory $fname)))
+                       $outBuffer)))
      (t (if $progName
             (progn
               (message "Running 「%s」" $cmdStr)
@@ -3598,7 +3604,6 @@ If the value is nil, it is automatically set to \"qwerty\"."
           (const :tag "QWERTY" qwerty)
           (const :tag "QWERTZ" qwertz)
           (const :tag "Workman" workman))
-  :group 'xah-fly-keys
   :set (lambda (Layout-var New-layout)
          ;; Only reload xah-fly-keys if it was already loaded and the new layout is different:
          (if (and (featurep 'xah-fly-keys)
@@ -3783,8 +3788,7 @@ minor modes loaded later may override bindings in this map.")
 (defcustom xah-fly-unset-useless-key t
   "If true, unbind many obsolete or useless or redundant
   keybinding. e.g. <help>, <f1>."
-  :type 'boolean
-  :group 'xah-fly-keys)
+  :type 'boolean)
 
 (when xah-fly-unset-useless-key
   (global-set-key (kbd "<help>") nil)
@@ -3798,7 +3802,7 @@ minor modes loaded later may override bindings in this map.")
  :direct)
 
 (when xah-fly-use-meta-key
-  (global-set-key (kbd "M-SPC") 'xah-fly-command-mode-activate)
+  (global-set-key (kbd "M-SPC") #'xah-fly-command-mode-activate)
   (global-set-key (kbd "M-\\") 'nil) ; delete-horizontal-space
   (global-set-key (kbd "M-!") 'nil)  ; shell-command
   (global-set-key (kbd "M-$") 'nil)  ; ispell-word
@@ -3862,41 +3866,41 @@ minor modes loaded later may override bindings in this map.")
   ;;  :direct)
 
   ;; this is a problem. because the control keybinding and meta keybinding are not supposed to change by keyboard layout such as dvorak. They should be letter direct. Also, by setting them with xah-fly-shared-map, it becomes unchangeable, that is, if a major mode set a key for C-t, it will have no effect. Current solution is just to use global-set-key. The disadvantage is that these changes leak, that is, xah-fly-keys is turned off, these ctrl keys are still changed. Still, this is better, because xah fly keys is not really meant to be turned off. You learn it, like it, use it, or leave it. Removing the tons of default emacs control and meta keys is desirable. because there are hundres of them, confusing, and mostly useless.
-  (global-set-key (kbd "<C-S-prior>") 'xah-previous-emacs-buffer)
-  (global-set-key (kbd "<C-S-next>") 'xah-next-emacs-buffer)
+  (global-set-key (kbd "<C-S-prior>") #'xah-previous-emacs-buffer)
+  (global-set-key (kbd "<C-S-next>") #'xah-next-emacs-buffer)
 
-  (global-set-key (kbd "<C-tab>") 'xah-next-user-buffer)
-  (global-set-key (kbd "<C-S-tab>") 'xah-previous-user-buffer)
-  (global-set-key (kbd "<C-S-iso-lefttab>") 'xah-previous-user-buffer)
+  (global-set-key (kbd "<C-tab>") #'xah-next-user-buffer)
+  (global-set-key (kbd "<C-S-tab>") #'xah-previous-user-buffer)
+  (global-set-key (kbd "<C-S-iso-lefttab>") #'xah-previous-user-buffer)
 
-  (global-set-key (kbd "<C-prior>") 'xah-previous-user-buffer)
-  (global-set-key (kbd "<C-next>") 'xah-next-user-buffer)
+  (global-set-key (kbd "<C-prior>") #'xah-previous-user-buffer)
+  (global-set-key (kbd "<C-next>") #'xah-next-user-buffer)
 
   (global-set-key (kbd "<f7>") 'xah-fly-leader-key-map)
 
   (global-set-key (kbd "C-1") 'nil)
-  (global-set-key (kbd "C-2") 'pop-global-mark)
-  (global-set-key (kbd "C-3") 'previous-error)
-  (global-set-key (kbd "C-4") 'next-error)
-  (global-set-key (kbd "C-5") 'xah-previous-emacs-buffer)
-  (global-set-key (kbd "C-6") 'xah-next-emacs-buffer)
-  (global-set-key (kbd "C-7") 'xah-previous-user-buffer)
-  (global-set-key (kbd "C-8") 'xah-next-user-buffer)
-  (global-set-key (kbd "C-9") 'scroll-down-command)
-  (global-set-key (kbd "C-0") 'scroll-up-command)
+  (global-set-key (kbd "C-2") #'pop-global-mark)
+  (global-set-key (kbd "C-3") #'previous-error)
+  (global-set-key (kbd "C-4") #'next-error)
+  (global-set-key (kbd "C-5") #'xah-previous-emacs-buffer)
+  (global-set-key (kbd "C-6") #'xah-next-emacs-buffer)
+  (global-set-key (kbd "C-7") #'xah-previous-user-buffer)
+  (global-set-key (kbd "C-8") #'xah-next-user-buffer)
+  (global-set-key (kbd "C-9") #'scroll-down-command)
+  (global-set-key (kbd "C-0") #'scroll-up-command)
 
-  (global-set-key (kbd "C--") 'text-scale-decrease)
-  (global-set-key (kbd "C-=") 'text-scale-increase)
+  (global-set-key (kbd "C--") #'text-scale-decrease)
+  (global-set-key (kbd "C-=") #'text-scale-increase)
 
-  (global-set-key (kbd "C-SPC") 'xah-fly-command-mode-activate)
+  (global-set-key (kbd "C-SPC") #'xah-fly-command-mode-activate)
 
-  (global-set-key (kbd "C-S-n") 'make-frame-command)
-  (global-set-key (kbd "C-S-s") 'write-file)
-  (global-set-key (kbd "C-S-t") 'xah-open-last-closed)
+  (global-set-key (kbd "C-S-n") #'make-frame-command)
+  (global-set-key (kbd "C-S-s") #'write-file)
+  (global-set-key (kbd "C-S-t") #'xah-open-last-closed)
 
   (global-set-key (kbd "C-@") 'nil)
 
-  (global-set-key (kbd "C-a") 'mark-whole-buffer)
+  (global-set-key (kbd "C-a") #'mark-whole-buffer)
   (global-set-key (kbd "C-b") 'nil)
   ;; (global-set-key (kbd "C-c") 'nil)
   (global-set-key (kbd "C-d") 'nil)
@@ -3909,19 +3913,19 @@ minor modes loaded later may override bindings in this map.")
   (global-set-key (kbd "C-k") 'nil)
   (global-set-key (kbd "C-l") 'nil)
   ;; (global-set-key (kbd "C-m") 'nil)
-  (global-set-key (kbd "C-n") 'xah-new-empty-buffer)
-  (global-set-key (kbd "C-o") 'find-file)
+  (global-set-key (kbd "C-n") #'xah-new-empty-buffer)
+  (global-set-key (kbd "C-o") #'find-file)
   (global-set-key (kbd "C-p") 'nil)
   ;; (global-set-key (kbd "C-q") 'nil)
   ;; (global-set-key (kbd "C-r") 'nil)
-  (global-set-key (kbd "C-s") 'save-buffer)
-  (global-set-key (kbd "C-t") 'hippie-expand)
+  (global-set-key (kbd "C-s") #'save-buffer)
+  (global-set-key (kbd "C-t") #'hippie-expand)
   ;; (global-set-key (kbd "C-u") 'nil)
-  (global-set-key (kbd "C-v") 'yank)
-  (global-set-key (kbd "C-w") 'xah-close-current-buffer)
+  (global-set-key (kbd "C-v") #'yank)
+  (global-set-key (kbd "C-w") #'xah-close-current-buffer)
   ;; (global-set-key (kbd "C-x") 'nil)
   ;; (global-set-key (kbd "C-y") 'nil)
-  (global-set-key (kbd "C-z") 'undo)
+  (global-set-key (kbd "C-z") #'undo)
 
   ;;
   )
@@ -4329,7 +4333,7 @@ minor modes loaded later may override bindings in this map.")
    ("n" . xref-pop-marker-stack)))
 
 (when (<= emacs-major-version 28)
-  (defalias 'execute-extended-command-for-buffer 'execute-extended-command))
+  (defalias 'execute-extended-command-for-buffer #'execute-extended-command))
 
 (xah-fly--define-keys
  (define-prefix-command 'xah-fly-leader-key-map)
@@ -4671,7 +4675,6 @@ Version: 2017-07-07"
   principles, like Dvorak layout.
 
 URL `http://xahlee.info/emacs/misc/xah-fly-keys.html'"
-  :group 'xah-fly-keys
   :global t
   :lighter " ∑flykeys"
   :keymap xah-fly-insert-map
