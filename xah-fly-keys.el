@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 17.23.20220911113118
+;; Version: 18.0.20220911124616
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -125,8 +125,9 @@
 ;; carpalx-qgmlwb
 ;; carpalx-qgmlwy
 ;; colemak
-;; colemak-mod-dh
-;; colemak-mod-dh-new
+;; colemak-dhm
+;; colemak-dhm-angle
+;; colemak-dhk
 ;; dvorak
 ;; koy
 ;; neo2
@@ -2963,65 +2964,96 @@ Version: 2017-01-29"
     ("z" . "/"))
   "A alist, similar to `xah--dvorak-to-qwerty-kmap'")
 
-(defvar xah--dvorak-to-colemak-mod-dh-kmap
+(defvar xah--dvorak-to-colemak-dhm-kmap
   '(("'" . "q")
     ("," . "w")
     ("." . "f")
-    ("y" . "b")
+    (";" . "z")
+    ("b" . "k")
+    ("c" . "u")
+    ("d" . "m")
+    ("e" . "s")
     ("f" . "j")
     ("g" . "l")
-    ("c" . "u")
-    ("r" . "y")
-    ("l" . ";")
-    ("o" . "r")
-    ("e" . "s")
-    ("u" . "t")
-    ("i" . "g")
-    ("d" . "k")
     ("h" . "n")
-    ("t" . "e")
-    ("n" . "i")
-    ("s" . "o")
-    (";" . "z")
-    ("q" . "x")
+    ("i" . "g")
     ("j" . "c")
     ("k" . "d")
-    ("x" . "v")
-    ("b" . "m")
+    ("l" . ";")
     ("m" . "h")
-    ("w" . ",")
+    ("n" . "i")
+    ("o" . "r")
+    ("q" . "x")
+    ("r" . "y")
+    ("s" . "o")
+    ("t" . "e")
+    ("u" . "t")
     ("v" . ".")
+    ("w" . ",")
+    ("x" . "v")
+    ("y" . "b")
     ("z" . "/"))
-  "A alist, similar to `xah--dvorak-to-qwerty-kmap'")
+  "A alist, similar to `xah--dvorak-to-qwerty-kmap'.")
 
-(defvar xah--dvorak-to-colemak-mod-dh-new-kmap
+(defvar xah--dvorak-to-colemak-dhm-angle-kmap
   '(("'" . "q")
     ("," . "w")
     ("." . "f")
-    ("y" . "b")
+    (";" . "x")
+    ("b" . "k")
+    ("c" . "u")
+    ("d" . "m")
+    ("e" . "s")
     ("f" . "j")
     ("g" . "l")
-    ("c" . "u")
-    ("r" . "y")
-    ("l" . ";")
-    ("o" . "r")
-    ("e" . "s")
-    ("u" . "t")
-    ("i" . "g")
-    ("d" . "m")
     ("h" . "n")
-    ("t" . "e")
-    ("n" . "i")
-    ("s" . "o")
-    (";" . "x")
-    ("q" . "c")
+    ("i" . "g")
     ("j" . "d")
     ("k" . "v")
-    ("x" . "\\")
-    ("b" . "k")
+    ("l" . ";")
     ("m" . "h")
-    ("w" . ",")
+    ("n" . "i")
+    ("o" . "r")
+    ("q" . "c")
+    ("r" . "y")
+    ("s" . "o")
+    ("t" . "e")
+    ("u" . "t")
     ("v" . ".")
+    ("w" . ",")
+    ("x" . "\\")
+    ("y" . "b")
+    ("z" . "/"))
+  "A alist, similar to `xah--dvorak-to-qwerty-kmap'. This is Colemak DHk layout with Angle mode.")
+
+(defvar xah--dvorak-to-colemak-dhk-kmap
+  '(("'" . "q")
+    ("," . "w")
+    ("." . "f")
+    (";" . "z")
+    ("b" . "m")
+    ("c" . "u")
+    ("d" . "k")
+    ("e" . "s")
+    ("f" . "j")
+    ("g" . "l")
+    ("h" . "n")
+    ("i" . "g")
+    ("j" . "c")
+    ("k" . "d")
+    ("l" . ";")
+    ("m" . "h")
+    ("n" . "i")
+    ("o" . "r")
+    ("q" . "x")
+    ("r" . "y")
+    ("s" . "o")
+    ("t" . "e")
+    ("u" . "t")
+    ("v" . ".")
+    ("w" . ",")
+    ("x" . "v")
+    ("y" . "b")
     ("z" . "/"))
   "A alist, similar to `xah--dvorak-to-qwerty-kmap'")
 
@@ -3590,12 +3622,13 @@ If the value is nil, it is automatically set to \"qwerty\"."
           (const :tag "Carpalx QFMLWY" carpalx-qfmlwy)
           (const :tag "Carpalx QGMLWB" carpalx-qgmlwb)
           (const :tag "Carpalx QGMLWY" carpalx-qgmlwy)
-          (const :tag "Colemak Mod-DH" colemak-mod-dh)
           (const :tag "Colemak" colemak)
+          (const :tag "Colemak DH" colemak-dhm)
+          (const :tag "Colemak DHm angle-mode" colemak-dhm-angle)
+          (const :tag "Colemak DHk" colemak-dhk)
           (const :tag "Dvorak" dvorak)
           (const :tag "Koy" koy)
           (const :tag "Neo2" neo2)
-          (const :tag "New Colemak Mod-DH with M on the home row" colemak-mod-dh-new)
           (const :tag "Norman" norman)
           (const :tag "PT-nativo" pt-nativo)
           (const :tag "Portuguese QWERTY (ABNT)" qwerty-abnt)
@@ -4553,8 +4586,9 @@ Argument must be one of:
  carpalx-qgmlwb
  carpalx-qgmlwy
  colemak
- colemak-mod-dh
- colemak-mod-dh-new
+ colemak-dhm
+ colemak-dhm-angle
+ colemak-dhk
  dvorak
  koy
  neo2
@@ -4569,7 +4603,7 @@ Argument must be one of:
 
 In elisp, those should be strings.
 
-Version: 2021-05-19 2021-09-17"
+Version: 2021-05-19 2021-09-17 2022-09-11 2022-09-11"
   (interactive
    (list
     (widget-prompt-value
