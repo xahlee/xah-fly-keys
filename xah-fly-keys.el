@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 18.0.20220911124616
+;; Version: 18.0.20220916203045
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2465,7 +2465,7 @@ File suffix is used to determine which program to run, set in the variable `xah-
 If the file is modified or not saved, save it automatically before run.
 
 URL `http://xahlee.info/emacs/emacs/elisp_run_current_file.html'
-Version: 2020-09-24 2022-05-16 2022-06-27 2022-08-12"
+Version: 2020-09-24 2022-05-16 2022-06-27 2022-08-12 2022-09-16"
   (interactive)
   (setenv "NO_COLOR" "1") ; 2022-09-10 for deno. default color has yellow parts, hard to see
   (when (not buffer-file-name) (save-buffer))
@@ -2484,7 +2484,7 @@ Version: 2020-09-24 2022-05-16 2022-06-27 2022-08-12"
     (setq $cmdStr
           (when $progName
             (format "%s %s &"
-                    (shell-quote-argument $progName)
+                    $progName
                     (shell-quote-argument $fname))))
     (when (buffer-modified-p) (save-buffer))
     (run-hooks 'xah-run-current-file-before-hook)
