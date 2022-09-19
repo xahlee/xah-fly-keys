@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 18.0.20220916203045
+;; Version: 18.0.20220918232928
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -250,38 +250,16 @@ Version: 2018-06-04 2021-03-16 2022-03-05"
         (end-of-visual-line)
       (end-of-line))))
 
-;; (defvar xah-brackets nil "A string, each pairs of chars is a left bracket and a matching right bracket, no space in between.")
+(defvar xah-brackets '("“”" "()" "[]" "{}" "<>" "＜＞" "（）" "［］" "｛｝" "⦅⦆" "〚〛" "⦃⦄" "‹›" "«»" "「」" "〈〉" "《》" "【】" "〔〕" "⦗⦘" "『』" "〖〗" "〘〙" "｢｣" "⟦⟧" "⟨⟩" "⟪⟫" "⟮⟯" "⟬⟭" "⌈⌉" "⌊⌋" "⦇⦈" "⦉⦊" "❛❜" "❝❞" "❨❩" "❪❫" "❴❵" "❬❭" "❮❯" "❰❱" "❲❳" "〈〉" "⦑⦒" "⧼⧽" "﹙﹚" "﹛﹜" "﹝﹞" "⁽⁾" "₍₎" "⦋⦌" "⦍⦎" "⦏⦐" "⁅⁆" "⸢⸣" "⸤⸥" "⟅⟆" "⦓⦔" "⦕⦖" "⸦⸧" "⸨⸩" "｟｠")
+  "A list of strings, each element is a string of 2 chars, the left bracket and a matching right bracket. Used by `xah-select-text-in-quote'.")
 
-;; (setq xah-brackets "“”()[]{}<>＜＞（）［］｛｝⦅⦆〚〛⦃⦄‹›«»「」〈〉《》【】〔〕⦗⦘『』〖〗〘〙｢｣⟦⟧⟨⟩⟪⟫⟮⟯⟬⟭⌈⌉⌊⌋⦇⦈⦉⦊❛❜❝❞❨❩❪❫❴❵❬❭❮❯❰❱❲❳〈〉⦑⦒⧼⧽﹙﹚﹛﹜﹝﹞⁽⁾₍₎⦋⦌⦍⦎⦏⦐⁅⁆⸢⸣⸤⸥⟅⟆⦓⦔⦕⦖⸦⸧⸨⸩｟｠")
+(defconst xah-left-brackets
+  (mapcar (lambda (x) (substring x 0 1)) xah-brackets)
+  "List of left bracket chars.")
 
-;; (progn
-;; ;; make xah-left-brackets based on xah-brackets
-;;   (setq xah-left-brackets '())
-;;   (dotimes ($x (- (length xah-brackets) 1))
-;;     (when (= (% $x 2) 0)
-;;       (push (char-to-string (elt xah-brackets $x))
-;;             xah-left-brackets)))
-;;   (setq xah-left-brackets (reverse xah-left-brackets)))
-
-;; (progn
-;;   (setq xah-right-brackets '())
-;;   (dotimes ($x (- (length xah-brackets) 1))
-;;     (when (= (% $x 2) 1)
-;;       (push (char-to-string (elt xah-brackets $x))
-;;             xah-right-brackets)))
-;;   (setq xah-right-brackets (reverse xah-right-brackets)))
-
-(defvar xah-brackets nil "A list of strings, each element is a string of 2 chars, the left bracket and a matching right bracket.")
-
-(setq xah-brackets '( "“”" "()" "[]" "{}" "<>" "＜＞" "（）" "［］" "｛｝" "⦅⦆" "〚〛" "⦃⦄" "‹›" "«»" "「」" "〈〉" "《》" "【】" "〔〕" "⦗⦘" "『』" "〖〗" "〘〙" "｢｣" "⟦⟧" "⟨⟩" "⟪⟫" "⟮⟯" "⟬⟭" "⌈⌉" "⌊⌋" "⦇⦈" "⦉⦊" "❛❜" "❝❞" "❨❩" "❪❫" "❴❵" "❬❭" "❮❯" "❰❱" "❲❳" "〈〉" "⦑⦒" "⧼⧽" "﹙﹚" "﹛﹜" "﹝﹞" "⁽⁾" "₍₎" "⦋⦌" "⦍⦎" "⦏⦐" "⁅⁆" "⸢⸣" "⸤⸥" "⟅⟆" "⦓⦔" "⦕⦖" "⸦⸧" "⸨⸩" "｟｠" ))
-
-(defvar xah-left-brackets nil "List of left bracket chars.")
-
-(setq xah-left-brackets (mapcar (lambda (x) (substring x 0 1)) xah-brackets ))
-
-(defvar xah-right-brackets nil "List of right bracket chars.")
-
-(setq xah-right-brackets (mapcar (lambda (x) (substring x 1 2)) xah-brackets ))
+(defconst xah-right-brackets
+  (mapcar (lambda (x) (substring x 1 2)) xah-brackets)
+  "List of right bracket chars.")
 
 (defconst xah-punctuation-regex "[!?\".,`'#$%&*+:;=@^|~]+"
   "A regex string for the purpose of moving cursor to a punctuation.")
@@ -2454,7 +2432,7 @@ Version: 2018-10-12"
     ("wl" . "wolframscript -file")
     ("wls" . "wolframscript -file")
     ("pov" . "povray +R2 +A0.1 +J1.2 +Am2 +Q9 +H480 +W640"))
-  "A association list that maps file extension to program name, used by `xah-run-current-file'. Each item is (ext . program), both strings. ext is file suffix (without the dot prefix), program is program name or path, with possibly command options. You can customize this alist.")
+  "A association list that maps file extension to program name, used by `xah-run-current-file'. Each item is (EXT . PROGRAM), both strings. EXT is file suffix (without the dot prefix), PROGRAM is program name or path, with possibly command options. You can customize this alist.")
 
 (defun xah-run-current-file ()
   "Execute the current file.
@@ -2465,7 +2443,7 @@ File suffix is used to determine which program to run, set in the variable `xah-
 If the file is modified or not saved, save it automatically before run.
 
 URL `http://xahlee.info/emacs/emacs/elisp_run_current_file.html'
-Version: 2020-09-24 2022-05-16 2022-06-27 2022-08-12 2022-09-16"
+Version: 2020-09-24 2022-08-12 2022-09-16 2022-09-18"
   (interactive)
   (setenv "NO_COLOR" "1") ; 2022-09-10 for deno. default color has yellow parts, hard to see
   (when (not buffer-file-name) (save-buffer))
@@ -2474,17 +2452,16 @@ Version: 2020-09-24 2022-05-16 2022-06-27 2022-08-12 2022-09-16"
          ($extAppMap xah-run-current-file-map)
          ($fname buffer-file-name)
          ($fExt (file-name-extension $fname))
-         ($progName (cdr (assoc $fExt $extAppMap)))
+         ($appCmdStr (cdr (assoc $fExt $extAppMap)))
          $cmdStr
          )
-
     ;; FIXME: Rather than `shell-command' with an `&', better use
     ;; `make-process' or `start-process' since we're not using the shell at all
     ;; (worse, we need to use `shell-quote-argument' to circumvent the shell).
     (setq $cmdStr
-          (when $progName
+          (when $appCmdStr
             (format "%s %s &"
-                    $progName
+                    $appCmdStr
                     (shell-quote-argument $fname))))
     (when (buffer-modified-p) (save-buffer))
     (run-hooks 'xah-run-current-file-before-hook)
@@ -2497,7 +2474,7 @@ Version: 2020-09-24 2022-05-16 2022-06-27 2022-08-12 2022-09-16"
       (if (fboundp 'xah-run-wolfram-script)
           (progn
             (xah-run-wolfram-script nil current-prefix-arg))
-        (if $progName
+        (if $appCmdStr
             (progn
               (message "Running")
               (shell-command $cmdStr $outBuffer))
@@ -2510,7 +2487,7 @@ Version: 2020-09-24 2022-05-16 2022-06-27 2022-08-12 2022-09-16"
         (shell-command (format "java %s" (file-name-sans-extension
                                           (file-name-nondirectory $fname)))
                        $outBuffer)))
-     (t (if $progName
+     (t (if $appCmdStr
             (progn
               (message "Running 「%s」" $cmdStr)
               (shell-command $cmdStr $outBuffer))
