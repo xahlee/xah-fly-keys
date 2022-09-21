@@ -26,35 +26,19 @@ create the dir if doesn't exist.
 put the following in your emacs init file:
 
 ```elisp
+
 (add-to-list 'load-path "~/.emacs.d/lisp/")
+
 (require 'xah-fly-keys)
-(xah-fly-keys-set-layout "qwerty") ; required
+
+;; specify a layout
+(xah-fly-keys-set-layout "qwerty")
+
+;; possible values
+;; adnw , azerty , azerty-be , beopy , bepo , carpalx-qfmlwy , carpalx-qgmlwb , carpalx-qgmlwy , colemak , colemak-dhm , colemak-dhm-angle , colemak-dhk , dvorak , koy , neo2 , norman , programer-dvorak , pt-nativo , qwerty , qwerty-abnt , qwerty-no (qwerty Norwegian) , qwertz , workman
+
+(xah-fly-keys 1)
 ```
-
-The following keyboard layouts are supported:
-
-* adnw
-* azerty
-* azerty-be
-* beopy
-* bepo
-* carpalx-qfmlwy
-* carpalx-qgmlwb
-* carpalx-qgmlwy
-* colemak
-* colemak-mod-dh
-* colemak-mod-dh-new
-* dvorak
-* koy
-* neo2
-* norman
-* programer-dvorak
-* pt-nativo
-* qwerty
-* qwerty-abnt
-* qwerty-no (qwerty Norwegian)
-* qwertz
-* workman
 
 Full Documentation
 -------------------
@@ -63,10 +47,6 @@ http://xahlee.info/emacs/misc/xah-fly-keys.html
 
 Been working on this since 2013, and since 2007 on ergoemacs-mode.
 
-Put in 5 bucks in my patreon.
-https://www.patreon.com/xahlee
-
-or https://paypal.com
-pay to xah@xahlee.org
+give me 5 bucks https://paypal.com pay to Xah@XahLee.org
 
 Thanks.
