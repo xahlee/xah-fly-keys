@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 18.0.20220918232928
+;; Version: 18.1.20220921110635
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -3888,7 +3888,7 @@ minor modes loaded later may override bindings in this map.")
 
   (global-set-key (kbd "<f7>") 'xah-fly-leader-key-map)
 
-  (global-set-key (kbd "C-1") 'nil)
+  ;; (global-set-key (kbd "C-1") 'nil)
   (global-set-key (kbd "C-2") #'pop-global-mark)
   (global-set-key (kbd "C-3") #'previous-error)
   (global-set-key (kbd "C-4") #'next-error)
@@ -3908,24 +3908,24 @@ minor modes loaded later may override bindings in this map.")
   (global-set-key (kbd "C-S-s") #'write-file)
   (global-set-key (kbd "C-S-t") #'xah-open-last-closed)
 
-  (global-set-key (kbd "C-@") 'nil)
+  ;; (global-set-key (kbd "C-@") 'nil)
 
   (global-set-key (kbd "C-a") #'mark-whole-buffer)
-  (global-set-key (kbd "C-b") 'nil)
+  ;; (global-set-key (kbd "C-b") 'nil)
   ;; (global-set-key (kbd "C-c") 'nil)
-  (global-set-key (kbd "C-d") 'nil)
-  (global-set-key (kbd "C-e") 'nil)
-  (global-set-key (kbd "C-f") 'nil)
+  ;; (global-set-key (kbd "C-d") 'nil)
+  ;; (global-set-key (kbd "C-e") 'nil)
+  ;; (global-set-key (kbd "C-f") 'nil)
   ;; (global-set-key (kbd "C-g") 'nil) ; cancel
   ;; (global-set-key (kbd "C-h") 'nil) ; help
   ;; (global-set-key (kbd "C-i") 'nil) ; tab
   ;; (global-set-key (kbd "C-j") 'nil) ; newline
-  (global-set-key (kbd "C-k") 'nil)
-  (global-set-key (kbd "C-l") 'nil)
+  ;; (global-set-key (kbd "C-k") 'nil)
+  ;; (global-set-key (kbd "C-l") 'nil)
   ;; (global-set-key (kbd "C-m") 'nil)
   (global-set-key (kbd "C-n") #'xah-new-empty-buffer)
   (global-set-key (kbd "C-o") #'find-file)
-  (global-set-key (kbd "C-p") 'nil)
+  ;; (global-set-key (kbd "C-p") 'nil)
   ;; (global-set-key (kbd "C-q") 'nil)
   ;; (global-set-key (kbd "C-r") 'nil)
   (global-set-key (kbd "C-s") #'save-buffer)
