@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 18.1.20220921110635
+;; Version: 18.2.20221004113716
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -251,15 +251,15 @@ Version: 2018-06-04 2021-03-16 2022-03-05"
       (end-of-line))))
 
 (defvar xah-brackets '("“”" "()" "[]" "{}" "<>" "＜＞" "（）" "［］" "｛｝" "⦅⦆" "〚〛" "⦃⦄" "‹›" "«»" "「」" "〈〉" "《》" "【】" "〔〕" "⦗⦘" "『』" "〖〗" "〘〙" "｢｣" "⟦⟧" "⟨⟩" "⟪⟫" "⟮⟯" "⟬⟭" "⌈⌉" "⌊⌋" "⦇⦈" "⦉⦊" "❛❜" "❝❞" "❨❩" "❪❫" "❴❵" "❬❭" "❮❯" "❰❱" "❲❳" "〈〉" "⦑⦒" "⧼⧽" "﹙﹚" "﹛﹜" "﹝﹞" "⁽⁾" "₍₎" "⦋⦌" "⦍⦎" "⦏⦐" "⁅⁆" "⸢⸣" "⸤⸥" "⟅⟆" "⦓⦔" "⦕⦖" "⸦⸧" "⸨⸩" "｟｠")
-  "A list of strings, each element is a string of 2 chars, the left bracket and a matching right bracket. Used by `xah-select-text-in-quote'.")
+  "A list of strings, each element is a string of 2 chars, the left bracket and a matching right bracket. Used by `xah-select-text-in-quote' and others.")
 
 (defconst xah-left-brackets
   (mapcar (lambda (x) (substring x 0 1)) xah-brackets)
-  "List of left bracket chars.")
+  "List of left bracket chars. Each element is a string.")
 
 (defconst xah-right-brackets
   (mapcar (lambda (x) (substring x 1 2)) xah-brackets)
-  "List of right bracket chars.")
+  "List of right bracket chars. Each element is a string.")
 
 (defconst xah-punctuation-regex "[!?\".,`'#$%&*+:;=@^|~]+"
   "A regex string for the purpose of moving cursor to a punctuation.")
@@ -385,7 +385,7 @@ When called repeatedly, append copy subsequent lines.
 When `universal-argument' is called first, copy whole buffer (respects `narrow-to-region').
 
 URL `http://xahlee.info/emacs/emacs/emacs_copy_cut_current_line.html'
-Version: 2019-10-30"
+Version: 2010-05-21 2022-10-03"
   (interactive)
   (let ((inhibit-field-text-motion nil))
     (if current-prefix-arg
@@ -421,7 +421,7 @@ Version: 2019-10-30"
 When `universal-argument' is called first, cut whole buffer (respects `narrow-to-region').
 
 URL `http://xahlee.info/emacs/emacs/emacs_copy_cut_current_line.html'
-Version: 2015-06-10"
+Version: 2010-05-21 2015-06-10"
   (interactive)
   (if current-prefix-arg
       (progn ; not using kill-region because we don't want to include previous kill
@@ -519,7 +519,7 @@ Version: 2019-12-02 2021-07-03"
 
 (defun xah-move-block-up ()
   "Swap the current text block with the previous.
-After this command is called, press - to repeat it.
+After this command is called, press <up> or <down> to move. Any other key to exit.
 Version 2022-03-04"
   (interactive)
   (let (($p0 (point))
@@ -548,14 +548,13 @@ Version 2022-03-04"
     (goto-char $p1)
     (set-transient-map
      (let (($kmap (make-sparse-keymap)))
-       (define-key $kmap (kbd "-") #'xah-move-block-up)
        (define-key $kmap (kbd "<up>") #'xah-move-block-up)
        (define-key $kmap (kbd "<down>") #'xah-move-block-down)
        $kmap))))
 
 (defun xah-move-block-down ()
   "Swap the current text block with the next.
-After this command is called, press - to repeat it.
+After this command is called, press <up> or <down> to move. Any other key to exit.
 Version 2022-03-04"
   (interactive)
   (let (($p0 (point))
@@ -584,7 +583,6 @@ Version 2022-03-04"
     (goto-char $n2))
   (set-transient-map
    (let (($kmap (make-sparse-keymap)))
-     (define-key $kmap (kbd "-") #'xah-move-block-down)
      (define-key $kmap (kbd "<up>") #'xah-move-block-up)
      (define-key $kmap (kbd "<down>") #'xah-move-block-down)
      $kmap)))
@@ -1229,6 +1227,7 @@ Version: 2021-07-05 2021-08-13 2022-03-12 2022-05-16"
 
 (defun xah-reformat-to-sentence-lines ()
   "Reformat current block or selection into multiple lines by ending period.
+Move cursor to the beginning of next text block.
 After this command is called, press - to repeat it.
 
 URL `http://xahlee.info/emacs/emacs/elisp_reformat_to_sentence_lines.html'
@@ -1650,7 +1649,7 @@ Version: 2015-12-08"
 See also: `xah-paste-from-register-1', `copy-to-register'.
 
 URL `http://xahlee.info/emacs/emacs/elisp_copy-paste_register_1.html'
-Version: 2017-01-23"
+Version: 2012-07-17 2022-10-03"
   (interactive)
   (let ($p1 $p2)
     (if (region-active-p)
