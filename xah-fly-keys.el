@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 18.2.20221004113716
+;; Version: 18.3.20221020112604
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -173,6 +173,10 @@
 (defcustom xah-fly-use-isearch-arrows t
   "If nil, no change to any key in isearch (`isearch-forward'). Otherwise, arrow keys are for moving between occurrences, and C-v is paste."
   :type 'boolean)
+
+(when (not (boundp 'xah-repeat-key))
+  (defvar xah-repeat-key nil "A key that some xah command use as a key to repeat the command, pressed right after command call. Value should be the same format that `kbd' returns. e.g. (kbd \"DEL\")")
+  (if xah-repeat-key nil (setq xah-repeat-key (kbd "DEL"))))
 
 (defun xah-get-bounds-of-block ()
   "Return the boundary (START . END) of current block.
@@ -1228,7 +1232,7 @@ Version: 2021-07-05 2021-08-13 2022-03-12 2022-05-16"
 (defun xah-reformat-to-sentence-lines ()
   "Reformat current block or selection into multiple lines by ending period.
 Move cursor to the beginning of next text block.
-After this command is called, press - to repeat it.
+After this command is called, press `xah-repeat-key' to repeat it (default to DEL (backspace)).
 
 URL `http://xahlee.info/emacs/emacs/elisp_reformat_to_sentence_lines.html'
 Version: 2020-12-02 2022-03-22"
@@ -1250,7 +1254,8 @@ Version: 2020-12-02 2022-03-22"
       (goto-char (point-max))
       (while (eq (char-before) 32) (delete-char -1))))
   (re-search-forward "\n+" nil 1)
-  (set-transient-map (let (($kmap (make-sparse-keymap))) (define-key $kmap (kbd "-") this-command) $kmap)))
+(set-transient-map (let (($kmap (make-sparse-keymap))) (define-key $kmap (or xah-repeat-key (kbd "DEL")) this-command) $kmap))
+  (set-transient-map (let (($kmap (make-sparse-keymap))) (define-key $kmap (kbd "DEL") this-command) $kmap)))
 
 (defun xah-space-to-newline ()
   "Replace space sequence to a newline char in current block or selection.
@@ -1543,14 +1548,14 @@ Version: 2016-10-04 2019-11-24 2022-05-16"
 
 (defun xah-cycle-hyphen-lowline-space (&optional Begin End)
   "Cycle hyphen/lowline/space chars in selection or inside quote/bracket or line, in that order.
-After this command is called, press - to repeat it.
+After this command is called, press `xah-repeat-key' to repeat it (default to DEL (backspace)).
 The region to work on is by this order:
  1. if there is a selection, use that.
  2. If cursor is string quote or any type of bracket, and is within current line, work on that region.
  3. else, work on current line.
 
 URL `http://xahlee.info/emacs/emacs/elisp_change_space-hyphen_underscore.html'
-Version: 2019-02-12 2021-08-20 2022-03-22"
+Version: 2019-02-12 2021-08-20 2022-03-22 2022-10-20"
   (interactive)
   ;; this function sets a property 'state. Possible values are 0 to length of $charArray.
   (let* ($p1
@@ -1581,7 +1586,7 @@ Version: 2019-02-12 2021-08-20 2022-03-22"
       (set-mark $p1)
       (setq deactivate-mark nil))
     (put 'xah-cycle-hyphen-lowline-space 'state (% (+ $nowState 1) $n)))
-  (set-transient-map (let (($kmap (make-sparse-keymap))) (define-key $kmap (kbd "-") this-command) $kmap)))
+  (set-transient-map (let (($kmap (make-sparse-keymap))) (define-key $kmap (or xah-repeat-key (kbd "DEL")) this-command) $kmap)))
 
 (defun xah-copy-file-path (&optional DirPathOnlyQ)
   "Copy current buffer file path or dired path.
@@ -1919,7 +1924,7 @@ The commpand will prompt for a start char, and number of chars to insert.
 The start char can be any char in Unicode.
 
 URL `http://xahlee.info/emacs/emacs/emacs_insert-alphabets.html'
-Version: 2019-03-07"
+Version: 2013-06-12 2019-03-07"
   (interactive)
   (let (
         ($startChar (string-to-char (read-string "Start char: " "a")))
@@ -2232,13 +2237,13 @@ Version: 2017-11-01 2022-04-05"
 Similar to `kill-buffer', with the following addition:
 
 • Prompt user to save if the buffer has been modified even if the buffer is not associated with a file.
-• If the buffer is editing a source file in an `org-mode' file, prompt the user to save before closing.
+• If the buffer is editing a source code file in an `org-mode' file, prompt the user to save before closing.
 • If the buffer is a file, add the path to the list `xah-recently-closed-buffers'.
 
 URL `http://xahlee.info/emacs/emacs/elisp_close_buffer_open_last_closed.html'
-Version: 2016-06-19 2021-07-01 2022-03-22 2022-05-13"
+Version: 2016-06-19 2022-05-13 2022-10-18"
   (interactive)
-  (let (($isOrgMode (string-match "^*Org Src" (buffer-name))))
+  (let (($isOrgModeSourceFile (string-match "^*Org Src" (buffer-name))))
     (if (active-minibuffer-window) ; if the buffer is minibuffer
         ;; (string-equal major-mode "minibuffer-inactive-mode")
         (minibuffer-keyboard-quit)
@@ -2254,7 +2259,7 @@ Version: 2016-06-19 2021-07-01 2022-03-22 2022-05-13"
               (save-buffer)
             (set-buffer-modified-p nil)))
         (when (and (buffer-modified-p)
-                   $isOrgMode)
+                   $isOrgModeSourceFile)
           (if (y-or-n-p (format "Buffer %s modified; Do you want to save? " (buffer-name)))
               (org-edit-src-save)
             (set-buffer-modified-p nil)))
@@ -3933,9 +3938,10 @@ minor modes loaded later may override bindings in this map.")
   (global-set-key (kbd "C-v") #'yank)
   (global-set-key (kbd "C-w") #'xah-close-current-buffer)
   ;; (global-set-key (kbd "C-x") 'nil)
-  ;; (global-set-key (kbd "C-y") 'nil)
-  (global-set-key (kbd "C-z") #'undo)
 
+  (when (>= emacs-major-version 28)
+    (global-set-key (kbd "C-y") #'undo-redo))
+  (global-set-key (kbd "C-z") #'undo)
   ;;
   )
 
@@ -4341,13 +4347,13 @@ minor modes loaded later may override bindings in this map.")
    ("t" . xref-find-definitions)
    ("n" . xref-pop-marker-stack)))
 
-(when (<= emacs-major-version 28)
+(when (< emacs-major-version 28)
   (defalias 'execute-extended-command-for-buffer #'execute-extended-command))
 
 (xah-fly--define-keys
  (define-prefix-command 'xah-fly-leader-key-map)
  '(("SPC" . xah-fly-insert-mode-activate)
-   ("RET" . execute-extended-command-for-buffer)
+   ("RET" . execute-extended-command)
    ("TAB" . xah-fly--tab-key-map)
 
    ("." . xah-fly-Lp2p1-key-map)
@@ -4637,6 +4643,7 @@ Version: 2022-07-06"
   (interactive)
   (when (buffer-file-name)
     (save-buffer)))
+
 
 (defun xah-fly-command-mode-activate ()
   "Activate command mode and run `xah-fly-command-mode-activate-hook'
