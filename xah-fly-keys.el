@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 18.3.20221022083525
+;; Version: 19.0.20221022121446
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -138,6 +138,8 @@
 ;; qwerty-no (qwerty Norwegian)
 ;; qwertz
 ;; workman
+
+;; supported layouts are stored as the keys in xah-fly-layouts
 
 ;; (xah-fly-keys 1)
 
@@ -2767,891 +2769,182 @@ Version: 2017-01-29"
     (delete-other-windows)))
 
 
-;; key maps for conversion
+;; layout lookup tables for key conversion
 
-(defvar xah--dvorak-to-azerty-kmap
-  '(("." . "e")
-    ("," . "z")
-    ("'" . "a")
-    (";" . "w")
-    ("/" . "^") ; NOTE: this is a dead key
-    ("[" . ")")
-    ("]" . "=")
-    ("=" . "$")
-    ("-" . "ù")
-    ("a" . "q")
-    ("b" . "n")
-    ("c" . "i")
-    ("d" . "h")
-    ("e" . "d")
-    ("f" . "y")
-    ("g" . "u")
-    ("h" . "j")
-    ("i" . "g")
-    ("j" . "c")
-    ("k" . "v")
-    ("l" . "p")
-    ("m" . ",")
-    ("n" . "l")
-    ("o" . "s")
-    ("p" . "r")
-    ("q" . "x")
-    ("r" . "o")
-    ("s" . "m")
-    ("t" . "k")
-    ("u" . "f")
-    ("v" . ":")
-    ("w" . ";")
-    ("x" . "b")
-    ("y" . "t")
-    ("z" . "!")
-    ("1" . "&")
-    ("2" . "é")
-    ("3" . "\"")
-    ("4" . "'")
-    ("5" . "(")
-    ("6" . "-")
-    ("7" . "è")
-    ("8" . "_")
-    ("9" . "ç")
-    ("0" . "à")
-    ("\\" . "*")
-    ("`" . "²"))
-  "A alist, similar to `xah--dvorak-to-qwerty-kmap'")
+(defvar xah-fly-layouts nil "A alist.
+Key is layout name, string type.
+Value is a alist, each element is of the form (\"e\" . \"d\").
+First char is Dvorak, second is corresponding char of the destination layout.
+When a char is not in this alist, they are assumed to be the same. ")
 
-(defvar xah--dvorak-to-azerty-be-kmap
-  '(("." . "e")
-    ("," . "z")
-    ("'" . "a")
-    (";" . "w")
-    ("/" . "^") ; NOTE: this is a dead key
-    ("[" . ")")
-    ("]" . "-")
-    ("=" . "$")
-    ("-" . "ù")
-    ("a" . "q")
-    ("b" . "n")
-    ("c" . "i")
-    ("d" . "h")
-    ("e" . "d")
-    ("f" . "y")
-    ("g" . "u")
-    ("h" . "j")
-    ("i" . "g")
-    ("j" . "c")
-    ("k" . "v")
-    ("l" . "p")
-    ("m" . ",")
-    ("n" . "l")
-    ("o" . "s")
-    ("p" . "r")
-    ("q" . "x")
-    ("r" . "o")
-    ("s" . "m")
-    ("t" . "k")
-    ("u" . "f")
-    ("v" . ":")
-    ("w" . ";")
-    ("x" . "b")
-    ("y" . "t")
-    ("z" . "=")
-    ("1" . "&")
-    ("2" . "é")
-    ("3" . "\"")
-    ("4" . "'")
-    ("5" . "(")
-    ("6" . "§")
-    ("7" . "è")
-    ("8" . "!")
-    ("9" . "ç")
-    ("0" . "à")
-    ("\\" . "µ")
-    ("`" . "²"))
-  "A alist, similar to `xah--dvorak-to-qwerty-kmap'")
+(push
+ '("azerty" . '(("." . "e") ("," . "z") ("'" . "a") (";" . "w") ("/" . "^") ("[" . ")")
+   ("]" . "=") ("=" . "$") ("-" . "ù") ("a" . "q") ("b" . "n") ("c" . "i")
+   ("d" . "h") ("e" . "d") ("f" . "y") ("g" . "u") ("h" . "j") ("i" . "g")
+   ("j" . "c") ("k" . "v") ("l" . "p") ("m" . ",") ("n" . "l") ("o" . "s")
+   ("p" . "r") ("q" . "x") ("r" . "o") ("s" . "m") ("t" . "k") ("u" . "f")
+   ("v" . ":") ("w" . ";") ("x" . "b") ("y" . "t") ("z" . "!") ("1" . "&")
+   ("2" . "é") ("3" . "\"") ("4" . "'") ("5" . "(") ("6" . "-") ("7" . "è")
+   ("8" . "_") ("9" . "ç") ("0" . "à") ("\\" . "*") ("`" . "²")))
+ ;; NOTE: / is a dead key
+ xah-fly-layouts)
 
-(defvar xah--dvorak-to-beopy-kmap
-  '(("." . "o")
-    ("," . "é")
-    ("'" . "b")
-    (";" . "à")
-    ("/" . "k")
-    ("[" . "=")
-    ("]" . "%")
-    ("=" . "z")
-    ("-" . "m")
-    ("b" . "'")
-    ("c" . "d")
-    ("d" . "c")
-    ("f" . "^"); NOTE: this is a dead key
-    ("g" . "v")
-    ("h" . "t")
-    ("i" . ",")
-    ("j" . "x")
-    ("k" . ".")
-    ("l" . "j")
-    ("m" . "g")
-    ("n" . "r")
-    ("o" . "u")
-    ("q" . "è")
-    ("r" . "l")
-    ("s" . "n")
-    ("t" . "s")
-    ("u" . "i")
-    ("v" . "h")
-    ("w" . "q")
-    ("x" . "w")
-    ("z" . "f")
-    ("1" . "\"")
-    ("2" . "«")
-    ("3" . "»")
-    ("4" . "(")
-    ("5" . ")")
-    ("6" . "@")
-    ("7" . "+")
-    ("8" . "-")
-    ("9" . "/")
-    ("0" . "*")
-    ("\\" . "ç")
-    ("`" . "$")))
+(push
+ '("azerty-be" . '(("." . "e") ("," . "z") ("'" . "a") (";" . "w") ("/" . "^") ("[" . ")") ("]" . "-") ("=" . "$") ("-" . "ù") ("a" . "q") ("b" . "n") ("c" . "i") ("d" . "h") ("e" . "d") ("f" . "y") ("g" . "u") ("h" . "j") ("i" . "g") ("j" . "c") ("k" . "v") ("l" . "p") ("m" . ",") ("n" . "l") ("o" . "s") ("p" . "r") ("q" . "x") ("r" . "o") ("s" . "m") ("t" . "k") ("u" . "f") ("v" . ":") ("w" . ";") ("x" . "b") ("y" . "t") ("z" . "=") ("1" . "&") ("2" . "é") ("3" . "\"") ("4" . "'") ("5" . "(") ("6" . "§") ("7" . "è") ("8" . "!") ("9" . "ç") ("0" . "à") ("\\" . "µ") ("`" . "²")))
+ ;; NOTE: / is a dead key
+xah-fly-layouts)
 
-(defvar xah--dvorak-to-colemak-kmap
-  '(("'" . "q")
-    ("," . "w")
-    ("." . "f")
-    ("y" . "g")
-    ("f" . "j")
-    ("g" . "l")
-    ("c" . "u")
-    ("r" . "y")
-    ("l" . ";")
-    ("o" . "r")
-    ("e" . "s")
-    ("u" . "t")
-    ("i" . "d")
-    ("d" . "h")
-    ("h" . "n")
-    ("t" . "e")
-    ("n" . "i")
-    ("s" . "o")
-    (";" . "z")
-    ("q" . "x")
-    ("j" . "c")
-    ("k" . "v")
-    ("x" . "b")
-    ("b" . "k")
-    ("w" . ",")
-    ("v" . ".")
-    ("z" . "/"))
-  "A alist, similar to `xah--dvorak-to-qwerty-kmap'")
+(push
+  ;; NOTE: f is a dead key
+ '("beopy" . '(("." . "o") ("," . "é") ("'" . "b") (";" . "à") ("/" . "k") ("[" . "=") ("]" . "%") ("=" . "z") ("-" . "m") ("b" . "'") ("c" . "d") ("d" . "c") ("f" . "^") ("g" . "v") ("h" . "t") ("i" . ",") ("j" . "x") ("k" . ".") ("l" . "j") ("m" . "g") ("n" . "r") ("o" . "u") ("q" . "è") ("r" . "l") ("s" . "n") ("t" . "s") ("u" . "i") ("v" . "h") ("w" . "q") ("x" . "w") ("z" . "f") ("1" . "\"") ("2" . "«") ("3" . "»") ("4" . "(") ("5" . ")") ("6" . "@") ("7" . "+") ("8" . "-") ("9" . "/") ("0" . "*") ("\\" . "ç") ("`" . "$")))
+ xah-fly-layouts)
 
-(defvar xah--dvorak-to-colemak-dhm-kmap
-  '(("'" . "q")
-    ("," . "w")
-    ("." . "f")
-    (";" . "z")
-    ("b" . "k")
-    ("c" . "u")
-    ("d" . "m")
-    ("e" . "s")
-    ("f" . "j")
-    ("g" . "l")
-    ("h" . "n")
-    ("i" . "g")
-    ("j" . "c")
-    ("k" . "d")
-    ("l" . ";")
-    ("m" . "h")
-    ("n" . "i")
-    ("o" . "r")
-    ("q" . "x")
-    ("r" . "y")
-    ("s" . "o")
-    ("t" . "e")
-    ("u" . "t")
-    ("v" . ".")
-    ("w" . ",")
-    ("x" . "v")
-    ("y" . "b")
-    ("z" . "/"))
-  "A alist, similar to `xah--dvorak-to-qwerty-kmap'.")
+(push
+ '("colemak" . '(("'" . "q") ("," . "w") ("." . "f") ("y" . "g") ("f" . "j") ("g" . "l") ("c" . "u") ("r" . "y") ("l" . ";") ("o" . "r") ("e" . "s") ("u" . "t") ("i" . "d") ("d" . "h") ("h" . "n") ("t" . "e") ("n" . "i") ("s" . "o") (";" . "z") ("q" . "x") ("j" . "c") ("k" . "v") ("x" . "b") ("b" . "k") ("w" . ",") ("v" . ".") ("z" . "/")))
+ xah-fly-layouts)
 
-(defvar xah--dvorak-to-colemak-dhm-angle-kmap
-  '(("'" . "q")
-    ("," . "w")
-    ("." . "f")
-    (";" . "x")
-    ("b" . "k")
-    ("c" . "u")
-    ("d" . "m")
-    ("e" . "s")
-    ("f" . "j")
-    ("g" . "l")
-    ("h" . "n")
-    ("i" . "g")
-    ("j" . "d")
-    ("k" . "v")
-    ("l" . ";")
-    ("m" . "h")
-    ("n" . "i")
-    ("o" . "r")
-    ("q" . "c")
-    ("r" . "y")
-    ("s" . "o")
-    ("t" . "e")
-    ("u" . "t")
-    ("v" . ".")
-    ("w" . ",")
-    ("x" . "\\")
-    ("y" . "b")
-    ("z" . "/"))
-  "A alist, similar to `xah--dvorak-to-qwerty-kmap'. This is Colemak DHk layout with Angle mode.")
+(push
+ '("colemak-dhm" . '(("'" . "q") ("," . "w") ("." . "f") (";" . "z") ("b" . "k") ("c" . "u") ("d" . "m") ("e" . "s") ("f" . "j") ("g" . "l") ("h" . "n") ("i" . "g") ("j" . "c") ("k" . "d") ("l" . ";") ("m" . "h") ("n" . "i") ("o" . "r") ("q" . "x") ("r" . "y") ("s" . "o") ("t" . "e") ("u" . "t") ("v" . ".") ("w" . ",") ("x" . "v") ("y" . "b") ("z" . "/")))
+ xah-fly-layouts)
 
-(defvar xah--dvorak-to-colemak-dhk-kmap
-  '(("'" . "q")
-    ("," . "w")
-    ("." . "f")
-    (";" . "z")
-    ("b" . "m")
-    ("c" . "u")
-    ("d" . "k")
-    ("e" . "s")
-    ("f" . "j")
-    ("g" . "l")
-    ("h" . "n")
-    ("i" . "g")
-    ("j" . "c")
-    ("k" . "d")
-    ("l" . ";")
-    ("m" . "h")
-    ("n" . "i")
-    ("o" . "r")
-    ("q" . "x")
-    ("r" . "y")
-    ("s" . "o")
-    ("t" . "e")
-    ("u" . "t")
-    ("v" . ".")
-    ("w" . ",")
-    ("x" . "v")
-    ("y" . "b")
-    ("z" . "/"))
-  "A alist, similar to `xah--dvorak-to-qwerty-kmap'")
+(push
+ '("colemak-dhm-angle" . '(("'" . "q") ("," . "w") ("." . "f") (";" . "x") ("b" . "k") ("c" . "u") ("d" . "m") ("e" . "s") ("f" . "j") ("g" . "l") ("h" . "n") ("i" . "g") ("j" . "d") ("k" . "v") ("l" . ";") ("m" . "h") ("n" . "i") ("o" . "r") ("q" . "c") ("r" . "y") ("s" . "o") ("t" . "e") ("u" . "t") ("v" . ".") ("w" . ",") ("x" . "\\") ("y" . "b") ("z" . "/")))
+ xah-fly-layouts)
 
-(defvar xah--dvorak-to-dvorak-kmap nil "A alist, dvorak to dvorak.")
+(push
+ '("colemak-dhk" . '(("'" . "q") ("," . "w") ("." . "f") (";" . "z") ("b" . "m") ("c" . "u") ("d" . "k") ("e" . "s") ("f" . "j") ("g" . "l") ("h" . "n") ("i" . "g") ("j" . "c") ("k" . "d") ("l" . ";") ("m" . "h") ("n" . "i") ("o" . "r") ("q" . "x") ("r" . "y") ("s" . "o") ("t" . "e") ("u" . "t") ("v" . ".") ("w" . ",") ("x" . "v") ("y" . "b") ("z" . "/")))
+xah-fly-layouts)
 
-(defvar xah--dvorak-to-programer-dvorak-kmap
-  '(
+(push
+ '("dvorak" . nil)
+ xah-fly-layouts)
+
+(push
+ '("programer-dvorak" . '(
     ;; number row
-    ("`" . "$")
-    ("1" . "&")
-    ("2" . "[")
-    ("3" . "{")
-    ("4" . "}")
-    ("5" . "(")
-    ("6" . "=")
-    ("7" . "*")
-    ("8" . ")")
-    ("9" . "+")
-    ("0" . "]")
-    ("[" . "!")
-    ("]" . "#")
+ ("`" . "$") ("1" . "&") ("2" . "[") ("3" . "{") ("4" . "}") ("5" . "(") ("6" . "=") ("7" . "*") ("8" . ")") ("9" . "+") ("0" . "]") ("[" . "!") ("]" . "#")
     ;; number row, shifted
-    ("!" . "%")
-    ("@" . "7")
-    ("#" . "5")
-    ("$" . "3")
-    ("%" . "1")
-    ("^" . "9")
-    ("&" . "0")
-    ("*" . "2")
-    ("(" . "4")
-    (")" . "6")
-    ("{" . "8")
-    ("}" . "`")
+ ("!" . "%") ("@" . "7") ("#" . "5") ("$" . "3") ("%" . "1") ("^" . "9") ("&" . "0") ("*" . "2") ("(" . "4") (")" . "6") ("{" . "8") ("}" . "`")
     ;; left pinky outwards
-    ("'" . ";")
-    ("\"" . ":")
+ ("'" . ";") ("\"" . ":")
     ;; left pinky inwards
-    (";" . "'")
-    (":" . "\"")
+ (";" . "'") (":" . "\"")
     ;; right pinky outwards-sideways
-    ("=" . "@")
-    ("+" . "^")
-    )
-  "A alist, similar to `xah--dvorak-to-qwerty-kmap'")
+ ("=" . "@") ("+" . "^") ))
+ xah-fly-layouts)
 
-(defvar xah--dvorak-to-qwerty-kmap
-  '(("." . "e")
-    ("," . "w")
-    ("'" . "q")
-    (";" . "z")
-    ("/" . "[")
-    ("[" . "-")
-    ("]" . "=")
-    ("=" . "]")
-    ("-" . "'")
-    ("a" . "a")
-    ("b" . "n")
-    ("c" . "i")
-    ("d" . "h")
-    ("e" . "d")
-    ("f" . "y")
-    ("g" . "u")
-    ("h" . "j")
-    ("i" . "g")
-    ("j" . "c")
-    ("k" . "v")
-    ("l" . "p")
-    ("n" . "l")
-    ("o" . "s")
-    ("p" . "r")
-    ("q" . "x")
-    ("r" . "o")
-    ("s" . ";")
-    ("t" . "k")
-    ("u" . "f")
-    ("v" . ".")
-    ("w" . ",")
-    ("x" . "b")
-    ("y" . "t")
-    ("z" . "/"))
-  "A alist, each element is of the form(\"e\" . \"d\"). First char is
-Dvorak, second is corresponding QWERTY. Not all chars are in the
-list, such as digits. When not in this alist, they are assumed to be
-the same.")
+(push
+ '("qwerty" . '(("." . "e") ("," . "w") ("'" . "q") (";" . "z") ("/" . "[") ("[" . "-") ("]" . "=") ("=" . "]") ("-" . "'") ("a" . "a") ("b" . "n") ("c" . "i") ("d" . "h") ("e" . "d") ("f" . "y") ("g" . "u") ("h" . "j") ("i" . "g") ("j" . "c") ("k" . "v") ("l" . "p") ("n" . "l") ("o" . "s") ("p" . "r") ("q" . "x") ("r" . "o") ("s" . ";") ("t" . "k") ("u" . "f") ("v" . ".") ("w" . ",") ("x" . "b") ("y" . "t") ("z" . "/")))
+ xah-fly-layouts)
 
-(defvar xah--dvorak-to-qwerty-no-kmap
-  '(("." . "e")
-    ("," . "w")
-    ("'" . "q")
-    (";" . "z")
-    ("/" . "å")
-    ("[" . "+")
-    ("]" . "´") ; NOTE: this is a dead key
-    ("=" . "¨") ; NOTE: this is a dead key
-    ("-" . "æ")
-    ("b" . "n")
-    ("c" . "i")
-    ("d" . "h")
-    ("e" . "d")
-    ("f" . "y")
-    ("g" . "u")
-    ("h" . "j")
-    ("i" . "g")
-    ("j" . "c")
-    ("k" . "v")
-    ("l" . "p")
-    ("n" . "l")
-    ("o" . "s")
-    ("p" . "r")
-    ("q" . "x")
-    ("r" . "o")
-    ("s" . "ø")
-    ("t" . "k")
-    ("u" . "f")
-    ("v" . ".")
-    ("w" . ",")
-    ("x" . "b")
-    ("y" . "t")
-    ("z" . "-"))
-  "A alist, similar to `xah--dvorak-to-qwerty-kmap'")
+(push
+;; QWERTY Norwegian
+;; NOTE: ] is a dead key
+;; NOTE: = is a dead key
+ '("qwerty-no" . '(("." . "e") ("," . "w") ("'" . "q") (";" . "z") ("/" . "å") ("[" . "+") ("]" . "´") ("=" . "¨") ("-" . "æ") ("b" . "n") ("c" . "i") ("d" . "h") ("e" . "d") ("f" . "y") ("g" . "u") ("h" . "j") ("i" . "g") ("j" . "c") ("k" . "v") ("l" . "p") ("n" . "l") ("o" . "s") ("p" . "r") ("q" . "x") ("r" . "o") ("s" . "ø") ("t" . "k") ("u" . "f") ("v" . ".") ("w" . ",") ("x" . "b") ("y" . "t") ("z" . "-")))
+ xah-fly-layouts)
 
-(defvar xah--dvorak-to-qwerty-abnt-kmap
-  '(("." . "e")
-    ("," . "w")
-    ("'" . "q")
-    (";" . "z")
-    ("/" . "'")
-    ("[" . "-")
-    ("]" . "=")
-    ("=" . "[")
-    ("-" . "~")
-    ("b" . "n")
-    ("c" . "i")
-    ("d" . "h")
-    ("e" . "d")
-    ("f" . "y")
-    ("g" . "u")
-    ("h" . "j")
-    ("i" . "g")
-    ("j" . "c")
-    ("k" . "v")
-    ("l" . "p")
-    ("n" . "l")
-    ("o" . "s")
-    ("p" . "r")
-    ("q" . "x")
-    ("r" . "o")
-    ("s" . "ç")
-    ("t" . "k")
-    ("u" . "f")
-    ("v" . ".")
-    ("w" . ",")
-    ("x" . "b")
-    ("y" . "t")
-    ("z" . ";"))
-  "A alist, similar to `xah--dvorak-to-qwerty-kmap'")
+(push
+ '("qwerty-abnt" . '(("." . "e") ("," . "w") ("'" . "q") (";" . "z") ("/" . "'") ("[" . "-") ("]" . "=") ("=" . "[") ("-" . "~") ("b" . "n") ("c" . "i") ("d" . "h") ("e" . "d") ("f" . "y") ("g" . "u") ("h" . "j") ("i" . "g") ("j" . "c") ("k" . "v") ("l" . "p") ("n" . "l") ("o" . "s") ("p" . "r") ("q" . "x") ("r" . "o") ("s" . "ç") ("t" . "k") ("u" . "f") ("v" . ".") ("w" . ",") ("x" . "b") ("y" . "t") ("z" . ";")))
+ xah-fly-layouts)
 
-(defvar xah--dvorak-to-qwertz-kmap
-  '(("." . "e")
-    ("," . "w")
-    ("'" . "q")
-    (";" . "y")
-    ("/" . "ü")
-    ("[" . "ß")
-    ("]" . "´")
-    ("=" . "+")
-    ("-" . "ä")
-    ("b" . "n")
-    ("c" . "i")
-    ("d" . "h")
-    ("e" . "d")
-    ("f" . "z")
-    ("g" . "u")
-    ("h" . "j")
-    ("i" . "g")
-    ("j" . "c")
-    ("k" . "v")
-    ("l" . "p")
-    ("n" . "l")
-    ("o" . "s")
-    ("p" . "r")
-    ("q" . "x")
-    ("r" . "o")
-    ("s" . "ö")
-    ("t" . "k")
-    ("u" . "f")
-    ("v" . ".")
-    ("w" . ",")
-    ("x" . "b")
-    ("y" . "t")
-    ("z" . "-"))
-  "A alist, similar to `xah--dvorak-to-qwerty-kmap'")
+(push
+ '("qwertz" . '(("." . "e") ("," . "w") ("'" . "q") (";" . "y") ("/" . "ü") ("[" . "ß") ("]" . "´") ("=" . "+") ("-" . "ä") ("b" . "n") ("c" . "i") ("d" . "h") ("e" . "d") ("f" . "z") ("g" . "u") ("h" . "j") ("i" . "g") ("j" . "c") ("k" . "v") ("l" . "p") ("n" . "l") ("o" . "s") ("p" . "r") ("q" . "x") ("r" . "o") ("s" . "ö") ("t" . "k") ("u" . "f") ("v" . ".") ("w" . ",") ("x" . "b") ("y" . "t") ("z" . "-")))
+ xah-fly-layouts)
 
-(defvar xah--dvorak-to-workman-kmap
-  '(("'" . "q")
-    ("," . "d")
-    ("." . "r")
-    ("p" . "w")
-    ("y" . "b")
-    ("f" . "j")
-    ("g" . "f")
-    ("c" . "u")
-    ("r" . "p")
-    ("l" . ";")
-    ("o" . "s")
-    ("e" . "h")
-    ("u" . "t")
-    ("i" . "g")
-    ("d" . "y")
-    ("h" . "n")
-    ("t" . "e")
-    ("n" . "o")
-    ("s" . "i")
-    (";" . "z")
-    ("q" . "x")
-    ("j" . "m")
-    ("k" . "c")
-    ("x" . "v")
-    ("b" . "k")
-    ("m" . "l")
-    ("w" . ",")
-    ("v" . ".")
-    ("z" . "/"))
-  "A alist, similar to `xah--dvorak-to-qwerty-kmap'")
+(push
+ '("workman" . '(("'" . "q") ("," . "d") ("." . "r") ("p" . "w") ("y" . "b") ("f" . "j") ("g" . "f") ("c" . "u") ("r" . "p") ("l" . ";") ("o" . "s") ("e" . "h") ("u" . "t") ("i" . "g") ("d" . "y") ("h" . "n") ("t" . "e") ("n" . "o") ("s" . "i") (";" . "z") ("q" . "x") ("j" . "m") ("k" . "c") ("x" . "v") ("b" . "k") ("m" . "l") ("w" . ",") ("v" . ".") ("z" . "/")))
+ xah-fly-layouts)
 
-(defvar xah--dvorak-to-norman-kmap
-  '(
-    ("'" . "q")
-    ("," . "w")
-    ("." . "d")
-    ("p" . "f")
-    ("y" . "k")
+(push
+ '("norman" . '( ("'" . "q") ("," . "w") ("." . "d") ("p" . "f") ("y" . "k") ("f" . "j") ("g" . "u") ("c" . "r") ("r" . "l") ("l" . ";") ("o" . "s") ("u" . "t") ("i" . "g") ("d" . "y") ("h" . "n") ("t" . "i") ("n" . "o") ("s" . "h") (";" . "z") ("q" . "x") ("j" . "c") ("k" . "v") ("x" . "b") ("b" . "p") ("w" . ",") ("v" . ".") ("z" . "/")))
+ xah-fly-layouts)
 
-    ("f" . "j")
-    ("g" . "u")
-    ("c" . "r")
-    ("r" . "l")
-    ("l" . ";")
+(push
+ '("neo2" . '(
+ ("'" . "x") ("," . "v") ("." . "l") ("p" . "c") ("y" . "w")
+ ("f" . "k") ("g" . "h") ("c" . "g") ("r" . "f") ("l" . "q")
+ ("a" . "u") ("o" . "i") ("e" . "a") ("u" . "e") ("i" . "o")
+ ("d" . "s") ("h" . "n") ("t" . "r") ("n" . "t") ("s" . "d")
+ (";" . "ü") ("q" . "ö") ("j" . "ä") ("k" . "p") ("x" . "z")
+ ("w" . ",") ("v" . ".") ("z" . "j")
+ ("/" . "ß") ("[" . "-") ("-" . "y")))
+ xah-fly-layouts)
 
-    ("o" . "s")
-    ("u" . "t")
-    ("i" . "g")
+(push
+ '("koy" . '( ("'" . "k") ("," . ".") ("." . "o") ("p" . ",")
+    ("f" . "v") ("r" . "l") ("l" . "ß")
+    ("a" . "h") ("o" . "a") ("u" . "i") ("i" . "u")
+    ("h" . "t") ("t" . "r")
+    (";" . "x") ("j" . "ä") ("k" . "ü") ("x" . "ö")
+ ("m" . "p") ("v" . "m") ("z" . "j")))
+ xah-fly-layouts)
 
-    ("d" . "y")
-    ("h" . "n")
-    ("t" . "i")
-    ("n" . "o")
-    ("s" . "h")
+(push
+ '("adnw" . '(
+ ("'" . "k") ("," . "u") ("." . "ü") ("p" . ".") ("y" . "ä")
+ ("f" . "v") ("r" . "l") ("l" . "j") ("/" . "f")
+ ("a" . "h") ("o" . "i") ("u" . "a") ("i" . "o")
+ ("h" . "t") ("t" . "r") ("-" . "ß")
+ (";" . "x") ("q" . "y") ("j" . "ö") ("k" . ",") ("x" . "q")
+    ("m" . "p") ("v" . "m")))
+ xah-fly-layouts)
 
-    (";" . "z")
-    ("q" . "x")
-    ("j" . "c")
-    ("k" . "v")
-    ("x" . "b")
+(push
+ '("pt-nativo" . '( (";" . "«") ("/" . "~") ("[" . "º") ("]" . "<") ("=" . "-") ("-" . "´") ("a" . "i") ("b" . "q") ("c" . "t") ("d" . "m") ("e" . "a") ("f" . "w") ("g" . "l") ("h" . "d") ("i" . "u") ("k" . "b") ("l" . "p") ("m" . "v") ("n" . "r") ("o" . "e") ("p" . "h") ("q" . "ç") ("r" . "c") ("s" . "n") ("t" . "s") ("u" . "o") ("v" . "f") ("w" . "g") ("x" . "k") ("y" . "x")))
+ xah-fly-layouts)
 
-    ("b" . "p")
-    ("w" . ",")
-    ("v" . ".")
-    ("z" . "/"))
-  "A alist, similar to `xah--dvorak-to-qwerty-kmap'")
+(push
+ '("carpalx-qgmlwy" . '(("." . "m") ("," . "g") ("'" . "q") (";" . "z") ("/" . "[") ("[" . "-") ("]" . "=") ("=" . "]") ("-" . "'") ("a" . "d") ("b" . "k") ("c" . "u") ("d" . "i") ("e" . "t") ("f" . "y") ("g" . "f") ("h" . "a") ("i" . "r") ("j" . "c") ("k" . "v") ("l" . ";") ("m" . "p") ("n" . "o") ("o" . "s") ("p" . "l") ("q" . "x") ("r" . "b") ("s" . "h") ("t" . "e") ("u" . "n") ("v" . ".") ("w" . ",") ("x" . "j") ("y" . "w") ("z" . "/")))
+ xah-fly-layouts)
 
-(defvar xah--dvorak-to-neo2-kmap
-  '(
-    ("'" . "x")
-    ("," . "v")
-    ("." . "l")
-    ("p" . "c")
-    ("y" . "w")
+(push
+ '("carpalx-qgmlwb" . '(("." . "m") ("," . "g") ("'" . "q") (";" . "z") ("/" . "[") ("[" . "-") ("]" . "=") ("=" . "]") ("-" . "'") ("a" . "d") ("b" . "k") ("c" . "u") ("d" . "i") ("e" . "t") ("f" . "b") ("g" . "y") ("h" . "a") ("i" . "r") ("j" . "c") ("k" . "f") ("l" . ";") ("m" . "p") ("n" . "o") ("o" . "s") ("p" . "l") ("q" . "x") ("r" . "v") ("s" . "h") ("t" . "e") ("u" . "n") ("v" . ".") ("w" . ",") ("x" . "j") ("y" . "w") ("z" . "/")))
+xah-fly-layouts)
 
-    ("f" . "k")
-    ("g" . "h")
-    ("c" . "g")
-    ("r" . "f")
-    ("l" . "q")
+(push
+ '("carpalx-qfmlwy" . '(("." . "m") ("," . "f") ("'" . "q") (";" . "z") ("/" . "[") ("[" . "-") ("]" . "=") ("=" . "]") ("-" . "'") ("a" . "d") ("b" . "p") ("c" . "o") ("d" . "i") ("e" . "t") ("f" . "y") ("g" . "u") ("h" . "a") ("i" . "r") ("j" . "g") ("k" . "c") ("l" . "j") ("m" . "k") ("n" . "h") ("o" . "s") ("p" . "l") ("q" . "v") ("r" . "b") ("s" . ";") ("t" . "e") ("u" . "n") ("v" . ".") ("w" . ",") ("y" . "w") ("z" . "/")))
+ xah-fly-layouts)
 
-    ("a" . "u")
-    ("o" . "i")
-    ("e" . "a")
-    ("u" . "e")
-    ("i" . "o")
+(push
+ '("bepo" . '(("'" . "b") ("," . "é") ("." . "p") ("p" . "o") ("y" . "è")
+   ("f" . "^") ("g" . "v") ("c" . "d") ("r" . "l") ("l" . "j")
+   ("o" . "u") ("e" . "i") ("u" . "e") ("i" . ",")
+   ("d" . "c") ("h" . "t") ("t" . "s") ("n" . "r") ("s" . "n")
+   (":" . "à") ("q" . "y") ("j" . "x") ("k" . ".") ("x" . "k")
+   ("b" . "’") ("m" . "q") ("w" . "g") ("v" . "h") ("z" . "f")
+   ("3" . "»") ("4" . "(") ("5" . ")") ("6" . "@") ("7" . "+") ("8" . "-") ("9" . "/")))
+ ;; NOTE f is a dead key
+ xah-fly-layouts)
 
-    ("d" . "s")
-    ("h" . "n")
-    ("t" . "r")
-    ("n" . "t")
-    ("s" . "d")
+(defvar xah-fly-key-current-layout nil
+  "The current keyboard layout. Value is a key in `xah-fly-layouts'.
+Do not set this variable manually. Use `xah-fly-keys-set-layout' to set it.
+If the value is nil, it is automatically set to \"qwerty\".
+When this variable changes, suitable change must also be done to `xah-fly--key-convert-table'.
+Version 2022-10-22")
 
-    (";" . "ü")
-    ("q" . "ö")
-    ("j" . "ä")
-    ("k" . "p")
-    ("x" . "z")
+(if xah-fly-key-current-layout nil (setq xah-fly-key-current-layout "qwerty"))
 
-    ("w" . ",")
-    ("v" . ".")
-    ("z" . "j")
+(defvar xah-fly--key-convert-table nil
+  "A alist that's the conversion table from dvorak to current layout.
+Value structure is one of the key's value of `xah-fly-layouts'.
+Value is programtically set from value of `xah-fly-key-current-layout'.
+Do not manually set this variable.
+Version: 2019-02-12 2022-10-22" )
 
-    ("/" . "ß")
-    ("[" . "-")
-    ("-" . "y"))
-  "A alist, similar to `xah--dvorak-to-qwerty-kmap'")
-
-(defvar xah--dvorak-to-koy-kmap
-  '(
-    ("'" . "k")
-    ("," . ".")
-    ("." . "o")
-    ("p" . ",")
-
-    ("f" . "v")
-    ("r" . "l")
-    ("l" . "ß")
-
-    ("a" . "h")
-    ("o" . "a")
-    ("u" . "i")
-    ("i" . "u")
-
-    ("h" . "t")
-    ("t" . "r")
-
-    (";" . "x")
-    ("j" . "ä")
-    ("k" . "ü")
-    ("x" . "ö")
-
-    ("m" . "p")
-    ("v" . "m")
-    ("z" . "j"))
-  "A alist, similar to `xah--dvorak-to-qwerty-kmap'")
-
-(defvar xah--dvorak-to-adnw-kmap
-  '(
-    ("'" . "k")
-    ("," . "u")
-    ("." . "ü")
-    ("p" . ".")
-    ("y" . "ä")
-
-    ("f" . "v")
-    ("r" . "l")
-    ("l" . "j")
-    ("/" . "f")
-
-    ("a" . "h")
-    ("o" . "i")
-    ("u" . "a")
-    ("i" . "o")
-
-    ("h" . "t")
-    ("t" . "r")
-    ("-" . "ß")
-
-    (";" . "x")
-    ("q" . "y")
-    ("j" . "ö")
-    ("k" . ",")
-    ("x" . "q")
-
-    ("m" . "p")
-    ("v" . "m"))
-  "A alist, similar to `xah--dvorak-to-qwerty-kmap'")
-
-(defvar xah--dvorak-to-pt-nativo-kmap
-  '((";" . "«")
-    ("/" . "~")
-    ("[" . "º")
-    ("]" . "<")
-    ("=" . "-")
-    ("-" . "´")
-    ("a" . "i")
-    ("b" . "q")
-    ("c" . "t")
-    ("d" . "m")
-    ("e" . "a")
-    ("f" . "w")
-    ("g" . "l")
-    ("h" . "d")
-    ("i" . "u")
-    ("k" . "b")
-    ("l" . "p")
-    ("m" . "v")
-    ("n" . "r")
-    ("o" . "e")
-    ("p" . "h")
-    ("q" . "ç")
-    ("r" . "c")
-    ("s" . "n")
-    ("t" . "s")
-    ("u" . "o")
-    ("v" . "f")
-    ("w" . "g")
-    ("x" . "k")
-    ("y" . "x"))
-  "A alist, similar to `xah--dvorak-to-qwerty-kmap'"
-  )
-
-(defvar xah--dvorak-to-carpalx-qgmlwy-kmap
-  '(("." . "m")
-    ("," . "g")
-    ("'" . "q")
-    (";" . "z")
-    ("/" . "[")
-    ("[" . "-")
-    ("]" . "=")
-    ("=" . "]")
-    ("-" . "'")
-    ("a" . "d")
-    ("b" . "k")
-    ("c" . "u")
-    ("d" . "i")
-    ("e" . "t")
-    ("f" . "y")
-    ("g" . "f")
-    ("h" . "a")
-    ("i" . "r")
-    ("j" . "c")
-    ("k" . "v")
-    ("l" . ";")
-    ("m" . "p")
-    ("n" . "o")
-    ("o" . "s")
-    ("p" . "l")
-    ("q" . "x")
-    ("r" . "b")
-    ("s" . "h")
-    ("t" . "e")
-    ("u" . "n")
-    ("v" . ".")
-    ("w" . ",")
-    ("x" . "j")
-    ("y" . "w")
-    ("z" . "/"))
-  "A alist, similar to `xah--dvorak-to-qwerty-kmap'")
-
-(defvar xah--dvorak-to-carpalx-qgmlwb-kmap
-  '(("." . "m")
-    ("," . "g")
-    ("'" . "q")
-    (";" . "z")
-    ("/" . "[")
-    ("[" . "-")
-    ("]" . "=")
-    ("=" . "]")
-    ("-" . "'")
-    ("a" . "d")
-    ("b" . "k")
-    ("c" . "u")
-    ("d" . "i")
-    ("e" . "t")
-    ("f" . "b")
-    ("g" . "y")
-    ("h" . "a")
-    ("i" . "r")
-    ("j" . "c")
-    ("k" . "f")
-    ("l" . ";")
-    ("m" . "p")
-    ("n" . "o")
-    ("o" . "s")
-    ("p" . "l")
-    ("q" . "x")
-    ("r" . "v")
-    ("s" . "h")
-    ("t" . "e")
-    ("u" . "n")
-    ("v" . ".")
-    ("w" . ",")
-    ("x" . "j")
-    ("y" . "w")
-    ("z" . "/"))
-  "A alist, similar to `xah--dvorak-to-qwerty-kmap'")
-
-(defvar xah--dvorak-to-carpalx-qfmlwy-kmap
-  '(("." . "m")
-    ("," . "f")
-    ("'" . "q")
-    (";" . "z")
-    ("/" . "[")
-    ("[" . "-")
-    ("]" . "=")
-    ("=" . "]")
-    ("-" . "'")
-    ("a" . "d")
-    ("b" . "p")
-    ("c" . "o")
-    ("d" . "i")
-    ("e" . "t")
-    ("f" . "y")
-    ("g" . "u")
-    ("h" . "a")
-    ("i" . "r")
-    ("j" . "g")
-    ("k" . "c")
-    ("l" . "j")
-    ("m" . "k")
-    ("n" . "h")
-    ("o" . "s")
-    ("p" . "l")
-    ("q" . "v")
-    ("r" . "b")
-    ("s" . ";")
-    ("t" . "e")
-    ("u" . "n")
-    ("v" . ".")
-    ("w" . ",")
-    ("y" . "w")
-    ("z" . "/"))
-  "A alist, similar to `xah--dvorak-to-qwerty-kmap'")
-
-(defvar xah--dvorak-to-bepo-kmap
-  '(("'" . "b")
-    ("," . "é")
-    ("." . "p")
-    ("p" . "o")
-    ("y" . "è")
-
-    ("f" . "^") ; NOTE: dead key
-    ("g" . "v")
-    ("c" . "d")
-    ("r" . "l")
-    ("l" . "j")
-
-    ("o" . "u")
-    ("e" . "i")
-    ("u" . "e")
-    ("i" . ",")
-
-    ("d" . "c")
-    ("h" . "t")
-    ("t" . "s")
-    ("n" . "r")
-    ("s" . "n")
-
-    (":" . "à")
-    ("q" . "y")
-    ("j" . "x")
-    ("k" . ".")
-    ("x" . "k")
-
-    ("b" . "’")
-    ("m" . "q")
-    ("w" . "g")
-    ("v" . "h")
-    ("z" . "f")
-
-    ("3" . "»")
-    ("4" . "(")
-    ("5" . ")")
-    ("6" . "@")
-    ("7" . "+")
-    ("8" . "-")
-    ("9" . "/"))
-  "A alist, similar to `xah--dvorak-to-qwerty-kmap'")
-
-(defcustom xah-fly-key-current-layout nil
-  "The current keyboard layout. Use `xah-fly-keys-set-layout' to set the layout.
-If the value is nil, it is automatically set to \"qwerty\"."
-  :type '(choice
-          (const :tag "AZERTY" azerty)
-          (const :tag "Adnw" adnw)
-          (const :tag "BEOPY" beopy)
-          (const :tag "BEPO" bepo)
-          (const :tag "Belgian AZERTY" azerty-be)
-          (const :tag "Carpalx QFMLWY" carpalx-qfmlwy)
-          (const :tag "Carpalx QGMLWB" carpalx-qgmlwb)
-          (const :tag "Carpalx QGMLWY" carpalx-qgmlwy)
-          (const :tag "Colemak" colemak)
-          (const :tag "Colemak DH" colemak-dhm)
-          (const :tag "Colemak DHm angle-mode" colemak-dhm-angle)
-          (const :tag "Colemak DHk" colemak-dhk)
-          (const :tag "Dvorak" dvorak)
-          (const :tag "Koy" koy)
-          (const :tag "Neo2" neo2)
-          (const :tag "Norman" norman)
-          (const :tag "PT-nativo" pt-nativo)
-          (const :tag "Portuguese QWERTY (ABNT)" qwerty-abnt)
-          (const :tag "Programmer Dvorak" programer-dvorak)
-          (const :tag "QWERTY Norwegian" qwerty-no)
-          (const :tag "QWERTY" qwerty)
-          (const :tag "QWERTZ" qwertz)
-          (const :tag "Workman" workman))
-  :set (lambda (Layout-var New-layout)
-         ;; Only reload xah-fly-keys if it was already loaded and the new layout is different:
-         (if (and (featurep 'xah-fly-keys)
-                  (not (eq New-layout (symbol-value Layout-var))))
-             (progn
-               (set Layout-var New-layout)
-               (load "xah-fly-keys"))
-           (set Layout-var New-layout))))
-(if xah-fly-key-current-layout nil (setq xah-fly-key-current-layout 'qwerty))
-
-(defvar xah-fly--current-layout-kmap nil
-  "The current keyboard layout key map. Value is a alist. e.g. the
-value of `xah--dvorak-to-qwerty-kmap'. Value is automatically set from
-value of `xah-fly-key-current-layout'. Do not manually set this
-variable.
-Version: 2019-02-12."
-  )
-(setq xah-fly--current-layout-kmap
-      (symbol-value
-       (intern
-        (concat "xah--dvorak-to-"
-                (if (symbolp xah-fly-key-current-layout)
-                    (symbol-name xah-fly-key-current-layout)
-                  xah-fly-key-current-layout)
-                "-kmap"))))
+(setq xah-fly--key-convert-table
+      (cdr (assoc xah-fly-key-current-layout xah-fly-layouts)))
 
 (defun xah-fly--key-char (Charstr)
   "Return the corresponding char Charstr according to
-`xah-fly--current-layout-kmap'. Charstr must be a string of single
+`xah-fly--key-convert-table'. Charstr must be a string of single
 char. If more than 1 char, return it unchanged.
 Version: 2020-04-18"
   (interactive)
   (if (> (length Charstr) 1)
       Charstr
-    (let (($result (assoc Charstr xah-fly--current-layout-kmap)))
+    (let (($result (assoc Charstr xah-fly--key-convert-table)))
       (if $result (cdr $result) Charstr ))))
 
 (defmacro xah-fly--define-keys (KeymapName KeyCmdAlist &optional DirectQ)
@@ -4556,43 +3849,19 @@ minor modes loaded later may override bindings in this map.")
 
 (defun xah-fly-keys-set-layout (Layout)
   "Set a keyboard layout.
-Argument must be one of:
-
- adnw
- azerty
- azerty-be
- beopy
- bepo
- carpalx-qfmlwy
- carpalx-qgmlwb
- carpalx-qgmlwy
- colemak
- colemak-dhm
- colemak-dhm-angle
- colemak-dhk
- dvorak
- koy
- neo2
- norman
- programer-dvorak
- pt-nativo
- qwerty
- qwerty-abnt
- qwerty-no (qwerty Norwegian)
- qwertz
- workman
-
-In elisp, those should be strings.
-
-Version: 2021-05-19 2021-09-17 2022-09-11 2022-09-11"
-  (interactive
-   (list
-    (widget-prompt-value
-     (get 'xah-fly-key-current-layout 'custom-type)
-     "New keyboard layout: ")))
-  (funcall (get 'xah-fly-key-current-layout 'custom-set)
-           'xah-fly-key-current-layout
-           Layout))
+Argument must be one of the key name in `xah-fly-layouts'
+Version: 2021-05-19 2022-09-11 2022-10-22"
+  (interactive)
+  (let (($newlout
+         (cond
+          ((stringp Layout) Layout)
+          ((symbolp Layout) (symbol-name Layout))
+          (t (user-error "Layout %s must be a string." Layout)))))
+    (setq xah-fly-key-current-layout $newlout)
+    (setq xah-fly--key-convert-table
+      (cdr (assoc xah-fly-key-current-layout xah-fly-layouts)))
+    ;; (load "xah-fly-keys")
+    ))
 
 (defun xah-fly-space-key ()
   "Switch to command mode if the char before cursor is a space.
@@ -4642,7 +3911,6 @@ Version: 2022-07-06"
   (interactive)
   (when (buffer-file-name)
     (save-buffer)))
-
 
 (defun xah-fly-command-mode-activate ()
   "Activate command mode and run `xah-fly-command-mode-activate-hook'
