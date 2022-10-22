@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 18.3.20221020112604
+;; Version: 18.3.20221022083525
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -40,12 +40,11 @@
 
 ;; "SPC SPC" also activates insertion mode.
 
-;; "SPC RET" calls `execute-extended-command-for-buffer' (if emacs
-;; 28), else `execute-extended-command'.
+;; "SPC RET" calls `execute-extended-command'.
 
 ;; "a" calls `execute-extended-command'.
 
-;; The leader key sequence basically replace ALL emacs commands that
+;; The leader key sequence basically supplant ALL emacs commands that
 ;; starts with C-x key.
 
 ;; When using xah-fly-keys, you don't need to press Control or Meta,
