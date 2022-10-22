@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 19.0.20221022121446
+;; Version: 19.1.20221022134515
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -3856,12 +3856,14 @@ Version: 2021-05-19 2022-09-11 2022-10-22"
          (cond
           ((stringp Layout) Layout)
           ((symbolp Layout) (symbol-name Layout))
-          (t (user-error "Layout %s must be a string." Layout)))))
+          (t (user-error "Layout %s must be a string." Layout))))
+        ($oldlout xah-fly-key-current-layout))
     (setq xah-fly-key-current-layout $newlout)
     (setq xah-fly--key-convert-table
-      (cdr (assoc xah-fly-key-current-layout xah-fly-layouts)))
-    ;; (load "xah-fly-keys")
-    ))
+          (cdr (assoc xah-fly-key-current-layout xah-fly-layouts)))
+    (when (and (featurep 'xah-fly-keys)
+               (not (string-equal $oldlout $newlout)))
+      (load "xah-fly-keys"))))
 
 (defun xah-fly-space-key ()
   "Switch to command mode if the char before cursor is a space.
