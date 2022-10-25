@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 19.1.20221022135313
+;; Version: 19.2.20221025102337
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -3339,8 +3339,8 @@ minor modes loaded later may override bindings in this map.")
    ("f" . xah-open-recently-closed)
    ("g" . xah-open-in-terminal)
    ("h" . recentf-open-files)
-   ("i" . xah-copy-file-path)
-   ("j" . nil)
+   ("i" . nil)
+   ("j" . xah-copy-file-path)
    ("k" . nil)
    ("l" . bookmark-set)
    ("m" . nil)
