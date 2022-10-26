@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 19.2.20221025102337
+;; Version: 20.0.20221025214709
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2819,6 +2819,10 @@ xah-fly-layouts)
  '("dvorak" . nil)
  xah-fly-layouts)
 
+ ;(push
+ ;'("dvorakxah" . (("a" . "b") ("b" . "a") ))
+;xah-fly-layouts)
+
 (push
  '("programer-dvorak" . (
     ;; number row
@@ -2934,38 +2938,41 @@ Version: 2019-02-12 2022-10-22" )
 (setq xah-fly--key-convert-table
       (cdr (assoc xah-fly-key-current-layout xah-fly-layouts)))
 
-(defun xah-fly--key-char (Charstr)
+(defun xah-fly--convert-kbd-str (Charstr)
   "Return the corresponding char Charstr according to
-`xah-fly--key-convert-table'. Charstr must be a string of single
-char. If more than 1 char, return it unchanged.
-Version: 2020-04-18"
+`xah-fly--key-convert-table'. Charstr must be a string that is the argument to `kbd'. e.g. \"a\" and \"a b c\"
+Each space separated token is converted according to `xah-fly--key-convert-table'.
+Version: 2022-10-25"
   (interactive)
-  (if (> (length Charstr) 1)
-      Charstr
-    (let (($result (assoc Charstr xah-fly--key-convert-table)))
-      (if $result (cdr $result) Charstr ))))
+  (mapconcat
+   'identity
+   (mapcar
+    (lambda (x)
+      (let (($result (assoc x xah-fly--key-convert-table)))
+        (if $result (cdr $result) x)))
+    (split-string Charstr " +"))
+   " "))
 
 (defmacro xah-fly--define-keys (KeymapName KeyCmdAlist &optional DirectQ)
   "Map `define-key' over a alist KeyCmdAlist, with key layout remap.
 The key is remapped from Dvorak to the current keyboard layout
-by `xah-fly--key-char'.
+by `xah-fly--convert-kbd-str'.
 If DirectQ is t, do not remap key to current keyboard layout.
 Example usage:
 ;; (xah-fly--define-keys
-;;  (define-prefix-command \\='xah-fly-Lp2p1-key-map)
+;;  (define-prefix-command \\='xyz-map)
 ;;  \\='(
 ;;    (\"h\" . highlight-symbol-at-point)
 ;;    (\".\" . isearch-forward-symbol-at-point)
-;;    (\"1\" . hi-lock-find-patterns)
 ;;    (\"w\" . isearch-forward-word)))
-Version: 2020-04-18"
+Version: 2020-04-18 2022-10-25"
   (let (($keymapName (make-symbol "keymap-name")))
     `(let ((,$keymapName , KeymapName))
        ,@(mapcar
           (lambda ($pair)
             `(define-key
                ,$keymapName
-               (kbd (,(if DirectQ #'identity #'xah-fly--key-char) ,(car $pair)))
+               (kbd (,(if DirectQ #'identity #'xah-fly--convert-kbd-str) ,(car $pair)))
                ,(list 'quote (cdr $pair))))
           (cadr KeyCmdAlist)))))
 
@@ -2994,13 +3001,10 @@ Define keys that are available in both command and insert modes here, like
 (defvar xah-fly-command-map (cons 'keymap xah-fly-shared-map)
   "Keymap that takes precedence over all other keymaps in command mode.
 
-Inherits bindings from `xah-fly-shared-map'. In command mode, if no binding
-is found in this map `xah-fly-shared-map' is checked, then if there is
-still no binding, the other active keymaps are checked like normal. However,
-if a key is explicitly bound to nil in this map, it will not be looked
-up in `xah-fly-shared-map' and lookup will skip directly to the normally
-active maps. In this way, bindings in `xah-fly-shared-map' can be disabled
-by this map.
+Inherits bindings from `xah-fly-shared-map'.
+In command mode, if no binding is found in this map `xah-fly-shared-map' is checked, then if there is still no binding, the other active keymaps are checked like normal.
+However, if a key is explicitly bound to nil in this map, it will not be looked up in `xah-fly-shared-map' and lookup will skip directly to the normally active maps.
+In this way, bindings in `xah-fly-shared-map' can be disabled by this map.
 
 Effectively, this map takes precedence over all others when command mode
 is enabled.")
@@ -3265,7 +3269,7 @@ minor modes loaded later may override bindings in this map.")
 
 ;; commands related to highlight
 (xah-fly--define-keys
- (define-prefix-command 'xah-fly-Lp2p1-key-map)
+ (define-prefix-command 'xah-fly-dot-key-map)
  ;; 2019-02-22 experiment. this is now empty. so you can use this key space for all major mode custom keys or personal keys. These highlight command isn't used much in my experience
  '(
    ("." . highlight-symbol-at-point)
@@ -3275,7 +3279,7 @@ minor modes loaded later may override bindings in this map.")
    ("t" . highlight-phrase)
    ("e" . isearch-forward-symbol-at-point)
    ("u" . isearch-forward-symbol)
-   ("p " . isearch-forward-word)
+   ("p" . isearch-forward-word)
    ))
 
 (xah-fly--define-keys
@@ -3309,7 +3313,7 @@ minor modes loaded later may override bindings in this map.")
 
 
 (xah-fly--define-keys
- (define-prefix-command 'xah-fly-Rp2p1-key-map)
+ (define-prefix-command 'xah-fly-c-key-map)
  ;; dvorak c
  '(
    ;;
@@ -3362,7 +3366,7 @@ minor modes loaded later may override bindings in this map.")
    ))
 
 (xah-fly--define-keys
- (define-prefix-command 'xah-fly-Lp2p0-key-map)
+ (define-prefix-command 'xah-fly-e-key-map)
  ;; dvorak e
  '(
    ;;
@@ -3413,7 +3417,7 @@ minor modes loaded later may override bindings in this map.")
    ))
 
 (xah-fly--define-keys
- (define-prefix-command 'xah-fly-Rp1p0-key-map)
+ (define-prefix-command 'xah-fly-h-key-map)
  ;; dvorak h
  '(
    ;; ',.
@@ -3447,7 +3451,7 @@ minor modes loaded later may override bindings in this map.")
 
 (xah-fly--define-keys
  ;; commands here are “harmless”, they don't modify text etc. they turn on modes, change display, prompt, start shell, etc.
- (define-prefix-command 'xah-fly-Rp3p0-key-map)
+ (define-prefix-command 'xah-fly-n-key-map)
  ;; dvorak n
  '(
    ;;
@@ -3496,7 +3500,7 @@ minor modes loaded later may override bindings in this map.")
 
 (xah-fly--define-keys
  ;; kinda replacement related
- (define-prefix-command 'xah-fly-Rp3p1-key-map)
+ (define-prefix-command 'xah-fly-r-key-map)
  ;; dvorak r
  '(
    ;;
@@ -3547,7 +3551,7 @@ minor modes loaded later may override bindings in this map.")
    ))
 
 (xah-fly--define-keys
- (define-prefix-command 'xah-fly-Rp2p0-key-map)
+ (define-prefix-command 'xah-fly-t-key-map)
  ;; dvorak t
  '(
    ;;
@@ -3602,7 +3606,7 @@ minor modes loaded later may override bindings in this map.")
    ))
 
 (xah-fly--define-keys
- (define-prefix-command 'xah-fly-Rp2n1-key-map)
+ (define-prefix-command 'xah-fly-w-key-map)
  ;; dvorak w
  '(
    ;;
@@ -3632,7 +3636,7 @@ minor modes loaded later may override bindings in this map.")
 
 (xah-fly--define-keys
  ;; kinda replacement related
- (define-prefix-command 'xah-fly-Lp3p1-key-map)
+ (define-prefix-command 'xah-fly-comma-key-map)
  '(
    ("t" . xref-find-definitions)
    ("n" . xref-pop-marker-stack)))
@@ -3646,9 +3650,20 @@ minor modes loaded later may override bindings in this map.")
    ("RET" . execute-extended-command)
    ("TAB" . xah-fly--tab-key-map)
 
-   ("." . xah-fly-Lp2p1-key-map)
+   ;; ("." . xah-fly-dot-key-map)
+
+   ("." . nil)
+   (". ." . highlight-symbol-at-point)
+   (". g" . unhighlight-regexp)
+   (". c" . highlight-lines-matching-regexp)
+   (". h" . highlight-regexp)
+   (". t" . highlight-phrase)
+   (". e" . isearch-forward-symbol-at-point)
+   (". u" . isearch-forward-symbol)
+   (". p" . isearch-forward-word)
+
    ("'" . xah-fill-or-unfill)
-   ("," . xah-fly-Lp3p1-key-map)
+   ("," . xah-fly-comma-key-map)
    ;; - / ; = [
    ("\\" . toggle-input-method)
    ;; `
@@ -3666,27 +3681,28 @@ minor modes loaded later may override bindings in this map.")
 
    ("a" . mark-whole-buffer)
    ("b" . end-of-buffer)
-   ("c" . xah-fly-Rp2p1-key-map)
+   ("c" . xah-fly-c-key-map)
+
    ("d" . beginning-of-buffer)
-   ("e" . xah-fly-Lp2p0-key-map)
+   ("e" . xah-fly-e-key-map)
    ("f" . xah-search-current-word)
    ("g" . xah-close-current-buffer)
-   ("h" . xah-fly-Rp1p0-key-map)
+   ("h" . xah-fly-h-key-map)
    ("i" . kill-line)
    ("j" . xah-copy-all-or-region)
    ("k" . nil)
    ("l" . recenter-top-bottom)
    ("m" . dired-jump)
-   ("n" . xah-fly-Rp3p0-key-map)
+   ("n" . xah-fly-n-key-map)
    ("o" . exchange-point-and-mark)
    ("p" . query-replace)
    ("q" . xah-cut-all-or-region)
-   ("r" . xah-fly-Rp3p1-key-map)
+   ("r" . xah-fly-r-key-map)
    ("s" . save-buffer)
-   ("t" . xah-fly-Rp2p0-key-map)
+   ("t" . xah-fly-t-key-map)
    ("u" . switch-to-buffer)
    ("v" . nil)
-   ("w" . xah-fly-Rp2n1-key-map)
+   ("w" . xah-fly-w-key-map)
    ("x" . xah-toggle-previous-letter-case)
    ("y" . xah-show-kill-ring)
    ("z" . nil)
