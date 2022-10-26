@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 20.0.20221025214709
+;; Version: 21.0.20221026102048
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2819,10 +2819,6 @@ xah-fly-layouts)
  '("dvorak" . nil)
  xah-fly-layouts)
 
- ;(push
- ;'("dvorakxah" . (("a" . "b") ("b" . "a") ))
-;xah-fly-layouts)
-
 (push
  '("programer-dvorak" . (
     ;; number row
@@ -3032,8 +3028,6 @@ minor modes loaded later may override bindings in this map.")
 (xah-fly--define-keys
  xah-fly-command-map
  '(
-   ("~" . nil)
-   (":" . nil)
 
    ("SPC" . xah-fly-leader-key-map)
    ("'" . xah-reformat-lines)
@@ -3042,16 +3036,15 @@ minor modes loaded later may override bindings in this map.")
    ("." . backward-kill-word)
    (";" . xah-comment-dwim)
    ("/" . hippie-expand)
-   ("\\" . nil)
-   ("=" . nil)
+
    ("[" . xah-backward-punct )
    ("]" . xah-forward-punct)
    ("`" . other-frame)
 
    ;; ("$" . xah-forward-punct)
 
-   ("1" . xah-extend-selection)
-   ("2" . xah-select-line)
+   ("1" . undefined)
+   ("2" . undefined)
    ("3" . delete-other-windows)
    ("4" . split-window-below)
    ("5" . delete-char)
@@ -3256,370 +3249,6 @@ minor modes loaded later may override bindings in this map.")
 
 
 
-;; 2022-04-03 There's a new notation for key, based on finger.
-;; For example the qwerty e key is Lp2p1.
-;; The notation is like this: [left or rigt hand][column number][row number].
-;; L means left hand, R means right hand
-;; Column position, pointing finger is 1, index is 2, ring finger is 3, pinky is 4, and so on in that direction. Thumb is 0. In the thumb direction is -1, -2 etc.
-;; Row position, home row is 0. Above is 1, below is -1.
-;; Positive number are written with p in front. Eg p1, p2. Zero is p0. Negative can be written with n in front, eg n1, n2.
-;; This system is a notation system for keyboard physical layout, which also indicates associated finger for that key.
-;; The advantage is that it's a logical system, not based on arbitrary table lookup.
-;; Qwerty, dvorak, etc can then be mapped to this logical system.
-
-;; commands related to highlight
-(xah-fly--define-keys
- (define-prefix-command 'xah-fly-dot-key-map)
- ;; 2019-02-22 experiment. this is now empty. so you can use this key space for all major mode custom keys or personal keys. These highlight command isn't used much in my experience
- '(
-   ("." . highlight-symbol-at-point)
-   ("g" . unhighlight-regexp)
-   ("c" . highlight-lines-matching-regexp)
-   ("h" . highlight-regexp)
-   ("t" . highlight-phrase)
-   ("e" . isearch-forward-symbol-at-point)
-   ("u" . isearch-forward-symbol)
-   ("p" . isearch-forward-word)
-   ))
-
-(xah-fly--define-keys
- (define-prefix-command 'xah-fly--tab-key-map)
- ;; This keymap I've not used. things are here experimentally.
- ;; The TAB key is not in a very good ergonomic position on average keyboards, so 【leader tab ‹somekey›】 probably should not be used much.
- ;; Currently (2018-03-13), these are commands related to completion or indent, and I basically never use any of these (except sometimes complete-symbol).
- ;; For average user, the way it is now is probably justified, because most emacs users don't use these commands.
- ;; To customize this keymap see http://xahlee.info/emacs/misc/xah-fly-keys_customization.html.
- '(
-   ("TAB" . indent-for-tab-command)
-
-   ("i" . complete-symbol)
-   ("g" . indent-rigidly)
-   ("r" . indent-region)
-   ("s" . indent-sexp)
-
-   ;; temp
-   ("1" . abbrev-prefix-mark)
-   ("2" . edit-abbrevs)
-   ("3" . expand-abbrev)
-   ("4" . expand-region-abbrevs)
-   ("5" . unexpand-abbrev)
-   ("6" . add-global-abbrev)
-   ("7" . add-mode-abbrev)
-   ("8" . inverse-add-global-abbrev)
-   ("9" . inverse-add-mode-abbrev)
-   ("0" . expand-jump-to-next-slot)
-   ("=" . expand-jump-to-previous-slot)))
-
-
-
-(xah-fly--define-keys
- (define-prefix-command 'xah-fly-c-key-map)
- ;; dvorak c
- '(
-   ;;
-
-   ("'" . nil)
-   ("," . nil)
-   ("." . nil)
-
-   ("1" . nil)
-   ("2" . nil)
-   ("3" . nil)
-   ("4" . nil)
-   ("5" . nil)
-   ("6" . nil)
-   ("7" . nil)
-   ("8" . nil)
-   ("9" . nil)
-   ("0" . nil)
-
-   ("," . xah-open-in-external-app)
-   ("." . find-file)
-   ("a" . nil)
-   ("b" . nil)
-   ("c" . bookmark-bmenu-list)
-   ("d" . nil)
-   ("e" . ibuffer)
-   ("f" . xah-open-recently-closed)
-   ("g" . xah-open-in-terminal)
-   ("h" . recentf-open-files)
-   ("i" . nil)
-   ("j" . xah-copy-file-path)
-   ("k" . nil)
-   ("l" . bookmark-set)
-   ("m" . nil)
-   ("n" . xah-new-empty-buffer)
-   ("o" . xah-show-in-desktop)
-   ("p" . xah-open-last-closed)
-   ("q" . nil)
-   ("r" . bookmark-jump)
-   ("s" . write-file)
-   ("t" . nil)
-   ("u" . xah-open-file-at-cursor)
-   ("v" . nil)
-   ("w" . nil)
-   ("x" . nil)
-   ("y" . xah-list-recently-closed)
-   ("z" . nil)
-
-   ;;
-   ))
-
-(xah-fly--define-keys
- (define-prefix-command 'xah-fly-e-key-map)
- ;; dvorak e
- '(
-   ;;
-   ("'" . nil)
-   ("," . nil)
-   ("." . nil)
-
-   ("1" . nil)
-   ("2" . nil)
-   ("3" . nil)
-   ("4" . nil)
-   ("5" . nil)
-   ("6" . nil)
-   ("7" . nil)
-   ("8" . nil)
-   ("9" . nil)
-   ("0" . nil)
-
-   ("a" . xah-insert-double-angle-bracket)
-   ("b" . xah-insert-black-lenticular-bracket)
-   ("c" . xah-insert-ascii-single-quote)
-   ("d" . xah-insert-double-curly-quote)
-   ("e" . xah-insert-unicode)
-   ("f" . xah-insert-emacs-quote)
-   ("g" . xah-insert-ascii-double-quote)
-   ("h" . xah-insert-brace)
-   ("i" . xah-insert-curly-single-quote)
-   ("j" . insert-char)
-
-   ("k" . xah-insert-markdown-quote)
-   ("l" . xah-insert-formfeed)
-   ("m" . xah-insert-corner-bracket)
-   ("n" . xah-insert-square-bracket)
-   ("o" . nil)
-   ("p" . xah-insert-single-angle-quote)
-   ("q" . nil)
-   ("r" . xah-insert-tortoise-shell-bracket)
-   ("s" . xah-insert-string-assignment)
-   ("t" . xah-insert-paren)
-   ("u" . xah-insert-date)
-   ("v" . xah-insert-markdown-triple-quote)
-   ("w" . xah-insert-angle-bracket)
-   ("x" . nil)
-   ("y" . xah-insert-double-angle-quote)
-   ("z" . nil)
-
-   ;;
-   ))
-
-(xah-fly--define-keys
- (define-prefix-command 'xah-fly-h-key-map)
- ;; dvorak h
- '(
-   ;; ',.
-   ;; ;
-   ("a" . apropos-command)
-   ("b" . describe-bindings)
-   ("c" . describe-char)
-   ("d" . apropos-documentation)
-   ("e" . view-echo-area-messages)
-   ("f" . describe-face)
-   ("g" . info-lookup-symbol)
-   ("h" . describe-function)
-   ("i" . info)
-   ("j" . man)
-   ("k" . describe-key)
-   ("l" . view-lossage)
-   ("m" . describe-mode)
-   ("n" . describe-variable)
-   ("o" . describe-language-environment)
-   ;; p
-   ;; q
-   ("r" . apropos-variable)
-   ("s" . describe-syntax)
-   ;; t
-   ("u" . elisp-index-search)
-   ("v" . apropos-value)
-   ;; w
-   ("x" . describe-command) ; emacs 28
-   ;; y
-   ("z" . describe-coding-system)))
-
-(xah-fly--define-keys
- ;; commands here are “harmless”, they don't modify text etc. they turn on modes, change display, prompt, start shell, etc.
- (define-prefix-command 'xah-fly-n-key-map)
- ;; dvorak n
- '(
-   ;;
-   ("SPC" . whitespace-mode)
-   ("," . abbrev-mode)
-   ("." . toggle-frame-maximized)
-   ;; ("'" . )
-   ;; (";" . )
-
-   ("1" . set-input-method)
-   ("2" . global-hl-line-mode)
-   ("4" . global-display-line-numbers-mode)
-   ;; 5
-   ("6" . calendar)
-   ("7" . calc)
-   ;; 8
-   ("9" . shell-command)
-   ("0" . shell-command-on-region)
-
-   ("a" . text-scale-adjust)
-   ("b" . toggle-debug-on-error)
-   ("c" . toggle-case-fold-search)
-   ("d" . narrow-to-page)
-   ("e" . eshell)
-   ;; f
-   ("g" . xah-toggle-read-novel-mode)
-   ("h" . widen)
-   ("i" . make-frame-command)
-   ("j" . flyspell-buffer)
-   ("k" . menu-bar-open)
-   ("l" . toggle-word-wrap)
-   ("m" . jump-to-register)
-   ("n" . xah-narrow-to-region)
-   ("o" . variable-pitch-mode)
-   ("p" . read-only-mode)
-   ;; q
-   ("r" . count-words)
-   ("s" . count-matches)
-   ("t" . narrow-to-defun)
-   ("u" . shell)
-   ("v" . visual-line-mode)
-   ("w" . eww)
-   ("x" . save-some-buffers)
-   ("y" . toggle-truncate-lines)
-   ("z" . abort-recursive-edit)))
-
-(xah-fly--define-keys
- ;; kinda replacement related
- (define-prefix-command 'xah-fly-r-key-map)
- ;; dvorak r
- '(
-   ;;
-
-   ("SPC" . rectangle-mark-mode)
-   ("'" . nil)
-   ("," . apply-macro-to-region-lines)
-   ("." . kmacro-start-macro)
-
-   ("0" . nil)
-   ("1" . nil)
-   ("2" . nil)
-   ("3" . number-to-register)
-   ("4" . increment-register)
-   ("5" . nil)
-   ("6" . nil)
-   ("7" . nil)
-   ("8" . nil)
-   ("9" . nil)
-
-   ("a" . nil)
-   ("b" . nil)
-   ("c" . replace-rectangle)
-   ("d" . delete-rectangle)
-   ("e" . call-last-kbd-macro)
-   ("f" . nil)
-   ("g" . kill-rectangle)
-   ("h" . xah-change-bracket-pairs)
-   ("i" . xah-space-to-newline)
-   ("j" . xah-slash-to-backslash)
-   ("k" . xah-slash-to-double-backslash)
-   ("l" . clear-rectangle)
-   ("m" . nil)
-   ("n" . rectangle-number-lines)
-   ("o" . open-rectangle)
-   ("p" . kmacro-end-macro)
-   ("q" . nil)
-   ("r" . yank-rectangle)
-   ("s" . nil)
-   ("t" . nil)
-   ("u" . xah-quote-lines)
-   ("v" . nil)
-   ("w" . nil)
-   ("x" . xah-double-backslash-to-slash)
-   ("y" . delete-whitespace-rectangle)
-   ("z" . nil)
-   ;;
-   ))
-
-(xah-fly--define-keys
- (define-prefix-command 'xah-fly-t-key-map)
- ;; dvorak t
- '(
-   ;;
-
-   ("<up>"  . xah-move-block-up)
-   ("<down>"  . xah-move-block-down)
-
-   ("'" . reverse-region)
-   ("," . sort-numeric-fields)
-   ("." . xah-sort-lines)
-
-   ("0" . nil)
-   ("1" . xah-append-to-register-1)
-   ("2" . xah-clear-register-1)
-   ("3" . xah-copy-to-register-1)
-   ("4" . xah-paste-from-register-1)
-   ("5" . nil)
-   ("6" . nil)
-   ("7" . xah-append-to-register-1)
-   ("8" . xah-clear-register-1)
-   ("9" . nil)
-
-   ("a" . nil)
-   ("b" . xah-reformat-to-sentence-lines)
-   ("c" . goto-char)
-   ("d" . mark-defun)
-   ("e" . list-matching-lines)
-   ("f" . goto-line)
-   ("g" . move-to-column)
-   ("h" . repeat-complex-command)
-   ("i" . delete-non-matching-lines)
-   ("j" . copy-to-register)
-   ("k" . insert-register)
-   ("l" . xah-escape-quotes)
-   ("m" . xah-make-backup-and-save)
-   ("n" . nil)
-   ("o" . xah-clean-whitespace)
-   ("p" . query-replace-regexp)
-   ("q" . nil)
-   ("r" . copy-rectangle-to-register)
-   ("s" . nil)
-   ("t" . repeat)
-   ("u" . delete-matching-lines)
-   ("v" . nil)
-   ("w" . xah-next-window-or-frame)
-   ("x" . nil)
-   ("y" . delete-duplicate-lines)
-   ("z" . nil)
-
-   ;;
-
-   ))
-
-(xah-fly--define-keys
- (define-prefix-command 'xah-fly-w-key-map)
- ;; dvorak w
- '(
-   ;;
-   ("d" . xah-delete-current-file-make-backup)
-   ("." . eval-buffer)
-   ("e" . eval-defun)
-   ("m" . eval-last-sexp)
-   ("p" . eval-expression)
-   ("u" . eval-region)
-   ("q" . save-buffers-kill-terminal)
-   ("w" . delete-frame)
-   ("j" . xah-run-current-file)))
-
 ;; (xah-fly--define-keys
 ;;  (define-prefix-command 'xah-coding-system-keymap)
 ;;  '(
@@ -3634,13 +3263,6 @@ minor modes loaded later may override bindings in this map.")
 ;;    ("t" . set-terminal-coding-system)
 ;;    ("x" . set-selection-coding-system)))
 
-(xah-fly--define-keys
- ;; kinda replacement related
- (define-prefix-command 'xah-fly-comma-key-map)
- '(
-   ("t" . xref-find-definitions)
-   ("n" . xref-pop-marker-stack)))
-
 (when (< emacs-major-version 28)
   (defalias 'execute-extended-command-for-buffer #'execute-extended-command))
 
@@ -3648,11 +3270,29 @@ minor modes loaded later may override bindings in this map.")
  (define-prefix-command 'xah-fly-leader-key-map)
  '(("SPC" . xah-fly-insert-mode-activate)
    ("RET" . execute-extended-command)
-   ("TAB" . xah-fly--tab-key-map)
 
-   ;; ("." . xah-fly-dot-key-map)
+   ;; This keymap I've not used. things are here experimentally.
+   ;; The TAB key is not in a very good ergonomic position on average keyboards, so 【leader tab ‹somekey›】 probably should not be used much.
+   ;; Currently (2018-03-13), these are commands related to completion or indent, and I basically never use any of these (except sometimes complete-symbol).
+   ;; For average user, the way it is now is probably justified, because most emacs users don't use these commands.
+   ("TAB" . nil)
+   ("TAB TAB" . indent-for-tab-command)
+   ("TAB i" . complete-symbol)
+   ("TAB g" . indent-rigidly)
+   ("TAB r" . indent-region)
+   ("TAB s" . indent-sexp)
+   ("TAB 1" . abbrev-prefix-mark)
+   ("TAB 2" . edit-abbrevs)
+   ("TAB 3" . expand-abbrev)
+   ("TAB 4" . expand-region-abbrevs)
+   ("TAB 5" . unexpand-abbrev)
+   ("TAB 6" . add-global-abbrev)
+   ("TAB 7" . add-mode-abbrev)
+   ("TAB 8" . inverse-add-global-abbrev)
+   ("TAB 9" . inverse-add-mode-abbrev)
+   ("TAB 0" . expand-jump-to-next-slot)
+   ("TAB =" . expand-jump-to-previous-slot)
 
-   ("." . nil)
    (". ." . highlight-symbol-at-point)
    (". g" . unhighlight-regexp)
    (". c" . highlight-lines-matching-regexp)
@@ -3663,49 +3303,209 @@ minor modes loaded later may override bindings in this map.")
    (". p" . isearch-forward-word)
 
    ("'" . xah-fill-or-unfill)
-   ("," . xah-fly-comma-key-map)
+
+   (", t" . xref-find-definitions)
+   (", n" . xref-pop-marker-stack)
+
    ;; - / ; = [
    ("\\" . toggle-input-method)
    ;; `
 
-   ("0" . nil)
-   ("1" . nil)
-   ("2" . nil)
    ("3" . delete-window)
    ("4" . split-window-right)
    ("5" . balance-windows)
    ("6" . xah-upcase-sentence)
-   ("7" . nil)
-   ("8" . nil)
+
    ("9" . ispell-word)
 
    ("a" . mark-whole-buffer)
    ("b" . end-of-buffer)
-   ("c" . xah-fly-c-key-map)
+
+   ("c ," . xah-open-in-external-app)
+   ("c ." . find-file)
+   ("c c" . bookmark-bmenu-list)
+   ("c e" . ibuffer)
+   ("c f" . xah-open-recently-closed)
+   ("c g" . xah-open-in-terminal)
+   ("c h" . recentf-open-files)
+   ("c j" . xah-copy-file-path)
+   ("c l" . bookmark-set)
+   ("c n" . xah-new-empty-buffer)
+   ("c o" . xah-show-in-desktop)
+   ("c p" . xah-open-last-closed)
+   ("c r" . bookmark-jump)
+   ("c s" . write-file)
+   ("c u" . xah-open-file-at-cursor)
+   ("c y" . xah-list-recently-closed)
 
    ("d" . beginning-of-buffer)
-   ("e" . xah-fly-e-key-map)
+
+   ("e a" . xah-insert-double-angle-bracket)
+   ("e b" . xah-insert-black-lenticular-bracket)
+   ("e c" . xah-insert-ascii-single-quote)
+   ("e d" . xah-insert-double-curly-quote)
+   ("e e" . xah-insert-unicode)
+   ("e f" . xah-insert-emacs-quote)
+   ("e g" . xah-insert-ascii-double-quote)
+   ("e h" . xah-insert-brace)
+   ("e i" . xah-insert-curly-single-quote)
+   ("e j" . insert-char)
+   ("e k" . xah-insert-markdown-quote)
+   ("e l" . xah-insert-formfeed)
+   ("e m" . xah-insert-corner-bracket)
+   ("e n" . xah-insert-square-bracket)
+   ("e p" . xah-insert-single-angle-quote)
+   ("e r" . xah-insert-tortoise-shell-bracket)
+   ("e s" . xah-insert-string-assignment)
+   ("e t" . xah-insert-paren)
+   ("e u" . xah-insert-date)
+   ("e v" . xah-insert-markdown-triple-quote)
+   ("e w" . xah-insert-angle-bracket)
+   ("e y" . xah-insert-double-angle-quote)
+
    ("f" . xah-search-current-word)
    ("g" . xah-close-current-buffer)
-   ("h" . xah-fly-h-key-map)
+
+   ("h a" . apropos-command)
+   ("h b" . describe-bindings)
+   ("h c" . describe-char)
+   ("h d" . apropos-documentation)
+   ("h e" . view-echo-area-messages)
+   ("h f" . describe-face)
+   ("h g" . info-lookup-symbol)
+   ("h h" . describe-function)
+   ("h i" . info)
+   ("h j" . man)
+   ("h k" . describe-key)
+   ("h l" . view-lossage)
+   ("h m" . describe-mode)
+   ("h n" . describe-variable)
+   ("h o" . describe-language-environment)
+   ("h r" . apropos-variable)
+   ("h s" . describe-syntax)
+   ("h u" . elisp-index-search)
+   ("h v" . apropos-value)
+   ("h x" . describe-command) ; emacs 28
+   ("h z" . describe-coding-system)
+
    ("i" . kill-line)
    ("j" . xah-copy-all-or-region)
-   ("k" . nil)
+
    ("l" . recenter-top-bottom)
    ("m" . dired-jump)
-   ("n" . xah-fly-n-key-map)
+
+ ;; dvorak n. commands here are “harmless”, they don't modify text etc. they turn on modes, change display, prompt, start shell, etc.
+   ("n SPC" . whitespace-mode)
+   ("n ," . abbrev-mode)
+   ("n ." . toggle-frame-maximized)
+   ("n 1" . set-input-method)
+   ("n 2" . global-hl-line-mode)
+   ("n 4" . global-display-line-numbers-mode)
+   ("n 6" . calendar)
+   ("n 7" . calc)
+   ("n 9" . shell-command)
+   ("n 0" . shell-command-on-region)
+   ("n a" . text-scale-adjust)
+   ("n b" . toggle-debug-on-error)
+   ("n c" . toggle-case-fold-search)
+   ("n d" . narrow-to-page)
+   ("n e" . eshell)
+   ("n g" . xah-toggle-read-novel-mode)
+   ("n h" . widen)
+   ("n i" . make-frame-command)
+   ("n j" . flyspell-buffer)
+   ("n k" . menu-bar-open)
+   ("n l" . toggle-word-wrap)
+   ("n m" . jump-to-register)
+   ("n n" . xah-narrow-to-region)
+   ("n o" . variable-pitch-mode)
+   ("n p" . read-only-mode)
+   ("n r" . count-words)
+   ("n s" . count-matches)
+   ("n t" . narrow-to-defun)
+   ("n u" . shell)
+   ("n v" . visual-line-mode)
+   ("n w" . eww)
+   ("n x" . save-some-buffers)
+   ("n y" . toggle-truncate-lines)
+   ("n z" . abort-recursive-edit)
+
    ("o" . exchange-point-and-mark)
    ("p" . query-replace)
    ("q" . xah-cut-all-or-region)
-   ("r" . xah-fly-r-key-map)
+
+   ;; roughly text replacement related
+   ("r SPC" . rectangle-mark-mode)
+   ("r ," . apply-macro-to-region-lines)
+   ("r ." . kmacro-start-macro)
+   ("r 3" . number-to-register)
+   ("r 4" . increment-register)
+   ("r c" . replace-rectangle)
+   ("r d" . delete-rectangle)
+   ("r e" . call-last-kbd-macro)
+   ("r g" . kill-rectangle)
+   ("r h" . xah-change-bracket-pairs)
+   ("r i" . xah-space-to-newline)
+   ("r j" . xah-slash-to-backslash)
+   ("r k" . xah-slash-to-double-backslash)
+   ("r l" . clear-rectangle)
+   ("r n" . rectangle-number-lines)
+   ("r o" . open-rectangle)
+   ("r p" . kmacro-end-macro)
+   ("r r" . yank-rectangle)
+   ("r u" . xah-quote-lines)
+   ("r x" . xah-double-backslash-to-slash)
+   ("r y" . delete-whitespace-rectangle)
+
    ("s" . save-buffer)
-   ("t" . xah-fly-t-key-map)
+
+   ;; most frequently used
+   ("t <up>"  . xah-move-block-up)
+   ("t <down>"  . xah-move-block-down)
+   ("t '" . reverse-region)
+   ("t ," . sort-numeric-fields)
+   ("t ." . xah-sort-lines)
+   ("t 1" . xah-append-to-register-1)
+   ("t 2" . xah-clear-register-1)
+   ("t 3" . xah-copy-to-register-1)
+   ("t 4" . xah-paste-from-register-1)
+   ("t 7" . xah-append-to-register-1)
+   ("t 8" . xah-clear-register-1)
+   ("t b" . xah-reformat-to-sentence-lines)
+   ("t c" . goto-char)
+   ("t d" . mark-defun)
+   ("t e" . list-matching-lines)
+   ("t f" . goto-line)
+   ("t g" . move-to-column)
+   ("t h" . repeat-complex-command)
+   ("t i" . delete-non-matching-lines)
+   ("t j" . copy-to-register)
+   ("t k" . insert-register)
+   ("t l" . xah-escape-quotes)
+   ("t m" . xah-make-backup-and-save)
+   ("t o" . xah-clean-whitespace)
+   ("t p" . query-replace-regexp)
+   ("t r" . copy-rectangle-to-register)
+   ("t t" . repeat)
+   ("t u" . delete-matching-lines)
+   ("t w" . xah-next-window-or-frame)
+   ("t y" . delete-duplicate-lines)
+
    ("u" . switch-to-buffer)
-   ("v" . nil)
-   ("w" . xah-fly-w-key-map)
+
+   ;; dangerous map. run program, delete file, etc
+   ("w d" . xah-delete-current-file-make-backup)
+   ("w ." . eval-buffer)
+   ("w e" . eval-defun)
+   ("w m" . eval-last-sexp)
+   ("w p" . eval-expression)
+   ("w u" . eval-region)
+   ("w q" . save-buffers-kill-terminal)
+   ("w w" . delete-frame)
+   ("w j" . xah-run-current-file)
+
    ("x" . xah-toggle-previous-letter-case)
    ("y" . xah-show-kill-ring)
-   ("z" . nil)
 
    ;;
    ))
@@ -3865,7 +3665,7 @@ minor modes loaded later may override bindings in this map.")
   "Set a keyboard layout.
 Argument must be one of the key name in `xah-fly-layouts'
 Version: 2021-05-19 2022-09-11 2022-10-22"
-  (interactive)
+  (interactive "sType a layout: ")
   (let (($newlout
          (cond
           ((stringp Layout) Layout)
@@ -3877,7 +3677,9 @@ Version: 2021-05-19 2022-09-11 2022-10-22"
           (cdr (assoc xah-fly-key-current-layout xah-fly-layouts)))
     (when (and (featurep 'xah-fly-keys)
                (not (string-equal $oldlout $newlout)))
-      (load "xah-fly-keys"))))
+      ;; 2022-10-26 todo. should not load whole. make a way just to load keybinding code
+      (load "xah-fly-keys"))
+    ))
 
 (defun xah-fly-space-key ()
   "Switch to command mode if the char before cursor is a space.
@@ -4007,6 +3809,8 @@ URL `http://xahlee.info/emacs/misc/xah-fly-keys.html'"
       )))
 
 (provide 'xah-fly-keys)
+
+
 
 ;; Local Variables:
 ;; byte-compile-docstring-max-column: 999
