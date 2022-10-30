@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 21.0.20221026102048
+;; Version: 21.1.20221030165154
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -87,7 +87,7 @@
 ;; "C--" `text-scale-decrease'
 
 ;; To disable both Control and Meta shortcut keys, add the following
-;; lines to you init.el before (require 'xah-fly-keys):
+;; lines to you init.el BEFORE loading xah-fly-keys:
 
 ;; (setq xah-fly-use-control-key nil)
 ;; (setq xah-fly-use-meta-key nil)
@@ -1779,7 +1779,7 @@ Version 2013-05-10 2021-11-07 2022-04-07"
 
  LBracket and RBracket are strings. WrapMethod must be either `line' or `block'. `block' means between empty lines.
 
-• if there is a region, add brackets around region.
+• If there is a an active region, add brackets around region.
 • If WrapMethod is `line', wrap around line.
 • If WrapMethod is `block', wrap around block.
 • if cursor is at beginning of line and its not empty line and contain at least 1 space, wrap around the line.
@@ -1938,41 +1938,34 @@ Version: 2013-06-12 2019-03-07"
         (beginning-of-line)
         (forward-char $colpos)))))
 
-(defvar xah-unicode-list nil "Associative list of Unicode symbols. First element is a Unicode character, second element is a string used as key shortcut in `completing-read'")
-(setq xah-unicode-list
-      '(
-        ;; format: (str . nameOrFastKey)
-        ("_" . "underscore" )
-        ("•" . ".bullet" )
-        ("→" . "tn")
-        ("◇" . "3" )
-        ("◆" . "4" )
-        ("¤" . "2" )
-        ("…" . "...ellipsis" )
-        (" " . "nbsp" )
-        ("、" . "," )
-        ("⭑" . "9" )
-        ("🎶" . "5" )
-        ("—" . "-emdash" )
-        ("＆" . "7fullwidthAmpersand" )
-        ("↓" . "downArrow")
-        ("←" . "leftArrow")
-        ("↑" . "upArrow")
-        ("👍" . "thumbUp")
-        ("〚〛" . "whiteSquareBracket")
-        ) )
+(defvar xah-unicode-list
+  '(
+    ("bullet •")
+    ("right arrow →")
+    ("white diamong ◇")
+    ("black diamond ◆")
+    ("...ellipsis …")
+    ("nbsp  ")
+    ("chinese comma 、")
+    ("-emdash —")
+    ("fullwidth ampersand ＆")
+    ("down arrow ↓")
+    ("left arrow ←")
+    ("up arrow ↑")
+    ("thumb up 👍"))
+  "A list of strings used by `xah-insert-unicode'.
+each item is a string.
+The first part of string before last space, is used as name of a unicode char, the last part before last space, is the unicode Unicode character to insert. (can be more than 1 char).")
 
 (defun xah-insert-unicode ()
   "Insert a unicode from a custom list `xah-unicode-list'.
-Version: 2021-01-05 2022-04-07"
+URL `http://xahlee.info/emacs/emacs/emacs_insert_unicode.html'
+Version: 2021-01-05 2022-04-07 2022-10-30"
   (interactive)
-  (let (
-        ($str
+  (let (($str
          (completing-read
-          "Insert:" (mapcar
-                     (lambda (x)
-                       (format "%s %s" (car x) (cdr x))) xah-unicode-list))))
-    (insert (car (split-string $str " " t)))))
+          "Insert:" xah-unicode-list)))
+    (insert (car (last (split-string $str " " t))))))
 
 
 ;; text selection
@@ -3166,7 +3159,18 @@ minor modes loaded later may override bindings in this map.")
   ;;    )
   ;;  :direct)
 
-  ;; this is a problem. because the control keybinding and meta keybinding are not supposed to change by keyboard layout such as dvorak. They should be letter direct. Also, by setting them with xah-fly-shared-map, it becomes unchangeable, that is, if a major mode set a key for C-t, it will have no effect. Current solution is just to use global-set-key. The disadvantage is that these changes leak, that is, xah-fly-keys is turned off, these ctrl keys are still changed. Still, this is better, because xah fly keys is not really meant to be turned off. You learn it, like it, use it, or leave it. Removing the tons of default emacs control and meta keys is desirable. because there are hundres of them, confusing, and mostly useless.
+ ;; this is a problem.
+
+;; because the control keybinding and meta keybinding are not supposed to change by keyboard layout such as dvorak.
+;; They should be letter direct.
+;; Also, by setting them with xah-fly-shared-map, it becomes unchangeable, that is, if a major mode set a key for C-t, it will have no effect.
+;; Current solution is just to use global-set-key.
+;; The disadvantage is that these changes leak, that is, xah-fly-keys is turned off, these ctrl keys are still changed.
+;; Still, this is better, because xah fly keys is not really meant to be turned off.
+;; You learn it, like it, use it, or leave it.
+;; Removing the tons of default emacs control and meta keys is desirable.
+;; because there are hundres of them, confusing, and mostly useless.
+
   (global-set-key (kbd "<C-S-prior>") #'xah-previous-emacs-buffer)
   (global-set-key (kbd "<C-S-next>") #'xah-next-emacs-buffer)
 
