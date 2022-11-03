@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 22.0.20221031102959
+;; Version: 22.1.20221103090854
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1940,21 +1940,54 @@ Version: 2013-06-12 2019-03-07"
 
 (defvar xah-unicode-list
   '(
+    ;;
+    ("smile beaming 😊")
+    ("tears of joy 😂")
+    ("hug 🤗")
+    ("heart eyes 😍")
+    ("heart face 🥰")
+
+    ("angry 😠")
+    ("vomit 🤮")
+
+    ("thumb up 👍")
+    ("thumb down 👎")
+
+    ("checkmark ✅")
+    ("new 🆕")
+    ("star glowing 🌟")
+    ("star ⭐")
+    ("sparkles ✨")
+    ("rocket 🚀")
+
+    ("sun 🌞")
+    ("red heart ❤")
+
+    ("clown 🤡")
+
+    ("large circle ⭕")
+    ("cross ❌")
+
+    ("red triangle 🔺")
+    ("diamond 💠")
+    ("square ⬛")
+
     ("bullet •")
-    ("right arrow →")
-    ("white diamong ◇")
-    ("black diamond ◆")
+    ("diamond ◆")
     ("...ellipsis …")
     ("nbsp  ")
     ("chinese comma 、")
     ("-emdash —")
     ("fullwidth ampersand ＆")
-    ("down arrow ↓")
     ("left arrow ←")
+    ("right arrow →")
     ("up arrow ↑")
-    ("thumb up 👍"))
+    ("down arrow ↓")
+    ;;
+    )
+
   "A list of strings used by `xah-insert-unicode'.
-each item is a string.
+Each item is a string.
 The first part of string before last space, is used as name of a unicode char, the last part before last space, is the unicode Unicode character to insert. (can be more than 1 char).")
 
 (defun xah-insert-unicode ()
@@ -3183,7 +3216,7 @@ Version 2022-10-31"
        ;; dvorak n. commands here are “harmless”, they don't modify text etc. they turn on modes, change display, prompt, start shell, etc.
        ("n SPC" . whitespace-mode)
        ("n ," . abbrev-mode)
-       ("n ." . toggle-frame-maximized)
+       ("n ." . toggle-frame-fullscreen)
        ("n 1" . set-input-method)
        ("n 2" . global-hl-line-mode)
        ("n 4" . global-display-line-numbers-mode)
@@ -3257,7 +3290,6 @@ Version 2022-10-31"
        ("t 4" . xah-paste-from-register-1)
        ("t 7" . xah-append-to-register-1)
        ("t 8" . xah-clear-register-1)
-       ("t b" . xah-reformat-to-sentence-lines)
        ("t c" . goto-char)
        ("t d" . mark-defun)
        ("t e" . list-matching-lines)
@@ -3275,6 +3307,7 @@ Version 2022-10-31"
        ("t t" . repeat)
        ("t u" . delete-matching-lines)
        ("t w" . xah-next-window-or-frame)
+       ("t x" . xah-reformat-to-sentence-lines)
        ("t y" . delete-duplicate-lines)
 
        ("u" . switch-to-buffer)
