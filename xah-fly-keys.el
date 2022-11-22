@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 22.1.20221103090854
+;; Version: 22.2.20221121172301
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -176,8 +176,8 @@
   :type 'boolean)
 
 (when (not (boundp 'xah-repeat-key))
-  (defvar xah-repeat-key nil "A key that some xah command use as a key to repeat the command, pressed right after command call. Value should be the same format that `kbd' returns. e.g. (kbd \"DEL\")")
-  (if xah-repeat-key nil (setq xah-repeat-key (kbd "DEL"))))
+  (defvar xah-repeat-key nil "A key that some xah command use as a key to repeat the command, pressed right after command call. Value should be the same format that `kbd' returns. e.g. (kbd \"m\")")
+  (if xah-repeat-key nil (setq xah-repeat-key (kbd "m"))))
 
 (defun xah-get-bounds-of-block ()
   "Return the boundary (START . END) of current block.
@@ -1233,7 +1233,7 @@ Version: 2021-07-05 2021-08-13 2022-03-12 2022-05-16"
 (defun xah-reformat-to-sentence-lines ()
   "Reformat current block or selection into multiple lines by ending period.
 Move cursor to the beginning of next text block.
-After this command is called, press `xah-repeat-key' to repeat it (default to DEL (backspace)).
+After this command is called, press `xah-repeat-key' to repeat it.
 
 URL `http://xahlee.info/emacs/emacs/elisp_reformat_to_sentence_lines.html'
 Version: 2020-12-02 2022-03-22"
@@ -1549,7 +1549,7 @@ Version: 2016-10-04 2019-11-24 2022-05-16"
 
 (defun xah-cycle-hyphen-lowline-space (&optional Begin End)
   "Cycle hyphen/lowline/space chars in selection or inside quote/bracket or line, in that order.
-After this command is called, press `xah-repeat-key' to repeat it (default to DEL (backspace)).
+After this command is called, press `xah-repeat-key' to repeat it.
 The region to work on is by this order:
  1. if there is a selection, use that.
  2. If cursor is string quote or any type of bracket, and is within current line, work on that region.
