@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 22.2.20221121172301
+;; Version: 22.3.20221208105541
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -3216,7 +3216,7 @@ Version 2022-10-31"
        ;; dvorak n. commands here are “harmless”, they don't modify text etc. they turn on modes, change display, prompt, start shell, etc.
        ("n SPC" . whitespace-mode)
        ("n ," . abbrev-mode)
-       ("n ." . toggle-frame-fullscreen)
+       ("n ." . toggle-frame-maximized)
        ("n 1" . set-input-method)
        ("n 2" . global-hl-line-mode)
        ("n 4" . global-display-line-numbers-mode)
