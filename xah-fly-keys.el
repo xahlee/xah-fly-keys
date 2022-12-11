@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 22.3.20221208105541
+;; Version: 22.3.20221211131110
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1236,7 +1236,7 @@ Move cursor to the beginning of next text block.
 After this command is called, press `xah-repeat-key' to repeat it.
 
 URL `http://xahlee.info/emacs/emacs/elisp_reformat_to_sentence_lines.html'
-Version: 2020-12-02 2022-03-22"
+Version: 2020-12-02 2022-03-22 2022-12-11"
   (interactive)
   (let ($p1 $p2)
     (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
@@ -1251,11 +1251,11 @@ Version: 2020-12-02 2022-03-22"
       (goto-char (point-min))
       (while (re-search-forward "  +" nil t) (replace-match " "))
       (goto-char (point-min))
-      (while (re-search-forward "\\. +\\([(0-9A-Za-z]+\\)" nil t) (replace-match ".\n\\1"))
+      (while (re-search-forward "\\([.?!]\\) +\\([(0-9A-Za-z]+\\)" nil t) (replace-match "\\1\n\\2"))
       (goto-char (point-max))
       (while (eq (char-before) 32) (delete-char -1))))
   (re-search-forward "\n+" nil 1)
-(set-transient-map (let (($kmap (make-sparse-keymap))) (define-key $kmap (or xah-repeat-key (kbd "DEL")) this-command) $kmap))
+  (set-transient-map (let (($kmap (make-sparse-keymap))) (define-key $kmap (or xah-repeat-key (kbd "DEL")) this-command) $kmap))
   (set-transient-map (let (($kmap (make-sparse-keymap))) (define-key $kmap (kbd "DEL") this-command) $kmap)))
 
 (defun xah-space-to-newline ()
