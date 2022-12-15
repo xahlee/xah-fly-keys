@@ -2941,6 +2941,11 @@ xah-fly-layouts)
  ;; NOTE f is a dead key
  xah-fly-layouts)
 
+(push
+ ;; NOTE: - is a dead key
+ '("optimot" . (("-" . "^") ("'" . "à") ("," . "j") ("." . "o") (";" . "k") ("/" . "x") ("[" . "#") ("]" . "@") ("=" . "ç") ("a" . "a") ("b" . "g") ("c" . "l") ("d" . "p") ("e" . "e") ("f" . "f") ("g" . "d") ("h" . "t") ("i" . ",") ("j" . "è") ("k" . ".") ("l" . "q") ("m" . "c") ("n" . "r") ("o" . "i") ("p" . "é") ("q" . "y") ("r" . "'") ("s" . "n") ("t" . "s") ("u" . "u") ("v" . "h") ("w" . "m") ("x" . "w") ("y" . "b") ("z" . "v"))) 
+ xah-fly-layouts)
+
 (defvar xah-fly-key-current-layout nil
   "The current keyboard layout. Value is a key in `xah-fly-layouts'.
 Do not set this variable manually. Use `xah-fly-keys-set-layout' to set it.
