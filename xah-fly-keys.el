@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 22.3.20221211131110
+;; Version: 22.3.20221225104731
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1207,7 +1207,7 @@ Version: 2018-12-16 2021-07-06 2021-08-12"
 
 (defun xah-reformat-lines (&optional Width)
   "Reformat current block or selection into short lines or 1 long line.
-When called for the first time, change to short lines. Second call change it to one long line. Repeated call toggles.
+When called for the first time, change to one line. Second call change it to multi-lines. Repeated call toggles.
 If `universal-argument' is called first, ask user to type max length of line. By default, it is 66.
 
 Note: this command is different from emacs `fill-region' or `fill-paragraph'.
@@ -1215,12 +1215,12 @@ This command never adds or delete non-whitespace chars. It only exchange whitesp
 
 URL `http://xahlee.info/emacs/emacs/emacs_reformat_lines.html'
 Created 2016 or before.
-Version: 2021-07-05 2021-08-13 2022-03-12 2022-05-16"
+Version: 2021-07-05 2021-08-13 2022-03-12 2022-05-16 2022-12-24"
   (interactive)
   ;; This symbol has a property 'is-long-p, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
   (let ($isLong $width $p1 $p2)
     (setq $width (if Width Width (if current-prefix-arg (prefix-numeric-value current-prefix-arg) 66)))
-    (setq $isLong (if (eq last-command this-command) (get this-command 'is-long-p) t))
+    (setq $isLong (if (eq last-command this-command) (get this-command 'is-long-p) nil))
     (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
     (if current-prefix-arg
         (xah-reformat-to-multi-lines $p1 $p2 $width)
@@ -3480,15 +3480,10 @@ Version 2022-10-31"
   ;;    )
   ;;  :direct)
 
- ;; this is a problem.
-
-;; because the control keybinding and meta keybinding are not supposed to change by keyboard layout such as dvorak.
-;; They should be letter direct.
-;; Also, by setting them with xah-fly-shared-map, it becomes unchangeable, that is, if a major mode set a key for C-t, it will have no effect.
+ ;; define control combo in xah-fly-shared-map may be a problem.
+;; by setting them in xah-fly-shared-map, it becomes unchangeable, that is, if a major mode set a key for C-t, it will have no effect.
 ;; Current solution is just to use global-set-key.
-;; The disadvantage is that these changes leak, that is, xah-fly-keys is turned off, these ctrl keys are still changed.
-;; Still, this is better, because xah fly keys is not really meant to be turned off.
-;; You learn it, like it, use it, or leave it.
+;; The disadvantage is that these changes leak, that is, xah-fly-keys is turned off, these ctrl keys are still changed. Still, this is better, because xah fly keys is not really meant to be turned off temporarily. 
 ;; Removing the tons of default emacs control and meta keys is desirable.
 ;; because there are hundres of them, confusing, and mostly useless.
 
