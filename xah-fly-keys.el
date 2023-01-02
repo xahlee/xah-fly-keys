@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 22.5.20230101182045
+;; Version: 22.5.20230101184908
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -3326,19 +3326,36 @@ Version 2022-10-31"
        ("x" . xah-toggle-previous-letter-case)
        ("y" . xah-show-kill-ring)
 
-       ;; (xah-fly--define-keys
-       ;;  (define-prefix-command 'xah-coding-system-keymap)
-       ;;  '(
-       ;;    ("n" . set-file-name-coding-system)
-       ;;    ("s" . set-next-selection-coding-system)
-       ;;    ("c" . universal-coding-system-argument)
-       ;;    ("f" . set-buffer-file-coding-system)
-       ;;    ("k" . set-keyboard-coding-system)
-       ;;    ("l" . set-language-environment)
-       ;;    ("p" . set-buffer-process-coding-system)
-       ;;    ("r" . revert-buffer-with-coding-system)
-       ;;    ("t" . set-terminal-coding-system)
-       ;;    ("x" . set-selection-coding-system)))
+       ;; experimental. need a frequency stat of the command. also need to study these commands. currently i only use few
+
+       ("z a" . vc-update-change-log)
+       ("z b" . vc-switch-backend)
+       ("z c" . vc-rollback)
+       ("z e" . vc-update)
+       ("z f" . vc-diff) ; nice
+       ("z g" . vc-annotate)
+       ("z h" . vc-insert-headers)
+       ("z l" . vc-print-log)
+       ("z m" . vc-dir) ; nice
+       ("z g" . vc-merge)
+       ("z p" . vc-print-root-log)
+       ("z r" . vc-root-diff)
+       ("z s" . vc-create-tag)
+       ("z t" . vc-retrieve-tag)
+       ("z u" . vc-revert)
+       ("z v" . vc-next-action)
+       ("z ~" . vc-revision-other-window)
+
+       ;; ("n" . set-file-name-coding-system)
+       ;; ("s" . set-next-selection-coding-system)
+       ;; ("c" . universal-coding-system-argument)
+       ;; ("f" . set-buffer-file-coding-system)
+       ;; ("k" . set-keyboard-coding-system)
+       ;; ("l" . set-language-environment)
+       ;; ("p" . set-buffer-process-coding-system)
+       ;; ("r" . revert-buffer-with-coding-system)
+       ;; ("t" . set-terminal-coding-system)
+       ;; ("x" . set-selection-coding-system)
 
        ;;
        ))
@@ -3669,27 +3686,6 @@ Version 2022-10-31"
 ;; r m   →   compose-mail-other-frame
 ;; r o   →   other-frame
 ;; r r   →   find-file-read-only-other-frame
-
-;; (xah-fly--define-keys
-;;  (define-prefix-command 'xah-leader-vc-keymap)
-;;  '(
-;;    ("+" . vc-update)
-;;    ("=" . vc-diff)
-;;    ("D" . vc-root-diff)
-;;    ("L" . vc-print-root-log)
-;;    ("a" . vc-update-change-log)
-;;    ("b" . vc-switch-backend)
-;;    ("c" . vc-rollback)
-;;    ("d" . vc-dir)
-;;    ("g" . vc-annotate)
-;;    ("h" . vc-insert-headers)
-;;    ("l" . vc-print-log)
-;;    ("m" . vc-merge)
-;;    ("r" . vc-retrieve-tag)
-;;    ("s" . vc-create-tag)
-;;    ("u" . vc-revert)
-;;    ("v" . vc-next-action)
-;;    ("~" . vc-revision-other-window)))
 
 
 
