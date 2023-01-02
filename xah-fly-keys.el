@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 22.4.20230101171547
+;; Version: 22.5.20230101182045
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1717,62 +1717,42 @@ Version 2013-05-10 2022-04-07 2023-01-01"
   (interactive)
   (let (($style
          (if current-prefix-arg
-             (string-to-number
-              (substring
-               (completing-read
-                "Style:"
-                '(
-                  "1 → 20180412224611"
-                  "2 → 2018-04-12_224611"
-                  "3 → 2018-04-12T22:46:11-07:00"
-                  "4 → 2018-04-12 22:46:11-07:00"
-                  "5 → 2018-04-12 Thursday"
-                  "6 → Thursday, April 12, 2018"
-                  "7 → Thu, Apr 12, 2018"
-                  "8 → April 12, 2018"
-                  "9 → Apr 12, 2018"
-                  )) 0 1))
-           0
+             (completing-read
+              "Style:"
+              '(
+                "ISO date • 2018-04-12"
+                "ISO full • 2018-04-12T22:46:11-07:00"
+                "ISO space • 2018-04-12 22:46:11-07:00"
+                "all digits • 20180412224611"
+                "date and digits • 2018-04-12_224611"
+                "weekday • 2018-04-12 Thursday"
+                "usa date + weekday • Thursday, April 12, 2018"
+                "usa short + weekday • Thu, Apr 12, 2018"
+                "usa mdy full • April 12, 2018"
+                "usa mdy short • Apr 12, 2018"
+                ))
+           "ISO date • 2018-04-12"
            )))
     (when (region-active-p) (delete-region (region-beginning) (region-end)))
     (insert
      (cond
-      ((= $style 0)
-       ;; "2016-10-10"
-       (format-time-string "%Y-%m-%d"))
-      ((= $style 1)
-       ;; "1 → 20180412224611"
-       (format-time-string "%Y%m%d%H%M%S"))
-      ((= $style 2)
-       ;; "2 → 2018-04-12_224611"
-       (replace-regexp-in-string ":" "" (format-time-string "%Y-%m-%d_%T")))
-      ((= $style 3)
-       ;; "3 → 2018-04-12T22:46:11-07:00"
+      ((string-match "^ISO date" $style) (format-time-string "%Y-%m-%d"))
+      ((string-match "^all digits" $style) (format-time-string "%Y%m%d%H%M%S"))
+      ((string-match "^date and digits" $style) (format-time-string "%Y-%m-%d_%H%M%S"))
+      ((string-match "^ISO full" $style)
        (concat
         (format-time-string "%Y-%m-%dT%T")
         (funcall (lambda ($x) (format "%s:%s" (substring $x 0 3) (substring $x 3 5))) (format-time-string "%z"))))
-      ((= $style 4)
-       ;; "4 → 2018-04-12 22:46:11-07:00"
+      ((string-match "^ISO space" $style)
        (concat
         (format-time-string "%Y-%m-%d %T")
         (funcall (lambda ($x) (format "%s:%s" (substring $x 0 3) (substring $x 3 5))) (format-time-string "%z"))))
-      ((= $style 5)
-       ;; "5 → 2018-04-12 Thursday"
-       (format-time-string "%Y-%m-%d %A"))
-      ((= $style 6)
-       ;; "6 → Thursday, April 12, 2018"
-       (format-time-string "%A, %B %d, %Y"))
-      ((= $style 7)
-       ;; "7 → Thu, Apr 12, 2018"
-       (format-time-string "%a, %b %d, %Y"))
-      ((= $style 8)
-       ;; "8 → April 12, 2018"
-       (format-time-string "%B %d, %Y"))
-      ((= $style 9)
-       ;; "9 → Apr 12, 2018"
-       (format-time-string "%b %d, %Y"))
-      (t
-       (format-time-string "%Y-%m-%d"))))))
+      ((string-match "^weekday" $style) (format-time-string "%Y-%m-%d %A"))
+      ((string-match "^usa date + weekday" $style) (format-time-string "%A, %B %d, %Y"))
+      ((string-match "^usa short + weekday" $style) (format-time-string "%a, %b %d, %Y"))
+      ((string-match "^usa mdy full" $style) (format-time-string "%B %d, %Y"))
+      ((string-match "^usa mdy short" $style) (format-time-string "%b %d, %Y"))
+      (t (format-time-string "%Y-%m-%d"))))))
 
 (defun xah-insert-bracket-pair (LBracket RBracket &optional WrapMethod)
   "Insert brackets around selection, word, at point, and maybe move cursor in between.
@@ -2386,7 +2366,7 @@ Version: 2020-10-17 2021-10-16"
     (setq $path (replace-regexp-in-string "^/C:/" "/" (replace-regexp-in-string "^file://" "" (replace-regexp-in-string ":\\'" "" $input2))))
     (if (string-match-p "\\`https?://" $path)
         (browse-url $path)
-      (progn ; not starting “http://”
+      (progn ; not starting http://
         (if (string-match "#" $path)
             (let (($fpath (substring $path 0 (match-beginning 0)))
                   ($fractPart (substring $path (1+ (match-beginning 0)))))
