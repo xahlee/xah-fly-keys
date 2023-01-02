@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 22.3.20221225104731
+;; Version: 22.4.20230101171547
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1713,7 +1713,7 @@ If `universal-argument' is called first, prompt for a format to use.
 If there is selection, delete it first.
 
 URL `http://xahlee.info/emacs/emacs/elisp_insert-date-time.html'
-Version 2013-05-10 2021-11-07 2022-04-07"
+Version 2013-05-10 2022-04-07 2023-01-01"
   (interactive)
   (let (($style
          (if current-prefix-arg
@@ -1742,7 +1742,7 @@ Version 2013-05-10 2021-11-07 2022-04-07"
        (format-time-string "%Y-%m-%d"))
       ((= $style 1)
        ;; "1 → 20180412224611"
-       (replace-regexp-in-string ":" "" (format-time-string "%Y%m%d%T")))
+       (format-time-string "%Y%m%d%H%M%S"))
       ((= $style 2)
        ;; "2 → 2018-04-12_224611"
        (replace-regexp-in-string ":" "" (format-time-string "%Y-%m-%d_%T")))
@@ -1971,6 +1971,7 @@ Version: 2013-06-12 2019-03-07"
     ("red triangle 🔺")
     ("diamond 💠")
     ("square ⬛")
+    ("cursor ▮")
 
     ("bullet •")
     ("diamond ◆")
@@ -2257,6 +2258,25 @@ Version: 2017-11-01 2022-04-05"
 
 (declare-function minibuffer-keyboard-quit "delsel" ())
 (declare-function org-edit-src-save "org-src" ())
+
+(defun xah-save-close-current-buffer ()
+  "Save and close current buffer.
+If the buffer is not a file, save it to `user-emacs-directory' and named untitled_‹datetime›_‹randomhex›.txt
+
+Version 2022-12-29"
+  (interactive)
+  (if (buffer-file-name)
+      (when (buffer-modified-p) (save-buffer))
+    (progn
+      (when (xah-user-buffer-p)
+        (widen)
+        (when (not (equal (point-max) 1))
+          (write-file
+           (format "%suntitled_%s_%x.txt"
+                   user-emacs-directory
+                   (format-time-string "%Y%m%d_%H%M%S")
+                   (random 100)))))))
+  (xah-close-current-buffer))
 
 (defun xah-close-current-buffer ()
   "Close the current buffer.
@@ -3543,7 +3563,7 @@ Version 2022-10-31"
   (global-set-key (kbd "C-t") #'hippie-expand)
   ;; (global-set-key (kbd "C-u") 'nil)
   (global-set-key (kbd "C-v") #'yank)
-  (global-set-key (kbd "C-w") #'xah-close-current-buffer)
+  (global-set-key (kbd "C-w") #'xah-save-close-current-buffer)
   ;; (global-set-key (kbd "C-x") 'nil)
 
   (when (>= emacs-major-version 28)
