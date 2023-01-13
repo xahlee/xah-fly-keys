@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 22.5.20230101184908
+;; Version: 22.5.20230113094711
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2243,7 +2243,7 @@ Version: 2017-11-01 2022-04-05"
   "Save and close current buffer.
 If the buffer is not a file, save it to `user-emacs-directory' and named untitled_‹datetime›_‹randomhex›.txt
 
-Version 2022-12-29"
+Version 2022-12-29 2023-01-09"
   (interactive)
   (if (buffer-file-name)
       (when (buffer-modified-p) (save-buffer))
@@ -2255,7 +2255,7 @@ Version 2022-12-29"
            (format "%suntitled_%s_%x.txt"
                    user-emacs-directory
                    (format-time-string "%Y%m%d_%H%M%S")
-                   (random 100)))))))
+                   (random (1- (expt 16 5)))))))))
   (xah-close-current-buffer))
 
 (defun xah-close-current-buffer ()
@@ -3183,7 +3183,7 @@ Version 2022-10-31"
        ("e y" . xah-insert-double-angle-quote)
 
        ("f" . xah-search-current-word)
-       ("g" . xah-close-current-buffer)
+       ("g" . xah-save-close-current-buffer)
 
        ("h a" . apropos-command)
        ("h b" . describe-bindings)
