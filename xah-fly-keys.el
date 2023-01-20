@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 22.5.20230113094711
+;; Version: 22.6.20230120120803
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2255,7 +2255,7 @@ Version 2022-12-29 2023-01-09"
            (format "%suntitled_%s_%x.txt"
                    user-emacs-directory
                    (format-time-string "%Y%m%d_%H%M%S")
-                   (random (1- (expt 16 5)))))))))
+                   (random #xfffff)))))))
   (xah-close-current-buffer))
 
 (defun xah-close-current-buffer ()
@@ -3155,7 +3155,18 @@ Version 2022-10-31"
        ("c r" . bookmark-jump)
        ("c s" . write-file)
        ("c u" . xah-open-file-at-cursor)
+       ("c x" . set-buffer-file-coding-system)
        ("c y" . xah-list-recently-closed)
+       ("c z" . revert-buffer-with-coding-system)
+
+       ;; set-buffer-process-coding-system
+       ;; set-file-name-coding-system
+       ;; set-keyboard-coding-system
+       ;; set-language-environment
+       ;; set-next-selection-coding-system
+       ;; set-selection-coding-system
+       ;; set-terminal-coding-system
+       ;; universal-coding-system-argument
 
        ("d" . beginning-of-buffer)
 
@@ -3326,36 +3337,27 @@ Version 2022-10-31"
        ("x" . xah-toggle-previous-letter-case)
        ("y" . xah-show-kill-ring)
 
-       ;; experimental. need a frequency stat of the command. also need to study these commands. currently i only use few
+       ;; vc command keys subject to change. need a frequency stat of the commands.
 
-       ("z a" . vc-update-change-log)
-       ("z b" . vc-switch-backend)
-       ("z c" . vc-rollback)
-       ("z e" . vc-update)
-       ("z f" . vc-diff) ; nice
-       ("z g" . vc-annotate)
-       ("z h" . vc-insert-headers)
-       ("z l" . vc-print-log)
-       ("z m" . vc-dir) ; nice
-       ("z g" . vc-merge)
-       ("z p" . vc-print-root-log)
-       ("z r" . vc-root-diff)
-       ("z s" . vc-create-tag)
-       ("z t" . vc-retrieve-tag)
-       ("z u" . vc-revert)
-       ("z v" . vc-next-action)
-       ("z ~" . vc-revision-other-window)
+       ("z b" . vc-root-diff)         ; D
+       ("z c" . vc-update)    ; git pull, +
+       ("z d" . vc-annotate)  ; g
+       ("z f" . vc-revert)            ; u
+       ("z g" . vc-push)      ; git push, P
+       ("z h" . vc-diff)      ; git diff, =
+       ("z m" . vc-dir)       ; git status, C-x v d
+       ("z n" . vc-print-log) ; git log, l
+       ("z r" . vc-merge)     ; m
+       ("z t" . vc-register)  ; git add, i
+       ("z z" . vc-next-action)       ; v
 
-       ;; ("n" . set-file-name-coding-system)
-       ;; ("s" . set-next-selection-coding-system)
-       ;; ("c" . universal-coding-system-argument)
-       ;; ("f" . set-buffer-file-coding-system)
-       ;; ("k" . set-keyboard-coding-system)
-       ;; ("l" . set-language-environment)
-       ;; ("p" . set-buffer-process-coding-system)
-       ;; ("r" . revert-buffer-with-coding-system)
-       ;; ("t" . set-terminal-coding-system)
-       ;; ("x" . set-selection-coding-system)
+       ("z 1" . vc-create-tag)        ; s
+       ("z 2" . vc-insert-headers)    ; h
+       ("z 3" . vc-print-root-log)    ; L
+       ("z 4" . vc-retrieve-tag)      ; r
+       ("z 5" . vc-revision-other-window) ; ~
+       ("z 6" . vc-switch-backend)    ; b
+       ("z 7" . vc-update-change-log) ; a
 
        ;;
        ))
@@ -3500,7 +3502,7 @@ Version 2022-10-31"
  ;; define control combo in xah-fly-shared-map may be a problem.
 ;; by setting them in xah-fly-shared-map, it becomes unchangeable, that is, if a major mode set a key for C-t, it will have no effect.
 ;; Current solution is just to use global-set-key.
-;; The disadvantage is that these changes leak, that is, xah-fly-keys is turned off, these ctrl keys are still changed. Still, this is better, because xah fly keys is not really meant to be turned off temporarily. 
+;; The disadvantage is that these changes leak, that is, xah-fly-keys is turned off, these ctrl keys are still changed. Still, this is better, because xah fly keys is not really meant to be turned off temporarily.
 ;; Removing the tons of default emacs control and meta keys is desirable.
 ;; because there are hundres of them, confusing, and mostly useless.
 
