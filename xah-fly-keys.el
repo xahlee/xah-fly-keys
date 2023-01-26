@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 22.6.20230120120803
+;; Version: 22.7.20230125182943
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -25,11 +25,9 @@
 
 ;; Important command/insert mode switch keys:
 
-;; xah-fly-command-mode-activate (press <home> or F8 or Alt+Space or
-;; Ctrl+Space or menu key)
+;; xah-fly-command-mode-activate (press ESC or <home> or F8 or Alt+Space or Ctrl+Space or menu key)
 
-;; xah-fly-insert-mode-activate (when in command mode, press qwerty
-;; letter key f.)
+;; xah-fly-insert-mode-activate (when in command mode, press qwerty letter key f.)
 
 ;; When in command mode:
 
@@ -3067,7 +3065,8 @@ Version 2022-10-31"
      xah-fly-shared-map
      '(("<home>" . xah-fly-command-mode-activate)
        ("<menu>" . xah-fly-command-mode-activate)
-       ("<f8>" . xah-fly-command-mode-activate))
+       ("<f8>" . xah-fly-command-mode-activate)
+       ("ESC" . xah-fly-command-mode-activate))
      :direct)
 
     (when xah-fly-use-isearch-arrows
@@ -3339,25 +3338,25 @@ Version 2022-10-31"
 
        ;; vc command keys subject to change. need a frequency stat of the commands.
 
-       ("z b" . vc-root-diff)         ; D
-       ("z c" . vc-update)    ; git pull, +
-       ("z d" . vc-annotate)  ; g
-       ("z f" . vc-revert)            ; u
-       ("z g" . vc-push)      ; git push, P
-       ("z h" . vc-diff)      ; git diff, =
-       ("z m" . vc-dir)       ; git status, C-x v d
-       ("z n" . vc-print-log) ; git log, l
-       ("z r" . vc-merge)     ; m
-       ("z t" . vc-register)  ; git add, i
-       ("z z" . vc-next-action)       ; v
+       ("z b" . vc-root-diff)   ; D
+       ("z c" . vc-update)      ; git pull, +
+       ("z d" . vc-annotate)    ; g
+       ("z f" . vc-revert)      ; u
+       ("z g" . vc-push)        ; git push, P
+       ("z h" . vc-diff)        ; git diff, =
+       ("z m" . vc-dir)         ; git status, C-x v d
+       ("z n" . vc-print-log)   ; git log, l
+       ("z r" . vc-merge)       ; m
+       ("z t" . vc-register)    ; git add, i
+       ("z z" . vc-next-action) ; v
 
-       ("z 1" . vc-create-tag)        ; s
-       ("z 2" . vc-insert-headers)    ; h
-       ("z 3" . vc-print-root-log)    ; L
-       ("z 4" . vc-retrieve-tag)      ; r
+       ("z 1" . vc-create-tag)            ; s
+       ("z 2" . vc-insert-headers)        ; h
+       ("z 3" . vc-print-root-log)        ; L
+       ("z 4" . vc-retrieve-tag)          ; r
        ("z 5" . vc-revision-other-window) ; ~
-       ("z 6" . vc-switch-backend)    ; b
-       ("z 7" . vc-update-change-log) ; a
+       ("z 6" . vc-switch-backend)        ; b
+       ("z 7" . vc-update-change-log)     ; a
 
        ;;
        ))
@@ -3436,56 +3435,60 @@ Version 2022-10-31"
   (global-set-key (kbd "<f1>") nil))
 
 (when xah-fly-use-meta-key
+
+  (global-set-key (kbd "M-<home>") nil) ; beginning-of-buffer-other-window
+  (global-set-key (kbd "M-<end>") nil) ; end-of-buffer-other-window
+
   (global-set-key (kbd "M-SPC") #'xah-fly-command-mode-activate)
-  (global-set-key (kbd "M-\\") 'nil) ; delete-horizontal-space
-  (global-set-key (kbd "M-!") 'nil)  ; shell-command
-  (global-set-key (kbd "M-$") 'nil)  ; ispell-word
-  (global-set-key (kbd "M-%") 'nil)  ; query-replace
-  (global-set-key (kbd "M-&") 'nil)  ; async-shell-command
-  (global-set-key (kbd "M-'") 'nil)  ; abbrev-prefix-mark
-  (global-set-key (kbd "M-(") 'nil)  ; insert-parentheses
-  (global-set-key (kbd "M-)") 'nil)  ; move-past-close-and-reindent
-  ;; (global-set-key (kbd "M-,") 'nil) ; xref-pop-marker-stack
-  ;; (global-set-key (kbd "M-.") 'nil) ; xref-find-definitions
-  (global-set-key (kbd "M-/") 'nil) ; dabbrev-expand
-  (global-set-key (kbd "M-:") 'nil) ; eval-expression
-  ;; (global-set-key (kbd "M-;") 'nil) ; comment-dwim
-  (global-set-key (kbd "M-<") 'nil) ; beginning-of-buffer
-  (global-set-key (kbd "M-=") 'nil) ; count-words-region
-  (global-set-key (kbd "M->") 'nil) ; end-of-buffer
-  ;; (global-set-key (kbd "M-?") 'nil) ; xref-find-references
-  (global-set-key (kbd "M-@") 'nil) ; mark-word
-  (global-set-key (kbd "M-^") 'nil) ; delete-indentation
-  (global-set-key (kbd "M-`") 'nil) ; tmm-menubar
-  (global-set-key (kbd "M-a") 'nil) ; backward-sentence
-  (global-set-key (kbd "M-b") 'nil) ; backward-word
-  (global-set-key (kbd "M-c") 'nil) ; capitalize-word
-  (global-set-key (kbd "M-d") 'nil) ;  kill-word
-  (global-set-key (kbd "M-e") 'nil) ; forward-sentence
-  (global-set-key (kbd "M-f") 'nil) ; forward-word
-  (global-set-key (kbd "M-g") 'nil) ; Prefix Command
-  (global-set-key (kbd "M-h") 'nil) ; mark-paragraph
-  (global-set-key (kbd "M-i") 'nil) ; tab-to-tab-stop
-  (global-set-key (kbd "M-j") 'nil) ; default-indent-new-line
-  (global-set-key (kbd "M-k") 'nil) ; kill-sentence
-  (global-set-key (kbd "M-l") 'nil) ; downcase-word
-  (global-set-key (kbd "M-m") 'nil) ; back-to-indentation
-  (global-set-key (kbd "M-o") 'nil) ; facemenu-keymap
-  (global-set-key (kbd "M-q") 'nil) ; fill-paragraph
-  (global-set-key (kbd "M-r") 'nil) ; move-to-window-line-top-bottom
-  (global-set-key (kbd "M-s") 'nil) ; Prefix Command
-  (global-set-key (kbd "M-t") 'nil) ; transpose-words
-  (global-set-key (kbd "M-u") 'nil) ; upcase-word
-  (global-set-key (kbd "M-v") 'nil) ; scroll-down-command
-  (global-set-key (kbd "M-w") 'nil) ; kill-ring-save
-  ;; (global-set-key (kbd "M-x") 'nil) ; execute-extended-command
-  ;; (global-set-key (kbd "M-y") 'nil) ; yank-pop
-  (global-set-key (kbd "M-z") 'nil)   ; zap-to-char
-  (global-set-key (kbd "M-{") 'nil)   ; backward-paragraph
-  (global-set-key (kbd "M-|") 'nil)   ; shell-command-on-region
-  (global-set-key (kbd "M-}") 'nil)   ; forward-paragraph
-  (global-set-key (kbd "M-~") 'nil)   ; not-modified
-  (global-set-key (kbd "M-DEL") 'nil) ; backward-kill-word
+  (global-set-key (kbd "M-\\") nil) ; delete-horizontal-space
+  (global-set-key (kbd "M-!") nil)  ; shell-command
+  (global-set-key (kbd "M-$") nil)  ; ispell-word
+  (global-set-key (kbd "M-%") nil)  ; query-replace
+  (global-set-key (kbd "M-&") nil)  ; async-shell-command
+  (global-set-key (kbd "M-'") nil)  ; abbrev-prefix-mark
+  (global-set-key (kbd "M-(") nil)  ; insert-parentheses
+  (global-set-key (kbd "M-)") nil)  ; move-past-close-and-reindent
+  ;; (global-set-key (kbd "M-,") nil) ; xref-pop-marker-stack
+  ;; (global-set-key (kbd "M-.") nil) ; xref-find-definitions
+  (global-set-key (kbd "M-/") nil) ; dabbrev-expand
+  (global-set-key (kbd "M-:") nil) ; eval-expression
+  ;; (global-set-key (kbd "M-;") nil) ; comment-dwim
+  (global-set-key (kbd "M-<") nil) ; beginning-of-buffer
+  (global-set-key (kbd "M-=") nil) ; count-words-region
+  (global-set-key (kbd "M->") nil) ; end-of-buffer
+  ;; (global-set-key (kbd "M-?") nil) ; xref-find-references
+  (global-set-key (kbd "M-@") nil) ; mark-word
+  (global-set-key (kbd "M-^") nil) ; delete-indentation
+  (global-set-key (kbd "M-`") nil) ; tmm-menubar
+  (global-set-key (kbd "M-a") nil) ; backward-sentence
+  (global-set-key (kbd "M-b") nil) ; backward-word
+  (global-set-key (kbd "M-c") nil) ; capitalize-word
+  (global-set-key (kbd "M-d") nil) ;  kill-word
+  (global-set-key (kbd "M-e") nil) ; forward-sentence
+  (global-set-key (kbd "M-f") nil) ; forward-word
+  (global-set-key (kbd "M-g") nil) ; Prefix Command
+  (global-set-key (kbd "M-h") nil) ; mark-paragraph
+  (global-set-key (kbd "M-i") nil) ; tab-to-tab-stop
+  (global-set-key (kbd "M-j") nil) ; default-indent-new-line
+  (global-set-key (kbd "M-k") nil) ; kill-sentence
+  (global-set-key (kbd "M-l") nil) ; downcase-word
+  (global-set-key (kbd "M-m") nil) ; back-to-indentation
+  (global-set-key (kbd "M-o") nil) ; facemenu-keymap
+  (global-set-key (kbd "M-q") nil) ; fill-paragraph
+  (global-set-key (kbd "M-r") nil) ; move-to-window-line-top-bottom
+  (global-set-key (kbd "M-s") nil) ; Prefix Command
+  (global-set-key (kbd "M-t") nil) ; transpose-words
+  (global-set-key (kbd "M-u") nil) ; upcase-word
+  (global-set-key (kbd "M-v") nil) ; scroll-down-command
+  (global-set-key (kbd "M-w") nil) ; kill-ring-save
+  ;; (global-set-key (kbd "M-x") nil) ; execute-extended-command
+  ;; (global-set-key (kbd "M-y") nil) ; yank-pop
+  (global-set-key (kbd "M-z") nil)   ; zap-to-char
+  (global-set-key (kbd "M-{") nil)   ; backward-paragraph
+  (global-set-key (kbd "M-|") nil)   ; shell-command-on-region
+  (global-set-key (kbd "M-}") nil)   ; forward-paragraph
+  (global-set-key (kbd "M-~") nil)   ; not-modified
+  (global-set-key (kbd "M-DEL") nil) ; backward-kill-word
   )
 
 (when xah-fly-use-control-key
@@ -3518,7 +3521,7 @@ Version 2022-10-31"
 
   (global-set-key (kbd "<f7>") 'xah-fly-leader-key-map)
 
-  ;; (global-set-key (kbd "C-1") 'nil)
+  ;; (global-set-key (kbd "C-1") nil)
   (global-set-key (kbd "C-2") #'pop-global-mark)
   (global-set-key (kbd "C-3") #'previous-error)
   (global-set-key (kbd "C-4") #'next-error)
@@ -3538,32 +3541,32 @@ Version 2022-10-31"
   (global-set-key (kbd "C-S-s") #'write-file)
   (global-set-key (kbd "C-S-t") #'xah-open-last-closed)
 
-  ;; (global-set-key (kbd "C-@") 'nil)
+  ;; (global-set-key (kbd "C-@") nil)
 
   (global-set-key (kbd "C-a") #'mark-whole-buffer)
-  ;; (global-set-key (kbd "C-b") 'nil)
-  ;; (global-set-key (kbd "C-c") 'nil)
-  ;; (global-set-key (kbd "C-d") 'nil)
-  ;; (global-set-key (kbd "C-e") 'nil)
-  ;; (global-set-key (kbd "C-f") 'nil)
-  ;; (global-set-key (kbd "C-g") 'nil) ; cancel
-  ;; (global-set-key (kbd "C-h") 'nil) ; help
-  ;; (global-set-key (kbd "C-i") 'nil) ; tab
-  ;; (global-set-key (kbd "C-j") 'nil) ; newline
-  ;; (global-set-key (kbd "C-k") 'nil)
-  ;; (global-set-key (kbd "C-l") 'nil)
-  ;; (global-set-key (kbd "C-m") 'nil)
+  ;; (global-set-key (kbd "C-b") nil)
+  ;; (global-set-key (kbd "C-c") nil)
+  ;; (global-set-key (kbd "C-d") nil)
+  ;; (global-set-key (kbd "C-e") nil)
+  ;; (global-set-key (kbd "C-f") nil)
+  ;; (global-set-key (kbd "C-g") nil) ; cancel
+  ;; (global-set-key (kbd "C-h") nil) ; help
+  ;; (global-set-key (kbd "C-i") nil) ; tab
+  ;; (global-set-key (kbd "C-j") nil) ; newline
+  ;; (global-set-key (kbd "C-k") nil)
+  ;; (global-set-key (kbd "C-l") nil)
+  ;; (global-set-key (kbd "C-m") nil)
   (global-set-key (kbd "C-n") #'xah-new-empty-buffer)
   (global-set-key (kbd "C-o") #'find-file)
-  ;; (global-set-key (kbd "C-p") 'nil)
-  ;; (global-set-key (kbd "C-q") 'nil)
-  ;; (global-set-key (kbd "C-r") 'nil)
+  ;; (global-set-key (kbd "C-p") nil)
+  ;; (global-set-key (kbd "C-q") nil)
+  ;; (global-set-key (kbd "C-r") nil)
   (global-set-key (kbd "C-s") #'save-buffer)
   (global-set-key (kbd "C-t") #'hippie-expand)
-  ;; (global-set-key (kbd "C-u") 'nil)
+  ;; (global-set-key (kbd "C-u") nil)
   (global-set-key (kbd "C-v") #'yank)
   (global-set-key (kbd "C-w") #'xah-save-close-current-buffer)
-  ;; (global-set-key (kbd "C-x") 'nil)
+  ;; (global-set-key (kbd "C-x") nil)
 
   (when (>= emacs-major-version 28)
     (global-set-key (kbd "C-y") #'undo-redo))
