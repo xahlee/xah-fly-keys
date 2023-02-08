@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 22.8.20230127142338
+;; Version: 22.9.20230207171612
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -607,28 +607,32 @@ What char is considered bracket or quote is determined by current syntax table.
 If `universal-argument' is called first, do not delete inner text.
 
 URL `http://xahlee.info/emacs/emacs/emacs_delete_backward_char_or_bracket_text.html'
-Version: 2017-07-02 2022-06-23"
+Version: 2017-07-02 2022-06-23 2023-02-02"
   (interactive)
   (if (and delete-selection-mode (region-active-p))
       (delete-region (region-beginning) (region-end))
     (cond
      ((looking-back "\\s)" 1)
-      (if (string-equal major-mode "xah-wolfram-mode")
-          (let ($isComment ($p0 (point)))
-            (backward-char)
-            (setq $isComment (nth 4 (syntax-ppss)))
-            (goto-char $p0)
-            (if $isComment
-                (if (forward-comment -1)
-                    (kill-region (point) $p0)
-                  (message "error GSNN2:parsing comment failed."))
-              (if current-prefix-arg
-                  (xah-delete-backward-bracket-pair)
-                (xah-delete-backward-bracket-text))))
-        (progn
-          (if current-prefix-arg
-              (xah-delete-backward-bracket-pair)
-            (xah-delete-backward-bracket-text)))))
+      (if current-prefix-arg
+          (xah-delete-backward-bracket-pair)
+        (xah-delete-backward-bracket-text))
+      ;; (if (string-equal major-mode "xah-wolfram-mode")
+      ;;           (let ($isComment ($p0 (point)))
+      ;;             (backward-char)
+      ;;             (setq $isComment (nth 4 (syntax-ppss)))
+      ;;             (goto-char $p0)
+      ;;             (if $isComment
+      ;;                 (if (forward-comment -1)
+      ;;                     (kill-region (point) $p0)
+      ;;                   (message "error GSNN2:parsing comment failed."))
+      ;;               (if current-prefix-arg
+      ;;                   (xah-delete-backward-bracket-pair)
+      ;;                 (xah-delete-backward-bracket-text))))
+      ;;         (progn
+      ;;           (if current-prefix-arg
+      ;;               (xah-delete-backward-bracket-pair)
+      ;;             (xah-delete-backward-bracket-text))))
+      )
      ((looking-back "\\s(" 1)
       (message "left of cursor is opening bracket")
       (let ($pOpenBracketLeft
@@ -1607,8 +1611,8 @@ Version: 2018-06-18 2021-09-30"
                  (if (equal (length $result) 0)
                      (progn default-directory )
                    (progn $result))))
-           (if (buffer-file-name)
-               (buffer-file-name)
+           (if buffer-file-name
+               buffer-file-name
              (expand-file-name default-directory)))))
     (kill-new
      (if DirPathOnlyQ
@@ -2243,7 +2247,7 @@ If the buffer is not a file, save it to `user-emacs-directory' and named untitle
 
 Version 2022-12-29 2023-01-09"
   (interactive)
-  (if (buffer-file-name)
+  (if buffer-file-name
       (when (buffer-modified-p) (save-buffer))
     (progn
       (when (xah-user-buffer-p)
@@ -2277,7 +2281,7 @@ Version: 2016-06-19 2022-05-13 2022-10-18"
         (when (and (buffer-modified-p)
                    (xah-user-buffer-p)
                    (not (string-equal major-mode "dired-mode"))
-                   (if (equal (buffer-file-name) nil)
+                   (if (equal buffer-file-name nil)
                        (if (string-equal "" (save-restriction (widen) (buffer-string))) nil t)
                      t))
           (if (y-or-n-p (format "Buffer %s modified; Do you want to save? " (buffer-name)))
@@ -2289,9 +2293,9 @@ Version: 2016-06-19 2022-05-13 2022-10-18"
               (org-edit-src-save)
             (set-buffer-modified-p nil)))
         ;; save to a list of closed buffer
-        (when (buffer-file-name)
+        (when buffer-file-name
           (setq xah-recently-closed-buffers
-                (cons (cons (buffer-name) (buffer-file-name)) xah-recently-closed-buffers))
+                (cons (cons (buffer-name) buffer-file-name) xah-recently-closed-buffers))
           (when (> (length xah-recently-closed-buffers) xah-recently-closed-buffers-max)
             (setq xah-recently-closed-buffers (butlast xah-recently-closed-buffers 1))))
         (kill-buffer (current-buffer))))))
@@ -2578,7 +2582,7 @@ If the current buffer is not associated with a file, nothing's done.
 URL `http://xahlee.info/emacs/emacs/elisp_make-backup.html'
 Version: 2018-06-06 2020-12-18 2022-06-13"
   (interactive)
-  (let (($fname (buffer-file-name))
+  (let (($fname buffer-file-name)
         ($dateTimeFormat "%Y-%m-%d_%H%M%S"))
     (if $fname
         (let (($backupName
@@ -2603,7 +2607,7 @@ If the current buffer is not associated with a file nor dired, nothing's done.
 URL `http://xahlee.info/emacs/emacs/elisp_make-backup.html'
 Version: 2015-10-14"
   (interactive)
-  (if (buffer-file-name)
+  (if buffer-file-name
       (progn
         (xah-make-backup)
         (when (buffer-modified-p)
@@ -2624,7 +2628,7 @@ Version: 2018-05-15 2021-08-31 2021-09-27 2022-07-08"
   (interactive)
   (if (string-equal 'dired-mode major-mode)
       (message "In dired. Nothing is done.")
-    (let* (($fname (buffer-file-name))
+    (let* (($fname buffer-file-name)
            ($backupPath
             (concat (if $fname $fname (format "%sxx" default-directory))
                     (format "~%s~" (format-time-string "%Y-%m-%d_%H%M%S")))))
@@ -2679,7 +2683,7 @@ Version: 2020-11-20 2022-04-20 2022-08-19"
                    (if (eq nil (dired-get-marked-files))
                        default-directory
                      (car (dired-get-marked-files)))
-                 (if (buffer-file-name) (buffer-file-name) default-directory))))
+                 (if buffer-file-name buffer-file-name default-directory))))
     (cond
      ((string-equal system-type "windows-nt")
       (shell-command (format "PowerShell -Command invoke-item '%s'" (expand-file-name default-directory )))
@@ -2707,7 +2711,7 @@ Version: 2020-11-20 2022-04-20 2022-08-19"
 URL `http://xahlee.info/emacs/emacs/emacs_dired_open_file_in_ext_apps.html'
 Version: 2020-02-13 2021-01-18 2022-08-04"
   (interactive)
-  (let (($path (if (buffer-file-name) (buffer-file-name) (expand-file-name default-directory))))
+  (let (($path (if buffer-file-name buffer-file-name (expand-file-name default-directory))))
     (message "path is %s" $path)
     (cond
      ((string-equal system-type "darwin")
@@ -2730,7 +2734,7 @@ Version: 2019-11-04 2021-07-21 2022-08-19"
               (list Fname)
             (if (string-equal major-mode "dired-mode")
                 (dired-get-marked-files)
-              (list (buffer-file-name)))))
+              (list buffer-file-name))))
     (setq $doIt (if (<= (length $fileList) 5) t (y-or-n-p "Open more than 5 files? ")))
     (when $doIt
       (cond
@@ -3764,7 +3768,7 @@ Version: 2022-07-06"
 (defun xah-fly-save-buffer-if-file ()
   "Save current buffer if it is a file."
   (interactive)
-  (when (buffer-file-name)
+  (when buffer-file-name
     (save-buffer)))
 
 (defun xah-fly-command-mode-activate ()
