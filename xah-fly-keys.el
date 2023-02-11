@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 22.9.20230207171612
+;; Version: 22.9.20230211120546
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -19,7 +19,7 @@
 ;; vi, but key choices are based on statistics of command call
 ;; frequency.
 
-;; HOW TO USE
+;;; Usage:
 
 ;; M-x xah-fly-keys to toggle the mode on/off.
 
@@ -101,18 +101,17 @@
 
 ;;; Installation:
 ;; here's how to manual install
-
+;;
 ;; put the file xah-fly-keys.el in ~/.emacs.d/lisp/
 ;; create the dir if doesn't exist.
-
+;;
 ;; put the following in your emacs init file:
-
 ;; (add-to-list 'load-path "~/.emacs.d/lisp/")
 ;; (require 'xah-fly-keys)
 ;; (xah-fly-keys-set-layout "qwerty") ; required
-
+;; (xah-fly-keys 1)
+;;
 ;; possible layout values:
-
 ;; adnw
 ;; azerty
 ;; azerty-be
@@ -136,10 +135,8 @@
 ;; qwerty-no (qwerty Norwegian)
 ;; qwertz
 ;; workman
-
-;; supported layouts are stored as the keys in xah-fly-layouts
-
-;; (xah-fly-keys 1)
+;;
+;; supported layouts are stored in the variable xah-fly-layouts
 
 
 ;;; Code:
