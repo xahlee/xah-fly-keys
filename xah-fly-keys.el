@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 22.9.20230211120546
+;; Version: 22.9.20230223213607
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2341,7 +2341,7 @@ See also `xah-open-file-at-cursor-pre-hook'.
 This command is similar to `find-file-at-point' but without prompting for confirmation.
 
 URL `http://xahlee.info/emacs/emacs/emacs_open_file_path_fast.html'
-Version: 2020-10-17 2021-10-16"
+Version: 2020-10-17 2021-10-16 2023-02-23"
   (interactive)
   (let* (($input
           (if (region-active-p)
@@ -2366,6 +2366,11 @@ Version: 2020-10-17 2021-10-16"
     (if (string-match-p "\\`https?://" $path)
         (browse-url $path)
       (progn ; not starting http://
+        ;; remove query
+        (let ((xHasQuery (string-match "\?[a-z]+=" $path)))
+          (if xHasQuery
+              (setq $path (substring $path 0 xHasQuery))
+            nil))
         (if (string-match "#" $path)
             (let (($fpath (substring $path 0 (match-beginning 0)))
                   ($fractPart (substring $path (1+ (match-beginning 0)))))
