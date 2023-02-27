@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 22.9.20230223213607
+;; Version: 22.10.20230227111509
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1509,42 +1509,6 @@ Version: 2017-01-11"
       (goto-char (point-min))
       (while (search-forward "\\\"" nil t)
         (replace-match "\"" t t)))))
-
-(defun xah-dired-rename-space-to-underscore ()
-  "In dired, rename current or marked files by replacing space to lowline _.
-If not in `dired', do nothing.
-
-URL `http://xahlee.info/emacs/emacs/elisp_dired_rename_space_to_underscore.html'
-Version: 2016-10-04 2020-03-03 2022-05-16"
-  (interactive)
-  (require 'dired-aux)
-  (if (eq major-mode 'dired-mode)
-      (let ((markedFiles (dired-get-marked-files )))
-        (mapc (lambda (x)
-                (when (string-match " " x )
-                  (dired-rename-file x (replace-regexp-in-string " " "_" x) nil)))
-              markedFiles)
-        ;; (dired-next-line 1)
-        (revert-buffer)
-        )
-    (user-error "%s: Not in dired" real-this-command)))
-
-(defun xah-dired-rename-space-to-hyphen ()
-  "In dired, rename current or marked files by replacing space to hyphen -.
-If not in `dired', do nothing.
-
-URL `http://xahlee.info/emacs/emacs/elisp_dired_rename_space_to_underscore.html'
-Version: 2016-10-04 2019-11-24 2022-05-16"
-  (interactive)
-  (require 'dired-aux)
-  (if (eq major-mode 'dired-mode)
-      (progn
-        (mapc (lambda (x)
-                (when (string-match " " x )
-                  (dired-rename-file x (replace-regexp-in-string " " "-" x) nil)))
-              (dired-get-marked-files ))
-        (revert-buffer))
-    (user-error "%s: Not in dired" real-this-command)))
 
 (defun xah-cycle-hyphen-lowline-space (&optional Begin End)
   "Cycle hyphen/lowline/space chars in selection or inside quote/bracket or line, in that order.
