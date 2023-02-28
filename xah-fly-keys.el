@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 22.10.20230227111509
+;; Version: 22.11.20230228121218
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2692,35 +2692,45 @@ Version: 2020-02-13 2021-01-18 2022-08-04"
 When called in emacs lisp, if Fname is given, open that.
 
 URL `http://xahlee.info/emacs/emacs/emacs_dired_open_file_in_ext_apps.html'
-Version: 2019-11-04 2021-07-21 2022-08-19"
+Version: 2019-11-04 2021-07-21 2022-08-19 2023-02-28"
   (interactive)
-  (let ($fileList $doIt )
-    (setq $fileList
+  (let (ξfileList ξdoIt)
+    (setq ξfileList
           (if Fname
               (list Fname)
             (if (string-equal major-mode "dired-mode")
                 (dired-get-marked-files)
               (list buffer-file-name))))
-    (setq $doIt (if (<= (length $fileList) 5) t (y-or-n-p "Open more than 5 files? ")))
-    (when $doIt
+    (setq ξdoIt (if (<= (length ξfileList) 10) t (y-or-n-p "Open more than 10 files? ")))
+    (when ξdoIt
       (cond
        ((string-equal system-type "windows-nt")
-        (mapc
-         (lambda ($fpath)
-           (shell-command (concat "PowerShell -Command \"Invoke-Item -LiteralPath\" " "'" (shell-quote-argument (expand-file-name $fpath )) "'")))
-         $fileList))
+
+        (let ((ξoutBuf (get-buffer-create "*xah open in external app*"))
+              (ξcmdlist (list "PowerShell" "-Command" "Invoke-Item" "-LiteralPath")))
+
+          (mapc
+           (lambda (x)
+             (message "%s" x)
+             (apply 'start-process (append (list "xah open in external app" ξoutBuf) ξcmdlist (list (if (string-match "'" x) (replace-match "`'" t t x) x)) nil)))
+           ξfileList)
+
+          (switch-to-buffer-other-window ξoutBuf))
+        ;; old code. calling shell. also have a bug if filename contain apostrophe
+        ;; (mapc (lambda (ξfpath) (shell-command (concat "PowerShell -Command \"Invoke-Item -LiteralPath\" " "'" (shell-quote-argument (expand-file-name ξfpath)) "'"))) ξfileList)
+        )
        ((string-equal system-type "darwin")
-        (mapc (lambda ($fpath) (shell-command (concat "open " (shell-quote-argument $fpath)))) $fileList))
+        (mapc (lambda (ξfpath) (shell-command (concat "open " (shell-quote-argument ξfpath)))) ξfileList))
        ((string-equal system-type "gnu/linux")
-        (mapc (lambda ($fpath)
+        (mapc (lambda (ξfpath)
                 (call-process shell-file-name nil nil nil
                               shell-command-switch
                               (format "%s %s"
                                       "xdg-open"
-                                      (shell-quote-argument $fpath))))
-              $fileList))
+                                      (shell-quote-argument ξfpath))))
+              ξfileList))
        ((string-equal system-type "berkeley-unix")
-        (mapc (lambda ($fpath) (let ((process-connection-type nil)) (start-process "" nil "xdg-open" $fpath))) $fileList))))))
+        (mapc (lambda (ξfpath) (let ((process-connection-type nil)) (start-process "" nil "xdg-open" ξfpath))) ξfileList))))))
 
 (defun xah-open-in-terminal ()
   "Open the current dir in a new terminal window.
