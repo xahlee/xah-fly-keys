@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 22.11.20230228121218
+;; Version: 22.12.20230301220803
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2732,19 +2732,24 @@ Version: 2019-11-04 2021-07-21 2022-08-19 2023-02-28"
        ((string-equal system-type "berkeley-unix")
         (mapc (lambda (ξfpath) (let ((process-connection-type nil)) (start-process "" nil "xdg-open" ξfpath))) ξfileList))))))
 
+(defvar xah-fly-mswin-terminal nil "A string. Value should be one of: wt (for Windows Terminal) or pwsh (for PowerShell Core (cross-platform)) or powershell (for Microsoft PowerShell).")
+
+(setq xah-fly-mswin-terminal "wt")
+
 (defun xah-open-in-terminal ()
   "Open the current dir in a new terminal window.
-On Microsoft Windows, it starts cross-platform PowerShell pwsh. You
-need to have it installed.
+On Microsoft Windows, which terminal it starts depends on `xah-fly-mswin-terminal'.
 
 URL `http://xahlee.info/emacs/emacs/emacs_dired_open_file_in_ext_apps.html'
-Version: 2020-11-21 2021-07-21 2022-08-04"
+Version: 2020-11-21 2021-07-21 2022-08-04 2023-03-01"
   (interactive)
   (cond
    ((string-equal system-type "windows-nt")
-    (let (($cmdstr
-           (format "pwsh -Command Start-Process pwsh -WorkingDirectory %s" (shell-quote-argument default-directory))))
-      (shell-command $cmdstr)))
+    (cond
+     ((string-equal xah-fly-mswin-terminal "wt") (shell-command (format "wt -d \"%s\"" default-directory)))
+     ((string-equal xah-fly-mswin-terminal "pwsh") (shell-command (format "pwsh -Command Start-Process pwsh -WorkingDirectory '%s'" (shell-quote-argument default-directory))))
+     ((string-equal xah-fly-mswin-terminal "powershell") (shell-command (format "powershell -Command Start-Process powershell -WorkingDirectory '%s'" (shell-quote-argument default-directory))))
+     (t (error "Error 702919: value of `xah-fly-mswin-terminal' is not expected. Its value is %s" xah-fly-mswin-terminal))))
    ((string-equal system-type "darwin")
     (shell-command (concat "open -a terminal " (shell-quote-argument (expand-file-name default-directory)))))
    ((string-equal system-type "gnu/linux")
