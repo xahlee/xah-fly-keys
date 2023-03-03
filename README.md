@@ -3,7 +3,7 @@ xah-fly-keys
 
 A modal keybinding for emacs (like vim), but based on command frequency and ergonomics.
 
-This is the most efficient editing system in the universe.
+This is the most efficient editing system in the universe. (Seriously - the obsession around this project is unparalled)
 
 Xah Fly Keys home page at
 http://xahlee.info/emacs/misc/xah-fly-keys.html
