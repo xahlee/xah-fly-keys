@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 22.12.20230301220803
+;; Version: 22.12.20230305005921
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1419,33 +1419,33 @@ or
 In lisp code, QuoteL QuoteR Sep are strings.
 
 URL `http://xahlee.info/emacs/emacs/emacs_quote_lines.html'
-Version: 2020-06-26 2021-09-15 2022-04-07 2022-04-13"
+Version: 2020-06-26 2021-09-15 2022-04-07 2022-04-13 2023-03-04"
   (interactive
    (let* (($bds (xah-get-bounds-of-block-or-region))
-         ($p1 (car $bds))
-         ($p2 (cdr $bds))
-         ($brackets
-          '(
-            "\"double quote\""
-            "'single quote'"
-            "(paren)"
-            "{brace}"
-            "[square]"
-            "<greater>"
-            "`emacs'"
-            "`markdown`"
-            "~tilde~"
-            "=equal="
-            "“curly double”"
-            "‘curly single’"
-            "‹french angle›"
-            "«french double angle»"
-            "「corner」"
-            "none"
-            "other"
-            )) $bktChoice $sep $sepChoice $quoteL $quoteR)
+          ($p1 (car $bds))
+          ($p2 (cdr $bds))
+          ($brackets
+           '(
+             "\"double quote\""
+             "'single quote'"
+             "(paren)"
+             "{brace}"
+             "[square]"
+             "<greater>"
+             "`emacs'"
+             "`markdown`"
+             "~tilde~"
+             "=equal="
+             "“curly double”"
+             "‘curly single’"
+             "‹french angle›"
+             "«french double angle»"
+             "「corner」"
+             "none"
+             "other"
+             )) $bktChoice $sep $sepChoice $quoteL $quoteR)
      (setq $bktChoice (completing-read "Quote to use:" $brackets))
-     (setq $sepChoice (completing-read "line separator:" '("," ";" "none" "other")))
+     (setq $sepChoice (completing-read "line separator:" '("comma ," "semicolon ;" "none" "other")))
      (cond
       ((string-equal $bktChoice "none")
        (setq $quoteL "" $quoteR ""))
@@ -1457,6 +1457,8 @@ Version: 2020-06-26 2021-09-15 2022-04-07 2022-04-13"
                $quoteR (substring-no-properties $bktChoice -1))))
      (setq $sep
            (cond
+            ((string-equal $sepChoice "comma ,") ",")
+            ((string-equal $sepChoice "semicolon ;") ";")
             ((string-equal $sepChoice "none") "")
             ((string-equal $sepChoice "other") (read-string "Enter separator:"))
             (t $sepChoice)))
@@ -2202,6 +2204,14 @@ Version: 2017-11-01 2022-04-05"
 (declare-function minibuffer-keyboard-quit "delsel" ())
 (declare-function org-edit-src-save "org-src" ())
 
+(defun xah-add-to-recently-closed (&optional BufferName BufferFileName)
+  "Add to `xah-recently-closed-buffers'.
+Version: 2023-03-02"
+  (setq xah-recently-closed-buffers
+        (cons (cons (buffer-name) buffer-file-name) xah-recently-closed-buffers))
+  (when (> (length xah-recently-closed-buffers) xah-recently-closed-buffers-max)
+    (setq xah-recently-closed-buffers (butlast xah-recently-closed-buffers 1))))
+
 (defun xah-save-close-current-buffer ()
   "Save and close current buffer.
 If the buffer is not a file, save it to `user-emacs-directory' and named untitled_‹datetime›_‹randomhex›.txt
@@ -2209,7 +2219,9 @@ If the buffer is not a file, save it to `user-emacs-directory' and named untitle
 Version 2022-12-29 2023-01-09"
   (interactive)
   (if buffer-file-name
-      (when (buffer-modified-p) (save-buffer))
+      (progn
+        (when (buffer-modified-p) (save-buffer))
+        (xah-add-to-recently-closed (buffer-name) buffer-file-name))
     (progn
       (when (xah-user-buffer-p)
         (widen)
@@ -2219,7 +2231,7 @@ Version 2022-12-29 2023-01-09"
                    user-emacs-directory
                    (format-time-string "%Y%m%d_%H%M%S")
                    (random #xfffff)))))))
-  (xah-close-current-buffer))
+  (kill-buffer))
 
 (defun xah-close-current-buffer ()
   "Close the current buffer.
@@ -2253,12 +2265,7 @@ Version: 2016-06-19 2022-05-13 2022-10-18"
           (if (y-or-n-p (format "Buffer %s modified; Do you want to save? " (buffer-name)))
               (org-edit-src-save)
             (set-buffer-modified-p nil)))
-        ;; save to a list of closed buffer
-        (when buffer-file-name
-          (setq xah-recently-closed-buffers
-                (cons (cons (buffer-name) buffer-file-name) xah-recently-closed-buffers))
-          (when (> (length xah-recently-closed-buffers) xah-recently-closed-buffers-max)
-            (setq xah-recently-closed-buffers (butlast xah-recently-closed-buffers 1))))
+        (if buffer-file-name (xah-add-to-recently-closed (buffer-name) buffer-file-name) nil)
         (kill-buffer (current-buffer))))))
 
 (defun xah-open-last-closed ()
