@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 22.12.20230305005921
+;; Version: 22.13.20230310112650
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2699,45 +2699,43 @@ Version: 2020-02-13 2021-01-18 2022-08-04"
 When called in emacs lisp, if Fname is given, open that.
 
 URL `http://xahlee.info/emacs/emacs/emacs_dired_open_file_in_ext_apps.html'
-Version: 2019-11-04 2021-07-21 2022-08-19 2023-02-28"
+Version: 2019-11-04 2021-07-21 2022-08-19 2023-02-28 2023-03-10"
   (interactive)
-  (let (ξfileList ξdoIt)
-    (setq ξfileList
+  (let (xfileList xdoIt)
+    (setq xfileList
           (if Fname
               (list Fname)
             (if (string-equal major-mode "dired-mode")
                 (dired-get-marked-files)
               (list buffer-file-name))))
-    (setq ξdoIt (if (<= (length ξfileList) 10) t (y-or-n-p "Open more than 10 files? ")))
-    (when ξdoIt
+    (setq xdoIt (if (<= (length xfileList) 10) t (y-or-n-p "Open more than 10 files? ")))
+    (when xdoIt
       (cond
        ((string-equal system-type "windows-nt")
-
-        (let ((ξoutBuf (get-buffer-create "*xah open in external app*"))
-              (ξcmdlist (list "PowerShell" "-Command" "Invoke-Item" "-LiteralPath")))
-
+        (let ((xoutBuf (get-buffer-create "*xah open in external app*"))
+              (xcmdlist (list "PowerShell" "-Command" "Invoke-Item" "-LiteralPath")))
           (mapc
            (lambda (x)
              (message "%s" x)
-             (apply 'start-process (append (list "xah open in external app" ξoutBuf) ξcmdlist (list (if (string-match "'" x) (replace-match "`'" t t x) x)) nil)))
-           ξfileList)
+             (apply 'start-process (append (list "xah open in external app" xoutBuf) xcmdlist (list (format "'%s'" (if (string-match "'" x) (replace-match "`'" t t x) x))) nil)))
+           xfileList)
 
-          (switch-to-buffer-other-window ξoutBuf))
+          (switch-to-buffer-other-window xoutBuf))
         ;; old code. calling shell. also have a bug if filename contain apostrophe
-        ;; (mapc (lambda (ξfpath) (shell-command (concat "PowerShell -Command \"Invoke-Item -LiteralPath\" " "'" (shell-quote-argument (expand-file-name ξfpath)) "'"))) ξfileList)
+        ;; (mapc (lambda (xfpath) (shell-command (concat "PowerShell -Command \"Invoke-Item -LiteralPath\" " "'" (shell-quote-argument (expand-file-name xfpath)) "'"))) xfileList)
         )
        ((string-equal system-type "darwin")
-        (mapc (lambda (ξfpath) (shell-command (concat "open " (shell-quote-argument ξfpath)))) ξfileList))
+        (mapc (lambda (xfpath) (shell-command (concat "open " (shell-quote-argument xfpath)))) xfileList))
        ((string-equal system-type "gnu/linux")
-        (mapc (lambda (ξfpath)
+        (mapc (lambda (xfpath)
                 (call-process shell-file-name nil nil nil
                               shell-command-switch
                               (format "%s %s"
                                       "xdg-open"
-                                      (shell-quote-argument ξfpath))))
-              ξfileList))
+                                      (shell-quote-argument xfpath))))
+              xfileList))
        ((string-equal system-type "berkeley-unix")
-        (mapc (lambda (ξfpath) (let ((process-connection-type nil)) (start-process "" nil "xdg-open" ξfpath))) ξfileList))))))
+        (mapc (lambda (xfpath) (let ((process-connection-type nil)) (start-process "" nil "xdg-open" xfpath))) xfileList))))))
 
 (defvar xah-fly-mswin-terminal nil "A string. Value should be one of: wt (for Windows Terminal) or pwsh (for PowerShell Core (cross-platform)) or powershell (for Microsoft PowerShell).")
 
