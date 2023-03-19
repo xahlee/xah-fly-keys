@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 23.0.20230310115257
+;; Version: 23.1.20230318191051
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -25,9 +25,9 @@
 
 ;; Important command/insert mode switch keys:
 
-;; xah-fly-command-mode-activate (press <home> or F8 or Alt+Space or Ctrl+Space or menu key)
+;; `xah-fly-command-mode-activate' (press <escape> or <home> or F8 or Alt+Space or Ctrl+Space or menu key. Note: escape only works when in GUI mode, by design.)
 
-;; xah-fly-insert-mode-activate (when in command mode, press qwerty letter key f.)
+;; `xah-fly-insert-mode-activate' (when in command mode, press qwerty letter key f.)
 
 ;; When in command mode:
 
@@ -2598,7 +2598,7 @@ Backup filename is “‹name›~‹dateTimeStamp›~”. Existing file of the s
 Call `xah-open-last-closed' to open the backup file.
 
 URL `http://xahlee.info/emacs/emacs/elisp_delete-current-file.html'
-Version: 2018-05-15 2021-08-31 2021-09-27 2022-07-08"
+Version: 2018-05-15 2021-08-31 2021-09-27 2022-07-08 2023-03-15"
   (interactive)
   (if (string-equal 'dired-mode major-mode)
       (message "In dired. Nothing is done.")
@@ -2616,8 +2616,10 @@ Version: 2018-05-15 2021-08-31 2021-09-27 2022-07-08"
             (delete-file xfname))
         (progn
           (widen)
-          (kill-new  (buffer-string))))
-      (kill-buffer (current-buffer)))))
+          (kill-new (buffer-string))))
+      (kill-buffer (current-buffer))
+      (when (eq major-mode 'dired-mode)
+        (revert-buffer)))))
 
 
 
@@ -3056,6 +3058,7 @@ Version 2022-10-31"
      xah-fly-shared-map
      '(("<home>" . xah-fly-command-mode-activate)
        ("<menu>" . xah-fly-command-mode-activate)
+       ("<escape>" . xah-fly-command-mode-activate)
        ("<f8>" . xah-fly-command-mode-activate))
      :direct)
 
