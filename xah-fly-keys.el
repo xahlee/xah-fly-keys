@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 23.1.20230318191051
+;; Version: 23.2.20230321155840
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2213,9 +2213,18 @@ Version: 2023-03-02"
   (when (> (length xah-recently-closed-buffers) xah-recently-closed-buffers-max)
     (setq xah-recently-closed-buffers (butlast xah-recently-closed-buffers 1))))
 
+(defvar xah-temp-dir-path nil "Path to temp dir used by xah commands.
+by default, the value is (concat user-emacs-directory \"temp/\").
+Version 2023-03-21")
+
+(setq xah-temp-dir-path
+      (if xah-temp-dir-path
+          xah-temp-dir-path
+        (concat user-emacs-directory "temp/")))
+
 (defun xah-save-close-current-buffer ()
   "Save and close current buffer.
-If the buffer is not a file, save it to `user-emacs-directory' and named untitled_‹datetime›_‹randomhex›.txt
+If the buffer is not a file, save it to `xah-temp-dir-path' and named untitled_‹datetime›_‹randomhex›.txt
 
 Version 2022-12-29 2023-01-09"
   (interactive)
@@ -2229,7 +2238,7 @@ Version 2022-12-29 2023-01-09"
         (when (not (equal (point-max) 1))
           (write-file
            (format "%suntitled_%s_%x.txt"
-                   user-emacs-directory
+                   xah-temp-dir-path
                    (format-time-string "%Y%m%d_%H%M%S")
                    (random #xfffff)))))))
   (kill-buffer))
