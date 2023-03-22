@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 23.2.20230321155840
+;; Version: 23.3.20230321231338
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2226,21 +2226,23 @@ Version 2023-03-21")
   "Save and close current buffer.
 If the buffer is not a file, save it to `xah-temp-dir-path' and named untitled_‹datetime›_‹randomhex›.txt
 
-Version 2022-12-29 2023-01-09"
+Call `xah-open-last-closed' to reopen it.
+
+Version 2022-12-29 2023-01-09 2023-03-21"
   (interactive)
   (if buffer-file-name
       (progn
         (when (buffer-modified-p) (save-buffer))
         (xah-add-to-recently-closed (buffer-name) buffer-file-name))
-    (progn
-      (when (xah-user-buffer-p)
-        (widen)
-        (when (not (equal (point-max) 1))
-          (write-file
-           (format "%suntitled_%s_%x.txt"
-                   xah-temp-dir-path
-                   (format-time-string "%Y%m%d_%H%M%S")
-                   (random #xfffff)))))))
+    (when (xah-user-buffer-p)
+      (widen)
+      (when (not (equal (point-max) 1))
+        (let ((xnewName (format "%suntitled_%s_%x.txt"
+                                xah-temp-dir-path
+                                (format-time-string "%Y%m%d_%H%M%S")
+                                (random #xfffff))))
+          (write-file xnewName)
+          (xah-add-to-recently-closed (buffer-name) xnewName)))))
   (kill-buffer))
 
 (defun xah-close-current-buffer ()
