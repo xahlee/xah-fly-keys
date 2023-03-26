@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 23.4.20230322111913
+;; Version: 23.5.20230325210542
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1235,12 +1235,13 @@ Move cursor to the beginning of next text block.
 After this command is called, press `xah-repeat-key' to repeat it.
 
 URL `http://xahlee.info/emacs/emacs/elisp_reformat_to_sentence_lines.html'
-Version: 2020-12-02 2022-03-22 2022-12-11"
+Version: 2020-12-02 2022-03-22 2022-12-11 2023-03-22"
   (interactive)
   (let (xp1 xp2)
     (let ((xbds (xah-get-bounds-of-block-or-region))) (setq xp1 (car xbds) xp2 (cdr xbds)))
     (save-restriction
       (narrow-to-region xp1 xp2)
+      (goto-char (point-min)) (while (search-forward "。" nil t) (replace-match "。\n"))
       (goto-char (point-min))
       (while (re-search-forward "\\([A-Za-z0-9]+\\)[ \t]*\n[ \t]*\\([A-Za-z0-9]+\\)" nil t)
         (replace-match "\\1 \\2"))
@@ -2324,13 +2325,13 @@ See also `xah-open-file-at-cursor-pre-hook'.
 This command is similar to `find-file-at-point' but without prompting for confirmation.
 
 URL `http://xahlee.info/emacs/emacs/emacs_open_file_path_fast.html'
-Version: 2020-10-17 2021-10-16 2023-02-23"
+Version: 2020-10-17 2021-10-16 2023-02-23 2023-03-22"
   (interactive)
   (let* ((xinput
           (if (region-active-p)
               (buffer-substring-no-properties (region-beginning) (region-end))
             (let ((xp0 (point)) xp1 xp2
-                  (xpathStops "^  \t\n\"`'‘’“”|[]{}「」<>〔〕〈〉《》【】〖〗«»‹›❮❯❬❭〘〙·。\\"))
+                  (xpathStops "^  \t\n\"`'‘’“”|()[]{}「」<>〔〕〈〉《》【】〖〗«»‹›❮❯❬❭〘〙·。\\"))
               (skip-chars-backward xpathStops)
               (setq xp1 (point))
               (goto-char xp0)
