@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 23.5.20230325210542
+;; Version: 23.6.20230329114738
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -3205,7 +3205,7 @@ Version 2022-10-31"
        ;; most frequently used
        ("t <up>"  . xah-move-block-up)
        ("t <down>"  . xah-move-block-down)
-       ("t '" . reverse-region)
+       ("t '" . xah-reformat-to-sentence-lines)
        ("t ," . sort-numeric-fields)
        ("t ." . xah-sort-lines)
        ("t 1" . xah-append-to-register-1)
@@ -3231,7 +3231,7 @@ Version 2022-10-31"
        ("t t" . repeat)
        ("t u" . delete-matching-lines)
        ("t w" . xah-next-window-or-frame)
-       ("t x" . xah-reformat-to-sentence-lines)
+       ("t x" . xah-title-case-region-or-line)
        ("t y" . delete-duplicate-lines)
 
        ("u" . switch-to-buffer)
