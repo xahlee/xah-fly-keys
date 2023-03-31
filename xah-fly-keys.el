@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 23.6.20230329114738
+;; Version: 23.7.20230330224928
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -3135,9 +3135,13 @@ Version 2022-10-31"
        ("j" . xah-copy-all-or-region)
 
        ("l" . recenter-top-bottom)
-       ("m" . dired-jump)
 
-       ;; dvorak n. commands here are “harmless”, they don't modify text etc. they turn on modes, change display, prompt, start shell, etc.
+       ("m m" . dired-jump)
+       ("m e" . delete-other-windows)
+       ("m u" . split-window-below)
+       ("m w" . universal-argument)
+
+       ;; commands here are “harmless”, they don't modify text etc. they turn on modes, change display, prompt, start shell, etc.
        ("n SPC" . whitespace-mode)
        ("n ," . abbrev-mode)
        ("n ." . toggle-frame-maximized)
@@ -3153,6 +3157,7 @@ Version 2022-10-31"
        ("n c" . toggle-case-fold-search)
        ("n d" . narrow-to-page)
        ("n e" . eshell)
+       ;; f
        ("n g" . xah-toggle-read-novel-mode)
        ("n h" . widen)
        ("n i" . make-frame-command)
@@ -3163,6 +3168,7 @@ Version 2022-10-31"
        ("n n" . xah-narrow-to-region)
        ("n o" . variable-pitch-mode)
        ("n p" . read-only-mode)
+       ;; q
        ("n r" . count-words)
        ("n s" . count-matches)
        ("n t" . narrow-to-defun)
@@ -3183,22 +3189,30 @@ Version 2022-10-31"
        ("r ." . kmacro-start-macro)
        ("r 3" . number-to-register)
        ("r 4" . increment-register)
+       ;; a
+       ;; b
        ("r c" . replace-rectangle)
        ("r d" . delete-rectangle)
        ("r e" . call-last-kbd-macro)
+       ;; f
        ("r g" . kill-rectangle)
        ("r h" . xah-change-bracket-pairs)
        ("r i" . xah-space-to-newline)
        ("r j" . xah-slash-to-backslash)
        ("r k" . xah-slash-to-double-backslash)
        ("r l" . clear-rectangle)
+       ;; m
        ("r n" . rectangle-number-lines)
        ("r o" . open-rectangle)
        ("r p" . kmacro-end-macro)
+       ;; q
        ("r r" . yank-rectangle)
+       ;; s t
        ("r u" . xah-quote-lines)
+       ;; v w
        ("r x" . xah-double-backslash-to-slash)
        ("r y" . delete-whitespace-rectangle)
+       ;; z
 
        ("s" . save-buffer)
 
@@ -3214,6 +3228,7 @@ Version 2022-10-31"
        ("t 4" . xah-paste-from-register-1)
        ("t 7" . xah-append-to-register-1)
        ("t 8" . xah-clear-register-1)
+       ;; a b
        ("t c" . goto-char)
        ("t d" . mark-defun)
        ("t e" . list-matching-lines)
@@ -3225,14 +3240,19 @@ Version 2022-10-31"
        ("t k" . insert-register)
        ("t l" . xah-escape-quotes)
        ("t m" . xah-make-backup-and-save)
+       ;; n
        ("t o" . xah-clean-whitespace)
        ("t p" . query-replace-regexp)
+       ;; q
        ("t r" . copy-rectangle-to-register)
+       ;; s
        ("t t" . repeat)
        ("t u" . delete-matching-lines)
+       ;; v
        ("t w" . xah-next-window-or-frame)
        ("t x" . xah-title-case-region-or-line)
        ("t y" . delete-duplicate-lines)
+       ;; z
 
        ("u" . switch-to-buffer)
 
