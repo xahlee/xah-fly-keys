@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 23.8.20230331200914
+;; Version: 23.9.20230402174044
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -3221,7 +3221,7 @@ Version 2022-10-31"
        ("u" . switch-to-buffer)
 
        ;; dangerous map. run program, delete file, etc
-       ("w d" . xah-delete-current-file-make-backup)
+       ("w DEL" . xah-delete-current-file-make-backup)
        ("w ." . eval-buffer)
        ("w e" . eval-defun)
        ("w m" . eval-last-sexp)
