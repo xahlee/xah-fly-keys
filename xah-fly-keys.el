@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 23.9.20230402174044
+;; Version: 23.10.20230404113004
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -3100,10 +3100,12 @@ Version 2022-10-31"
 
        ("l" . recenter-top-bottom)
 
-       ("m t" . dired-jump)
-       ("m e" . delete-other-windows)
-       ("m u" . split-window-below)
-       ("m w" . universal-argument)
+       ("m" . dired-jump)
+
+       ;; ("m t" . dired-jump)
+       ;; ("m e" . delete-other-windows)
+       ;; ("m u" . split-window-below)
+       ;; ("m w" . universal-argument)
 
        ;; commands here are “harmless”, they don't modify text etc. they turn on modes, change display, prompt, start shell, etc.
        ("n SPC" . whitespace-mode)
