@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 23.10.20230404113004
+;; Version: 23.10.20230407101020
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1569,23 +1569,17 @@ Version: 2017-07-09 2021-08-14 2022-07-31"
           (setq xp2 (point-max)))))
     (kill-region xp1 xp2)))
 
-(defun xah-clear-register-1 ()
-  "Clear register 1.
-See also: `xah-paste-from-register-1', `copy-to-register'.
-
-URL `http://xahlee.info/emacs/emacs/elisp_copy-paste_register_1.html'
-Version: 2015-12-08"
-  (interactive)
-  (progn
-    (copy-to-register ?1 (point-min) (point-min))
-    (message "Cleared register 1.")))
-
 (defun xah-copy-to-register-1 ()
   "Copy current line or selection to register 1.
-See also: `xah-paste-from-register-1', `copy-to-register'.
+
+See also:
+`xah-copy-to-register-1'
+`xah-append-to-register-1'
+`xah-paste-from-register-1'
+`xah-clear-register-1'
 
 URL `http://xahlee.info/emacs/emacs/elisp_copy-paste_register_1.html'
-Version: 2012-07-17 2022-10-03"
+Version: 2012-07-17 2022-10-03 2023-04-07"
   (interactive)
   (let (xp1 xp2)
     (if (region-active-p)
@@ -1597,10 +1591,15 @@ Version: 2012-07-17 2022-10-03"
 (defun xah-append-to-register-1 ()
   "Append current line or selection to register 1.
 When no selection, append current line, with newline char.
-See also: `xah-paste-from-register-1', `copy-to-register'.
+
+See also:
+`xah-copy-to-register-1'
+`xah-append-to-register-1'
+`xah-paste-from-register-1'
+`xah-clear-register-1'
 
 URL `http://xahlee.info/emacs/emacs/emacs_copy_append.html'
-Version: 2015-12-08 2020-09-08"
+Version: 2015-12-08 2020-09-08 2023-04-07"
   (interactive)
   (let (xp1 xp2)
     (if (region-active-p)
@@ -1613,14 +1612,35 @@ Version: 2015-12-08 2020-09-08"
 
 (defun xah-paste-from-register-1 ()
   "Paste text from register 1.
-See also: `xah-copy-to-register-1', `insert-register'.
+
+See also:
+`xah-copy-to-register-1'
+`xah-append-to-register-1'
+`xah-paste-from-register-1'
+`xah-clear-register-1'
 
 URL `http://xahlee.info/emacs/emacs/elisp_copy-paste_register_1.html'
-Version: 2015-12-08"
+Version: 2015-12-08 2023-04-07"
   (interactive)
   (when (region-active-p)
     (delete-region (region-beginning) (region-end)))
   (insert-register ?1 t))
+
+(defun xah-clear-register-1 ()
+  "Clear register 1.
+
+See also:
+`xah-copy-to-register-1'
+`xah-append-to-register-1'
+`xah-paste-from-register-1'
+`xah-clear-register-1'
+
+URL `http://xahlee.info/emacs/emacs/elisp_copy-paste_register_1.html'
+Version: 2015-12-08 2023-04-07"
+  (interactive)
+  (progn
+    (copy-to-register ?1 (point-min) (point-min))
+    (message "Cleared register 1.")))
 
 (defun xah-copy-rectangle-to-kill-ring (Begin End)
   "Copy region as column (rectangle region) to `kill-ring'
@@ -2678,7 +2698,7 @@ Version: 2020-02-13 2021-01-18 2022-08-04"
 When called in emacs lisp, if Fname is given, open that.
 
 URL `http://xahlee.info/emacs/emacs/emacs_dired_open_file_in_ext_apps.html'
-Version: 2019-11-04 2021-07-21 2022-08-19 2023-02-28 2023-03-10"
+Version: 2019-11-04 2023-03-10 2023-04-05"
   (interactive)
   (let (xfileList xdoIt)
     (setq xfileList
@@ -2698,8 +2718,8 @@ Version: 2019-11-04 2021-07-21 2022-08-19 2023-02-28 2023-03-10"
              (message "%s" x)
              (apply 'start-process (append (list "xah open in external app" xoutBuf) xcmdlist (list (format "'%s'" (if (string-match "'" x) (replace-match "`'" t t x) x))) nil)))
            xfileList)
-
-          (switch-to-buffer-other-window xoutBuf))
+          ;; (switch-to-buffer-other-window xoutBuf)
+          )
         ;; old code. calling shell. also have a bug if filename contain apostrophe
         ;; (mapc (lambda (xfpath) (shell-command (concat "PowerShell -Command \"Invoke-Item -LiteralPath\" " "'" (shell-quote-argument (expand-file-name xfpath)) "'"))) xfileList)
         )
