@@ -15,7 +15,7 @@ Major key engine rewrite by Dan Langlois (https://github.com/DanLanglois) and Wi
 
 QWERTY layout
 -------------------
-![xah-fly-keys qwerty layout](xah_fly_keys_qwerty_layout_2020-04-18_4fgyk.png)
+![xah-fly-keys qwerty layout](xah_fly_keys_qwerty_layout_2023-04-09.png)
 
 Manual Install
 -------------------
