@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 23.10.20230407101020
+;; Version: 23.11.20230507152313
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2213,21 +2213,24 @@ If the buffer is not a file, save it to `xah-temp-dir-path' and named untitled_â
 
 Call `xah-open-last-closed' to reopen it.
 
-Version 2022-12-29 2023-01-09 2023-03-21"
+Version 2022-12-29 2023-01-09 2023-03-21 2023-05-06"
   (interactive)
-  (if buffer-file-name
-      (progn
-        (when (buffer-modified-p) (save-buffer))
-        (xah-add-to-recently-closed (buffer-name) buffer-file-name))
-    (when (xah-user-buffer-p)
-      (widen)
-      (when (not (equal (point-max) 1))
-        (let ((xnewName (format "%suntitled_%s_%x.txt"
-                                xah-temp-dir-path
-                                (format-time-string "%Y%m%d_%H%M%S")
-                                (random #xfffff))))
-          (write-file xnewName)
-          (xah-add-to-recently-closed (buffer-name) xnewName)))))
+  (if (active-minibuffer-window)
+      (minibuffer-keyboard-quit)
+    (if buffer-file-name
+        (progn
+          (when (buffer-modified-p) (save-buffer))
+          (xah-add-to-recently-closed (buffer-name) buffer-file-name))
+      (when (xah-user-buffer-p)
+        (widen)
+        (when (not (equal (point-max) 1))
+          (let ((xnewName (format "%suntitled_%s_%x.txt"
+                                  xah-temp-dir-path
+                                  (format-time-string "%Y%m%d_%H%M%S")
+                                  (random #xfffff))))
+            (write-file xnewName)
+            (xah-add-to-recently-closed (buffer-name) xnewName))))))
+  ;; (string-equal major-mode "minibuffer-mode")
   (kill-buffer))
 
 (defun xah-close-current-buffer ()
