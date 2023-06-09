@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 23.11.20230507152313
+;; Version: 23.11.20230609124049
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -176,6 +176,8 @@
 
 (defun xah-get-bounds-of-block ()
   "Return the boundary (START . END) of current block.
+
+URL `http://xahlee.info/emacs/emacs/elisp_get-selection-or-unit.html'
 Version: 2021-08-12"
   (let ( xp1 xp2 (xblankRegex "\n[ \t]*\n"))
     (save-excursion
@@ -189,6 +191,8 @@ Version: 2021-08-12"
 
 (defun xah-get-bounds-of-block-or-region ()
   "If region is active, return its boundary, else same as `xah-get-bounds-of-block'.
+
+URL `http://xahlee.info/emacs/emacs/elisp_get-selection-or-unit.html'
 Version: 2021-08-12"
   (if (region-active-p)
       (cons (region-beginning) (region-end))
@@ -1199,13 +1203,15 @@ Move cursor to the beginning of next text block.
 After this command is called, press `xah-repeat-key' to repeat it.
 
 URL `http://xahlee.info/emacs/emacs/elisp_reformat_to_sentence_lines.html'
-Version: 2020-12-02 2022-03-22 2022-12-11 2023-03-22"
+Version: 2020-12-02 2023-03-22 2023-05-25"
   (interactive)
   (let (xp1 xp2)
     (let ((xbds (xah-get-bounds-of-block-or-region))) (setq xp1 (car xbds) xp2 (cdr xbds)))
     (save-restriction
       (narrow-to-region xp1 xp2)
       (goto-char (point-min)) (while (search-forward "。" nil t) (replace-match "。\n"))
+      (goto-char (point-min)) (while (search-forward " <a " nil t) (replace-match "\n<a "))
+      (goto-char (point-min)) (while (search-forward "</a> " nil t) (replace-match "</a>\n"))
       (goto-char (point-min))
       (while (re-search-forward "\\([A-Za-z0-9]+\\)[ \t]*\n[ \t]*\\([A-Za-z0-9]+\\)" nil t)
         (replace-match "\\1 \\2"))
@@ -1555,7 +1561,7 @@ Version: 2018-06-18 2021-09-30"
   "Delete the current text block plus blank lines, or selection, and copy to `kill-ring'.
 
 URL `http://xahlee.info/emacs/emacs/emacs_delete_block.html'
-Version: 2017-07-09 2021-08-14 2022-07-31"
+Version: 2017-07-09 2021-08-14 2022-07-31 2023-06-07"
   (interactive)
   (let (xp1 xp2)
     (if (region-active-p)
@@ -1564,7 +1570,7 @@ Version: 2017-07-09 2021-08-14 2022-07-31"
         (if (re-search-backward "\n[ \t]*\n+" nil 1)
             (setq xp1 (goto-char (match-end 0)))
           (setq xp1 (point)))
-        (if (re-search-forward "\n\n" nil 1)
+        (if (re-search-forward "\n[ \t]*\n" nil 1)
             (setq xp2 (match-end 0))
           (setq xp2 (point-max)))))
     (kill-region xp1 xp2)))
@@ -2166,11 +2172,11 @@ Version: 2016-06-19"
 
 (defun xah-new-empty-buffer ()
   "Create a new empty buffer.
+Returns the buffer object.
 New buffer is named untitled, untitled<2>, etc.
 
-On emacs quit, if you want emacs to prompt for save, set `buffer-offer-save' to t.
-
-It returns the buffer.
+Warning: new buffer is not prompted for save when killed, see `kill-buffer'.
+Or manually `save-buffer'
 
 URL `http://xahlee.info/emacs/emacs/emacs_new_empty_buffer.html'
 Version: 2017-11-01 2022-04-05"
@@ -2597,7 +2603,7 @@ Backup filename is “‹name›~‹dateTimeStamp›~”. Existing file of the s
 Call `xah-open-last-closed' to open the backup file.
 
 URL `http://xahlee.info/emacs/emacs/elisp_delete-current-file.html'
-Version: 2018-05-15 2021-08-31 2021-09-27 2022-07-08 2023-03-15"
+Version: 2018-05-15 2023-03-15 2023-06-05"
   (interactive)
   (if (string-equal 'dired-mode major-mode)
       (message "In dired. Nothing is done.")
@@ -2611,7 +2617,7 @@ Version: 2018-05-15 2021-08-31 2021-09-27 2022-07-08 2023-03-15"
             (copy-file xfname xbackupPath t)
             (when (boundp 'xah-recently-closed-buffers)
               (push (cons nil xbackupPath) xah-recently-closed-buffers))
-            (message "Deleted. Backup at [%s]. Call `xah-open-last-closed' to open." xbackupPath)
+            (message "Deleted. Backup at \n%s\nCall `xah-open-last-closed' to open." xbackupPath)
             (delete-file xfname))
         (progn
           (widen)
