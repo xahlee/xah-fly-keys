@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 23.11.20230609124049
+;; Version: 23.11.20230626152352
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2658,7 +2658,7 @@ Version: 2015-04-09"
 This command can be called when in a file buffer or in `dired'.
 
 URL `http://xahlee.info/emacs/emacs/emacs_dired_open_file_in_ext_apps.html'
-Version: 2020-11-20 2022-04-20 2022-08-19"
+Version: 2020-11-20 2022-08-19 2023-06-26"
   (interactive)
   (let ((xpath (if (eq major-mode 'dired-mode)
                    (if (eq nil (dired-get-marked-files))
@@ -2678,7 +2678,7 @@ Version: 2020-11-20 2022-04-20 2022-08-19"
       (shell-command
        (concat "open -R " (shell-quote-argument xpath))))
      ((string-equal system-type "gnu/linux")
-      (call-process shell-file-name nil nil nil
+      (call-process shell-file-name nil 0 nil
                     shell-command-switch
                     (format "%s %s"
                             "xdg-open"
@@ -2707,7 +2707,7 @@ Version: 2020-02-13 2021-01-18 2022-08-04"
 When called in emacs lisp, if Fname is given, open that.
 
 URL `http://xahlee.info/emacs/emacs/emacs_dired_open_file_in_ext_apps.html'
-Version: 2019-11-04 2023-03-10 2023-04-05"
+Version: 2019-11-04 2023-04-05 2023-06-26"
   (interactive)
   (let (xfileList xdoIt)
     (setq xfileList
@@ -2736,7 +2736,7 @@ Version: 2019-11-04 2023-03-10 2023-04-05"
         (mapc (lambda (xfpath) (shell-command (concat "open " (shell-quote-argument xfpath)))) xfileList))
        ((string-equal system-type "gnu/linux")
         (mapc (lambda (xfpath)
-                (call-process shell-file-name nil nil nil
+                (call-process shell-file-name nil 0 nil
                               shell-command-switch
                               (format "%s %s"
                                       "xdg-open"
