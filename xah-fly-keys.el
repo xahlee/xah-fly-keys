@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 23.11.20230626152352
+;; Version: 23.12.20230707122000
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2617,7 +2617,7 @@ Version: 2018-05-15 2023-03-15 2023-06-05"
             (copy-file xfname xbackupPath t)
             (when (boundp 'xah-recently-closed-buffers)
               (push (cons nil xbackupPath) xah-recently-closed-buffers))
-            (message "Deleted. Backup at \n%s\nCall `xah-open-last-closed' to open." xbackupPath)
+            (message "Deleted.\nBackup at \n%s\nCall `xah-open-last-closed' to open." xbackupPath)
             (delete-file xfname))
         (progn
           (widen)
@@ -2657,7 +2657,7 @@ Version: 2015-04-09"
  (Mac Finder, File Explorer, Linux file manager)
 This command can be called when in a file buffer or in `dired'.
 
-URL `http://xahlee.info/emacs/emacs/emacs_dired_open_file_in_ext_apps.html'
+URL `http://xahlee.info/emacs/emacs/emacs_show_in_desktop.html'
 Version: 2020-11-20 2022-08-19 2023-06-26"
   (interactive)
   (let ((xpath (if (eq major-mode 'dired-mode)
@@ -2688,9 +2688,8 @@ Version: 2020-11-20 2022-08-19 2023-06-26"
 
 (defun xah-open-in-vscode ()
   "Open current file or dir in vscode.
-
-URL `http://xahlee.info/emacs/emacs/emacs_dired_open_file_in_ext_apps.html'
-Version: 2020-02-13 2021-01-18 2022-08-04"
+URL `http://xahlee.info/emacs/emacs/emacs_open_in_vscode.html'
+Version: 2020-02-13 2021-01-18 2022-08-04 2023-06-26"
   (interactive)
   (let ((xpath (if buffer-file-name buffer-file-name (expand-file-name default-directory))))
     (message "path is %s" xpath)
@@ -2753,8 +2752,8 @@ Version: 2019-11-04 2023-04-05 2023-06-26"
   "Open the current dir in a new terminal window.
 On Microsoft Windows, which terminal it starts depends on `xah-fly-mswin-terminal'.
 
-URL `http://xahlee.info/emacs/emacs/emacs_dired_open_file_in_ext_apps.html'
-Version: 2020-11-21 2021-07-21 2022-08-04 2023-03-01"
+URL `http://xahlee.info/emacs/emacs/emacs_open_in_terminal.html'
+Version: 2020-11-21 2022-08-04 2023-03-01 2023-06-26"
   (interactive)
   (cond
    ((string-equal system-type "windows-nt")
@@ -3214,7 +3213,7 @@ Version 2022-10-31"
        ;; most frequently used
        ("t <up>"  . xah-move-block-up)
        ("t <down>"  . xah-move-block-down)
-       ("t '" . xah-reformat-to-sentence-lines)
+
        ("t ," . sort-numeric-fields)
        ("t ." . xah-sort-lines)
        ("t 1" . xah-append-to-register-1)
@@ -3223,19 +3222,21 @@ Version 2022-10-31"
        ("t 4" . xah-paste-from-register-1)
        ("t 7" . xah-append-to-register-1)
        ("t 8" . xah-clear-register-1)
-       ;; a b
-       ("t c" . goto-char)
+
+       ;; b
+       ("t a" . xah-reformat-to-sentence-lines)
        ("t d" . mark-defun)
        ("t e" . list-matching-lines)
-       ("t f" . goto-line)
-       ("t g" . move-to-column)
+       ("t f" . move-to-column)
+       ("t g" . goto-line)
        ("t h" . repeat-complex-command)
        ("t i" . delete-non-matching-lines)
        ("t j" . copy-to-register)
        ("t k" . insert-register)
        ("t l" . xah-escape-quotes)
        ("t m" . xah-make-backup-and-save)
-       ;; n
+       ("t n" . goto-char)
+       
        ("t o" . xah-clean-whitespace)
        ("t p" . query-replace-regexp)
        ;; q
