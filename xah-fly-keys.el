@@ -1,10 +1,10 @@
 ;;; xah-fly-keys.el --- ergonomic modal keybinding minor mode. -*- coding: utf-8; lexical-binding: t; -*-
 
-;; Copyright © 2013-2022 by Xah Lee
+;; Copyright © 2013-2023 by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 23.12.20230707122000
+;; Version: 23.13.20230712155440
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -986,80 +986,33 @@ Version 2022-01-20"
           (match-beginning 0)
           (match-end 0)) 'face 'highlight)))))
 
-(defun xah-delete-blank-lines ()
-  "Delete all newline around cursor.
-
-URL `http://xahlee.info/emacs/emacs/emacs_shrink_whitespace.html'
-Version: 2018-04-02"
-  (interactive)
-  (let (xp3 xp4)
-          (skip-chars-backward "\n")
-          (setq xp3 (point))
-          (skip-chars-forward "\n")
-          (setq xp4 (point))
-          (delete-region xp3 xp4)))
-
-(defun xah-fly-delete-spaces ()
-  "Delete space, tab, IDEOGRAPHIC SPACE (U+3000) around cursor.
-Version: 2019-06-13"
-  (interactive)
-  (let (p1 p2)
-    (skip-chars-forward " \t　")
-    (setq p2 (point))
-    (skip-chars-backward " \t　")
-    (setq p1 (point))
-    (delete-region p1 p2)))
-
 (defun xah-shrink-whitespaces ()
   "Remove whitespaces around cursor .
 
-Shrink neighboring spaces, then newlines, then spaces again, leaving one space or newline at each step, till no more white space.
+Shrink neighboring space or tab. If none, shrink newlines.
 
 URL `http://xahlee.info/emacs/emacs/emacs_shrink_whitespace.html'
-Version: 2014-10-21 2021-11-26 2021-11-30"
+Version: 2014-10-21 2021-11-26 2021-11-30 2023-07-12"
   (interactive)
-  (let* ((xeol-count 0)
-         (xp0 (point))
-         xp1 ; whitespace begin
-         xp2 ; whitespace end
-         (xcharBefore (char-before))
-         (xcharAfter (char-after))
-         (xspace-neighbor-p (or (eq xcharBefore 32) (eq xcharBefore 9) (eq xcharAfter 32) (eq xcharAfter 9))))
-    (skip-chars-backward " \n\t　")
-    (setq xp1 (point))
-    (goto-char xp0)
-    (skip-chars-forward " \n\t　")
-    (setq xp2 (point))
-    (goto-char xp1)
-    (while (search-forward "\n" xp2 t)
-      (setq xeol-count (1+ xeol-count)))
-    (goto-char xp0)
-    (cond
-     ((eq xeol-count 0)
-      (if (> (- xp2 xp1) 1)
+  (let ((xp0 (point)) xpb xpe)
+    (if (or (looking-at "[ 　\t]") (looking-back "[ 　\t]" 1))
+        (let (xp1 xp2)
+          (skip-chars-forward " \t　")
+          (setq xp2 (point))
+          (skip-chars-backward " \t　")
+          (setq xp1 (point))
+          (delete-region xp1 xp2))
+      (if (or (looking-at "\n") (looking-back "\n" 1))
           (progn
-            (delete-horizontal-space) (insert " "))
-        (progn (delete-horizontal-space))))
-     ((eq xeol-count 1)
-      (if xspace-neighbor-p
-          (xah-fly-delete-spaces)
-        (progn (xah-delete-blank-lines) (insert " "))))
-     ((eq xeol-count 2)
-      (if xspace-neighbor-p
-          (xah-fly-delete-spaces)
-        (progn
-          (xah-delete-blank-lines)
-          (insert "\n"))))
-     ((> xeol-count 2)
-      (if xspace-neighbor-p
-          (xah-fly-delete-spaces)
-        (progn
-          (goto-char xp2)
-          (search-backward "\n")
-          (delete-region xp1 (point))
-          (insert "\n"))))
-     (t (progn
-          (message "nothing done. logic error 40873. shouldn't reach here"))))))
+            (skip-chars-backward "\n")
+            (setq xpb (point))
+            (goto-char xp0)
+            (skip-chars-forward "\n")
+            (setq xpe (point))
+            (delete-region xpb xpe)
+            (insert "\n"))
+        nil
+        ))))
 
 (defun xah-toggle-read-novel-mode ()
   "Setup current frame to be suitable for reading long novel/article text.
@@ -1344,25 +1297,28 @@ Version: 2021-07-14"
         (goto-char (point-min))
         (while (search-forward "\\\\" nil t)
           (replace-match "/"))))))
-
+ 
 (defun xah-comment-dwim ()
-  "Like `comment-dwim', but toggle comment if cursor is not at end of line.
+  "Toggle comment in programing language code.
+
+Like `comment-dwim', but toggle comment if cursor is not at end of line.
+If cursor is at end of line, either add comment at the line end or move cursor to start of line end comment. call again to comment out whole line.
 
 URL `http://xahlee.info/emacs/emacs/emacs_toggle_comment_by_line.html'
-Version: 2016-10-25"
+Version: 2016-10-25 2023-07-10"
   (interactive)
   (if (region-active-p)
       (comment-dwim nil)
-    (let ((xlbp (line-beginning-position))
-          (xlep (line-end-position)))
-      (if (eq xlbp xlep)
+    (let ((xbegin (line-beginning-position))
+          (xend (line-end-position)))
+      (if (eq xbegin xend)
           (progn
             (comment-dwim nil))
-        (if (eq (point) xlep)
+        (if (eq (point) xend)
             (progn
               (comment-dwim nil))
           (progn
-            (comment-or-uncomment-region xlbp xlep)
+            (comment-or-uncomment-region xbegin xend)
             (forward-line )))))))
 
 (defun xah-quote-lines (Begin End QuoteL QuoteR Sep)
