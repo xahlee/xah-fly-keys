@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 23.13.20230712155440
+;; Version: 23.13.20230713112850
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -987,32 +987,42 @@ Version 2022-01-20"
           (match-end 0)) 'face 'highlight)))))
 
 (defun xah-shrink-whitespaces ()
-  "Remove whitespaces around cursor .
+  "Remove whitespaces around cursor.
 
-Shrink neighboring space or tab. If none, shrink newlines.
+Shrink neighboring whitespace.
+First shrink space or tab, then newlines.
+3 calls results in one single space around cursor.
 
 URL `http://xahlee.info/emacs/emacs/emacs_shrink_whitespace.html'
-Version: 2014-10-21 2021-11-26 2021-11-30 2023-07-12"
+Version: 2014-10-212023-07-12 2023-07-13"
   (interactive)
-  (let ((xp0 (point)) xpb xpe)
-    (if (or (looking-at "[ 　\t]") (looking-back "[ 　\t]" 1))
-        (let (xp1 xp2)
+  (let (xp1 xp2)
+    (re-search-backward "[^ \t\n]" nil t)
+    (forward-char)
+    (if (looking-at "[ 　\t]+[^\n]")
+        (progn
+          (setq xp1 (point))
           (skip-chars-forward " \t　")
           (setq xp2 (point))
-          (skip-chars-backward " \t　")
-          (setq xp1 (point))
-          (delete-region xp1 xp2))
-      (if (or (looking-at "\n") (looking-back "\n" 1))
+          (delete-region xp1 xp2)
+          (insert " "))
+      (if (looking-at "[ \t　]*\n[ \n]")
           (progn
-            (skip-chars-backward "\n")
-            (setq xpb (point))
-            (goto-char xp0)
-            (skip-chars-forward "\n")
-            (setq xpe (point))
-            (delete-region xpb xpe)
+            (setq xp1 (point))
+            (skip-chars-forward " 　\t\n")
+            (setq xp2 (point))
+            (delete-region xp1 xp2)
             (insert "\n"))
-        nil
-        ))))
+        (if (looking-at " \n")
+            (progn
+              (delete-char 2)
+              (insert " "))
+          (if (or (looking-at "\n"))
+              (progn
+                (delete-char 1)
+                (insert " "))
+            nil
+            ))))))
 
 (defun xah-toggle-read-novel-mode ()
   "Setup current frame to be suitable for reading long novel/article text.
