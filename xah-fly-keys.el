@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 23.13.20230713112850
+;; Version: 23.13.20230715090752
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -991,38 +991,51 @@ Version 2022-01-20"
 
 Shrink neighboring whitespace.
 First shrink space or tab, then newlines.
-3 calls results in one single space around cursor.
+3 calls results in no whitespace around cursor.
 
 URL `http://xahlee.info/emacs/emacs/emacs_shrink_whitespace.html'
 Version: 2014-10-212023-07-12 2023-07-13"
   (interactive)
   (let (xp1 xp2)
-    (re-search-backward "[^ \t\n]" nil t)
-    (forward-char)
-    (if (looking-at "[ 　\t]+[^\n]")
-        (progn
-          (setq xp1 (point))
-          (skip-chars-forward " \t　")
-          (setq xp2 (point))
-          (delete-region xp1 xp2)
-          (insert " "))
-      (if (looking-at "[ \t　]*\n[ \n]")
-          (progn
-            (setq xp1 (point))
-            (skip-chars-forward " 　\t\n")
-            (setq xp2 (point))
-            (delete-region xp1 xp2)
-            (insert "\n"))
-        (if (looking-at " \n")
-            (progn
-              (delete-char 2)
-              (insert " "))
-          (if (or (looking-at "\n"))
-              (progn
-                (delete-char 1)
-                (insert " "))
-            nil
-            ))))))
+    (skip-chars-backward " 　\t\n")
+    ;; (re-search-backward "[^ \t\n]" nil t)
+    ;; (forward-char)
+    (cond
+     ((looking-at "[ 　\t]+[^\n]")
+      (progn
+        ;; (print (format "space case"))
+        (setq xp1 (point))
+        (skip-chars-forward " \t　")
+        (setq xp2 (point))
+        (delete-region xp1 xp2)
+        (if (eq (- xp2 xp1) 1) nil (insert " "))))
+     ((looking-at "\n\n\n")
+      (progn
+        ;; (print (format "3 newline"))
+        (setq xp1 (point))
+        (skip-chars-forward "\n")
+        (setq xp2 (point))
+        (delete-region xp1 xp2)
+        (insert "\n\n")))
+     ((looking-at "[ \t　]*\n[ \n]")
+      (progn
+        ;; (print (format "space newline space newline"))
+        (setq xp1 (point))
+        (skip-chars-forward " 　\t\n")
+        (setq xp2 (point))
+        (delete-region xp1 xp2)
+        (insert "\n")))
+     ((looking-at " \n")
+      (progn
+        ;; (print (format "space newline 421"))
+        (delete-char 2)
+        (insert " ")))
+     ((looking-at "\n")
+      (progn
+        ;; (print (format "newline case"))
+        (delete-char 1)
+        (insert " ")))
+     (t nil))))
 
 (defun xah-toggle-read-novel-mode ()
   "Setup current frame to be suitable for reading long novel/article text.
