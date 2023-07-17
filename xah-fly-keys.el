@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 23.13.20230715090752
+;; Version: 23.14.20230716223005
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1471,7 +1471,7 @@ The region to work on is by this order:
  3. else, work on current line.
 
 URL `http://xahlee.info/emacs/emacs/elisp_change_space-hyphen_underscore.html'
-Version: 2019-02-12 2021-08-20 2022-03-22 2022-10-20"
+Version: 2019-02-12 2022-10-20 2023-07-16"
   (interactive)
   ;; this function sets a property 'state. Possible values are 0 to length of xcharArray.
   (let* (xp1
@@ -1490,7 +1490,7 @@ Version: 2019-02-12 2021-08-20 2022-03-22 2022-10-20"
           (setq xp1 (point))
           (skip-chars-forward xskipChars (line-end-position))
           (setq xp2 (point))
-          (set-mark xp1))))
+          (push-mark xp1))))
     (save-excursion
       (save-restriction
         (narrow-to-region xp1 xp2)
@@ -1499,7 +1499,7 @@ Version: 2019-02-12 2021-08-20 2022-03-22 2022-10-20"
           (replace-match xchangeTo t t))))
     (when (or (string-equal xchangeTo " ") xregionWasActive-p)
       (goto-char xp2)
-      (set-mark xp1)
+      (push-mark xp1)
       (setq deactivate-mark nil))
     (put 'xah-cycle-hyphen-lowline-space 'state (% (+ xnowState 1) xn)))
   (set-transient-map (let ((xkmap (make-sparse-keymap))) (define-key xkmap (or xah-repeat-key (kbd "DEL")) this-command) xkmap)))
@@ -1940,24 +1940,24 @@ Version: 2019-12-26 2021-04-04 2021-08-13"
 If `visual-line-mode' is on, consider line as visual line.
 
 URL `http://xahlee.info/emacs/emacs/modernization_mark-word.html'
-Version: 2017-11-01 2021-03-19"
+Version: 2017-11-01 2021-03-19 2023-07-16"
   (interactive)
   (if (region-active-p)
       (if visual-line-mode
           (let ((xp1 (point)))
-                (end-of-visual-line 1)
-                (when (eq xp1 (point))
-                  (end-of-visual-line 2)))
+            (end-of-visual-line 1)
+            (when (eq xp1 (point))
+              (end-of-visual-line 2)))
         (progn
           (forward-line 1)
           (end-of-line)))
     (if visual-line-mode
         (progn (beginning-of-visual-line)
-               (set-mark (point))
+               (push-mark (point) t t)
                (end-of-visual-line))
       (progn
-        (end-of-line)
-        (set-mark (line-beginning-position))))))
+        (push-mark (line-beginning-position) t t)
+        (end-of-line)))))
 
 (defun xah-extend-selection ()
   "Select the current word, bracket/quote expression, or expand selection.
@@ -1970,7 +1970,7 @@ when there is no selection,
 when there is a selection, the selection extension behavior is still experimental. But when cursor is on a any type of bracket (parenthesis, quote), it extends selection to outer bracket.
 
 URL `http://xahlee.info/emacs/emacs/modernization_mark-word.html'
-Version: 2020-02-04 2022-05-16"
+Version: 2020-02-04 2022-05-16 2023-07-16"
   (interactive)
   (if (region-active-p)
       (progn
@@ -1982,7 +1982,7 @@ Version: 2020-02-04 2022-05-16"
                 (progn
                   ;; (message "left bracket, depth 0.")
                   (end-of-line) ; select current line
-                  (set-mark (line-beginning-position)))
+                  (push-mark (line-beginning-position) t t))
               (progn
                 ;; (message "left bracket, depth not 0")
                 (up-list -1 t t)
@@ -2014,12 +2014,12 @@ Version: 2020-02-04 2022-05-16"
                         ;; (message "multiple lines but end is not eol. make it so" )
                         (goto-char xre)
                         (end-of-line)))))
-                 (t (error "%s: logic error 42946" real-this-command ))))))
+                 (t (error "%s: logic error 42946" real-this-command))))))
            ((and (> (point) (line-beginning-position)) (<= (point) (line-end-position)))
             (progn
               ;; (message "less than 1 line" )
               (end-of-line) ; select current line
-              (set-mark (line-beginning-position))))
+              (push-mark (line-beginning-position) t t)))
            (t
             ;; (message "last resort" )
             nil))))
@@ -2037,10 +2037,10 @@ Version: 2020-02-04 2022-05-16"
        ;; ((and (eq (point) (line-beginning-position)) (not (looking-at "\n")))
        ;;  (message "beginning of line and not empty")
        ;;  (end-of-line)
-       ;;  (set-mark (line-beginning-position)))
+       ;;  (push-mark (line-beginning-position) t t))
        ((or (looking-back "\\s_" 1) (looking-back "\\sw" 1))
         ;; (message "left is word or symbol")
-        (skip-syntax-backward "_w" )
+        (skip-syntax-backward "_w")
         ;; (re-search-backward "^\\(\\sw\\|\\s_\\)" nil t)
         (push-mark)
         (skip-syntax-forward "_w")
@@ -2049,12 +2049,12 @@ Version: 2020-02-04 2022-05-16"
         )
        ((and (looking-at "\\s ") (looking-back "\\s " 1))
         ;; (message "left and right both space" )
-        (skip-chars-backward "\\s " ) (set-mark (point))
+        (skip-chars-backward "\\s ") (push-mark (point) t t)
         (skip-chars-forward "\\s "))
        ((and (looking-at "\n") (looking-back "\n" 1))
         ;; (message "left and right both newline")
         (skip-chars-forward "\n")
-        (set-mark (point))
+        (push-mark (point)  t t)
         (re-search-forward "\n[ \t]*\n")) ; between blank lines, select next block
        (t
         ;; (message "just mark sexp" )
@@ -2071,11 +2071,11 @@ This command ignores nesting. For example, if text is
 the selected char is “c”, not “a(b)c”.
 
 URL `http://xahlee.info/emacs/emacs/modernization_mark-word.html'
-Version: 2020-11-24 2021-07-11 2021-12-21 2022-03-26"
+Version: 2020-11-24 2022-03-26 2023-07-16"
   (interactive)
   (let ((xskipChars (concat "^\"`" (mapconcat #'identity xah-brackets ""))))
     (skip-chars-backward xskipChars)
-    (set-mark (point))
+    (push-mark)
     (skip-chars-forward xskipChars)))
 
 
