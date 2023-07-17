@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 23.14.20230716223005
+;; Version: 23.15.20230716225202
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -255,7 +255,8 @@ Version: 2018-06-04 2021-03-16 2022-03-05"
       (end-of-line))))
 
 (defvar xah-brackets '("“”" "()" "[]" "{}" "<>" "＜＞" "（）" "［］" "｛｝" "⦅⦆" "〚〛" "⦃⦄" "‹›" "«»" "「」" "〈〉" "《》" "【】" "〔〕" "⦗⦘" "『』" "〖〗" "〘〙" "｢｣" "⟦⟧" "⟨⟩" "⟪⟫" "⟮⟯" "⟬⟭" "⌈⌉" "⌊⌋" "⦇⦈" "⦉⦊" "❛❜" "❝❞" "❨❩" "❪❫" "❴❵" "❬❭" "❮❯" "❰❱" "❲❳" "〈〉" "⦑⦒" "⧼⧽" "﹙﹚" "﹛﹜" "﹝﹞" "⁽⁾" "₍₎" "⦋⦌" "⦍⦎" "⦏⦐" "⁅⁆" "⸢⸣" "⸤⸥" "⟅⟆" "⦓⦔" "⦕⦖" "⸦⸧" "⸨⸩" "｟｠")
-  "A list of strings, each element is a string of 2 chars, the left bracket and a matching right bracket. Used by `xah-select-text-in-quote' and others.")
+ "A list of strings, each element is a string of 2 chars, the left bracket and a matching right bracket.
+Used by `xah-select-text-in-quote' and others.")
 
 (defconst xah-left-brackets
   (mapcar (lambda (x) (substring x 0 1)) xah-brackets)
@@ -2075,7 +2076,7 @@ Version: 2020-11-24 2022-03-26 2023-07-16"
   (interactive)
   (let ((xskipChars (concat "^\"`" (mapconcat #'identity xah-brackets ""))))
     (skip-chars-backward xskipChars)
-    (push-mark)
+    (push-mark (point) t t)
     (skip-chars-forward xskipChars)))
 
 
