@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 23.16.20230721120619
+;; Version: 23.12.20230721135940
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1862,75 +1862,73 @@ Version: 2013-06-12 2019-03-07"
         (beginning-of-line)
         (forward-char xcolpos)))))
 
-(defvar xah-unicode-list
-  '(
-    ;;
-    ("smile beaming 😊")
-    ("tears of joy 😂")
-    ("hug 🤗")
-    ("heart eyes 😍")
-    ("heart face 🥰")
+(defvar xah-unicode-list nil
+ "A alist.
+Each item is (prompStr . xString). Used by `xah-insert-unicode'.
+prompStr is used for prompt.
+xString is used for insert a unicode.
+xString can be any string, needs not be a char or emoji.
+")
 
-    ("angry 😠")
-    ("vomit 🤮")
+(setq
+ xah-unicode-list
+ '(
+   ;;
+   ("smile beaming 😊" . "😊")
+   ("tears of joy" . "😂")
+   ("hug 🤗" . "🤗")
+   ("heart eyes 😍" . "😍")
+   ("heart face 🥰" . "🥰")
+   ("angry 😠" . "😠")
+   ("vomit 🤮" . "🤮")
+   ("thumb up 👍" . "👍")
+   ("thumb down 👎" . "👎")
+   ("checkmark ✅" . "✅")
+   ("new 🆕" . "🆕")
+   ("glowing star 🌟" . "🌟")
+   ("star ⭐" . "⭐")
+   ("sparkles ✨" . "✨")
+   ("rocket 🚀" . "🚀")
+   ("sun 🌞" . "🌞")
+   ("red heart ❤" . "❤")
+   ("clown 🤡" . "🤡")
+   ("large circle" . "⭕")
+   ("cross ❌" . "❌")
+   ("red triangle 🔺" . "🔺")
+   ("diamond 💠" . "💠")
+   ("square" . "⬛")
+   ("cursor ▮" . "▮")
 
-    ("thumb up 👍")
-    ("thumb down 👎")
+   ("double angle bracket" . "《》")
+   ("black lenticular bracket" . "【】")
+   ("corner-bracket" . "「」")
+   ("tortoise shell bracket" . "〔〕")
+   ("angle bracket" . "〈〉")
+   ("double angle quote" . "«»")
 
-    ("checkmark ✅")
-    ("new 🆕")
-    ("star glowing 🌟")
-    ("star ⭐")
-    ("sparkles ✨")
-    ("rocket 🚀")
-
-    ("sun 🌞")
-    ("red heart ❤")
-
-    ("clown 🤡")
-
-    ("large circle ⭕")
-    ("cross ❌")
-
-    ("red triangle 🔺")
-    ("diamond 💠")
-    ("square ⬛")
-    ("cursor ▮")
-
-    ;; ("double angle bracket 《》")
-    ;; ("black-lenticular-bracket 【】")
-    ;; ("corner-bracket 「」")
-    ;; ("tortoise-shell-bracket 〔〕")
-    ;; ("angle-bracket 〈〉")
-    ;; ("double-angle-quote «»")
-
-    ("bullet •")
-    ("diamond ◆")
-    ("...ellipsis …")
-    ("nbsp  ")
-    ("chinese comma 、")
-    ("-emdash —")
-    ("fullwidth ampersand ＆")
-    ("left arrow ←")
-    ("right arrow →")
-    ("up arrow ↑")
-    ("down arrow ↓")
-    ;;
-    )
-
-  "A list of strings used by `xah-insert-unicode'.
-Each item is a string.
-The first part of string before last space, is used as name of a unicode char, the last part before last space, is the unicode Unicode character to insert. (can be more than 1 char).")
+   ("bullet •" . "•")
+   ("diamond ◆" . "◆")
+   ("...ellipsis …" . "…")
+   ("nbsp non breaking space" . " ")
+   ("chinese comma 、" . "、")
+   ("emdash —" . "—")
+   ("fullwidth ampersand ＆" . "＆")
+   ("left arrow ←" . "←")
+   ("right arrow →" . "→")
+   ("up arrow ↑" . "↑")
+   ("down arrow ↓" . "↓")
+   ;;
+   ))
 
 (defun xah-insert-unicode ()
   "Insert a unicode from a custom list `xah-unicode-list'.
 URL `http://xahlee.info/emacs/emacs/emacs_insert_unicode.html'
-Version: 2021-01-05 2022-04-07 2022-10-30"
+Version: 2021-01-05 2022-10-30 2023-07-21"
   (interactive)
-  (let ((xstr
+  (let ((xkey
          (completing-read
           "Insert:" xah-unicode-list)))
-    (insert (car (last (split-string xstr " " t))))))
+    (insert (cdr (assoc xkey xah-unicode-list)))))
 
 
 ;; text selection
@@ -3057,25 +3055,8 @@ Version 2022-10-31"
 
        ("d" . beginning-of-buffer)
 
-       ;; a b c
-       ("e d" . xah-insert-double-curly-quote) ; “”
-       ("e e" . xah-insert-unicode)
-       ;; f
-       ("e g" . xah-insert-ascii-double-quote) ; ""
-       ("e h" . xah-insert-brace)              ; {}
-       ;; i
-       ("e j" . insert-char)
-       ("e k" . xah-insert-markdown-quote)     ; ``
-
-       ;; l m
-       ("e n" . xah-insert-square-bracket) ; []
-       ;; o
-       ("e p" . xah-insert-single-angle-quote) ; ‹›
-       ;; q r s
-
-       ("e t" . xah-insert-paren) ; ()
-       ("e u" . xah-insert-date)
-       ("e v" . xah-insert-markdown-triple-quote) ;
+       ("e a" . xah-insert-double-angle-bracket)     ; 《》
+       ("e b" . xah-insert-black-lenticular-bracket) ; 【】
 
        ("e c r" . expand-region-abbrevs)
        ("e c t" . edit-abbrevs)
@@ -3091,6 +3072,30 @@ Version 2022-10-31"
        ("e c h" . expand-jump-to-previous-slot)
        ("e c n" . expand-jump-to-next-slot)
        ("e c y" . abbrev-prefix-mark)
+
+       ("e d" . xah-insert-double-curly-quote) ; “”
+       ("e e" . xah-insert-unicode)
+       ("e f" . xah-insert-emacs-quote)        ; `'
+       ("e g" . xah-insert-ascii-double-quote) ; ""
+       ("e h" . xah-insert-brace)              ; {}
+       ("e i" . xah-insert-curly-single-quote) ; ‘’
+       ("e j" . insert-char)
+       ("e k" . xah-insert-markdown-quote) ; ``
+       ("e l" . xah-insert-formfeed)
+       ("e m" . xah-insert-corner-bracket)         ; 「」
+       ("e n" . xah-insert-square-bracket)         ; []
+       ;; o
+       ("e p" . xah-insert-single-angle-quote)    ; ‹›
+       ;; q
+       ("e r" . xah-insert-tortoise-shell-bracket) ; 〔〕
+       ;; s
+       ("e t" . xah-insert-paren)                  ; ()
+       ("e u" . xah-insert-date)
+       ("e v" . xah-insert-markdown-triple-quote) ;
+       ("e w" . xah-insert-angle-bracket)         ; 〈〉
+       ;; x
+       ("e y" . xah-insert-double-angle-quote)    ; «»
+       ;; z
 
        ("f" . xah-search-current-word)
        ("g" . xah-save-close-current-buffer)
