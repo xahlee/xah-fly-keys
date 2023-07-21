@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 23.15.20230716225202
+;; Version: 23.16.20230721115259
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1010,6 +1010,14 @@ Version: 2014-10-212023-07-12 2023-07-13"
         (setq xp2 (point))
         (delete-region xp1 xp2)
         (if (eq (- xp2 xp1) 1) nil (insert " "))))
+     ((looking-at "\n\n+[ \t]")
+      (progn
+        ;; (print (format "newlines followed by space"))
+        (setq xp1 (point))
+        (skip-chars-forward "\n")
+        (setq xp2 (point))
+        (delete-region xp1 xp2)
+        (insert "\n")))
      ((looking-at "\n\n\n")
       (progn
         ;; (print (format "3 newline"))
@@ -1321,7 +1329,7 @@ Version: 2021-07-14"
         (goto-char (point-min))
         (while (search-forward "\\\\" nil t)
           (replace-match "/"))))))
- 
+
 (defun xah-comment-dwim ()
   "Toggle comment in programing language code.
 
@@ -1888,6 +1896,13 @@ Version: 2013-06-12 2019-03-07"
     ("diamond 💠")
     ("square ⬛")
     ("cursor ▮")
+
+    ;; ("double angle bracket 《》")
+    ;; ("black-lenticular-bracket 【】")
+    ;; ("corner-bracket 「」")
+    ;; ("tortoise-shell-bracket 〔〕")
+    ;; ("angle-bracket 〈〉")
+    ;; ("double-angle-quote «»")
 
     ("bullet •")
     ("diamond ◆")
@@ -2979,23 +2994,15 @@ Version 2022-10-31"
        ;; The TAB key is not in a very good ergonomic position on average keyboards, so 【leader tab ‹somekey›】 probably should not be used much.
        ;; Currently (2018-03-13), these are commands related to completion or indent, and I basically never use any of these (except sometimes complete-symbol).
        ;; For average user, the way it is now is probably justified, because most emacs users don't use these commands.
+
        ("TAB" . nil)
+
        ("TAB TAB" . indent-for-tab-command)
+
        ("TAB i" . complete-symbol)
        ("TAB g" . indent-rigidly)
        ("TAB r" . indent-region)
        ("TAB s" . indent-sexp)
-       ("TAB 1" . abbrev-prefix-mark)
-       ("TAB 2" . edit-abbrevs)
-       ("TAB 3" . expand-abbrev)
-       ("TAB 4" . expand-region-abbrevs)
-       ("TAB 5" . unexpand-abbrev)
-       ("TAB 6" . add-global-abbrev)
-       ("TAB 7" . add-mode-abbrev)
-       ("TAB 8" . inverse-add-global-abbrev)
-       ("TAB 9" . inverse-add-mode-abbrev)
-       ("TAB 0" . expand-jump-to-next-slot)
-       ("TAB =" . expand-jump-to-previous-slot)
 
        (". ." . highlight-symbol-at-point)
        (". g" . unhighlight-regexp)
@@ -3055,28 +3062,40 @@ Version 2022-10-31"
 
        ("d" . beginning-of-buffer)
 
-       ("e a" . xah-insert-double-angle-bracket)
-       ("e b" . xah-insert-black-lenticular-bracket)
-       ("e c" . xah-insert-ascii-single-quote)
-       ("e d" . xah-insert-double-curly-quote)
+       ;; a b c
+       ("e d" . xah-insert-double-curly-quote) ; “”
        ("e e" . xah-insert-unicode)
-       ("e f" . xah-insert-emacs-quote)
-       ("e g" . xah-insert-ascii-double-quote)
-       ("e h" . xah-insert-brace)
-       ("e i" . xah-insert-curly-single-quote)
+       ;; f
+       ("e g" . xah-insert-ascii-double-quote) ; ""
+       ("e h" . xah-insert-brace)              ; {}
+       ;; i
        ("e j" . insert-char)
-       ("e k" . xah-insert-markdown-quote)
-       ("e l" . xah-insert-formfeed)
-       ("e m" . xah-insert-corner-bracket)
-       ("e n" . xah-insert-square-bracket)
-       ("e p" . xah-insert-single-angle-quote)
-       ("e r" . xah-insert-tortoise-shell-bracket)
-       ("e s" . xah-insert-string-assignment)
-       ("e t" . xah-insert-paren)
+       ("e k" . xah-insert-markdown-quote)     ; ``
+
+       ;; l m
+       ("e n" . xah-insert-square-bracket) ; []
+       ;; o
+       ("e p" . xah-insert-single-angle-quote) ; ‹›
+       ;; q r s
+
+       ("e t" . xah-insert-paren) ; ()
        ("e u" . xah-insert-date)
-       ("e v" . xah-insert-markdown-triple-quote)
-       ("e w" . xah-insert-angle-bracket)
-       ("e y" . xah-insert-double-angle-quote)
+       ("e v" . xah-insert-markdown-triple-quote) ;
+
+       ("e c r" . expand-region-abbrevs)
+       ("e c t" . edit-abbrevs)
+       ("e c u" . expand-abbrev)
+
+       ("e c g" . add-mode-abbrev)
+       ("e c c" . add-global-abbrev)
+       ("e c m" . inverse-add-mode-abbrev)
+       ("e c w" . inverse-add-global-abbrev)
+
+       ("e c f" . unexpand-abbrev)
+
+       ("e c h" . expand-jump-to-previous-slot)
+       ("e c n" . expand-jump-to-next-slot)
+       ("e c y" . abbrev-prefix-mark)
 
        ("f" . xah-search-current-word)
        ("g" . xah-save-close-current-buffer)
@@ -3126,6 +3145,7 @@ Version 2022-10-31"
        ("n 7" . calc)
        ("n 9" . shell-command)
        ("n 0" . shell-command-on-region)
+
        ("n a" . text-scale-adjust)
        ("n b" . toggle-debug-on-error)
        ("n c" . toggle-case-fold-search)
@@ -3203,8 +3223,9 @@ Version 2022-10-31"
        ("t 7" . xah-append-to-register-1)
        ("t 8" . xah-clear-register-1)
 
-       ;; b
        ("t a" . xah-reformat-to-sentence-lines)
+       ("t b" . xah-select-text-in-quote)
+       ;; c
        ("t d" . mark-defun)
        ("t e" . list-matching-lines)
        ("t f" . move-to-column)
@@ -3216,7 +3237,6 @@ Version 2022-10-31"
        ("t l" . xah-escape-quotes)
        ("t m" . xah-make-backup-and-save)
        ("t n" . goto-char)
-       
        ("t o" . xah-clean-whitespace)
        ("t p" . query-replace-regexp)
        ;; q
