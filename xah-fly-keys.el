@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 23.16.20230721115259
+;; Version: 23.16.20230721120619
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2989,11 +2989,6 @@ Version 2022-10-31"
      (define-prefix-command 'xah-fly-leader-key-map)
      '(("SPC" . xah-fly-insert-mode-activate)
        ("RET" . execute-extended-command)
-
-       ;; This keymap I've not used. things are here experimentally.
-       ;; The TAB key is not in a very good ergonomic position on average keyboards, so 【leader tab ‹somekey›】 probably should not be used much.
-       ;; Currently (2018-03-13), these are commands related to completion or indent, and I basically never use any of these (except sometimes complete-symbol).
-       ;; For average user, the way it is now is probably justified, because most emacs users don't use these commands.
 
        ("TAB" . nil)
 
