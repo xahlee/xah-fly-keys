@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.1.20230723004022
+;; Version: 24.1.20230723010216
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -701,7 +701,7 @@ What char is considered bracket or quote is determined by current syntax table.
 URL `http://xahlee.info/emacs/emacs/emacs_delete_backward_char_or_bracket_text.html'
 Version: 2017-07-02"
   (interactive)
-  (let (( xp0 (point)) xp1)
+  (let ((xp0 (point)) xp1)
     (forward-sexp -1)
     (setq xp1 (point))
     (goto-char xp0)
@@ -2011,13 +2011,13 @@ Version: 2017-11-01 2021-03-19 2023-07-16"
 Subsequent calls expands the selection.
 
 when there is no selection,
-• if cursor is on a any type of bracket (including parenthesis, quotation mark), select whole bracketed thing including bracket
+• If cursor is on any type of bracket (including parenthesis, quotation mark), select whole bracketed thing including bracket
 • else, select current word.
 
 when there is a selection, the selection extension behavior is still experimental. But when cursor is on a any type of bracket (parenthesis, quote), it extends selection to outer bracket.
 
 URL `http://xahlee.info/emacs/emacs/modernization_mark-word.html'
-Version: 2020-02-04 2022-05-16 2023-07-16 2023-07-22"
+Version: 2020-02-04 2023-07-22 2023-07-23"
   (interactive)
   (if (region-active-p)
       (progn
@@ -2085,12 +2085,12 @@ Version: 2020-02-04 2022-05-16 2023-07-16 2023-07-22"
        ;;  (message "beginning of line and not empty")
        ;;  (end-of-line)
        ;;  (push-mark (line-beginning-position) t t))
-       ((prog2 (backward-char) (looking-at "[-_a-zA-Z]") (forward-char))
+       ((prog2 (backward-char) (looking-at "[-_a-zA-Z0-9]") (forward-char))
         ;; (message "left is word or symbol")
-        (skip-chars-backward "-_a-zA-Z")
+        (skip-chars-backward "-_a-zA-Z0-9")
         ;; (re-search-backward "^\\(\\sw\\|\\s_\\)" nil t)
         (push-mark)
-        (skip-chars-forward "-_a-zA-Z")
+        (skip-chars-forward "-_a-zA-Z0-9")
         (setq mark-active t)
         ;; (exchange-point-and-mark)
         )
