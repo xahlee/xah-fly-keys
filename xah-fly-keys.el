@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.1.20230722230110
+;; Version: 24.1.20230723004022
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -718,14 +718,14 @@ If the char to the left is whitespace, call `xah-shrink-whitespaces'.
 If the char to the left is bracket or quote, call `xah-delete-backward-char-or-bracket-text'.
 Else just delete one char backward.
 
-Version: 2023-07-22"
+Version: 2023-07-22 2023-07-23"
   (interactive)
   (cond
    ((region-active-p) (delete-region (region-beginning) (region-end)))
    ((or
      (looking-at "[ \t]")
      (prog2 (backward-char) (looking-at "[ \t\n]") (forward-char)))
-    (print (format "call xah-shrink-whitespaces"))
+    ;; (print (format "call xah-shrink-whitespaces"))
     (xah-shrink-whitespaces))
    ((prog2 (backward-char) (looking-at "\\s(\\|\\s)\\|\\s\"") (forward-char))
     (xah-delete-backward-char-or-bracket-text))
