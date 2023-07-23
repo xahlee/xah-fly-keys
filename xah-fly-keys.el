@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.1.20230722172306
+;; Version: 24.1.20230722230110
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1030,7 +1030,7 @@ Version: 2014-10-212023-07-12 2023-07-13"
     (cond
      ((looking-at "[ 　\t]+[^\n]")
       (progn
-        (print (format "space case"))
+        ;; (print (format "space case"))
         (setq xp1 (point))
         (skip-chars-forward " \t　")
         (setq xp2 (point))
@@ -1038,7 +1038,7 @@ Version: 2014-10-212023-07-12 2023-07-13"
         (if (eq (- xp2 xp1) 1) nil (insert " "))))
      ((looking-at "\n\n+[ \t]")
       (progn
-        (print (format "newlines followed by space"))
+        ;; (print (format "newlines followed by space"))
         (setq xp1 (point))
         (skip-chars-forward "\n")
         (setq xp2 (point))
@@ -1046,7 +1046,7 @@ Version: 2014-10-212023-07-12 2023-07-13"
         (insert "\n")))
      ((looking-at "\n\n\n")
       (progn
-        (print (format "3 newline"))
+        ;; (print (format "3 newline"))
         (setq xp1 (point))
         (skip-chars-forward "\n")
         (setq xp2 (point))
@@ -1054,7 +1054,7 @@ Version: 2014-10-212023-07-12 2023-07-13"
         (insert "\n\n")))
      ((looking-at "[ \t　]*\n[ \n]")
       (progn
-        (print (format "space newline space newline"))
+        ;; (print (format "space newline space newline"))
         (setq xp1 (point))
         (skip-chars-forward " 　\t\n")
         (setq xp2 (point))
@@ -1062,20 +1062,22 @@ Version: 2014-10-212023-07-12 2023-07-13"
         (insert "\n")))
      ((looking-at " \n")
       (progn
-        (print (format "space newline case"))
+        ;; (print (format "space newline case"))
         (delete-char 2)
         (insert " ")))
      ((looking-at "\n")
       (progn
-        (print (format "newline case"))
+        ;; (print (format "newline case"))
         (delete-char 1)
         (insert " ")))
      ((looking-at " ")
       (progn
-        (print (format "just one space case"))
+        ;; (print (format "just one space case"))
         (delete-char 1)))
-     (t (progn
-          (print (format "do nothing case")) nil)))))
+     (t
+      (progn
+        ;; (print (format "do nothing case"))
+        nil)))))
 
 (defun xah-toggle-read-novel-mode ()
   "Setup current frame to be suitable for reading long novel/article text.
