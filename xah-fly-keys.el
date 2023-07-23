@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 23.12.20230721135940
+;; Version: 24.1.20230722172306
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -310,16 +310,16 @@ If cursor is not on a bracket, call `backward-up-list'.
 The list of brackets to jump to is defined by `xah-left-brackets' and `xah-right-brackets'.
 
 URL `http://xahlee.info/emacs/emacs/emacs_navigating_keys_for_brackets.html'
-Version: 2016-11-22"
+Version: 2016-11-22 2023-07-22"
   (interactive)
   (if (nth 3 (syntax-ppss))
       (backward-up-list 1 'ESCAPE-STRINGS 'NO-SYNTAX-CROSSING)
     (cond
      ((eq (char-after) ?\") (forward-sexp))
-     ((eq (char-before) ?\") (backward-sexp ))
+     ((eq (char-before) ?\") (backward-sexp))
      ((looking-at (regexp-opt xah-left-brackets))
       (forward-sexp))
-     ((looking-back (regexp-opt xah-right-brackets) (max (- (point) 1) 1))
+     ((prog2 (backward-char) (looking-at (regexp-opt xah-right-brackets)) (forward-char))
       (backward-sexp))
      (t (backward-up-list 1 'ESCAPE-STRINGS 'NO-SYNTAX-CROSSING)))))
 
@@ -600,6 +600,12 @@ Version: 2022-01-22"
       (progn (delete-region (region-beginning) (region-end)))
     (delete-char -1)))
 
+(defun xah-delete-backward-char ()
+  "Delete one char backward.
+Version: 2023-07-22"
+  (interactive)
+  (delete-char -1))
+
 (defun xah-delete-backward-char-or-bracket-text ()
   "Delete 1 character or delete quote/bracket pair and inner text.
 If the char to the left of cursor is a matching pair, delete it alone with inner text, push the deleted text to `kill-ring'.
@@ -609,12 +615,12 @@ What char is considered bracket or quote is determined by current syntax table.
 If `universal-argument' is called first, do not delete inner text.
 
 URL `http://xahlee.info/emacs/emacs/emacs_delete_backward_char_or_bracket_text.html'
-Version: 2017-07-02 2022-06-23 2023-02-02"
+Version: 2017-07-02 2022-06-23 2023-02-02 2023-07-22"
   (interactive)
   (if (and delete-selection-mode (region-active-p))
       (delete-region (region-beginning) (region-end))
     (cond
-     ((looking-back "\\s)" 1)
+     ((prog2 (backward-char) (looking-at "\\s)") (forward-char))
       (if current-prefix-arg
           (xah-delete-backward-bracket-pair)
         (xah-delete-backward-bracket-text))
@@ -635,7 +641,7 @@ Version: 2017-07-02 2022-06-23 2023-02-02"
       ;;               (xah-delete-backward-bracket-pair)
       ;;             (xah-delete-backward-bracket-text))))
       )
-     ((looking-back "\\s(" 1)
+     ((prog2 (backward-char) (looking-at "\\s(") (forward-char))
       (message "left of cursor is opening bracket")
       (let (xpOpenBracketLeft
             (xpOpenBracketRight (point)) xisComment)
@@ -658,7 +664,7 @@ Version: 2017-07-02 2022-06-23 2023-02-02"
             (if current-prefix-arg
                 (xah-delete-backward-bracket-pair)
               (xah-delete-backward-bracket-text))))))
-     ((looking-back "\\s\"" 1)
+     ((prog2 (backward-char) (looking-at "\\s\"") (forward-char))
       (if (nth 3 (syntax-ppss))
           (progn
             (backward-char)
@@ -704,6 +710,26 @@ Version: 2017-07-02"
     (delete-char 1)
     (push-mark (point) t)
     (goto-char (- xp0 2))))
+
+(defun xah-smart-delete ()
+  "Smart backward delete.
+If there is selection, delete it.
+If the char to the left is whitespace, call `xah-shrink-whitespaces'.
+If the char to the left is bracket or quote, call `xah-delete-backward-char-or-bracket-text'.
+Else just delete one char backward.
+
+Version: 2023-07-22"
+  (interactive)
+  (cond
+   ((region-active-p) (delete-region (region-beginning) (region-end)))
+   ((or
+     (looking-at "[ \t]")
+     (prog2 (backward-char) (looking-at "[ \t\n]") (forward-char)))
+    (print (format "call xah-shrink-whitespaces"))
+    (xah-shrink-whitespaces))
+   ((prog2 (backward-char) (looking-at "\\s(\\|\\s)\\|\\s\"") (forward-char))
+    (xah-delete-backward-char-or-bracket-text))
+   (t (delete-char -1))))
 
 (defun xah-delete-forward-bracket-pairs ( &optional DeleteInnerTextQ)
   "Delete the matching brackets/quotes to the right of cursor.
@@ -1004,7 +1030,7 @@ Version: 2014-10-212023-07-12 2023-07-13"
     (cond
      ((looking-at "[ 　\t]+[^\n]")
       (progn
-        ;; (print (format "space case"))
+        (print (format "space case"))
         (setq xp1 (point))
         (skip-chars-forward " \t　")
         (setq xp2 (point))
@@ -1012,7 +1038,7 @@ Version: 2014-10-212023-07-12 2023-07-13"
         (if (eq (- xp2 xp1) 1) nil (insert " "))))
      ((looking-at "\n\n+[ \t]")
       (progn
-        ;; (print (format "newlines followed by space"))
+        (print (format "newlines followed by space"))
         (setq xp1 (point))
         (skip-chars-forward "\n")
         (setq xp2 (point))
@@ -1020,7 +1046,7 @@ Version: 2014-10-212023-07-12 2023-07-13"
         (insert "\n")))
      ((looking-at "\n\n\n")
       (progn
-        ;; (print (format "3 newline"))
+        (print (format "3 newline"))
         (setq xp1 (point))
         (skip-chars-forward "\n")
         (setq xp2 (point))
@@ -1028,7 +1054,7 @@ Version: 2014-10-212023-07-12 2023-07-13"
         (insert "\n\n")))
      ((looking-at "[ \t　]*\n[ \n]")
       (progn
-        ;; (print (format "space newline space newline"))
+        (print (format "space newline space newline"))
         (setq xp1 (point))
         (skip-chars-forward " 　\t\n")
         (setq xp2 (point))
@@ -1036,15 +1062,20 @@ Version: 2014-10-212023-07-12 2023-07-13"
         (insert "\n")))
      ((looking-at " \n")
       (progn
-        ;; (print (format "space newline 421"))
+        (print (format "space newline case"))
         (delete-char 2)
         (insert " ")))
      ((looking-at "\n")
       (progn
-        ;; (print (format "newline case"))
+        (print (format "newline case"))
         (delete-char 1)
         (insert " ")))
-     (t nil))))
+     ((looking-at " ")
+      (progn
+        (print (format "just one space case"))
+        (delete-char 1)))
+     (t (progn
+          (print (format "do nothing case")) nil)))))
 
 (defun xah-toggle-read-novel-mode ()
   "Setup current frame to be suitable for reading long novel/article text.
@@ -1984,7 +2015,7 @@ when there is no selection,
 when there is a selection, the selection extension behavior is still experimental. But when cursor is on a any type of bracket (parenthesis, quote), it extends selection to outer bracket.
 
 URL `http://xahlee.info/emacs/emacs/modernization_mark-word.html'
-Version: 2020-02-04 2022-05-16 2023-07-16"
+Version: 2020-02-04 2022-05-16 2023-07-16 2023-07-22"
   (interactive)
   (if (region-active-p)
       (progn
@@ -2052,20 +2083,22 @@ Version: 2020-02-04 2022-05-16 2023-07-16"
        ;;  (message "beginning of line and not empty")
        ;;  (end-of-line)
        ;;  (push-mark (line-beginning-position) t t))
-       ((or (looking-back "\\s_" 1) (looking-back "\\sw" 1))
+       ((prog2 (backward-char) (looking-at "[-_a-zA-Z]") (forward-char))
         ;; (message "left is word or symbol")
-        (skip-syntax-backward "_w")
+        (skip-chars-backward "-_a-zA-Z")
         ;; (re-search-backward "^\\(\\sw\\|\\s_\\)" nil t)
         (push-mark)
-        (skip-syntax-forward "_w")
+        (skip-chars-forward "-_a-zA-Z")
         (setq mark-active t)
         ;; (exchange-point-and-mark)
         )
-       ((and (looking-at "\\s ") (looking-back "\\s " 1))
+       ((and (looking-at "[:blank:]")
+             (prog2 (backward-char) (looking-at "[:blank:]") (forward-char)))
         ;; (message "left and right both space" )
-        (skip-chars-backward "\\s ") (push-mark (point) t t)
-        (skip-chars-forward "\\s "))
-       ((and (looking-at "\n") (looking-back "\n" 1))
+        (skip-chars-backward "[:blank:]") (push-mark (point) t t)
+        (skip-chars-forward "[:blank:]"))
+       ((and (looking-at "\n")
+             (char-equal (char-before) 10))
         ;; (message "left and right both newline")
         (skip-chars-forward "\n")
         (push-mark (point)  t t)
@@ -3085,16 +3118,16 @@ Version 2022-10-31"
        ("e m" . xah-insert-corner-bracket)         ; 「」
        ("e n" . xah-insert-square-bracket)         ; []
        ;; o
-       ("e p" . xah-insert-single-angle-quote)    ; ‹›
+       ("e p" . xah-insert-single-angle-quote)     ; ‹›
        ;; q
        ("e r" . xah-insert-tortoise-shell-bracket) ; 〔〕
        ;; s
-       ("e t" . xah-insert-paren)                  ; ()
+       ("e t" . xah-insert-paren) ; ()
        ("e u" . xah-insert-date)
        ("e v" . xah-insert-markdown-triple-quote) ;
        ("e w" . xah-insert-angle-bracket)         ; 〈〉
        ;; x
-       ("e y" . xah-insert-double-angle-quote)    ; «»
+       ("e y" . xah-insert-double-angle-quote) ; «»
        ;; z
 
        ("f" . xah-search-current-word)
@@ -3295,7 +3328,7 @@ Version 2022-10-31"
      xah-fly-command-map
      '(("SPC" . xah-fly-leader-key-map)
        ("'" . xah-reformat-lines)
-       ("," . xah-shrink-whitespaces)
+       ("," . xah-delete-backward-char)
        ("-" . xah-cycle-hyphen-lowline-space)
        ("." . backward-kill-word)
        (";" . xah-comment-dwim)
@@ -3323,7 +3356,8 @@ Version 2022-10-31"
        ("c" . previous-line)
        ("d" . xah-beginning-of-line-or-block)
        ;; ("e" . xah-delete-left-char-or-selection)
-       ("e" . xah-delete-backward-char-or-bracket-text)
+       ;; ("e" . xah-delete-backward-char-or-bracket-text)
+       ("e" . xah-smart-delete)
        ("f" . undo)
        ("g" . backward-word)
        ("h" . backward-char)
