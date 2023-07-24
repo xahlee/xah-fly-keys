@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.1.20230723010216
+;; Version: 24.2.20230724114238
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -718,13 +718,16 @@ If the char to the left is whitespace, call `xah-shrink-whitespaces'.
 If the char to the left is bracket or quote, call `xah-delete-backward-char-or-bracket-text'.
 Else just delete one char backward.
 
-Version: 2023-07-22 2023-07-23"
+Version: 2023-07-22 2023-07-24"
   (interactive)
   (cond
    ((region-active-p) (delete-region (region-beginning) (region-end)))
    ((or
-     (looking-at "[ \t]")
-     (prog2 (backward-char) (looking-at "[ \t\n]") (forward-char)))
+     (char-equal (char-before) 10)
+     (prog2 (backward-char) (looking-at "[ \t]") (forward-char))
+     ;; (looking-at "[ \t]")
+     ;; (prog2 (backward-char) (looking-at "[ \t\n]") (forward-char))
+     )
     ;; (print (format "call xah-shrink-whitespaces"))
     (xah-shrink-whitespaces))
    ((prog2 (backward-char) (looking-at "\\s(\\|\\s)\\|\\s\"") (forward-char))
@@ -2120,12 +2123,28 @@ This command ignores nesting. For example, if text is
 the selected char is “c”, not “a(b)c”.
 
 URL `http://xahlee.info/emacs/emacs/modernization_mark-word.html'
-Version: 2020-11-24 2022-03-26 2023-07-16"
+Version: 2020-11-24 2023-07-16 2023-07-23"
   (interactive)
   (let ((xskipChars (concat "^\"`" (mapconcat #'identity xah-brackets ""))))
     (skip-chars-backward xskipChars)
     (push-mark (point) t t)
     (skip-chars-forward xskipChars)))
+
+(defun xah-cut-text-in-quote ()
+  "Cut text between the nearest left and right delimiters.
+Delimiters here includes the following chars: \" ` and anything in `xah-brackets'.
+This command ignores nesting. For example, if text is
+    (a(b)c▮)
+the selected char is “c”, not “a(b)c”.
+
+URL `http://xahlee.info/emacs/emacs/modernization_mark-word.html'
+Version: 2023-07-23"
+  (interactive)
+  (let ((xskipChars (concat "^\"`" (mapconcat #'identity xah-brackets ""))))
+    (skip-chars-backward xskipChars)
+    (push-mark (point) t t)
+    (skip-chars-forward xskipChars)
+    (kill-region nil nil t)))
 
 
 ;; misc
@@ -3259,8 +3278,7 @@ Version 2022-10-31"
        ("t 8" . xah-clear-register-1)
 
        ("t a" . xah-reformat-to-sentence-lines)
-       ("t b" . xah-select-text-in-quote)
-       ;; c
+       ;; c b
        ("t d" . mark-defun)
        ("t e" . list-matching-lines)
        ("t f" . move-to-column)
@@ -3274,7 +3292,7 @@ Version 2022-10-31"
        ("t n" . goto-char)
        ("t o" . xah-clean-whitespace)
        ("t p" . query-replace-regexp)
-       ;; q
+       ("t q" . xah-cut-text-in-quote)
        ("t r" . copy-rectangle-to-register)
        ;; s
        ("t t" . repeat)
