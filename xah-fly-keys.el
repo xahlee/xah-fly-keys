@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.2.20230724114238
+;; Version: 24.3.20230724131527
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -723,11 +723,14 @@ Version: 2023-07-22 2023-07-24"
   (cond
    ((region-active-p) (delete-region (region-beginning) (region-end)))
    ((or
+     (char-equal (char-before) 32)
+     (char-equal (char-before) 9))
+    ;; (print (format "delete space to the left"))
+    (delete-char (- (skip-chars-backward " \t"))))
+   ((or
      (char-equal (char-before) 10)
-     (prog2 (backward-char) (looking-at "[ \t]") (forward-char))
-     ;; (looking-at "[ \t]")
-     ;; (prog2 (backward-char) (looking-at "[ \t\n]") (forward-char))
-     )
+     (char-equal (char-before) 32)
+     (char-equal (char-before) 9))
     ;; (print (format "call xah-shrink-whitespaces"))
     (xah-shrink-whitespaces))
    ((prog2 (backward-char) (looking-at "\\s(\\|\\s)\\|\\s\"") (forward-char))
@@ -1021,66 +1024,34 @@ Version 2022-01-20"
 
 Shrink neighboring whitespace.
 First shrink space or tab, then newlines.
-3 calls results in no whitespace around cursor.
+Repeated calls eventually results in no whitespace around cursor.
 
 URL `http://xahlee.info/emacs/emacs/emacs_shrink_whitespace.html'
-Version: 2014-10-212023-07-12 2023-07-13"
+Version: 2014-10-212023-07-12 2023-07-13 2023-07-24"
   (interactive)
-  (let (xp1 xp2)
-    (skip-chars-backward " 　\t\n")
-    ;; (re-search-backward "[^ \t\n]" nil t)
-    ;; (forward-char)
-    (cond
-     ((looking-at "[ 　\t]+[^\n]")
-      (progn
-        ;; (print (format "space case"))
-        (setq xp1 (point))
-        (skip-chars-forward " \t　")
-        (setq xp2 (point))
-        (delete-region xp1 xp2)
-        (if (eq (- xp2 xp1) 1) nil (insert " "))))
-     ((looking-at "\n\n+[ \t]")
-      (progn
-        ;; (print (format "newlines followed by space"))
-        (setq xp1 (point))
-        (skip-chars-forward "\n")
-        (setq xp2 (point))
-        (delete-region xp1 xp2)
-        (insert "\n")))
-     ((looking-at "\n\n\n")
-      (progn
-        ;; (print (format "3 newline"))
-        (setq xp1 (point))
-        (skip-chars-forward "\n")
-        (setq xp2 (point))
-        (delete-region xp1 xp2)
-        (insert "\n\n")))
-     ((looking-at "[ \t　]*\n[ \n]")
-      (progn
-        ;; (print (format "space newline space newline"))
-        (setq xp1 (point))
-        (skip-chars-forward " 　\t\n")
-        (setq xp2 (point))
-        (delete-region xp1 xp2)
-        (insert "\n")))
-     ((looking-at " \n")
-      (progn
-        ;; (print (format "space newline case"))
-        (delete-char 2)
-        (insert " ")))
-     ((looking-at "\n")
-      (progn
-        ;; (print (format "newline case"))
-        (delete-char 1)
-        (insert " ")))
-     ((looking-at " ")
-      (progn
-        ;; (print (format "just one space case"))
-        (delete-char 1)))
-     (t
-      (progn
-        ;; (print (format "do nothing case"))
-        nil)))))
+  (cond
+   ((prog2 (backward-char) (looking-at "[ \t]") (forward-char))
+    (progn
+      ;; (print (format "space on left"))
+      (delete-char (- (skip-chars-backward " \t")))))
+   ((looking-at "[ \t]")
+    (progn
+      ;; (print (format "space on right"))
+      (delete-char (- (skip-chars-forward " \t")))))
+   ((or
+     (and (char-equal (char-before) 10) (char-equal (char-after) 10))
+     (looking-at "\n\n")
+     (prog2 (backward-char 2) (looking-at "\n\n") (forward-char 2)))
+    (progn
+      ;; (print (format "2 newlines on left or right, or one each"))
+      (delete-char (- (skip-chars-backward "\n")))
+      (delete-char (- (skip-chars-forward "\n")))
+      (insert "\n")))
+   (t
+    (progn
+      ;; (print (format "catch all"))
+      (delete-char (- (skip-chars-backward " \n")))
+      (delete-char (- (skip-chars-forward " \n")))))))
 
 (defun xah-toggle-read-novel-mode ()
   "Setup current frame to be suitable for reading long novel/article text.
@@ -3348,6 +3319,7 @@ Version 2022-10-31"
      xah-fly-command-map
      '(("SPC" . xah-fly-leader-key-map)
        ("'" . xah-reformat-lines)
+       ;; ("," . xah-shrink-whitespaces)
        ("," . xah-delete-backward-char)
        ("-" . xah-cycle-hyphen-lowline-space)
        ("." . backward-kill-word)
