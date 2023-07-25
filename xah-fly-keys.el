@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.3.20230724131527
+;; Version: 24.3.20230725105219
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -723,14 +723,14 @@ Version: 2023-07-22 2023-07-24"
   (cond
    ((region-active-p) (delete-region (region-beginning) (region-end)))
    ((or
-     (char-equal (char-before) 32)
-     (char-equal (char-before) 9))
+     (eq (char-before) 32)
+     (eq (char-before) 9))
     ;; (print (format "delete space to the left"))
     (delete-char (- (skip-chars-backward " \t"))))
    ((or
-     (char-equal (char-before) 10)
-     (char-equal (char-before) 32)
-     (char-equal (char-before) 9))
+     (eq (char-before) 10)
+     (eq (char-before) 32)
+     (eq (char-before) 9))
     ;; (print (format "call xah-shrink-whitespaces"))
     (xah-shrink-whitespaces))
    ((prog2 (backward-char) (looking-at "\\s(\\|\\s)\\|\\s\"") (forward-char))
@@ -1030,7 +1030,10 @@ URL `http://xahlee.info/emacs/emacs/emacs_shrink_whitespace.html'
 Version: 2014-10-212023-07-12 2023-07-13 2023-07-24"
   (interactive)
   (cond
-   ((prog2 (backward-char) (looking-at "[ \t]") (forward-char))
+   ((if (eq (point-min) (point))
+        nil
+      (prog2 (backward-char) (looking-at "[ \t]") (forward-char)))
+    ;; (looking-back "[ \t]" (max (- (point) 1) (point-min)))
     (progn
       ;; (print (format "space on left"))
       (delete-char (- (skip-chars-backward " \t")))))
@@ -1039,7 +1042,7 @@ Version: 2014-10-212023-07-12 2023-07-13 2023-07-24"
       ;; (print (format "space on right"))
       (delete-char (- (skip-chars-forward " \t")))))
    ((or
-     (and (char-equal (char-before) 10) (char-equal (char-after) 10))
+     (and (eq (char-before) 10) (eq (char-after) 10))
      (looking-at "\n\n")
      (prog2 (backward-char 2) (looking-at "\n\n") (forward-char 2)))
     (progn
@@ -2074,7 +2077,7 @@ Version: 2020-02-04 2023-07-22 2023-07-23"
         (skip-chars-backward "[:blank:]") (push-mark (point) t t)
         (skip-chars-forward "[:blank:]"))
        ((and (looking-at "\n")
-             (char-equal (char-before) 10))
+             (eq (char-before) 10))
         ;; (message "left and right both newline")
         (skip-chars-forward "\n")
         (push-mark (point)  t t)
