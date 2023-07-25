@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.3.20230725105219
+;; Version: 24.3.20230725110700
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -711,6 +711,43 @@ Version: 2017-07-02"
     (push-mark (point) t)
     (goto-char (- xp0 2))))
 
+(defun xah-shrink-whitespaces ()
+  "Remove whitespaces around cursor.
+
+Shrink neighboring whitespace.
+First shrink space or tab, then newlines.
+Repeated calls eventually results in no whitespace around cursor.
+
+URL `http://xahlee.info/emacs/emacs/emacs_shrink_whitespace.html'
+Version: 2014-10-212023-07-12 2023-07-13 2023-07-24"
+  (interactive)
+  (cond
+   ((if (eq (point-min) (point))
+        nil
+      (prog2 (backward-char) (looking-at "[ \t]") (forward-char)))
+    ;; (looking-back "[ \t]" (max (- (point) 1) (point-min)))
+    (progn
+      ;; (print (format "space on left"))
+      (delete-char (- (skip-chars-backward " \t")))))
+   ((looking-at "[ \t]")
+    (progn
+      ;; (print (format "space on right"))
+      (delete-char (- (skip-chars-forward " \t")))))
+   ((or
+     (and (eq (char-before) 10) (eq (char-after) 10))
+     (looking-at "\n\n")
+     (prog2 (backward-char 2) (looking-at "\n\n") (forward-char 2)))
+    (progn
+      ;; (print (format "2 newlines on left or right, or one each"))
+      (delete-char (- (skip-chars-backward "\n")))
+      (delete-char (- (skip-chars-forward "\n")))
+      (insert "\n")))
+   (t
+    (progn
+      ;; (print (format "catch all"))
+      (delete-char (- (skip-chars-backward " \n")))
+      (delete-char (- (skip-chars-forward " \n")))))))
+
 (defun xah-smart-delete ()
   "Smart backward delete.
 If there is selection, delete it.
@@ -1018,43 +1055,6 @@ Version 2022-01-20"
          (make-overlay
           (match-beginning 0)
           (match-end 0)) 'face 'highlight)))))
-
-(defun xah-shrink-whitespaces ()
-  "Remove whitespaces around cursor.
-
-Shrink neighboring whitespace.
-First shrink space or tab, then newlines.
-Repeated calls eventually results in no whitespace around cursor.
-
-URL `http://xahlee.info/emacs/emacs/emacs_shrink_whitespace.html'
-Version: 2014-10-212023-07-12 2023-07-13 2023-07-24"
-  (interactive)
-  (cond
-   ((if (eq (point-min) (point))
-        nil
-      (prog2 (backward-char) (looking-at "[ \t]") (forward-char)))
-    ;; (looking-back "[ \t]" (max (- (point) 1) (point-min)))
-    (progn
-      ;; (print (format "space on left"))
-      (delete-char (- (skip-chars-backward " \t")))))
-   ((looking-at "[ \t]")
-    (progn
-      ;; (print (format "space on right"))
-      (delete-char (- (skip-chars-forward " \t")))))
-   ((or
-     (and (eq (char-before) 10) (eq (char-after) 10))
-     (looking-at "\n\n")
-     (prog2 (backward-char 2) (looking-at "\n\n") (forward-char 2)))
-    (progn
-      ;; (print (format "2 newlines on left or right, or one each"))
-      (delete-char (- (skip-chars-backward "\n")))
-      (delete-char (- (skip-chars-forward "\n")))
-      (insert "\n")))
-   (t
-    (progn
-      ;; (print (format "catch all"))
-      (delete-char (- (skip-chars-backward " \n")))
-      (delete-char (- (skip-chars-forward " \n")))))))
 
 (defun xah-toggle-read-novel-mode ()
   "Setup current frame to be suitable for reading long novel/article text.
