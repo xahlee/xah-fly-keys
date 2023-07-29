@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.3.20230725110700
+;; Version: 24.4.20230729142604
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -266,15 +266,14 @@ Used by `xah-select-text-in-quote' and others.")
   (mapcar (lambda (x) (substring x 1 2)) xah-brackets)
   "List of right bracket chars. Each element is a string.")
 
-(defconst xah-punctuation-regex "[!?\".,`'#$%&*+:;=@^|~]+"
-  "A regex string for the purpose of moving cursor to a punctuation.")
+(defconst xah-punctuation-regex "[\"=]+"
+ "A regex string for the purpose of moving cursor to a punctuation, used by `xah-forward-punct'.")
 
 (defun xah-forward-punct (&optional n)
-  "Move cursor to the next occurrence of punctuation.
-The list of punctuations to jump to is defined by `xah-punctuation-regex'
+  "Move cursor to the next occurrence of `xah-punctuation-regex'.
 
 URL `http://xahlee.info/emacs/emacs/emacs_jump_to_punctuations.html'
-Version: 2017-06-26"
+Version: 2017-06-26 2023-07-25"
   (interactive "p")
   (re-search-forward xah-punctuation-regex nil t n))
 
@@ -525,32 +524,27 @@ Version: 2019-12-02 2021-07-03"
 (defun xah-move-block-up ()
   "Swap the current text block with the previous.
 After this command is called, press <up> or <down> to move. Any other key to exit.
-Version 2022-03-04"
+Version 2022-03-04 2023-07-28"
   (interactive)
-  (let ((xp0 (point))
-        xc1 ; current block begin
-        xc2 ; current Block End
-        xp1 ; prev Block Begin
-        xp2 ; prev Block end
-        )
-    (if (re-search-forward "\n[ \t]*\n+" nil "move")
-        (setq xc2 (match-beginning 0))
-      (setq xc2 (point)))
+  (let ((xp0 (point)) xbeg xend xp1 xp2)
+    (if (re-search-forward "\n[ \t]*\n+" nil 1)
+        (setq xend (match-beginning 0))
+      (setq xend (point)))
     (goto-char xp0)
-    (if (re-search-backward "\n[ \t]*\n+" nil "move")
+    (if (re-search-backward "\n[ \t]*\n+" nil 1)
         (progn
           (skip-chars-backward "\n \t")
           (setq xp2 (point))
           (skip-chars-forward "\n \t")
-          (setq xc1 (point)))
+          (setq xbeg (point)))
       (error "No previous block."))
     (goto-char xp2)
-    (if (re-search-backward "\n[ \t]*\n+" nil "move")
+    (if (re-search-backward "\n[ \t]*\n+" nil 1)
         (progn
           (setq xp1 (match-end 0)))
       (setq xp1 (point)))
-    (transpose-regions xp1 xp2 xc1 xc2)
-    (goto-char xp1)
+    (goto-char xp0)
+    (transpose-regions xp1 xp2 xbeg xend)
     (set-transient-map
      (let ((xkmap (make-sparse-keymap)))
        (define-key xkmap (kbd "<up>") #'xah-move-block-up)
@@ -560,32 +554,27 @@ Version 2022-03-04"
 (defun xah-move-block-down ()
   "Swap the current text block with the next.
 After this command is called, press <up> or <down> to move. Any other key to exit.
-Version 2022-03-04"
+Version 2022-03-04 2023-07-28"
   (interactive)
-  (let ((xp0 (point))
-        xc1 ; current block begin
-        xc2 ; current Block End
-        xn1 ; next Block Begin
-        xn2 ; next Block end
-        )
+  (let ((xp0 (point)) xbeg xend xn1 xn2)
     (if (eq (point-min) (point))
-        (setq xc1 (point))
-      (if (re-search-backward "\n\n+" nil "move")
+        (setq xbeg (point))
+      (if (re-search-backward "\n\n+" nil 1)
           (progn
-            (setq xc1 (match-end 0)))
-        (setq xc1 (point))))
+            (setq xbeg (match-end 0)))
+        (setq xbeg (point))))
     (goto-char xp0)
-    (if (re-search-forward "\n[ \t]*\n+" nil "move")
+    (if (re-search-forward "\n[ \t]*\n+" nil 1)
         (progn
-          (setq xc2 (match-beginning 0))
+          (setq xend (match-beginning 0))
           (setq xn1 (match-end 0)))
       (error "No next block."))
-    (if (re-search-forward "\n[ \t]*\n+" nil "move")
+    (if (re-search-forward "\n[ \t]*\n+" nil 1)
         (progn
           (setq xn2 (match-beginning 0)))
       (setq xn2 (point)))
-    (transpose-regions xc1 xc2 xn1 xn2)
-    (goto-char xn2))
+    (goto-char xp0)
+    (transpose-regions xbeg xend xn1 xn2))
   (set-transient-map
    (let ((xkmap (make-sparse-keymap)))
      (define-key xkmap (kbd "<up>") #'xah-move-block-up)
@@ -719,7 +708,7 @@ First shrink space or tab, then newlines.
 Repeated calls eventually results in no whitespace around cursor.
 
 URL `http://xahlee.info/emacs/emacs/emacs_shrink_whitespace.html'
-Version: 2014-10-212023-07-12 2023-07-13 2023-07-24"
+Version: 2014-10-21 2023-07-24 2023-07-26"
   (interactive)
   (cond
    ((if (eq (point-min) (point))
@@ -736,7 +725,7 @@ Version: 2014-10-212023-07-12 2023-07-13 2023-07-24"
    ((or
      (and (eq (char-before) 10) (eq (char-after) 10))
      (looking-at "\n\n")
-     (prog2 (backward-char 2) (looking-at "\n\n") (forward-char 2)))
+     (and (eq (char-before (point)) 10) (eq (char-before (1- (point))) 10)))
     (progn
       ;; (print (format "2 newlines on left or right, or one each"))
       (delete-char (- (skip-chars-backward "\n")))
@@ -2062,7 +2051,9 @@ Version: 2020-02-04 2023-07-22 2023-07-23"
        ;;  (message "beginning of line and not empty")
        ;;  (end-of-line)
        ;;  (push-mark (line-beginning-position) t t))
-       ((prog2 (backward-char) (looking-at "[-_a-zA-Z0-9]") (forward-char))
+       (
+        ;; (prog2 (backward-char) (looking-at "[-_a-zA-Z0-9]") (forward-char))
+        (looking-back "[-_a-zA-Z0-9]" (max (- (point) 1) (point-min)))
         ;; (message "left is word or symbol")
         (skip-chars-backward "-_a-zA-Z0-9")
         ;; (re-search-backward "^\\(\\sw\\|\\s_\\)" nil t)
