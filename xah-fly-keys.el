@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.4.20230729142604
+;; Version: 24.4.20230730212218
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -597,14 +597,14 @@ Version: 2023-07-22"
 
 (defun xah-delete-backward-char-or-bracket-text ()
   "Delete 1 character or delete quote/bracket pair and inner text.
-If the char to the left of cursor is a matching pair, delete it alone with inner text, push the deleted text to `kill-ring'.
+If the char to the left of cursor is a matching pair, delete it along with inner text, push the deleted text to `kill-ring'.
 
 What char is considered bracket or quote is determined by current syntax table.
 
 If `universal-argument' is called first, do not delete inner text.
 
 URL `http://xahlee.info/emacs/emacs/emacs_delete_backward_char_or_bracket_text.html'
-Version: 2017-07-02 2022-06-23 2023-02-02 2023-07-22"
+Version: 2017-07-02 2023-07-22 2023-07-30"
   (interactive)
   (if (and delete-selection-mode (region-active-p))
       (delete-region (region-beginning) (region-end))
@@ -666,14 +666,14 @@ Version: 2017-07-02 2022-06-23 2023-02-02 2023-07-22"
 
 (defun xah-delete-backward-bracket-text ()
   "Delete the matching brackets/quotes to the left of cursor, including the inner text.
+Called by `xah-delete-backward-char-or-bracket-text'.
 
 This command assumes the left of cursor is a right bracket, and there is a matching one before it.
 
 What char is considered bracket or quote is determined by current syntax table.
 
 URL `http://xahlee.info/emacs/emacs/emacs_delete_backward_char_or_bracket_text.html'
-Version: 2017-09-21"
-  (interactive)
+Version: 2017-09-21 2023-07-30"
   (progn
     (forward-sexp -1)
     (mark-sexp)
@@ -763,7 +763,7 @@ Version: 2023-07-22 2023-07-24"
     (xah-delete-backward-char-or-bracket-text))
    (t (delete-char -1))))
 
-(defun xah-delete-forward-bracket-pairs ( &optional DeleteInnerTextQ)
+(defun xah-delete-forward-bracket-pairs (&optional DeleteInnerTextQ)
   "Delete the matching brackets/quotes to the right of cursor.
 If DeleteInnerTextQ is true, also delete the inner text.
 
@@ -967,7 +967,7 @@ Version: 2020-12-08 2020-12-24 2021-08-13 2022-05-16 2022-08-27"
 
 (defun xah-title-case-region-or-line (&optional Begin End)
   "Title case text between nearest brackets, or current line or selection.
-Capitalize first letter of each word, except words like {to, of, the, a, in, or, and, …}. If a word already contains cap letters such as HTTP, URL, they are left as is.
+Capitalize first letter of each word, except words like {to, of, the, a, in, or, and}. If a word already contains cap letters such as HTTP, URL, they are left as is.
 
 When called in a elisp program, Begin End are region boundaries.
 
@@ -1830,9 +1830,8 @@ Version: 2017-01-17 2021-08-12"
 
 (defun xah-show-formfeed-as-line ()
   "Display the formfeed ^L char as line.
-
-URL `http://xahlee.info/emacs/emacs/emacs_form_feed_section_paging.html'
-Version: 2018-08-30"
+URL `http://xahlee.info/emacs/emacs/emacs_show_form_feed_as_line.html'
+Version: 2018-08-30 2023-07-29"
   (interactive)
   ;; 2016-10-11 thanks to Steve Purcell's page-break-lines.el
   (progn
@@ -3442,13 +3441,13 @@ Version 2022-10-31"
   )
 
 (when xah-fly-use-control-key
+
   ;; 2021-08-07 was
   ;; (xah-fly--define-keys
   ;;  xah-fly-shared-map
   ;;  '(
   ;;    ("C-1" . cmd)
   ;;    ("C-2" . cmd)
-  ;;    ;; etc
   ;;    )
   ;;  :direct)
 
@@ -3457,7 +3456,7 @@ Version 2022-10-31"
 ;; Current solution is just to use global-set-key.
 ;; The disadvantage is that these changes leak, that is, xah-fly-keys is turned off, these ctrl keys are still changed. Still, this is better, because xah fly keys is not really meant to be turned off temporarily.
 ;; Removing the tons of default emacs control and meta keys is desirable.
-;; because there are hundres of them, confusing, and mostly useless.
+;; because there are hundreds of them, confusing, and mostly useless.
 
   (global-set-key (kbd "<C-S-prior>") #'xah-previous-emacs-buffer)
   (global-set-key (kbd "<C-S-next>") #'xah-next-emacs-buffer)
