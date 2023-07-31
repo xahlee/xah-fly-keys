@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.4.20230730212218
+;; Version: 24.4.20230730212614
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -595,6 +595,66 @@ Version: 2023-07-22"
   (interactive)
   (delete-char -1))
 
+(defun xah-delete-forward-bracket-pairs (&optional DeleteInnerTextQ)
+  "Delete the matching brackets/quotes to the right of cursor.
+If DeleteInnerTextQ is true, also delete the inner text.
+
+After the command, mark is set at the left matching bracket position, so you can `exchange-point-and-mark' to select it.
+
+This command assumes the char to the right of point is a left bracket or quote, and have a matching one after.
+
+What char is considered bracket or quote is determined by current syntax table.
+
+URL `http://xahlee.info/emacs/emacs/emacs_delete_backward_char_or_bracket_text.html'
+Version: 2017-07-02"
+  (interactive)
+  (if DeleteInnerTextQ
+      (progn
+        (mark-sexp)
+        (kill-region (region-beginning) (region-end)))
+    (let ((xpt (point)))
+      (forward-sexp)
+      (delete-char -1)
+      (push-mark (point) t)
+      (goto-char xpt)
+      (delete-char 1))))
+
+(defun xah-delete-backward-bracket-text ()
+  "Delete the matching brackets/quotes to the left of cursor, including the inner text.
+Called by `xah-delete-backward-char-or-bracket-text'.
+
+This command assumes the left of cursor is a right bracket, and there is a matching one before it.
+
+What char is considered bracket or quote is determined by current syntax table.
+
+URL `http://xahlee.info/emacs/emacs/emacs_delete_backward_char_or_bracket_text.html'
+Version: 2017-09-21 2023-07-30"
+  (progn
+    (forward-sexp -1)
+    (mark-sexp)
+    (kill-region (region-beginning) (region-end))))
+
+(defun xah-delete-backward-bracket-pair ()
+  "Delete the matching brackets/quotes to the left of cursor.
+After call, mark is set at the matching bracket position, so you can `exchange-point-and-mark' to select it.
+
+This command assumes the left of point is a right bracket, and there is a matching one before it.
+
+What char is considered bracket or quote is determined by current syntax table.
+
+URL `http://xahlee.info/emacs/emacs/emacs_delete_backward_char_or_bracket_text.html'
+Version: 2017-07-02"
+  (interactive)
+  (let ((xp0 (point)) xp1)
+    (forward-sexp -1)
+    (setq xp1 (point))
+    (goto-char xp0)
+    (delete-char -1)
+    (goto-char xp1)
+    (delete-char 1)
+    (push-mark (point) t)
+    (goto-char (- xp0 2))))
+
 (defun xah-delete-backward-char-or-bracket-text ()
   "Delete 1 character or delete quote/bracket pair and inner text.
 If the char to the left of cursor is a matching pair, delete it along with inner text, push the deleted text to `kill-ring'.
@@ -664,42 +724,6 @@ Version: 2017-07-02 2023-07-22 2023-07-30"
      (t
       (delete-char -1)))))
 
-(defun xah-delete-backward-bracket-text ()
-  "Delete the matching brackets/quotes to the left of cursor, including the inner text.
-Called by `xah-delete-backward-char-or-bracket-text'.
-
-This command assumes the left of cursor is a right bracket, and there is a matching one before it.
-
-What char is considered bracket or quote is determined by current syntax table.
-
-URL `http://xahlee.info/emacs/emacs/emacs_delete_backward_char_or_bracket_text.html'
-Version: 2017-09-21 2023-07-30"
-  (progn
-    (forward-sexp -1)
-    (mark-sexp)
-    (kill-region (region-beginning) (region-end))))
-
-(defun xah-delete-backward-bracket-pair ()
-  "Delete the matching brackets/quotes to the left of cursor.
-After call, mark is set at the matching bracket position, so you can `exchange-point-and-mark' to select it.
-
-This command assumes the left of point is a right bracket, and there is a matching one before it.
-
-What char is considered bracket or quote is determined by current syntax table.
-
-URL `http://xahlee.info/emacs/emacs/emacs_delete_backward_char_or_bracket_text.html'
-Version: 2017-07-02"
-  (interactive)
-  (let ((xp0 (point)) xp1)
-    (forward-sexp -1)
-    (setq xp1 (point))
-    (goto-char xp0)
-    (delete-char -1)
-    (goto-char xp1)
-    (delete-char 1)
-    (push-mark (point) t)
-    (goto-char (- xp0 2))))
-
 (defun xah-shrink-whitespaces ()
   "Remove whitespaces around cursor.
 
@@ -762,30 +786,6 @@ Version: 2023-07-22 2023-07-24"
    ((prog2 (backward-char) (looking-at "\\s(\\|\\s)\\|\\s\"") (forward-char))
     (xah-delete-backward-char-or-bracket-text))
    (t (delete-char -1))))
-
-(defun xah-delete-forward-bracket-pairs (&optional DeleteInnerTextQ)
-  "Delete the matching brackets/quotes to the right of cursor.
-If DeleteInnerTextQ is true, also delete the inner text.
-
-After the command, mark is set at the left matching bracket position, so you can `exchange-point-and-mark' to select it.
-
-This command assumes the char to the right of point is a left bracket or quote, and have a matching one after.
-
-What char is considered bracket or quote is determined by current syntax table.
-
-URL `http://xahlee.info/emacs/emacs/emacs_delete_backward_char_or_bracket_text.html'
-Version: 2017-07-02"
-  (interactive)
-  (if DeleteInnerTextQ
-      (progn
-        (mark-sexp)
-        (kill-region (region-beginning) (region-end)))
-    (let ((xpt (point)))
-      (forward-sexp)
-      (delete-char -1)
-      (push-mark (point) t)
-      (goto-char xpt)
-      (delete-char 1))))
 
 (defun xah-change-bracket-pairs (FromChars ToChars)
   "Change bracket pairs to another type or none.
