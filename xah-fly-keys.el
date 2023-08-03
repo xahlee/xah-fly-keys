@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.4.20230730212614
+;; Version: 24.4.20230802194950
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -256,7 +256,8 @@ Version: 2018-06-04 2021-03-16 2022-03-05"
 
 (defvar xah-brackets '("“”" "()" "[]" "{}" "<>" "＜＞" "（）" "［］" "｛｝" "⦅⦆" "〚〛" "⦃⦄" "‹›" "«»" "「」" "〈〉" "《》" "【】" "〔〕" "⦗⦘" "『』" "〖〗" "〘〙" "｢｣" "⟦⟧" "⟨⟩" "⟪⟫" "⟮⟯" "⟬⟭" "⌈⌉" "⌊⌋" "⦇⦈" "⦉⦊" "❛❜" "❝❞" "❨❩" "❪❫" "❴❵" "❬❭" "❮❯" "❰❱" "❲❳" "〈〉" "⦑⦒" "⧼⧽" "﹙﹚" "﹛﹜" "﹝﹞" "⁽⁾" "₍₎" "⦋⦌" "⦍⦎" "⦏⦐" "⁅⁆" "⸢⸣" "⸤⸥" "⟅⟆" "⦓⦔" "⦕⦖" "⸦⸧" "⸨⸩" "｟｠")
  "A list of strings, each element is a string of 2 chars, the left bracket and a matching right bracket.
-Used by `xah-select-text-in-quote' and others.")
+Used by `xah-select-text-in-quote' and others.
+Version 2023-07-31")
 
 (defconst xah-left-brackets
   (mapcar (lambda (x) (substring x 0 1)) xah-brackets)
@@ -309,7 +310,7 @@ If cursor is not on a bracket, call `backward-up-list'.
 The list of brackets to jump to is defined by `xah-left-brackets' and `xah-right-brackets'.
 
 URL `http://xahlee.info/emacs/emacs/emacs_navigating_keys_for_brackets.html'
-Version: 2016-11-22 2023-07-22"
+Version: 2016-11-22 2023-07-22 2023-08-02"
   (interactive)
   (if (nth 3 (syntax-ppss))
       (backward-up-list 1 'ESCAPE-STRINGS 'NO-SYNTAX-CROSSING)
@@ -318,7 +319,13 @@ Version: 2016-11-22 2023-07-22"
      ((eq (char-before) ?\") (backward-sexp))
      ((looking-at (regexp-opt xah-left-brackets))
       (forward-sexp))
-     ((prog2 (backward-char) (looking-at (regexp-opt xah-right-brackets)) (forward-char))
+     ((if (eq (point-min) (point))
+          nil
+        (prog2
+            (backward-char)
+            (looking-at (regexp-opt xah-right-brackets))
+          (forward-char)))
+      ;; (prog2 (backward-char) (looking-at (regexp-opt xah-right-brackets)) (forward-char))
       (backward-sexp))
      (t (backward-up-list 1 'ESCAPE-STRINGS 'NO-SYNTAX-CROSSING)))))
 
@@ -596,8 +603,10 @@ Version: 2023-07-22"
   (delete-char -1))
 
 (defun xah-delete-forward-bracket-pairs (&optional DeleteInnerTextQ)
-  "Delete the matching brackets/quotes to the right of cursor.
-If DeleteInnerTextQ is true, also delete the inner text.
+  "Delete the matching bracket/quote text to the right of cursor.
+e.g. ▮(a b c)
+
+In lisp code, if DeleteInnerTextQ is true, also delete the inner text.
 
 After the command, mark is set at the left matching bracket position, so you can `exchange-point-and-mark' to select it.
 
@@ -606,8 +615,8 @@ This command assumes the char to the right of point is a left bracket or quote, 
 What char is considered bracket or quote is determined by current syntax table.
 
 URL `http://xahlee.info/emacs/emacs/emacs_delete_backward_char_or_bracket_text.html'
-Version: 2017-07-02"
-  (interactive)
+Version: 2017-07-02 2023-07-30"
+  (interactive (list t))
   (if DeleteInnerTextQ
       (progn
         (mark-sexp)
@@ -620,8 +629,8 @@ Version: 2017-07-02"
       (delete-char 1))))
 
 (defun xah-delete-backward-bracket-text ()
-  "Delete the matching brackets/quotes to the left of cursor, including the inner text.
-Called by `xah-delete-backward-char-or-bracket-text'.
+  "Delete the matching bracket/quote text to the left of cursor.
+e.g. (a b c)▮
 
 This command assumes the left of cursor is a right bracket, and there is a matching one before it.
 
@@ -629,6 +638,7 @@ What char is considered bracket or quote is determined by current syntax table.
 
 URL `http://xahlee.info/emacs/emacs/emacs_delete_backward_char_or_bracket_text.html'
 Version: 2017-09-21 2023-07-30"
+  (interactive)
   (progn
     (forward-sexp -1)
     (mark-sexp)
@@ -732,13 +742,12 @@ First shrink space or tab, then newlines.
 Repeated calls eventually results in no whitespace around cursor.
 
 URL `http://xahlee.info/emacs/emacs/emacs_shrink_whitespace.html'
-Version: 2014-10-21 2023-07-24 2023-07-26"
+Version: 2014-10-21 2023-07-26 2023-08-02"
   (interactive)
   (cond
    ((if (eq (point-min) (point))
         nil
       (prog2 (backward-char) (looking-at "[ \t]") (forward-char)))
-    ;; (looking-back "[ \t]" (max (- (point) 1) (point-min)))
     (progn
       ;; (print (format "space on left"))
       (delete-char (- (skip-chars-backward " \t")))))
@@ -1982,7 +1991,7 @@ when there is no selection,
 when there is a selection, the selection extension behavior is still experimental. But when cursor is on a any type of bracket (parenthesis, quote), it extends selection to outer bracket.
 
 URL `http://xahlee.info/emacs/emacs/modernization_mark-word.html'
-Version: 2020-02-04 2023-07-22 2023-07-23"
+Version: 2020-02-04 2023-07-23 2023-08-02"
   (interactive)
   (if (region-active-p)
       (progn
@@ -2050,9 +2059,12 @@ Version: 2020-02-04 2023-07-22 2023-07-23"
        ;;  (message "beginning of line and not empty")
        ;;  (end-of-line)
        ;;  (push-mark (line-beginning-position) t t))
-       (
-        ;; (prog2 (backward-char) (looking-at "[-_a-zA-Z0-9]") (forward-char))
-        (looking-back "[-_a-zA-Z0-9]" (max (- (point) 1) (point-min)))
+       ((if (eq (point-min) (point))
+            nil
+          (prog2
+              (backward-char)
+              (looking-at "[-_a-zA-Z0-9]")
+            (forward-char)))
         ;; (message "left is word or symbol")
         (skip-chars-backward "-_a-zA-Z0-9")
         ;; (re-search-backward "^\\(\\sw\\|\\s_\\)" nil t)
