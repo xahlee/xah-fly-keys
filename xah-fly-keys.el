@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.4.20230802194950
+;; Version: 24.4.20230803221734
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2403,11 +2403,6 @@ Version: 2020-10-17 2021-10-16 2023-02-23 2023-03-22"
                   (find-file (concat xpath ".el"))
                 (when (y-or-n-p (format "file does not exist: [%s]. Create?" xpath))
                   (find-file xpath))))))))))
-
-(defalias 'xah-display-line-numbers-mode
-  (if (fboundp 'global-display-line-numbers-mode)
-      #'global-display-line-numbers-mode
-    #'linum-mode))
 
 
 
