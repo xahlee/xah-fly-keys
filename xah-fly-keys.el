@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.4.20230803221734
+;; Version: 24.4.20230805215231
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -411,7 +411,7 @@ Version: 2010-05-21 2022-10-03"
               (progn
                 (kill-append "\n" nil)
                 (kill-append
-                 (buffer-substring-no-properties (line-beginning-position) (line-end-position))
+                 (buffer-substring (line-beginning-position) (line-end-position))
                  nil)
                 (progn
                   (end-of-line)
@@ -1386,42 +1386,45 @@ or
 In lisp code, QuoteL QuoteR Sep are strings.
 
 URL `http://xahlee.info/emacs/emacs/emacs_quote_lines.html'
-Version: 2020-06-26 2021-09-15 2022-04-07 2022-04-13 2023-03-04"
+Version: 2020-06-26 2023-03-04 2023-08-05"
   (interactive
-   (let* ((xbds (xah-get-bounds-of-block-or-region))
-          (xp1 (car xbds))
-          (xp2 (cdr xbds))
-          (xbrackets
-           '(
-             "\"double quote\""
-             "'single quote'"
-             "(paren)"
-             "{brace}"
-             "[square]"
-             "<greater>"
-             "`emacs'"
-             "`markdown`"
-             "~tilde~"
-             "=equal="
-             "“curly double”"
-             "‘curly single’"
-             "‹french angle›"
-             "«french double angle»"
-             "「corner」"
-             "none"
-             "other"
-             )) xbktChoice xsep xsepChoice xquoteL xquoteR)
-     (setq xbktChoice (completing-read "Quote to use:" xbrackets))
-     (setq xsepChoice (completing-read "line separator:" '("comma ," "semicolon ;" "none" "other")))
+   (let ((xbrackets
+          '(
+            "\"double quote\""
+            "'single quote'"
+            "(paren)"
+            "{brace}"
+            "[square]"
+            "<greater>"
+            "`emacs'"
+            "`markdown`"
+            "~tilde~"
+            "=equal="
+            "“curly double”"
+            "‘curly single’"
+            "‹french angle›"
+            "«french double angle»"
+            "「corner」"
+            "none"
+            "other"
+            ))
+         (xcomma '("comma ," "semicolon ;" "none" "other"))
+         xp1 xp2 xbktChoice xsep xsepChoice xquoteL xquoteR)
+     (let ((xbds (xah-get-bounds-of-block-or-region)))
+       (setq xp1 (car xbds) xp2 (cdr xbds)))
+     (setq xbktChoice (completing-read "Quote to use:" xbrackets nil t nil nil "\"double quote\""))
+     (setq xsepChoice (completing-read
+                       "line separator:"
+                       xcomma nil t nil nil "comma ,"))
      (cond
       ((string-equal xbktChoice "none")
        (setq xquoteL "" xquoteR ""))
       ((string-equal xbktChoice "other")
        (let ((xx (read-string "Enter 2 chars, for begin/end quote:")))
-         (setq xquoteL (substring-no-properties xx 0 1)
-               xquoteR (substring-no-properties xx 1 2))))
-      (t (setq xquoteL (substring-no-properties xbktChoice 0 1)
-               xquoteR (substring-no-properties xbktChoice -1))))
+         (setq xquoteL (substring xx 0 1)
+               xquoteR (substring xx 1 2))))
+      (t (setq xquoteL (substring xbktChoice 0 1)
+               xquoteR (substring xbktChoice -1))))
      (setq xsep
            (cond
             ((string-equal xsepChoice "comma ,") ",")
@@ -1581,14 +1584,14 @@ See also:
 `xah-clear-register-1'
 
 URL `http://xahlee.info/emacs/emacs/elisp_copy-paste_register_1.html'
-Version: 2012-07-17 2022-10-03 2023-04-07"
+Version: 2012-07-17 2023-04-07 2023-08-05"
   (interactive)
   (let (xp1 xp2)
     (if (region-active-p)
          (setq xp1 (region-beginning) xp2 (region-end))
       (setq xp1 (line-beginning-position) xp2 (line-end-position)))
     (copy-to-register ?1 xp1 xp2)
-    (message "Copied to register 1: [%s]." (buffer-substring-no-properties xp1 xp2))))
+    (message "Copied to register 1: [%s]." (buffer-substring xp1 xp2))))
 
 (defun xah-append-to-register-1 ()
   "Append current line or selection to register 1.
@@ -1601,7 +1604,7 @@ See also:
 `xah-clear-register-1'
 
 URL `http://xahlee.info/emacs/emacs/emacs_copy_append.html'
-Version: 2015-12-08 2020-09-08 2023-04-07"
+Version: 2015-12-08 2023-04-07 2023-08-05"
   (interactive)
   (let (xp1 xp2)
     (if (region-active-p)
@@ -1610,7 +1613,7 @@ Version: 2015-12-08 2020-09-08 2023-04-07"
     (append-to-register ?1 xp1 xp2)
     (with-temp-buffer (insert "\n")
                       (append-to-register ?1 (point-min) (point-max)))
-    (message "Appended to register 1: [%s]." (buffer-substring-no-properties xp1 xp2))))
+    (message "Appended to register 1: [%s]." (buffer-substring xp1 xp2))))
 
 (defun xah-paste-from-register-1 ()
   "Paste text from register 1.
@@ -1745,10 +1748,9 @@ Version: 2017-01-17 2021-08-12"
           (goto-char xp1)
           (insert LBracket)
           (goto-char (+ xp2 (length LBracket)))))
-       ( ;  do line. line must contain space
+       ( ; do line. line must contain space
         (and
          (eq (point) (line-beginning-position))
-         ;; (string-match " " (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
          (not (eq (line-beginning-position) (line-end-position))))
         (insert LBracket )
         (end-of-line)
