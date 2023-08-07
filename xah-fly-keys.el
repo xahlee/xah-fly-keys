@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.4.20230805215231
+;; Version: 24.4.20230807001101
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -531,27 +531,32 @@ Version: 2019-12-02 2021-07-03"
 (defun xah-move-block-up ()
   "Swap the current text block with the previous.
 After this command is called, press <up> or <down> to move. Any other key to exit.
-Version 2022-03-04 2023-07-28"
+Version 2022-03-04"
   (interactive)
-  (let ((xp0 (point)) xbeg xend xp1 xp2)
-    (if (re-search-forward "\n[ \t]*\n+" nil 1)
-        (setq xend (match-beginning 0))
-      (setq xend (point)))
+  (let ((xp0 (point))
+        xc1 ; current block begin
+        xc2 ; current Block End
+        xp1 ; prev Block Begin
+        xp2 ; prev Block end
+        )
+    (if (re-search-forward "\n[ \t]*\n+" nil "move")
+        (setq xc2 (match-beginning 0))
+      (setq xc2 (point)))
     (goto-char xp0)
-    (if (re-search-backward "\n[ \t]*\n+" nil 1)
+    (if (re-search-backward "\n[ \t]*\n+" nil "move")
         (progn
           (skip-chars-backward "\n \t")
           (setq xp2 (point))
           (skip-chars-forward "\n \t")
-          (setq xbeg (point)))
+          (setq xc1 (point)))
       (error "No previous block."))
     (goto-char xp2)
-    (if (re-search-backward "\n[ \t]*\n+" nil 1)
+    (if (re-search-backward "\n[ \t]*\n+" nil "move")
         (progn
           (setq xp1 (match-end 0)))
       (setq xp1 (point)))
-    (goto-char xp0)
-    (transpose-regions xp1 xp2 xbeg xend)
+    (transpose-regions xp1 xp2 xc1 xc2)
+    (goto-char xp1)
     (set-transient-map
      (let ((xkmap (make-sparse-keymap)))
        (define-key xkmap (kbd "<up>") #'xah-move-block-up)
@@ -561,27 +566,32 @@ Version 2022-03-04 2023-07-28"
 (defun xah-move-block-down ()
   "Swap the current text block with the next.
 After this command is called, press <up> or <down> to move. Any other key to exit.
-Version 2022-03-04 2023-07-28"
+Version 2022-03-04"
   (interactive)
-  (let ((xp0 (point)) xbeg xend xn1 xn2)
+  (let ((xp0 (point))
+        xc1 ; current block begin
+        xc2 ; current Block End
+        xn1 ; next Block Begin
+        xn2 ; next Block end
+        )
     (if (eq (point-min) (point))
-        (setq xbeg (point))
-      (if (re-search-backward "\n\n+" nil 1)
+        (setq xc1 (point))
+      (if (re-search-backward "\n\n+" nil "move")
           (progn
-            (setq xbeg (match-end 0)))
-        (setq xbeg (point))))
+            (setq xc1 (match-end 0)))
+        (setq xc1 (point))))
     (goto-char xp0)
-    (if (re-search-forward "\n[ \t]*\n+" nil 1)
+    (if (re-search-forward "\n[ \t]*\n+" nil "move")
         (progn
-          (setq xend (match-beginning 0))
+          (setq xc2 (match-beginning 0))
           (setq xn1 (match-end 0)))
       (error "No next block."))
-    (if (re-search-forward "\n[ \t]*\n+" nil 1)
+    (if (re-search-forward "\n[ \t]*\n+" nil "move")
         (progn
           (setq xn2 (match-beginning 0)))
       (setq xn2 (point)))
-    (goto-char xp0)
-    (transpose-regions xbeg xend xn1 xn2))
+    (transpose-regions xc1 xc2 xn1 xn2)
+    (goto-char xn2))
   (set-transient-map
    (let ((xkmap (make-sparse-keymap)))
      (define-key xkmap (kbd "<up>") #'xah-move-block-up)
