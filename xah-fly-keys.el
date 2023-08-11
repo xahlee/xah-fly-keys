@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.4.20230807001101
+;; Version: 24.4.20230811133840
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -693,7 +693,7 @@ Version: 2017-07-02 2023-07-22 2023-07-30"
       (if current-prefix-arg
           (xah-delete-backward-bracket-pair)
         (xah-delete-backward-bracket-text))
-      ;; (if (string-equal major-mode "xah-wolfram-mode")
+      ;; (if (eq major-mode 'xah-wolfram-mode)
       ;;           (let (xisComment (xp0 (point)))
       ;;             (backward-char)
       ;;             (setq xisComment (nth 4 (syntax-ppss)))
@@ -787,10 +787,12 @@ If the char to the left is whitespace, call `xah-shrink-whitespaces'.
 If the char to the left is bracket or quote, call `xah-delete-backward-char-or-bracket-text'.
 Else just delete one char backward.
 
-Version: 2023-07-22 2023-07-24"
+Version: 2023-07-22 2023-07-24 2023-08-10"
   (interactive)
   (cond
    ((region-active-p) (delete-region (region-beginning) (region-end)))
+   ((eq (point) (point-min))
+    (xah-shrink-whitespaces))
    ((or
      (eq (char-before) 32)
      (eq (char-before) 9))
@@ -1547,7 +1549,7 @@ URL `http://xahlee.info/emacs/emacs/emacs_copy_file_path.html'
 Version: 2018-06-18 2021-09-30"
   (interactive "P")
   (let ((xfpath
-         (if (string-equal major-mode 'dired-mode)
+         (if (eq major-mode 'dired-mode)
              (progn
                (let ((xresult (mapconcat #'identity
                                          (dired-get-marked-files) "\n")))
@@ -1770,14 +1772,14 @@ Version: 2017-01-17 2021-08-12"
           (looking-at "[^-_[:alnum:]]")
           (eq (point) (point-max)))
          (not (or
-               (string-equal major-mode "xah-elisp-mode")
-               (string-equal major-mode "emacs-lisp-mode")
-               (string-equal major-mode "lisp-mode")
-               (string-equal major-mode "lisp-interaction-mode")
-               (string-equal major-mode "common-lisp-mode")
-               (string-equal major-mode "clojure-mode")
-               (string-equal major-mode "xah-clojure-mode")
-               (string-equal major-mode "scheme-mode"))))
+               (eq major-mode 'xah-elisp-mode)
+               (eq major-mode 'emacs-lisp-mode)
+               (eq major-mode 'lisp-mode)
+               (eq major-mode 'lisp-interaction-mode)
+               (eq major-mode 'common-lisp-mode)
+               (eq major-mode 'clojure-mode)
+               (eq major-mode 'xah-clojure-mode)
+               (eq major-mode 'scheme-mode))))
         (progn
           (setq xp1 (point) xp2 (point))
           (insert LBracket RBracket)
@@ -2146,9 +2148,9 @@ Version: 2016-06-18 2022-05-19"
   (interactive)
   (cond
    ((string-equal "*" (substring (buffer-name) 0 1)) nil)
-   ((string-equal major-mode "dired-mode") nil)
-   ((string-equal major-mode "eww-mode") nil)
-   ((string-equal major-mode "help-mode") nil)
+   ((eq major-mode 'dired-mode) nil)
+   ((eq major-mode 'eww-mode) nil)
+   ((eq major-mode 'help-mode) nil)
    (t t)))
 
 (defun xah-next-user-buffer ()
@@ -2271,7 +2273,7 @@ Version 2022-12-29 2023-01-09 2023-03-21 2023-05-06"
                                   (random #xfffff))))
             (write-file xnewName)
             (xah-add-to-recently-closed (buffer-name) xnewName))))))
-  ;; (string-equal major-mode "minibuffer-mode")
+  ;; (eq major-mode 'minibuffer-mode)
   (kill-buffer))
 
 (defun xah-close-current-buffer ()
@@ -2288,13 +2290,13 @@ Version: 2016-06-19 2022-05-13 2022-10-18"
   (interactive)
   (let ((xisOrgModeSourceFile (string-match "^*Org Src" (buffer-name))))
     (if (active-minibuffer-window) ; if the buffer is minibuffer
-        ;; (string-equal major-mode "minibuffer-inactive-mode")
+        ;; (eq major-mode 'minibuffer-inactive-mode)
         (minibuffer-keyboard-quit)
       (progn
         ;; Offer to save buffers that are non-empty and modified, even for non-file visiting buffer. (Because `kill-buffer' does not offer to save buffers that are not associated with files.)
         (when (and (buffer-modified-p)
                    (xah-user-buffer-p)
-                   (not (string-equal major-mode "dired-mode"))
+                   (not (eq major-mode 'dired-mode))
                    (if (equal buffer-file-name nil)
                        (if (string-equal "" (save-restriction (widen) (buffer-string))) nil t)
                      t))
@@ -2627,34 +2629,43 @@ Version: 2015-10-14"
 (defun xah-delete-current-file-make-backup ()
   "Delete current file, makes a backup~, close the buffer.
 If buffer is not a file, copy content to `kill-ring', delete buffer.
+If buffer is a file, the file's directory is shown with cursor at the next file.
 
 Backup filename is “‹name›~‹dateTimeStamp›~”. Existing file of the same name is overwritten. If buffer is not a file, the backup file name starts with “xx_”.
 
 Call `xah-open-last-closed' to open the backup file.
 
 URL `http://xahlee.info/emacs/emacs/elisp_delete-current-file.html'
-Version: 2018-05-15 2023-03-15 2023-06-05"
+Version: 2018-05-15 2023-06-05 2023-08-07 2023-08-11"
   (interactive)
-  (if (string-equal 'dired-mode major-mode)
+  (if (eq major-mode 'dired-mode)
       (message "In dired. Nothing is done.")
-    (let* ((xfname buffer-file-name)
-           (xbackupPath
+    (let ((xfname buffer-file-name)
+          (xbuffname (buffer-name))
+          xbackupPath)
+      (setq xbackupPath
             (concat (if xfname xfname (format "%sxx" default-directory))
-                    (format "~%s~" (format-time-string "%Y-%m-%d_%H%M%S")))))
+                    (format "~%s~" (format-time-string "%Y-%m-%d_%H%M%S"))))
       (if xfname
           (progn
             (save-buffer xfname)
-            (copy-file xfname xbackupPath t)
+            (rename-file xfname xbackupPath t)
+            (kill-buffer xbuffname)
+            ;; (dired-jump nil xbackupPath)
+            ;; (revert-buffer t t t)
+            ;; (dired-goto-file xbackupPath)
+            ;; (dired-next-line 1)
             (when (boundp 'xah-recently-closed-buffers)
-              (push (cons nil xbackupPath) xah-recently-closed-buffers))
-            (message "Deleted.\nBackup at \n%s\nCall `xah-open-last-closed' to open." xbackupPath)
-            (delete-file xfname))
+              (push (cons nil xbackupPath) xah-recently-closed-buffers)
+              (message "Deleted.\nBackup at \n%s\nCall `xah-open-last-closed' to open." xbackupPath)))
         (progn
           (widen)
-          (kill-new (buffer-string))))
-      (kill-buffer (current-buffer))
-      (when (eq major-mode 'dired-mode)
-        (revert-buffer)))))
+          (kill-new (buffer-string))
+          (kill-buffer xbuffname))
+        ;; (when (eq major-mode 'dired-mode) (revert-buffer))
+        ))
+    (when (eq major-mode 'dired-mode)
+      (revert-buffer))))
 
 
 
@@ -2742,7 +2753,7 @@ Version: 2019-11-04 2023-04-05 2023-06-26"
     (setq xfileList
           (if Fname
               (list Fname)
-            (if (string-equal major-mode "dired-mode")
+            (if (eq major-mode 'dired-mode)
                 (dired-get-marked-files)
               (list buffer-file-name))))
     (setq xdoIt (if (<= (length xfileList) 10) t (y-or-n-p "Open more than 10 files? ")))
