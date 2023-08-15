@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.5.20230812104032
+;; Version: 24.5.20230815141836
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2418,7 +2418,10 @@ Version: 2016-06-19"
     (mapc (lambda (xf) (insert (cdr xf) "\n"))
           xah-recently-closed-buffers)))
 
-(defvar xah-open-file-at-cursor-pre-hook nil "Hook for `xah-open-file-at-cursor'. Functions in the hook will be called in order, each given the path as arg. The first return non-nil, its value is given to `xah-open-file-at-cursor' as input. This is useful for transforming certain url into file path (your website url), so instead of opening in browser, it opens in emacs as file.")
+(defvar xah-open-file-at-cursor-pre-hook nil "Hook for `xah-open-file-at-cursor'.
+Functions in the hook will be called in order, each given the path as arg.
+The first return non-nil, its value is given to `xah-open-file-at-cursor' as input.
+This is useful for transforming certain url into file path (your website url), so instead of opening in browser, it opens in emacs as file.")
 
 (defun xah-open-file-at-cursor ()
   "Open the file path under cursor.
@@ -3203,14 +3206,16 @@ Version 2022-10-31"
        ("e e" . xah-insert-unicode)
        ("e f" . xah-insert-emacs-quote)        ; `'
        ("e g" . xah-insert-ascii-double-quote) ; ""
+
        ("e h" . xah-insert-brace)              ; {}
        ("e i" . xah-insert-curly-single-quote) ; ‘’
        ("e j" . insert-char)
        ("e k" . xah-insert-markdown-quote) ; ``
        ("e l" . xah-insert-formfeed)
-       ("e m" . xah-insert-corner-bracket)         ; 「」
-       ("e n" . xah-insert-square-bracket)         ; []
-       ;; o
+       ("e m" . xah-insert-corner-bracket)     ; 「」
+       ("e n" . xah-insert-square-bracket)     ; []
+       ("e o" . xah-insert-ascii-single-quote) ; ''
+
        ("e p" . xah-insert-single-angle-quote)     ; ‹›
        ;; q
        ("e r" . xah-insert-tortoise-shell-bracket) ; 〔〕
