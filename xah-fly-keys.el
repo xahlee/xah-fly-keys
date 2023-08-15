@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.5.20230815141836
+;; Version: 24.6.20230815153238
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2219,7 +2219,7 @@ Version: 2023-07-23"
 
 (defun xah-user-buffer-p ()
   "Return t if current buffer is a user buffer, else nil.
-Typically, if buffer name starts with *, it is not considered a user buffer.
+A user buffer has buffer name NOT starts with * or space.
 This function is used by buffer switching command and close buffer command, so that next buffer shown is a user buffer.
 You can override this function to get your idea of “user buffer”.
 Version: 2016-06-18 2022-05-19"
@@ -2328,66 +2328,48 @@ Version 2023-03-21")
           xah-temp-dir-path
         (concat user-emacs-directory "temp/")))
 
-(defun xah-save-close-current-buffer ()
-  "Save and close current buffer.
-If the buffer is not a file, save it to `xah-temp-dir-path' and named untitled_‹datetime›_‹randomhex›.txt
-
-Call `xah-open-last-closed' to reopen it.
-
-Version 2022-12-29 2023-01-09 2023-03-21 2023-05-06"
-  (interactive)
-  (if (active-minibuffer-window)
-      (minibuffer-keyboard-quit)
-    (if buffer-file-name
-        (progn
-          (when (buffer-modified-p) (save-buffer))
-          (xah-add-to-recently-closed (buffer-name) buffer-file-name))
-      (when (xah-user-buffer-p)
-        (widen)
-        (when (not (equal (point-max) 1))
-          (let ((xnewName (format "%suntitled_%s_%x.txt"
-                                  xah-temp-dir-path
-                                  (format-time-string "%Y%m%d_%H%M%S")
-                                  (random #xfffff))))
-            (write-file xnewName)
-            (xah-add-to-recently-closed (buffer-name) xnewName))))))
-  ;; (eq major-mode 'minibuffer-mode)
-  (kill-buffer))
-
 (defun xah-close-current-buffer ()
-  "Close the current buffer.
+  "Close the current buffer with possible backup of modified file.
 
-Similar to `kill-buffer', with the following addition:
+If the buffer is not a file, save it to `xah-temp-dir-path' named temp_‹datetime›_‹randomhex›.txt
+If the buffer a file and not modified, kill it.
+If the buffer a file and modified, make the modified version into a backup in the same dir.
 
-• Prompt user to save if the buffer has been modified even if the buffer is not associated with a file.
-• If the buffer is editing a source code file in an `org-mode' file, prompt the user to save before closing.
-• If the buffer is a file, add the path to the list `xah-recently-closed-buffers'.
+If the buffer is a file, add the path to the list `xah-recently-closed-buffers'.
 
 URL `http://xahlee.info/emacs/emacs/elisp_close_buffer_open_last_closed.html'
-Version: 2016-06-19 2022-05-13 2022-10-18"
+Version: 2016-06-19 2022-10-18 2023-08-15"
   (interactive)
-  (let ((xisOrgModeSourceFile (string-match "^*Org Src" (buffer-name))))
-    (if (active-minibuffer-window) ; if the buffer is minibuffer
-        ;; (eq major-mode 'minibuffer-inactive-mode)
-        (minibuffer-keyboard-quit)
-      (progn
-        ;; Offer to save buffers that are non-empty and modified, even for non-file visiting buffer. (Because `kill-buffer' does not offer to save buffers that are not associated with files.)
-        (when (and (buffer-modified-p)
-                   (xah-user-buffer-p)
-                   (not (eq major-mode 'dired-mode))
-                   (if (equal buffer-file-name nil)
-                       (if (string-equal "" (save-restriction (widen) (buffer-string))) nil t)
-                     t))
-          (if (y-or-n-p (format "Buffer %s modified; Do you want to save? " (buffer-name)))
-              (save-buffer)
-            (set-buffer-modified-p nil)))
-        (when (and (buffer-modified-p)
-                   xisOrgModeSourceFile)
-          (if (y-or-n-p (format "Buffer %s modified; Do you want to save? " (buffer-name)))
-              (org-edit-src-save)
-            (set-buffer-modified-p nil)))
-        (if buffer-file-name (xah-add-to-recently-closed (buffer-name) buffer-file-name) nil)
-        (kill-buffer (current-buffer))))))
+  (cond
+   ((active-minibuffer-window)
+    ;; (eq major-mode 'minibuffer-inactive-mode)
+    ;; if the buffer is minibuffer
+    (minibuffer-keyboard-quit))
+   ((and buffer-file-name (not (buffer-modified-p)))
+    (xah-add-to-recently-closed (buffer-name) buffer-file-name)
+    (kill-buffer))
+   ((and buffer-file-name (buffer-modified-p))
+    (let ((xnewName
+           (format "%s~%s~"
+                   buffer-file-name
+                   (format-time-string "%Y-%m-%d_%H%M%S"))))
+      (write-region (point-min) (point-max) xnewName)
+      (print (format "The modified version is saved at
+%s
+call xah-open-last-closed twice to open." xnewName))
+      (xah-add-to-recently-closed (buffer-name) xnewName)
+      (xah-add-to-recently-closed (buffer-name) buffer-file-name)
+      (kill-buffer)))
+
+   ((and (not buffer-file-name) (xah-user-buffer-p))
+    (let ((xnewName (format "%stemp_%s_%x.txt"
+                            xah-temp-dir-path
+                            (format-time-string "%Y%m%d_%H%M%S")
+                            (random #xfffff))))
+      (write-region (point-min) (point-max) xnewName)
+      (xah-add-to-recently-closed (buffer-name) buffer-file-name)
+      (kill-buffer)))
+   (t (kill-buffer))))
 
 (defun xah-open-last-closed ()
   "Open the last closed file.
@@ -3229,7 +3211,7 @@ Version 2022-10-31"
        ;; z
 
        ("f" . xah-search-current-word)
-       ("g" . xah-save-close-current-buffer)
+       ("g" . xah-close-current-buffer)
 
        ("h a" . apropos-command)
        ("h b" . describe-bindings)
@@ -3627,7 +3609,7 @@ Version 2022-10-31"
   (global-set-key (kbd "C-t") #'hippie-expand)
   ;; (global-set-key (kbd "C-u") nil)
   (global-set-key (kbd "C-v") #'yank)
-  (global-set-key (kbd "C-w") #'xah-save-close-current-buffer)
+  (global-set-key (kbd "C-w") #'xah-close-current-buffer)
   ;; (global-set-key (kbd "C-x") nil)
 
   (when (>= emacs-major-version 28)
