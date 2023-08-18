@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.6.20230815153238
+;; Version: 24.6.20230818103059
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2338,7 +2338,7 @@ If the buffer a file and modified, make the modified version into a backup in th
 If the buffer is a file, add the path to the list `xah-recently-closed-buffers'.
 
 URL `http://xahlee.info/emacs/emacs/elisp_close_buffer_open_last_closed.html'
-Version: 2016-06-19 2022-10-18 2023-08-15"
+Version: 2016-06-19 2023-08-15 2023-08-17"
   (interactive)
   (cond
    ((active-minibuffer-window)
@@ -2367,7 +2367,7 @@ call xah-open-last-closed twice to open." xnewName))
                             (format-time-string "%Y%m%d_%H%M%S")
                             (random #xfffff))))
       (write-region (point-min) (point-max) xnewName)
-      (xah-add-to-recently-closed (buffer-name) buffer-file-name)
+      (xah-add-to-recently-closed (buffer-name) xnewName)
       (kill-buffer)))
    (t (kill-buffer))))
 
