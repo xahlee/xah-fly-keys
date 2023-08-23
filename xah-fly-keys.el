@@ -4,8 +4,8 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.6.20230818103059
-;; Created: 10 Sep 2013
+;; Version: 24.7.2023-08-23
+;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; License: GPL v3.
@@ -2331,19 +2331,19 @@ Version 2023-03-21")
 (defun xah-close-current-buffer ()
   "Close the current buffer with possible backup of modified file.
 
-If the buffer is not a file, save it to `xah-temp-dir-path' named temp_‹datetime›_‹randomhex›.txt
+If the buffer is not a file, save it to `xah-temp-dir-path' named untitled_‹datetime›_‹randomhex›.txt
 If the buffer a file and not modified, kill it.
 If the buffer a file and modified, make the modified version into a backup in the same dir.
 
 If the buffer is a file, add the path to the list `xah-recently-closed-buffers'.
 
 URL `http://xahlee.info/emacs/emacs/elisp_close_buffer_open_last_closed.html'
-Version: 2016-06-19 2023-08-15 2023-08-17"
+Version: 2016-06-19 2023-08-19 2023-08-22"
   (interactive)
   (cond
+   ;; ((eq major-mode 'minibuffer-inactive-mode)
+   ;;  (minibuffer-keyboard-quit))
    ((active-minibuffer-window)
-    ;; (eq major-mode 'minibuffer-inactive-mode)
-    ;; if the buffer is minibuffer
     (minibuffer-keyboard-quit))
    ((and buffer-file-name (not (buffer-modified-p)))
     (xah-add-to-recently-closed (buffer-name) buffer-file-name)
@@ -2362,7 +2362,7 @@ call xah-open-last-closed twice to open." xnewName))
       (kill-buffer)))
 
    ((and (not buffer-file-name) (xah-user-buffer-p))
-    (let ((xnewName (format "%stemp_%s_%x.txt"
+    (let ((xnewName (format "%suntitled_%s_%x.txt"
                             xah-temp-dir-path
                             (format-time-string "%Y%m%d_%H%M%S")
                             (random #xfffff))))
@@ -2554,7 +2554,7 @@ Version: 2020-09-24 2022-08-12 2022-09-16 2022-09-18"
   (interactive)
   (setenv "NO_COLOR" "1") ; 2022-09-10 for deno. default color has yellow parts, hard to see
   (when (not buffer-file-name) (save-buffer))
-  (let* ((xoutBuffer "*xah-run output*")
+  (let* ((xoutBuffer (generate-new-buffer-name "*xah-run output*"))
          ;; (resize-mini-windows nil)
          (xextAppMap xah-run-current-file-map)
          (xfname buffer-file-name)
@@ -2562,6 +2562,7 @@ Version: 2020-09-24 2022-08-12 2022-09-16 2022-09-18"
          (xappCmdStr (cdr (assoc xfExt xextAppMap)))
          xcmdStr
          )
+
     ;; FIXME: Rather than `shell-command' with an `&', better use
     ;; `make-process' or `start-process' since we're not using the shell at all
     ;; (worse, we need to use `shell-quote-argument' to circumvent the shell).
@@ -2983,27 +2984,25 @@ Version: 2022-10-25"
     (split-string Charstr " +"))
    " "))
 
-(defmacro xah-fly--define-keys (KeymapName KeyCmdAlist &optional Direct-p)
+(defun xah-fly--define-keys (KeymapName KeyCmdAlist &optional Direct-p)
   "Map `define-key' over a alist KeyCmdAlist, with key layout remap.
 The key is remapped from Dvorak to the current keyboard layout by `xah-fly--convert-kbd-str'.
 If Direct-p is t, do not remap key to current keyboard layout.
 Example usage:
-;; (xah-fly--define-keys
-;;  (define-prefix-command \\='xyz-map)
-;;  \\='(
-;;    (\"h\" . highlight-symbol-at-point)
-;;    (\".\" . isearch-forward-symbol-at-point)
-;;    (\"w\" . isearch-forward-word)))
-Version: 2020-04-18 2022-10-25"
-  (let ((xkeymapName (make-symbol "keymap-name")))
-    `(let ((,xkeymapName , KeymapName))
-       ,@(mapcar
-          (lambda (xpair)
-            `(define-key
-               ,xkeymapName
-               (kbd (,(if Direct-p #'identity #'xah-fly--convert-kbd-str) ,(car xpair)))
-               ,(list 'quote (cdr xpair))))
-          (cadr KeyCmdAlist)))))
+ (xah-fly--define-keys
+  (define-prefix-command \\='xyz-map)
+  \\='(
+    (\"h\" . highlight-symbol-at-point)
+    (\".\" . isearch-forward-symbol-at-point)
+    (\"w\" . isearch-forward-word)))
+Version: 2020-04-18 2022-10-25 2023-08-21"
+  (mapcar
+   (lambda (x)
+     (define-key
+      KeymapName
+      (kbd (if Direct-p (car x) (xah-fly--convert-kbd-str (car x))))
+      (cdr x)))
+   KeyCmdAlist))
 
 
 ;; keymaps
@@ -3407,8 +3406,7 @@ Version 2022-10-31"
      xah-fly-command-map
      '(("SPC" . xah-fly-leader-key-map)
        ("'" . xah-reformat-lines)
-       ;; ("," . xah-shrink-whitespaces)
-       ("," . xah-delete-backward-char)
+       ("," . xah-shrink-whitespaces)
        ("-" . xah-cycle-hyphen-lowline-space)
        ("." . backward-kill-word)
        (";" . xah-comment-dwim)
