@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.7.20230825134308
+;; Version: 24.8.20230825161727
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -257,7 +257,7 @@ Version: 2018-06-04 2021-03-16 2022-03-05"
 (defvar xah-brackets '("“”" "()" "[]" "{}" "<>" "＜＞" "（）" "［］" "｛｝" "⦅⦆" "〚〛" "⦃⦄" "‹›" "«»" "「」" "〈〉" "《》" "【】" "〔〕" "⦗⦘" "『』" "〖〗" "〘〙" "｢｣" "⟦⟧" "⟨⟩" "⟪⟫" "⟮⟯" "⟬⟭" "⌈⌉" "⌊⌋" "⦇⦈" "⦉⦊" "❛❜" "❝❞" "❨❩" "❪❫" "❴❵" "❬❭" "❮❯" "❰❱" "❲❳" "〈〉" "⦑⦒" "⧼⧽" "﹙﹚" "﹛﹜" "﹝﹞" "⁽⁾" "₍₎" "⦋⦌" "⦍⦎" "⦏⦐" "⁅⁆" "⸢⸣" "⸤⸥" "⟅⟆" "⦓⦔" "⦕⦖" "⸦⸧" "⸨⸩" "｟｠")
  "A list of strings, each element is a string of 2 chars, the left bracket and a matching right bracket.
 Used by `xah-select-text-in-quote' and others.
-Version 2023-07-31")
+Version: 2023-07-31")
 
 (defconst xah-left-brackets
   (mapcar (lambda (x) (substring x 0 1)) xah-brackets)
@@ -373,7 +373,7 @@ Version: 2016-11-22"
 
 (defun xah-sort-lines ()
   "Like `sort-lines' but if no region, do the current block.
-Version 2022-01-22 2022-01-23"
+Version: 2022-01-22 2022-01-23"
   (interactive)
   (let (xp1 xp2)
     (let ((xbds (xah-get-bounds-of-block-or-region))) (setq xp1 (car xbds) xp2 (cdr xbds)))
@@ -381,7 +381,7 @@ Version 2022-01-22 2022-01-23"
 
 (defun xah-narrow-to-region ()
   "Same as `narrow-to-region', but if no selection, narrow to the current block.
-Version 2022-01-22"
+Version: 2022-01-22"
   (interactive)
   (let (xp1 xp2)
     (let ((xbds (xah-get-bounds-of-block-or-region))) (setq xp1 (car xbds) xp2 (cdr xbds)))
@@ -531,7 +531,7 @@ Version: 2019-12-02 2021-07-03"
 (defun xah-move-block-up ()
   "Swap the current text block with the previous.
 After this command is called, press <up> or <down> to move. Any other key to exit.
-Version 2022-03-04"
+Version: 2022-03-04"
   (interactive)
   (let ((xp0 (point))
         xc1 ; current block begin
@@ -566,7 +566,7 @@ Version 2022-03-04"
 (defun xah-move-block-down ()
   "Swap the current text block with the next.
 After this command is called, press <up> or <down> to move. Any other key to exit.
-Version 2022-03-04"
+Version: 2022-03-04"
   (interactive)
   (let ((xp0 (point))
         xc1 ; current block begin
@@ -909,12 +909,12 @@ Version: 2020-11-01 2023-03-31 2023-08-25"
   (interactive
    (let ((xbrackets
           '(
+            "square [ ]"
+            "brace { }"
+            "paren ( )"
+            "greater < >"
             "double quote \" \""
             "single quote ' '"
-            "paren ( )"
-            "brace { }"
-            "square [ ]"
-            "greater < >"
             "emacs ` '"
             "markdown GRAVE ACCENT ` `"
             "double square [[ ]]"
@@ -955,9 +955,9 @@ Version: 2020-11-01 2023-03-31 2023-08-25"
             )))
      (list
       (completing-read "Replace this:" xbrackets nil t
-                       nil nil "double quote \" \"")
+                       nil nil (car xbrackets))
       (completing-read "To:" xbrackets nil t
-                       nil nil "none  "))))
+                       nil nil (car (last xbrackets))))))
   (let (xp1 xp2 xleft xright xtoL xtoR)
     (let ((xbds (xah-get-bounds-of-block-or-region))) (setq xp1 (car xbds) xp2 (cdr xbds)))
     (let ((xsFrom (last (split-string FromChars " ") 2))
@@ -1139,7 +1139,7 @@ Version: 2017-01-11 2021-03-30 2021-09-19"
 (defun xah-add-space-after-comma ()
   "Add a space after comma of current block or selection.
 and highlight changes made.
-Version 2022-01-20"
+Version: 2022-01-20"
   (interactive)
   (let (xp1 xp2)
     (let ((xbds (xah-get-bounds-of-block-or-region))) (setq xp1 (car xbds) xp2 (cdr xbds)))
@@ -1486,7 +1486,7 @@ or
 In lisp code, QuoteL QuoteR Sep are strings.
 
 URL `http://xahlee.info/emacs/emacs/emacs_quote_lines.html'
-Version: 2020-06-26 2023-03-04 2023-08-05"
+Version: 2020-06-26 2023-08-05 2023-08-25"
   (interactive
    (let ((xbrackets
           '(
@@ -1512,10 +1512,11 @@ Version: 2020-06-26 2023-03-04 2023-08-05"
          xp1 xp2 xbktChoice xsep xsepChoice xquoteL xquoteR)
      (let ((xbds (xah-get-bounds-of-block-or-region)))
        (setq xp1 (car xbds) xp2 (cdr xbds)))
-     (setq xbktChoice (completing-read "Quote to use:" xbrackets nil t nil nil "\"double quote\""))
+     (setq xbktChoice (completing-read "Quote to use:" xbrackets nil t
+                                       nil nil (car xbrackets)))
      (setq xsepChoice (completing-read
                        "line separator:"
-                       xcomma nil t nil nil "comma ,"))
+                       xcomma nil t nil nil (car xcomma)))
      (cond
       ((string-equal xbktChoice "none")
        (setq xquoteL "" xquoteR ""))
@@ -1752,7 +1753,7 @@ Version: 2015-12-08 2023-04-07"
 See also: `kill-rectangle', `copy-to-register'.
 
 URL `http://xahlee.info/emacs/emacs/emacs_copy_rectangle_text_to_clipboard.html'
-version 2016-07-17"
+Version: 2016-07-17"
   ;; extract-rectangle suggested by YoungFrog, 2012-07-25
   (interactive "r")
   (require 'rect)
@@ -1768,7 +1769,7 @@ If `universal-argument' is called first, prompt for a format to use.
 If there is selection, delete it first.
 
 URL `http://xahlee.info/emacs/emacs/elisp_insert-date-time.html'
-Version 2013-05-10 2022-04-07 2023-01-01"
+Version: 2013-05-10 2022-04-07 2023-01-01 2023-08-25"
   (interactive)
   (let ((xstyle
          (if current-prefix-arg
@@ -1785,7 +1786,7 @@ Version 2013-05-10 2022-04-07 2023-01-01"
                 "usa short + weekday • Thu, Apr 12, 2018"
                 "usa mdy full • April 12, 2018"
                 "usa mdy short • Apr 12, 2018"
-                ))
+                ) nil t)
            "ISO date • 2018-04-12"
            )))
     (when (region-active-p) (delete-region (region-beginning) (region-end)))
@@ -2032,11 +2033,11 @@ xString can be any string, needs not be a char or emoji.
 (defun xah-insert-unicode ()
   "Insert a unicode from a custom list `xah-unicode-list'.
 URL `http://xahlee.info/emacs/emacs/emacs_insert_unicode.html'
-Version: 2021-01-05 2022-10-30 2023-07-21"
+Version: 2021-01-05 2022-10-30 2023-07-21 2023-08-25"
   (interactive)
   (let ((xkey
          (completing-read
-          "Insert:" xah-unicode-list)))
+          "Insert:" xah-unicode-list nil t)))
     (insert (cdr (assoc xkey xah-unicode-list)))))
 
 
@@ -2330,7 +2331,7 @@ Version: 2023-03-02"
 
 (defvar xah-temp-dir-path nil "Path to temp dir used by xah commands.
 by default, the value is (concat user-emacs-directory \"temp/\").
-Version 2023-03-21")
+Version: 2023-03-21")
 
 (setq xah-temp-dir-path
       (if xah-temp-dir-path
@@ -2394,9 +2395,14 @@ Version: 2016-06-19 2022-03-22"
 Prompt for a choice.
 
 URL `http://xahlee.info/emacs/emacs/elisp_close_buffer_open_last_closed.html'
-Version: 2016-06-19 2021-10-27 2022-04-07"
+Version: 2016-06-19 2021-10-27 2022-04-07 2023-08-25"
   (interactive)
-  (find-file (completing-read "Open:" (mapcar (lambda (f) (cdr f)) xah-recently-closed-buffers))))
+  (find-file
+   (completing-read
+    "Open:"
+    (mapcar (lambda (f) (cdr f)) xah-recently-closed-buffers)
+    nil t
+    )))
 
 (defun xah-list-recently-closed ()
   "List recently closed file.
@@ -2964,7 +2970,7 @@ When a char is not in this alist, they are assumed to be the same. ")
 Do not set this variable manually. Use `xah-fly-keys-set-layout' to set it.
 If the value is nil, it is automatically set to \"qwerty\".
 When this variable changes, suitable change must also be done to `xah-fly--key-convert-table'.
-Version 2022-10-22")
+Version: 2022-10-22")
 
 (if xah-fly-key-current-layout nil (setq xah-fly-key-current-layout "qwerty"))
 
@@ -3069,7 +3075,7 @@ minor modes loaded later may override bindings in this map.")
 (defun xah-fly-define-keys ()
   "Define the keys for xah-fly-keys.
 Used by `xah-fly-keys-set-layout' for changing layout.
-Version 2022-10-31"
+Version: 2022-10-31"
   (interactive)
   (let ()
 
@@ -3364,13 +3370,13 @@ Version 2022-10-31"
        ;; s
        ("t t" . repeat)
        ("t u" . delete-matching-lines)
-       ;; v
+
        ("t w" . xah-next-window-or-frame)
        ("t x" . xah-title-case-region-or-line)
        ("t y" . delete-duplicate-lines)
-       ;; z
 
        ("u" . switch-to-buffer)
+       ("v" . universal-argument)
 
        ;; dangerous map. run program, delete file, etc
        ("w DEL" . xah-delete-current-file-make-backup)
