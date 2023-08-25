@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.7.2023-08-24
+;; Version: 24.7.20230825134308
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -892,93 +892,103 @@ For example, change all parenthesis () to square brackets [].
 Works on current block or selection.
 
 In lisp code, FromChars is a string with at least 2 spaces.
-e.g.  \"( paren )\", \"[[ double bracket ]]\" etc.
-where the chars before first space is the left bracket, and char after the last space is the right bracket.
-(the middle is for convenience for user to type the char name in prompt.)
-ToChars is similar, with a special value of \" none \", replace by empty string.
+e.g.
+paren ( )
+french angle ‹ ›
+double bracket [[ ]]
+etc.
+It is split by space, and last 2 items are taken as left and right brackets.
+
+ToChars is similar, with a special value of
+none
+followed by 2 spaces.
+,it means replace by empty string.
 
 URL `http://xahlee.info/emacs/emacs/elisp_change_brackets.html'
-Version: 2020-11-01 2022-04-07 2022-07-05 2023-03-31"
+Version: 2020-11-01 2023-03-31 2023-08-25"
   (interactive
    (let ((xbrackets
           '(
-            "\" double quote \""
-            "' single quote '"
-            "( paren )"
-            "{ brace }"
-            "[ square ]"
-            "< greater >"
-            "` emacs '"
-            "` markdown GRAVE ACCENT `"
-            "~ tilde ~"
-            "= equal ="
-            "[[ double square ]]"
-            "“ curly double quote ”"
-            "‘ curly single quote ’"
-            "‹ french angle ›"
-            "« french double angle »"
-            "「 corner 」"
-            "『 white corner 』"
-            "【 lenticular 】"
-            "〖 white lenticular 〗"
-            "〈 angle 〉"
-            "《 double angle 》"
-            "〔 tortoise 〕"
-            "〘 white tortoise 〙"
-            "〚 white square 〛"
-            "⦅ white paren ⦆"
-            "⦃ WHITE CURLY BRACKET ⦄"
-            "〈 pointing angle 〉"
-            "⦑ ANGLE WITH DOT ⦒"
-            "⧼ CURVED ANGLE ⧽"
-            "⟦ math square ⟧"
-            "⟨ math angle ⟩"
-            "⟪ math DOUBLE ANGLE ⟫"
-            "⟮ math FLATTENED PARENTHESIS ⟯"
-            "⟬ math WHITE TORTOISE SHELL ⟭"
-            "❛ HEAVY SINGLE QUOTATION MARK ORNAMENT ❜"
-            "❝ HEAVY DOUBLE TURNED COMMA QUOTATION MARK ORNAMENT ❞"
-            "❨ MEDIUM PARENTHESIS ORNAMENT ❩"
-            "❪ MEDIUM FLATTENED PARENTHESIS ORNAMENT ❫"
-            "❴ MEDIUM CURLY ORNAMENT ❵"
-            "❬ MEDIUM POINTING ANGLE ORNAMENT ❭"
-            "❮ HEAVY POINTING ANGLE QUOTATION MARK ORNAMENT ❯"
-            "❰ HEAVY POINTING ANGLE ORNAMENT ❱"
-            " none "
+            "double quote \" \""
+            "single quote ' '"
+            "paren ( )"
+            "brace { }"
+            "square [ ]"
+            "greater < >"
+            "emacs ` '"
+            "markdown GRAVE ACCENT ` `"
+            "double square [[ ]]"
+            "tilde ~ ~"
+            "equal = ="
+            "curly double quote “ ”"
+            "curly single quote ‘ ’"
+            "french angle ‹ ›"
+            "french double angle « »"
+            "corner 「 」"
+            "white corner 『 』"
+            "lenticular 【 】"
+            "white lenticular 〖 〗"
+            "angle 〈 〉"
+            "double angle 《 》"
+            "tortoise 〔 〕"
+            "white tortoise 〘 〙"
+            "white square 〚 〛"
+            "white paren ⦅ ⦆"
+            "WHITE CURLY BRACKET ⦃ ⦄"
+            "pointing angle 〈 〉"
+            "ANGLE WITH DOT ⦑ ⦒"
+            "CURVED ANGLE ⧼ ⧽"
+            "math square ⟦ ⟧"
+            "math angle ⟨ ⟩"
+            "math DOUBLE ANGLE ⟪ ⟫"
+            "math FLATTENED PARENTHESIS ⟮ ⟯"
+            "math WHITE TORTOISE SHELL ⟬ ⟭"
+            "HEAVY SINGLE QUOTATION MARK ORNAMENT ❛ ❜"
+            "HEAVY DOUBLE TURNED COMMA QUOTATION MARK ORNAMENT ❝ ❞"
+            "MEDIUM PARENTHESIS ORNAMENT ❨ ❩"
+            "MEDIUM FLATTENED PARENTHESIS ORNAMENT ❪ ❫"
+            "MEDIUM CURLY ORNAMENT ❴ ❵"
+            "MEDIUM POINTING ANGLE ORNAMENT ❬ ❭"
+            "HEAVY POINTING ANGLE QUOTATION MARK ORNAMENT ❮ ❯"
+            "HEAVY POINTING ANGLE ORNAMENT ❰ ❱"
+            "none  "
             )))
      (list
-      (completing-read "Replace this:" xbrackets)
-      (completing-read "To:" xbrackets))))
-  (let (xp1 xp2 xleft xright xtoL xtoR
-            (xss1 (split-string FromChars " "))
-            (xss2 (split-string ToChars " ")))
+      (completing-read "Replace this:" xbrackets nil t
+                       nil nil "double quote \" \"")
+      (completing-read "To:" xbrackets nil t
+                       nil nil "none  "))))
+  (let (xp1 xp2 xleft xright xtoL xtoR)
     (let ((xbds (xah-get-bounds-of-block-or-region))) (setq xp1 (car xbds) xp2 (cdr xbds)))
-    (setq xleft (car xss1) xright (car (last xss1)))
-    (setq xtoL (car xss2) xtoR (car (last xss2)))
-    (save-excursion
-      (save-restriction
-        (narrow-to-region xp1 xp2)
-        (let ((case-fold-search nil))
-          (if (string-equal xleft xright)
-              (let ((xx (regexp-quote xleft)))
-                (goto-char (point-min))
-                (while
-                    (re-search-forward
-                     (format "%s\\([^%s]+?\\)%s" xx xx xx)
-                     nil t)
-                  (overlay-put (make-overlay (match-beginning 0) (match-end 0)) 'face 'highlight)
-                  (replace-match (concat xtoL "\\1" xtoR) t)))
-            (progn
+    (let ((xsFrom (last (split-string FromChars " ") 2))
+          (xsTo (last (split-string ToChars " ") 2)))
+      (setq xleft (car xsFrom)  xright (car (cdr xsFrom))
+            xtoL (car xsTo) xtoR (car (cdr xsTo)))
+
+      (save-excursion
+        (save-restriction
+          (narrow-to-region xp1 xp2)
+          (let ((case-fold-search nil))
+            (if (string-equal xleft xright)
+                (let ((xx (regexp-quote xleft)))
+                  (goto-char (point-min))
+                  (while
+                      (re-search-forward
+                       (format "%s\\([^%s]+?\\)%s" xx xx xx)
+                       nil t)
+                    (overlay-put (make-overlay (match-beginning 0) (match-end 0)) 'face 'highlight)
+                    (replace-match (concat xtoL "\\1" xtoR) t)))
               (progn
-                (goto-char (point-min))
-                (while (search-forward xleft nil t)
-                  (overlay-put (make-overlay (match-beginning 0) (match-end 0)) 'face 'highlight)
-                  (replace-match xtoL t t)))
-              (progn
-                (goto-char (point-min))
-                (while (search-forward xright nil t)
-                  (overlay-put (make-overlay (match-beginning 0) (match-end 0)) 'face 'highlight)
-                  (replace-match xtoR t t))))))))))
+                (progn
+                  (goto-char (point-min))
+                  (while (search-forward xleft nil t)
+                    (overlay-put (make-overlay (match-beginning 0) (match-end 0)) 'face 'highlight)
+                    (replace-match xtoL t t)))
+                (progn
+                  (goto-char (point-min))
+                  (while (search-forward xright nil t)
+                    (overlay-put (make-overlay (match-beginning 0) (match-end 0)) 'face 'highlight)
+                    (replace-match xtoR t t)))))))))))
 
 (defun xah-toggle-letter-case ()
   "Toggle the letter case of current word or selection.
