@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.7.20230823140837
+;; Version: 24.7.2023-08-24
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2083,105 +2083,104 @@ when there is no selection,
 when there is a selection, the selection extension behavior is still experimental. But when cursor is on a any type of bracket (parenthesis, quote), it extends selection to outer bracket.
 
 URL `http://xahlee.info/emacs/emacs/modernization_mark-word.html'
-Version: 2020-02-04 2023-07-23 2023-08-02"
+Version: 2020-02-04 2023-07-23 2023-08-02 2023-08-24"
   (interactive)
-  (if (region-active-p)
-      (progn
-        (let ((xrb (region-beginning)) (xre (region-end)))
-          (goto-char xrb)
-          (cond
-           ((looking-at "\\s(")
-            (if (eq (nth 0 (syntax-ppss)) 0)
-                (progn
-                  ;; (message "left bracket, depth 0.")
-                  (end-of-line) ; select current line
-                  (push-mark (line-beginning-position) t t))
-              (progn
-                ;; (message "left bracket, depth not 0")
-                (up-list -1 t t)
-                (mark-sexp))))
-           ((eq xrb (line-beginning-position))
-            (progn
-              (goto-char xrb)
-              (let ((xfirstLineEndPos (line-end-position)))
-                (cond
-                 ((eq xre xfirstLineEndPos)
-                  (progn
-                    ;; (message "exactly 1 line. extend to next whole line." )
-                    (forward-line 1)
-                    (end-of-line)))
-                 ((< xre xfirstLineEndPos)
-                  (progn
-                    ;; (message "less than 1 line. complete the line." )
-                    (end-of-line)))
-                 ((> xre xfirstLineEndPos)
-                  (progn
-                    ;; (message "beginning of line, but end is greater than 1st end of line" )
-                    (goto-char xre)
-                    (if (eq (point) (line-end-position))
-                        (progn
-                          ;; (message "exactly multiple lines" )
-                          (forward-line 1)
-                          (end-of-line))
-                      (progn
-                        ;; (message "multiple lines but end is not eol. make it so" )
-                        (goto-char xre)
-                        (end-of-line)))))
-                 (t (error "%s: logic error 42946" real-this-command))))))
-           ((and (> (point) (line-beginning-position)) (<= (point) (line-end-position)))
-            (progn
-              ;; (message "less than 1 line" )
-              (end-of-line) ; select current line
-              (push-mark (line-beginning-position) t t)))
-           (t
-            ;; (message "last resort" )
-            nil))))
-    (progn
+
+  (cond
+   ((region-active-p)
+    (let ((xp1 (region-beginning)) (xp2 (region-end)))
+      (goto-char xp1)
       (cond
        ((looking-at "\\s(")
-        ;; (message "left bracket")
-        (mark-sexp)) ; left bracket
-       ((looking-at "\\s)")
-        ;; (message "right bracket")
-        (backward-up-list) (mark-sexp))
-       ((looking-at "\\s\"")
-        ;; (message "string quote")
-        (mark-sexp)) ; string quote
-       ;; ((and (eq (point) (line-beginning-position)) (not (looking-at "\n")))
-       ;;  (message "beginning of line and not empty")
-       ;;  (end-of-line)
-       ;;  (push-mark (line-beginning-position) t t))
-       ((if (eq (point-min) (point))
-            nil
-          (prog2
-              (backward-char)
-              (looking-at "[-_a-zA-Z0-9]")
-            (forward-char)))
-        ;; (message "left is word or symbol")
-        (skip-chars-backward "-_a-zA-Z0-9")
-        ;; (re-search-backward "^\\(\\sw\\|\\s_\\)" nil t)
-        (push-mark)
-        (skip-chars-forward "-_a-zA-Z0-9")
-        (setq mark-active t)
-        ;; (exchange-point-and-mark)
-        )
-       ((and (looking-at "[:blank:]")
-             (prog2 (backward-char) (looking-at "[:blank:]") (forward-char)))
-        ;; (message "left and right both space" )
-        (skip-chars-backward "[:blank:]") (push-mark (point) t t)
-        (skip-chars-forward "[:blank:]"))
-       ((and (looking-at "\n")
-             (eq (char-before) 10))
-        ;; (message "left and right both newline")
-        (skip-chars-forward "\n")
-        (push-mark (point)  t t)
-        (re-search-forward "\n[ \t]*\n")) ; between blank lines, select next block
+        (if (eq (nth 0 (syntax-ppss)) 0)
+            (progn
+              ;; (message "debug: left bracket, depth 0.")
+              (end-of-line) ; select current line
+              (push-mark (line-beginning-position) t t))
+          (progn
+            ;; (message "debug: left bracket, depth not 0")
+            (up-list -1 t t)
+            (mark-sexp))))
+       ((eq xp1 (line-beginning-position))
+        (progn
+          (goto-char xp1)
+          (let ((xfirstLineEndPos (line-end-position)))
+            (cond
+             ((eq xp2 xfirstLineEndPos)
+              (progn
+                ;; (message "debug: exactly 1 line. extend to next whole line." )
+                (forward-line 1)
+                (end-of-line)))
+             ((< xp2 xfirstLineEndPos)
+              (progn
+                ;; (message "debug: less than 1 line. complete the line." )
+                (end-of-line)))
+             ((> xp2 xfirstLineEndPos)
+              (progn
+                ;; (message "debug: beginning of line, but end is greater than 1st end of line" )
+                (goto-char xp2)
+                (if (eq (point) (line-end-position))
+                    (progn
+                      ;; (message "debug: exactly multiple lines" )
+                      (forward-line 1)
+                      (end-of-line))
+                  (progn
+                    ;; (message "debug: multiple lines but end is not eol. make it so" )
+                    (goto-char xp2)
+                    (end-of-line)))))
+             (t (error "%s: logic error 42946" real-this-command))))))
+       ((and (> (point) (line-beginning-position)) (<= (point) (line-end-position)))
+        (progn
+          ;; (message "debug: less than 1 line" )
+          (end-of-line) ; select current line
+          (push-mark (line-beginning-position) t t)))
        (t
-        ;; (message "just mark sexp" )
-        (mark-sexp)
-        (exchange-point-and-mark))
-       ;;
-       ))))
+        ;; (message "debug: last resort" )
+        nil))))
+
+   ((looking-at "\\s(")
+    ;; (message "debug: left bracket")
+    (mark-sexp))
+
+   ((looking-at "\\s)")
+    ;; (message "debug: right bracket")
+    (backward-up-list) (mark-sexp))
+
+   ((looking-at "\\s\"")
+    ;; (message "debug: string quote")
+    (mark-sexp))
+
+   ((looking-at "[ \t\n]")
+    ;; (message "debug: is white space")
+    (skip-chars-backward " \t\n")
+    (push-mark)
+    (skip-chars-forward " \t\n")
+    (setq mark-active t))
+
+   ((looking-at "[-_a-zA-Z0-9]")
+    ;; (message "debug: left is word or symbol")
+    (skip-chars-backward "-_a-zA-Z0-9")
+    (push-mark)
+    (skip-chars-forward "-_a-zA-Z0-9")
+    (setq mark-active t))
+
+   ((and (looking-at "[:blank:]")
+         (prog2 (backward-char) (looking-at "[:blank:]") (forward-char)))
+    ;; (message "debug: left and right both space" )
+    (skip-chars-backward "[:blank:]") (push-mark (point) t t)
+    (skip-chars-forward "[:blank:]"))
+
+   ((and (looking-at "\n")
+         (eq (char-before) 10))
+    ;; (message "debug: left and right both newline")
+    (skip-chars-forward "\n")
+    (push-mark (point)  t t)
+    (re-search-forward "\n[ \t]*\n"))
+
+   (t
+    ;; (message "debug: just mark sexp" )
+    (mark-sexp)
+    (exchange-point-and-mark))))
 
 (defun xah-select-text-in-quote ()
   "Select text between the nearest left and right delimiters.
