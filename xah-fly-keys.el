@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.8.20230825161727
+;; Version: 24.9.20230909155929
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -179,7 +179,7 @@
 
 URL `http://xahlee.info/emacs/emacs/elisp_get-selection-or-unit.html'
 Version: 2021-08-12"
-  (let ( xp1 xp2 (xblankRegex "\n[ \t]*\n"))
+  (let (xp1 xp2 (xblankRegex "\n[ \t]*\n"))
     (save-excursion
       (setq xp1 (if (re-search-backward xblankRegex nil 1)
                     (goto-char (match-end 0))
@@ -187,7 +187,7 @@ Version: 2021-08-12"
       (setq xp2 (if (re-search-forward xblankRegex nil 1)
                     (match-beginning 0)
                   (point))))
-    (cons xp1 xp2 )))
+    (cons xp1 xp2)))
 
 (defun xah-get-bounds-of-block-or-region ()
   "If region is active, return its boundary, else same as `xah-get-bounds-of-block'.
@@ -203,10 +203,10 @@ Version: 2021-08-12"
 
 (defun xah-pop-local-mark-ring ()
   "Move cursor to last mark position of current buffer.
-Call this repeatedly will cycle all positions in `mark-ring'.
+Repeat call cycles all positions in `mark-ring'.
 
-URL `http://xahlee.info/emacs/emacs/emacs_jump_to_previous_position.html'
-Version: 2016-04-04"
+URL `http://xahlee.info/emacs/emacs/emacs_cycle_local_mark_ring.html'
+Version: 2016-04-04 2023-09-03"
   (interactive)
   (set-mark-command t))
 
@@ -224,7 +224,7 @@ Version: 2018-06-04 2021-03-16 2022-03-30 2022-07-03 2022-07-06"
     (if (or (equal (point) (line-beginning-position))
             (eq last-command this-command))
         (when
-            (re-search-backward "\n[\t\n ]*\n+" nil 1)
+            (re-search-backward "\n[\t\n ]*\n+" nil :move)
           (skip-chars-backward "\n\t ")
           (forward-char))
       (if visual-line-mode
@@ -249,7 +249,7 @@ Version: 2018-06-04 2021-03-16 2022-03-05"
   (interactive)
   (if (or (equal (point) (line-end-position))
           (eq last-command this-command))
-      (re-search-forward "\n[\t\n ]*\n+" nil 1)
+      (re-search-forward "\n[\t\n ]*\n+" nil :move)
     (if visual-line-mode
         (end-of-visual-line)
       (end-of-line))))
@@ -953,6 +953,7 @@ Version: 2020-11-01 2023-03-31 2023-08-25"
             "HEAVY POINTING ANGLE ORNAMENT ❰ ❱"
             "none  "
             )))
+
      (list
       (completing-read "Replace this:" xbrackets nil t
                        nil nil (car xbrackets))
@@ -962,6 +963,14 @@ Version: 2020-11-01 2023-03-31 2023-08-25"
     (let ((xbds (xah-get-bounds-of-block-or-region))) (setq xp1 (car xbds) xp2 (cdr xbds)))
     (let ((xsFrom (last (split-string FromChars " ") 2))
           (xsTo (last (split-string ToChars " ") 2)))
+
+      ;; (when (< (length xsFrom) 3)
+      ;; (error "cannot find input brackets %s" xsFrom))
+
+      ;; (when (< (length xsTo) 3)
+      ;;   (message "replace blacket is empty string")
+      ;;   (setq xsTo (list "" "" "")))
+
       (setq xleft (car xsFrom)  xright (car (cdr xsFrom))
             xtoL (car xsTo) xtoR (car (cdr xsTo)))
 
@@ -1049,12 +1058,12 @@ Version: 2020-12-08 2020-12-24 2021-08-13 2022-05-16 2022-08-27"
       (let ((case-fold-search nil))
         ;; after period or question mark or exclamation
         (goto-char (point-min))
-        (while (re-search-forward "\\(\\.\\|\\?\\|!\\)[ \n]+ *\\([a-z]\\)" nil 1)
+        (while (re-search-forward "\\(\\.\\|\\?\\|!\\)[ \n]+ *\\([a-z]\\)" nil :move)
           (upcase-region (match-beginning 2) (match-end 2))
           (overlay-put (make-overlay (match-beginning 2) (match-end 2)) 'face 'highlight))
         ;; after a blank line, after a bullet, or beginning of buffer
         (goto-char (point-min))
-        (while (re-search-forward "\\(\\`\\|• \\|\n\n\\)\\([a-z]\\)" nil 1)
+        (while (re-search-forward "\\(\\`\\|• \\|\n\n\\)\\([a-z]\\)" nil :move)
           (upcase-region (match-beginning 2) (match-end 2))
           (overlay-put (make-overlay (match-beginning 2) (match-end 2)) 'face 'highlight))
         ;; for HTML. first letter after tag
@@ -1068,7 +1077,7 @@ Version: 2020-12-08 2020-12-24 2021-08-13 2022-05-16 2022-08-27"
              (eq major-mode 'mhtml-mode))
           (goto-char (point-min))
           (while
-              (re-search-forward "\\(<title>[ \n]?\\|<h[1-6]>[ \n]?\\|<p>[ \n]?\\|<li>[ \n]?\\|<dd>[ \n]?\\|<td>[ \n]?\\|<br ?/?>[ \n]?\\|<figcaption>[ \n]?\\)\\([a-z]\\)" nil 1)
+              (re-search-forward "\\(<title>[ \n]?\\|<h[1-6]>[ \n]?\\|<p>[ \n]?\\|<li>[ \n]?\\|<dd>[ \n]?\\|<td>[ \n]?\\|<br ?/?>[ \n]?\\|<figcaption>[ \n]?\\)\\([a-z]\\)" nil :move)
             (upcase-region (match-beginning 2) (match-end 2))
             (overlay-put (make-overlay (match-beginning 2) (match-end 2)) 'face 'highlight))))
       (goto-char (point-max)))
@@ -1227,7 +1236,7 @@ Version: 2021-07-06"
     (save-restriction
       (narrow-to-region Begin End)
       (goto-char (point-min))
-      (while (re-search-forward "\n\n+" nil 1) (replace-match "\n")))))
+      (while (re-search-forward "\n\n+" nil :move) (replace-match "\n")))))
 
 (defun xah-reformat-whitespaces-to-one-space (Begin End)
   "Replace whitespaces by one space.
@@ -1238,11 +1247,11 @@ Version: 2017-01-11 2022-01-08"
   (save-restriction
       (narrow-to-region Begin End)
       (goto-char (point-min))
-      (while (search-forward "\n" nil 1) (replace-match " "))
+      (while (search-forward "\n" nil :move) (replace-match " "))
       (goto-char (point-min))
-      (while (search-forward "\t" nil 1) (replace-match " "))
+      (while (search-forward "\t" nil :move) (replace-match " "))
       (goto-char (point-min))
-      (while (re-search-forward " +" nil 1) (replace-match " "))
+      (while (re-search-forward " +" nil :move) (replace-match " "))
       (goto-char (point-max))))
 
 (defun xah-reformat-to-multi-lines ( &optional Begin End MinLength)
@@ -1261,7 +1270,7 @@ Version: 2018-12-16 2021-07-06 2021-08-12"
       (save-restriction
         (narrow-to-region xp1 xp2)
         (goto-char (point-min))
-        (while (re-search-forward " +" nil 1)
+        (while (re-search-forward " +" nil :move)
           (when (> (- (point) (line-beginning-position)) xminlen)
             (replace-match "\n" )))))))
 
@@ -1317,7 +1326,7 @@ Version: 2020-12-02 2023-03-22 2023-05-25"
       (while (re-search-forward "\\([.?!]\\) +\\([(0-9A-Za-z]+\\)" nil t) (replace-match "\\1\n\\2"))
       (goto-char (point-max))
       (while (eq (char-before) 32) (delete-char -1))))
-  (re-search-forward "\n+" nil 1)
+  (re-search-forward "\n+" nil :move)
   (set-transient-map (let ((xkmap (make-sparse-keymap))) (define-key xkmap (or xah-repeat-key (kbd "DEL")) this-command) xkmap))
   (set-transient-map (let ((xkmap (make-sparse-keymap))) (define-key xkmap (kbd "DEL") this-command) xkmap)))
 
@@ -1667,10 +1676,10 @@ Version: 2017-07-09 2021-08-14 2022-07-31 2023-06-07"
     (if (region-active-p)
         (setq xp1 (region-beginning) xp2 (region-end))
       (progn
-        (if (re-search-backward "\n[ \t]*\n+" nil 1)
+        (if (re-search-backward "\n[ \t]*\n+" nil :move)
             (setq xp1 (goto-char (match-end 0)))
           (setq xp1 (point)))
-        (if (re-search-forward "\n[ \t]*\n" nil 1)
+        (if (re-search-forward "\n[ \t]*\n" nil :move)
             (setq xp2 (match-end 0))
           (setq xp2 (point-max)))))
     (kill-region xp1 xp2)))
@@ -2000,7 +2009,7 @@ xString can be any string, needs not be a char or emoji.
    ("sparkles ✨" . "✨")
    ("rocket 🚀" . "🚀")
    ("sun 🌞" . "🌞")
-   ("red heart ❤" . "❤")
+   ("red heart 💓" . "💓")
    ("clown 🤡" . "🤡")
    ("large circle" . "⭕")
    ("cross ❌" . "❌")
@@ -2033,7 +2042,7 @@ xString can be any string, needs not be a char or emoji.
 (defun xah-insert-unicode ()
   "Insert a unicode from a custom list `xah-unicode-list'.
 URL `http://xahlee.info/emacs/emacs/emacs_insert_unicode.html'
-Version: 2021-01-05 2022-10-30 2023-07-21 2023-08-25"
+Version: 2021-01-05 2023-08-25 2023-08-31"
   (interactive)
   (let ((xkey
          (completing-read
@@ -2051,13 +2060,13 @@ URL `http://xahlee.info/emacs/emacs/modernization_mark-word.html'
 Version: 2019-12-26 2021-04-04 2021-08-13"
   (interactive)
   (if (region-active-p)
-      (re-search-forward "\n[ \t]*\n[ \t]*\n*" nil 1)
+      (re-search-forward "\n[ \t]*\n[ \t]*\n*" nil :move)
     (progn
       (skip-chars-forward " \n\t")
-      (when (re-search-backward "\n[ \t]*\n" nil 1)
+      (when (re-search-backward "\n[ \t]*\n" nil :move)
         (goto-char (match-end 0)))
       (push-mark (point) t t)
-      (re-search-forward "\n[ \t]*\n" nil 1))))
+      (re-search-forward "\n[ \t]*\n" nil :move))))
 
 (defun xah-select-line ()
   "Select current line. If region is active, extend selection downward by line.
@@ -2348,13 +2357,12 @@ If the buffer a file and modified, make the modified version into a backup in th
 If the buffer is a file, add the path to the list `xah-recently-closed-buffers'.
 
 URL `http://xahlee.info/emacs/emacs/elisp_close_buffer_open_last_closed.html'
-Version: 2016-06-19 2023-08-19 2023-08-22"
+Version: 2016-06-19 2023-08-19 2023-08-22 2023-09-06 2023-09-08"
   (interactive)
   (cond
-   ;; ((eq major-mode 'minibuffer-inactive-mode)
-   ;;  (minibuffer-keyboard-quit))
-   ((active-minibuffer-window)
-    (minibuffer-keyboard-quit))
+   ;; ((eq major-mode 'minibuffer-inactive-mode) (minibuffer-keyboard-quit))
+   ;; ((active-minibuffer-window) (minibuffer-keyboard-quit))
+   ((minibufferp (current-buffer)) (minibuffer-keyboard-quit))
    ((and buffer-file-name (not (buffer-modified-p)))
     (xah-add-to-recently-closed (buffer-name) buffer-file-name)
     (kill-buffer))
@@ -2371,7 +2379,7 @@ call xah-open-last-closed twice to open." xnewName))
       (xah-add-to-recently-closed (buffer-name) buffer-file-name)
       (kill-buffer)))
 
-   ((and (not buffer-file-name) (xah-user-buffer-p))
+   ((and (not buffer-file-name) (xah-user-buffer-p) (not (eq (point-max) 1)))
     (let ((xnewName (format "%suntitled_%s_%x.txt"
                             xah-temp-dir-path
                             (format-time-string "%Y%m%d_%H%M%S")
@@ -2634,7 +2642,7 @@ Version: 2017-09-22 2020-09-08"
         (narrow-to-region xbegin xend)
         (progn
           (goto-char (point-min))
-          (while (re-search-forward "\n\n\n+" nil 1)
+          (while (re-search-forward "\n\n\n+" nil :move)
             (replace-match "\n\n")))))))
 
 (defun xah-clean-whitespace ()
@@ -2653,9 +2661,9 @@ Version: 2017-09-22 2021-08-27 2022-08-06"
       (save-restriction
         (narrow-to-region xbegin xend)
         (goto-char (point-min))
-        (while (re-search-forward "[ \t]+\n" nil 1) (replace-match "\n"))
+        (while (re-search-forward "[ \t]+\n" nil :move) (replace-match "\n"))
         (goto-char (point-min))
-        (while (re-search-forward "\n\n\n+" nil 1) (replace-match "\n\n"))
+        (while (re-search-forward "\n\n\n+" nil :move) (replace-match "\n\n"))
         (goto-char (point-max))
         (while (eq (char-before) 32) (delete-char -1)))))
   (message "%s done" real-this-command))
@@ -2774,11 +2782,11 @@ Version: 2015-04-09"
 
 (defun xah-show-in-desktop ()
   "Show current file in desktop.
- (Mac Finder, File Explorer, Linux file manager)
+ (Mac Finder, Microsoft Windows File Explorer, Linux file manager)
 This command can be called when in a file buffer or in `dired'.
 
 URL `http://xahlee.info/emacs/emacs/emacs_show_in_desktop.html'
-Version: 2020-11-20 2022-08-19 2023-06-26"
+Version: 2020-11-20 2022-08-19 2023-06-26 2023-09-09"
   (interactive)
   (let ((xpath (if (eq major-mode 'dired-mode)
                    (if (eq nil (dired-get-marked-files))
@@ -2786,7 +2794,7 @@ Version: 2020-11-20 2022-08-19 2023-06-26"
                      (car (dired-get-marked-files)))
                  (if buffer-file-name buffer-file-name default-directory))))
     (cond
-     ((string-equal system-type "windows-nt")
+     ((eq system-type 'windows-nt)
       (shell-command (format "PowerShell -Command invoke-item '%s'" (expand-file-name default-directory )))
       ;; (let ((xcmd (format "Explorer /select,%s"
       ;;                     (replace-regexp-in-string "/" "\\" xpath t t)
@@ -2794,10 +2802,10 @@ Version: 2020-11-20 2022-08-19 2023-06-26"
       ;;                     )))
       ;;   (shell-command xcmd))
       )
-     ((string-equal system-type "darwin")
+     ((eq system-type 'darwin)
       (shell-command
        (concat "open -R " (shell-quote-argument xpath))))
-     ((string-equal system-type "gnu/linux")
+     ((eq system-type 'gnu/linux)
       (call-process shell-file-name nil 0 nil
                     shell-command-switch
                     (format "%s %s"
@@ -2809,16 +2817,17 @@ Version: 2020-11-20 2022-08-19 2023-06-26"
 (defun xah-open-in-vscode ()
   "Open current file or dir in vscode.
 URL `http://xahlee.info/emacs/emacs/emacs_open_in_vscode.html'
+
 Version: 2020-02-13 2021-01-18 2022-08-04 2023-06-26"
   (interactive)
   (let ((xpath (if buffer-file-name buffer-file-name (expand-file-name default-directory))))
     (message "path is %s" xpath)
     (cond
-     ((string-equal system-type "darwin")
+     ((eq system-type 'darwin)
       (shell-command (format "open -a Visual\\ Studio\\ Code.app %s" (shell-quote-argument xpath))))
-     ((string-equal system-type "windows-nt")
+     ((eq system-type 'windows-nt)
       (shell-command (format "code.cmd %s" (shell-quote-argument xpath))))
-     ((string-equal system-type "gnu/linux")
+     ((eq system-type 'gnu/linux)
       (shell-command (format "code %s" (shell-quote-argument xpath)))))))
 
 (defun xah-open-in-external-app (&optional Fname)
@@ -2838,7 +2847,7 @@ Version: 2019-11-04 2023-04-05 2023-06-26"
     (setq xdoIt (if (<= (length xfileList) 10) t (y-or-n-p "Open more than 10 files? ")))
     (when xdoIt
       (cond
-       ((string-equal system-type "windows-nt")
+       ((eq system-type 'windows-nt)
         (let ((xoutBuf (get-buffer-create "*xah open in external app*"))
               (xcmdlist (list "PowerShell" "-Command" "Invoke-Item" "-LiteralPath")))
           (mapc
@@ -2851,9 +2860,9 @@ Version: 2019-11-04 2023-04-05 2023-06-26"
         ;; old code. calling shell. also have a bug if filename contain apostrophe
         ;; (mapc (lambda (xfpath) (shell-command (concat "PowerShell -Command \"Invoke-Item -LiteralPath\" " "'" (shell-quote-argument (expand-file-name xfpath)) "'"))) xfileList)
         )
-       ((string-equal system-type "darwin")
+       ((eq system-type 'darwin)
         (mapc (lambda (xfpath) (shell-command (concat "open " (shell-quote-argument xfpath)))) xfileList))
-       ((string-equal system-type "gnu/linux")
+       ((eq system-type 'gnu/linux)
         (mapc (lambda (xfpath)
                 (call-process shell-file-name nil 0 nil
                               shell-command-switch
@@ -2861,12 +2870,12 @@ Version: 2019-11-04 2023-04-05 2023-06-26"
                                       "xdg-open"
                                       (shell-quote-argument xfpath))))
               xfileList))
-       ((string-equal system-type "berkeley-unix")
+       ((eq system-type 'berkeley-unix)
         (mapc (lambda (xfpath) (let ((process-connection-type nil)) (start-process "" nil "xdg-open" xfpath))) xfileList))))))
 
-(defvar xah-fly-mswin-terminal nil "A string. Value should be one of: wt (for Windows Terminal) or pwsh (for PowerShell Core (cross-platform)) or powershell (for Microsoft PowerShell).")
-
-(setq xah-fly-mswin-terminal "wt")
+(defvar xah-fly-mswin-terminal
+  "wt"
+  "A string. Value should be one of: wt (for Windows Terminal) or pwsh (for PowerShell Core (cross-platform)) or powershell (for Microsoft PowerShell).")
 
 (defun xah-open-in-terminal ()
   "Open the current dir in a new terminal window.
@@ -2876,17 +2885,17 @@ URL `http://xahlee.info/emacs/emacs/emacs_open_in_terminal.html'
 Version: 2020-11-21 2022-08-04 2023-03-01 2023-06-26"
   (interactive)
   (cond
-   ((string-equal system-type "windows-nt")
+   ((eq system-type 'windows-nt)
     (cond
      ((string-equal xah-fly-mswin-terminal "wt") (shell-command (format "wt -d \"%s\"" default-directory)))
      ((string-equal xah-fly-mswin-terminal "pwsh") (shell-command (format "pwsh -Command Start-Process pwsh -WorkingDirectory '%s'" (shell-quote-argument default-directory))))
      ((string-equal xah-fly-mswin-terminal "powershell") (shell-command (format "powershell -Command Start-Process powershell -WorkingDirectory '%s'" (shell-quote-argument default-directory))))
      (t (error "Error 702919: value of `xah-fly-mswin-terminal' is not expected. Its value is %s" xah-fly-mswin-terminal))))
-   ((string-equal system-type "darwin")
+   ((eq system-type 'darwin)
     (shell-command (concat "open -a terminal " (shell-quote-argument (expand-file-name default-directory)))))
-   ((string-equal system-type "gnu/linux")
+   ((eq system-type 'gnu/linux)
     (let ((process-connection-type nil)) (start-process "" nil "x-terminal-emulator" (concat "--working-directory=" default-directory))))
-   ((string-equal system-type "berkeley-unix")
+   ((eq system-type 'berkeley-unix)
     (let ((process-connection-type nil)) (start-process "" nil "x-terminal-emulator" (concat "--working-directory=" default-directory))))))
 
 (defun xah-next-window-or-frame ()
