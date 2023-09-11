@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.9.20230909155929
+;; Version: 24.10.20230911080522
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2357,7 +2357,7 @@ If the buffer a file and modified, make the modified version into a backup in th
 If the buffer is a file, add the path to the list `xah-recently-closed-buffers'.
 
 URL `http://xahlee.info/emacs/emacs/elisp_close_buffer_open_last_closed.html'
-Version: 2016-06-19 2023-08-19 2023-08-22 2023-09-06 2023-09-08"
+Version: 2016-06-19 2023-09-08 2023-09-09"
   (interactive)
   (cond
    ;; ((eq major-mode 'minibuffer-inactive-mode) (minibuffer-keyboard-quit))
@@ -2367,18 +2367,19 @@ Version: 2016-06-19 2023-08-19 2023-08-22 2023-09-06 2023-09-08"
     (xah-add-to-recently-closed (buffer-name) buffer-file-name)
     (kill-buffer))
    ((and buffer-file-name (buffer-modified-p))
-    (let ((xnewName
-           (format "%s~%s~"
-                   buffer-file-name
-                   (format-time-string "%Y-%m-%d_%H%M%S"))))
-      (write-region (point-min) (point-max) xnewName)
-      (print (format "The modified version is saved at
-%s
-call xah-open-last-closed twice to open." xnewName))
-      (xah-add-to-recently-closed (buffer-name) xnewName)
-      (xah-add-to-recently-closed (buffer-name) buffer-file-name)
-      (kill-buffer)))
-
+    (message "buffer file modified. Save it first.\n%s" buffer-file-name)
+    ;; (let ((xnewName
+    ;;            (format "%s~%s~"
+    ;;                    buffer-file-name
+    ;;                    (format-time-string "%Y-%m-%d_%H%M%S"))))
+    ;;       (write-region (point-min) (point-max) xnewName)
+    ;;       (print (format "The modified version is saved at
+    ;; %s
+    ;; call xah-open-last-closed twice to open." xnewName))
+    ;;       (xah-add-to-recently-closed (buffer-name) xnewName)
+    ;;       (xah-add-to-recently-closed (buffer-name) buffer-file-name)
+    ;;       (kill-buffer))
+    )
    ((and (not buffer-file-name) (xah-user-buffer-p) (not (eq (point-max) 1)))
     (let ((xnewName (format "%suntitled_%s_%x.txt"
                             xah-temp-dir-path
@@ -2887,9 +2888,14 @@ Version: 2020-11-21 2022-08-04 2023-03-01 2023-06-26"
   (cond
    ((eq system-type 'windows-nt)
     (cond
-     ((string-equal xah-fly-mswin-terminal "wt") (shell-command (format "wt -d \"%s\"" default-directory)))
-     ((string-equal xah-fly-mswin-terminal "pwsh") (shell-command (format "pwsh -Command Start-Process pwsh -WorkingDirectory '%s'" (shell-quote-argument default-directory))))
-     ((string-equal xah-fly-mswin-terminal "powershell") (shell-command (format "powershell -Command Start-Process powershell -WorkingDirectory '%s'" (shell-quote-argument default-directory))))
+     ((string-equal xah-fly-mswin-terminal "wt")
+      (shell-command (format "wt -d \"%s\"" default-directory)))
+     ((string-equal xah-fly-mswin-terminal "pwsh")
+      (shell-command
+       (format "pwsh -Command Start-Process pwsh -WorkingDirectory '%s'" (shell-quote-argument default-directory))))
+     ((string-equal xah-fly-mswin-terminal "powershell")
+      (shell-command
+       (format "powershell -Command Start-Process powershell -WorkingDirectory '%s'" (shell-quote-argument default-directory))))
      (t (error "Error 702919: value of `xah-fly-mswin-terminal' is not expected. Its value is %s" xah-fly-mswin-terminal))))
    ((eq system-type 'darwin)
     (shell-command (concat "open -a terminal " (shell-quote-argument (expand-file-name default-directory)))))
