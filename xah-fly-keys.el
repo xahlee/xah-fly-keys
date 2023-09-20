@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.10.20230911080522
+;; Version: 24.11.20230919195459
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -905,7 +905,7 @@ followed by 2 spaces.
 ,it means replace by empty string.
 
 URL `http://xahlee.info/emacs/emacs/elisp_change_brackets.html'
-Version: 2020-11-01 2023-03-31 2023-08-25"
+Version: 2020-11-01 2023-03-31 2023-08-25 2023-09-19"
   (interactive
    (let ((xbrackets
           '(
@@ -916,7 +916,7 @@ Version: 2020-11-01 2023-03-31 2023-08-25"
             "double quote \" \""
             "single quote ' '"
             "emacs ` '"
-            "markdown GRAVE ACCENT ` `"
+            "markdown grave accent ` `"
             "double square [[ ]]"
             "tilde ~ ~"
             "equal = ="
@@ -934,31 +934,30 @@ Version: 2020-11-01 2023-03-31 2023-08-25"
             "white tortoise 〘 〙"
             "white square 〚 〛"
             "white paren ⦅ ⦆"
-            "WHITE CURLY BRACKET ⦃ ⦄"
+            "white curly bracket ⦃ ⦄"
             "pointing angle 〈 〉"
-            "ANGLE WITH DOT ⦑ ⦒"
-            "CURVED ANGLE ⧼ ⧽"
+            "angle with dot ⦑ ⦒"
+            "curved angle ⧼ ⧽"
             "math square ⟦ ⟧"
             "math angle ⟨ ⟩"
-            "math DOUBLE ANGLE ⟪ ⟫"
-            "math FLATTENED PARENTHESIS ⟮ ⟯"
-            "math WHITE TORTOISE SHELL ⟬ ⟭"
-            "HEAVY SINGLE QUOTATION MARK ORNAMENT ❛ ❜"
-            "HEAVY DOUBLE TURNED COMMA QUOTATION MARK ORNAMENT ❝ ❞"
-            "MEDIUM PARENTHESIS ORNAMENT ❨ ❩"
-            "MEDIUM FLATTENED PARENTHESIS ORNAMENT ❪ ❫"
-            "MEDIUM CURLY ORNAMENT ❴ ❵"
-            "MEDIUM POINTING ANGLE ORNAMENT ❬ ❭"
-            "HEAVY POINTING ANGLE QUOTATION MARK ORNAMENT ❮ ❯"
-            "HEAVY POINTING ANGLE ORNAMENT ❰ ❱"
+            "math double angle ⟪ ⟫"
+            "math flattened parenthesis ⟮ ⟯"
+            "math white tortoise shell ⟬ ⟭"
+            "heavy single quotation mark ornament ❛ ❜"
+            "heavy double turned comma quotation mark ornament ❝ ❞"
+            "medium parenthesis ornament ❨ ❩"
+            "medium flattened parenthesis ornament ❪ ❫"
+            "medium curly ornament ❴ ❵"
+            "medium pointing angle ornament ❬ ❭"
+            "heavy pointing angle quotation mark ornament ❮ ❯"
+            "heavy pointing angle ornament ❰ ❱"
             "none  "
             )))
 
      (list
-      (completing-read "Replace this:" xbrackets nil t
-                       nil nil (car xbrackets))
-      (completing-read "To:" xbrackets nil t
-                       nil nil (car (last xbrackets))))))
+      (let ((completion-ignore-case t))
+        (completing-read "Replace this:" xbrackets nil t nil nil (car xbrackets))
+        (completing-read "To:" xbrackets nil t nil nil (car (last xbrackets)))))))
   (let (xp1 xp2 xleft xright xtoL xtoR)
     (let ((xbds (xah-get-bounds-of-block-or-region))) (setq xp1 (car xbds) xp2 (cdr xbds)))
     (let ((xsFrom (last (split-string FromChars " ") 2))
@@ -1495,7 +1494,7 @@ or
 In lisp code, QuoteL QuoteR Sep are strings.
 
 URL `http://xahlee.info/emacs/emacs/emacs_quote_lines.html'
-Version: 2020-06-26 2023-08-05 2023-08-25"
+Version: 2020-06-26 2023-08-05 2023-08-25 2023-09-19"
   (interactive
    (let ((xbrackets
           '(
@@ -1521,11 +1520,11 @@ Version: 2020-06-26 2023-08-05 2023-08-25"
          xp1 xp2 xbktChoice xsep xsepChoice xquoteL xquoteR)
      (let ((xbds (xah-get-bounds-of-block-or-region)))
        (setq xp1 (car xbds) xp2 (cdr xbds)))
-     (setq xbktChoice (completing-read "Quote to use:" xbrackets nil t
-                                       nil nil (car xbrackets)))
-     (setq xsepChoice (completing-read
-                       "line separator:"
-                       xcomma nil t nil nil (car xcomma)))
+
+     (let ((completion-ignore-case t))
+       (setq xbktChoice (completing-read "Quote to use:" xbrackets nil t nil nil (car xbrackets)))
+       (setq xsepChoice (completing-read "line separator:" xcomma nil t nil nil (car xcomma))))
+
      (cond
       ((string-equal xbktChoice "none")
        (setq xquoteL "" xquoteR ""))
@@ -1778,24 +1777,25 @@ If `universal-argument' is called first, prompt for a format to use.
 If there is selection, delete it first.
 
 URL `http://xahlee.info/emacs/emacs/elisp_insert-date-time.html'
-Version: 2013-05-10 2022-04-07 2023-01-01 2023-08-25"
+Version: 2013-05-10 2022-04-07 2023-01-01 2023-08-25 2023-09-19"
   (interactive)
   (let ((xstyle
          (if current-prefix-arg
-             (completing-read
-              "Style:"
-              '(
-                "ISO date • 2018-04-12"
-                "ISO full • 2018-04-12T22:46:11-07:00"
-                "ISO space • 2018-04-12 22:46:11-07:00"
-                "all digits • 20180412224611"
-                "date and digits • 2018-04-12_224611"
-                "weekday • 2018-04-12 Thursday"
-                "usa date + weekday • Thursday, April 12, 2018"
-                "usa short + weekday • Thu, Apr 12, 2018"
-                "usa mdy full • April 12, 2018"
-                "usa mdy short • Apr 12, 2018"
-                ) nil t)
+             (let ((completion-ignore-case t))
+               (completing-read
+                "Style:"
+                '(
+                  "ISO date • 2018-04-12"
+                  "ISO full • 2018-04-12T22:46:11-07:00"
+                  "ISO space • 2018-04-12 22:46:11-07:00"
+                  "all digits • 20180412224611"
+                  "date and digits • 2018-04-12_224611"
+                  "weekday • 2018-04-12 Thursday"
+                  "usa date + weekday • Thursday, April 12, 2018"
+                  "usa short + weekday • Thu, Apr 12, 2018"
+                  "usa mdy full • April 12, 2018"
+                  "usa mdy short • Apr 12, 2018"
+                  ) nil t))
            "ISO date • 2018-04-12"
            )))
     (when (region-active-p) (delete-region (region-beginning) (region-end)))
@@ -2042,11 +2042,11 @@ xString can be any string, needs not be a char or emoji.
 (defun xah-insert-unicode ()
   "Insert a unicode from a custom list `xah-unicode-list'.
 URL `http://xahlee.info/emacs/emacs/emacs_insert_unicode.html'
-Version: 2021-01-05 2023-08-25 2023-08-31"
+Version: 2021-01-05 2023-08-25 2023-08-31 2023-09-19"
   (interactive)
   (let ((xkey
-         (completing-read
-          "Insert:" xah-unicode-list nil t)))
+         (let ((completion-ignore-case t))
+           (completing-read "Insert:" xah-unicode-list nil t))))
     (insert (cdr (assoc xkey xah-unicode-list)))))
 
 
@@ -2357,8 +2357,9 @@ If the buffer a file and modified, make the modified version into a backup in th
 If the buffer is a file, add the path to the list `xah-recently-closed-buffers'.
 
 URL `http://xahlee.info/emacs/emacs/elisp_close_buffer_open_last_closed.html'
-Version: 2016-06-19 2023-09-08 2023-09-09"
+Version: 2016-06-19 2023-09-08 2023-09-09 2023-09-13"
   (interactive)
+  (widen)
   (cond
    ;; ((eq major-mode 'minibuffer-inactive-mode) (minibuffer-keyboard-quit))
    ;; ((active-minibuffer-window) (minibuffer-keyboard-quit))
@@ -2404,14 +2405,15 @@ Version: 2016-06-19 2022-03-22"
 Prompt for a choice.
 
 URL `http://xahlee.info/emacs/emacs/elisp_close_buffer_open_last_closed.html'
-Version: 2016-06-19 2021-10-27 2022-04-07 2023-08-25"
+Version: 2016-06-19 2023-08-25 2023-09-19"
   (interactive)
   (find-file
-   (completing-read
-    "Open:"
-    (mapcar (lambda (f) (cdr f)) xah-recently-closed-buffers)
-    nil t
-    )))
+   (let ((completion-ignore-case t))
+     (completing-read
+      "Open:"
+      (mapcar (lambda (f) (cdr f)) xah-recently-closed-buffers)
+      nil t
+      ))))
 
 (defun xah-list-recently-closed ()
   "List recently closed file.
@@ -2687,7 +2689,7 @@ Version: 2018-06-06 2020-12-18 2022-06-13"
         (let ((xbackupName
                (concat xfname "~" (format-time-string xdateTimeFormat) "~")))
           (copy-file xfname xbackupName t)
-          (message (concat "Backup saved at: " xbackupName)))
+          (message (concat "\nBackup saved at: " xbackupName)))
       (if (eq major-mode 'dired-mode)
           (progn
             (mapc (lambda (xx)
