@@ -4,9 +4,9 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.11.20230921082343
+;; Version: 24.11.20230928111028
 ;; Created: 2013-09-10
-;; Package-Requires: ((emacs "27.1"))
+;; Package-Requires: ((emacs "29"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
 ;; License: GPL v3.
 ;; Homepage: http://xahlee.info/emacs/misc/xah-fly-keys.html
@@ -2321,13 +2321,15 @@ Version: 2017-11-01 2022-04-05"
     xbuf
     ))
 
-(defvar xah-recently-closed-buffers nil "a Alist of recently closed buffers. Each element is (bufferName . filePath). The max number to track is controlled by the variable `xah-recently-closed-buffers-max'.")
+(declare-function minibuffer-keyboard-quit "delsel" ())
+(declare-function org-edit-src-save "org-src" ())
 
 (defcustom xah-recently-closed-buffers-max 40 "The maximum length for `xah-recently-closed-buffers'."
   :type 'integer)
 
-(declare-function minibuffer-keyboard-quit "delsel" ())
-(declare-function org-edit-src-save "org-src" ())
+(defvar xah-recently-closed-buffers nil "A Alist of recently closed buffers.
+Each element is (bufferName . filePath).
+The max number to track is controlled by the variable `xah-recently-closed-buffers-max'.")
 
 (defun xah-add-to-recently-closed (&optional BufferName BufferFileName)
   "Add to `xah-recently-closed-buffers'.
@@ -2339,7 +2341,7 @@ Version: 2023-03-02"
     (setq xah-recently-closed-buffers (butlast xah-recently-closed-buffers 1))))
 
 (defvar xah-temp-dir-path nil "Path to temp dir used by xah commands.
-by default, the value is (concat user-emacs-directory \"temp/\").
+by default, the value is dir named temp at `user-emacs-directory'.
 Version: 2023-03-21")
 
 (setq xah-temp-dir-path
@@ -2350,14 +2352,14 @@ Version: 2023-03-21")
 (defun xah-close-current-buffer ()
   "Close the current buffer with possible backup of modified file.
 
-If the buffer is not a file, save it to `xah-temp-dir-path' named untitled_‹datetime›_‹randomhex›.txt
-If the buffer a file and not modified, kill it.
-If the buffer a file and modified, make the modified version into a backup in the same dir.
+• If the buffer a file and not modified, kill it.
+• If the buffer a file and modified, do nothing. Print a message.
+• If the buffer is not a file, first save it to `xah-temp-dir-path' named untitled_‹datetime›_‹randomhex›.txt.
 
 If the buffer is a file, add the path to the list `xah-recently-closed-buffers'.
 
 URL `http://xahlee.info/emacs/emacs/elisp_close_buffer_open_last_closed.html'
-Version: 2016-06-19 2023-09-08 2023-09-09 2023-09-13"
+Version: 2016-06-19 2023-09-13 2023-09-27"
   (interactive)
   (widen)
   (cond
@@ -3417,6 +3419,7 @@ Version: 2022-10-31"
        ("z f" . vc-revert)      ; u
        ("z g" . vc-push)        ; git push, P
        ("z h" . vc-diff)        ; git diff, =
+       ("z l" . vc-print-root-log) ; L
        ("z m" . vc-dir)         ; git status, C-x v d
        ("z n" . vc-print-log)   ; git log, l
        ("z r" . vc-merge)       ; m
@@ -3425,7 +3428,6 @@ Version: 2022-10-31"
 
        ("z 1" . vc-create-tag)            ; s
        ("z 2" . vc-insert-headers)        ; h
-       ("z 3" . vc-print-root-log)        ; L
        ("z 4" . vc-retrieve-tag)          ; r
        ("z 5" . vc-revision-other-window) ; ~
        ("z 6" . vc-switch-backend)        ; b
