@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.11.20230928111028
+;; Version: 24.12.20230929141252
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "29"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -905,7 +905,7 @@ followed by 2 spaces.
 ,it means replace by empty string.
 
 URL `http://xahlee.info/emacs/emacs/elisp_change_brackets.html'
-Version: 2020-11-01 2023-03-31 2023-08-25 2023-09-19"
+Version: 2020-11-01 2023-03-31 2023-08-25 2023-09-29"
   (interactive
    (let ((xbrackets
           '(
@@ -953,9 +953,8 @@ Version: 2020-11-01 2023-03-31 2023-08-25 2023-09-19"
             "heavy pointing angle ornament ❰ ❱"
             "none  "
             )))
-
-     (list
-      (let ((completion-ignore-case t))
+     (let ((completion-ignore-case t))
+       (list
         (completing-read "Replace this:" xbrackets nil t nil nil (car xbrackets))
         (completing-read "To:" xbrackets nil t nil nil (car (last xbrackets)))))))
   (let (xp1 xp2 xleft xright xtoL xtoR)
@@ -2435,79 +2434,86 @@ This is useful for transforming certain url into file path (your website url), s
 
 (defun xah-open-file-at-cursor ()
   "Open the file path under cursor.
-If there is selection, use it for path.
-If the path starts with “http://”, open the URL in browser.
-Input path can be {relative, full path, URL}.
-Path may have a trailing “:‹n›” that indicates line number, or “:‹n›:‹m›” with line and column number. If so, jump to that line number.
-If path does not have a file extension, automatically try with “.el” for elisp files.
+
+• If there is selection, use it for path.
+• Path can be {relative, full path, URL}.
+• If the path starts with 「https*://」, open the URL in browser.
+• Path may have a trailing 「:‹n›」 that indicates line number, or 「:‹n›:‹m›」 with line and column number. If so, jump to that line number.
+
+If path does not have a file extension, automatically try with .el for elisp files.
 
 See also `xah-open-file-at-cursor-pre-hook'.
 
 This command is similar to `find-file-at-point' but without prompting for confirmation.
 
 URL `http://xahlee.info/emacs/emacs/emacs_open_file_path_fast.html'
-Version: 2020-10-17 2021-10-16 2023-02-23 2023-03-22"
+Version: 2020-10-17 2023-03-22 2023-09-29"
   (interactive)
-  (let* ((xinput
-          (if (region-active-p)
-              (buffer-substring-no-properties (region-beginning) (region-end))
-            (let ((xp0 (point)) xp1 xp2
-                  (xpathStops "^  \t\n\"`'‘’“”|()[]{}「」<>〔〕〈〉《》【】〖〗«»‹›❮❯❬❭〘〙·。\\"))
-              (skip-chars-backward xpathStops)
-              (setq xp1 (point))
-              (goto-char xp0)
-              (skip-chars-forward xpathStops)
-              (setq xp2 (point))
-              (goto-char xp0)
-              (buffer-substring-no-properties xp1 xp2))))
-         xinput2 xpath
-         )
-    (setq xinput2
-          (if (> (length xah-open-file-at-cursor-pre-hook) 0)
-              (let ((xx (run-hook-with-args-until-success 'xah-open-file-at-cursor-pre-hook xinput)))
-                (if xx xx xinput))
-            xinput))
-    (setq xpath (replace-regexp-in-string "^/C:/" "/" (replace-regexp-in-string "^file://" "" (replace-regexp-in-string ":\\'" "" xinput2))))
+  (let (xinput xinput2 xpath)
+    (setq
+     xinput
+     (if (region-active-p)
+         (buffer-substring-no-properties (region-beginning) (region-end))
+       (let ((xp0 (point)) xp1 xp2
+             (xpathStops "^  \t\n\"`'‘’“”|()[]{}「」<>〔〕〈〉《》【】〖〗«»‹›❮❯❬❭〘〙·。\\"))
+         (skip-chars-backward xpathStops)
+         (setq xp1 (point))
+         (goto-char xp0)
+         (skip-chars-forward xpathStops)
+         (setq xp2 (point))
+         (goto-char xp0)
+         (buffer-substring-no-properties xp1 xp2)))
+     xinput2
+     (if (> (length xah-open-file-at-cursor-pre-hook) 0)
+         (let ((xprehook (run-hook-with-args-until-success 'xah-open-file-at-cursor-pre-hook xinput)))
+           (if xprehook xprehook xinput))
+       xinput)
+     xpath
+     (replace-regexp-in-string "^/C:/" "/" (replace-regexp-in-string "^file://" "" (replace-regexp-in-string ":\\'" "" xinput2))))
+
     (if (string-match-p "\\`https?://" xpath)
         (browse-url xpath)
-      (progn ; not starting http://
-        ;; remove query
-        (let ((xHasQuery (string-match "\?[a-z]+=" xpath)))
-          (if xHasQuery
-              (setq xpath (substring xpath 0 xHasQuery))
-            nil))
-        (if (string-match "#" xpath)
-            (let ((xfpath (substring xpath 0 (match-beginning 0)))
-                  (xfractPart (substring xpath (1+ (match-beginning 0)))))
-              (if (file-exists-p xfpath)
-                  (progn
-                    (find-file xfpath)
-                    (goto-char (point-min))
-                    (search-forward xfractPart))
-                (when (y-or-n-p (format "file does not exist: [%s]. Create?" xfpath))
-                  (find-file xfpath))))
-          (if (string-match "^\\`\\(.+?\\):\\([0-9]+\\)\\(:[0-9]+\\)?\\'" xpath)
-              (let ((xfpath (match-string-no-properties 1 xpath))
-                    (xlineNum (string-to-number (match-string-no-properties 2 xpath))))
-                (if (file-exists-p xfpath)
-                    (progn
-                      (find-file xfpath)
-                      (goto-char (point-min))
-                      (forward-line (1- xlineNum)))
-                  (when (y-or-n-p (format "file does not exist: [%s]. Create?" xfpath))
-                    (find-file xfpath))))
-            (if (file-exists-p xpath)
-                (progn ; open f.ts instead of f.js
-                  (let ((xext (file-name-extension xpath))
-                        (xfnamecore (file-name-sans-extension xpath)))
-                    (if (and (string-equal xext "js")
-                             (file-exists-p (concat xfnamecore ".ts")))
-                        (find-file (concat xfnamecore ".ts"))
-                      (find-file xpath))))
-              (if (file-exists-p (concat xpath ".el"))
-                  (find-file (concat xpath ".el"))
-                (when (y-or-n-p (format "file does not exist: [%s]. Create?" xpath))
-                  (find-file xpath))))))))))
+      (let ((xpathNoQ
+             (let ((xHasQuery (string-match "\?[a-z]+=" xpath)))
+               (if xHasQuery
+                   (substring xpath 0 xHasQuery)
+                 xpath))))
+        (cond
+         ((string-match "#" xpathNoQ)
+          (let ((xfpath (substring xpathNoQ 0 (match-beginning 0)))
+                (xfractPart (substring xpathNoQ (1+ (match-beginning 0)))))
+            (if (file-exists-p xfpath)
+                (progn
+                  (find-file xfpath)
+                  (goto-char (point-min))
+                  (search-forward xfractPart))
+              (progn
+                (message "File does not exist. Created at\n%s" xfpath)
+                (find-file xfpath)))))
+         ((string-match "^\\`\\(.+?\\):\\([0-9]+\\)\\(:[0-9]+\\)?\\'" xpathNoQ)
+          (let ((xfpath (match-string-no-properties 1 xpathNoQ))
+                (xlineNum (string-to-number (match-string-no-properties 2 xpathNoQ))))
+            (if (file-exists-p xfpath)
+                (progn
+                  (find-file xfpath)
+                  (goto-char (point-min))
+                  (forward-line (1- xlineNum)))
+              (progn
+                (message "File does not exist. Created at\n%s" xfpath)
+                (find-file xfpath)))))
+         ((file-exists-p xpathNoQ)
+          (progn ; open f.ts instead of f.js
+            (let ((xext (file-name-extension xpathNoQ))
+                  (xfnamecore (file-name-sans-extension xpathNoQ)))
+              (if (and (string-equal xext "js")
+                       (file-exists-p (concat xfnamecore ".ts")))
+                  (find-file (concat xfnamecore ".ts"))
+                (find-file xpathNoQ)))))
+         ((file-exists-p (concat xpathNoQ ".el"))
+          (find-file (concat xpathNoQ ".el")))
+         (t (progn
+              (message "File does not exist. Created at\n%s" xpathNoQ)
+              (find-file xpathNoQ))))))))
 
 
 
@@ -2518,30 +2524,24 @@ Version: 2020-10-17 2021-10-16 2023-02-23 2023-03-22"
 (defun xah-run-current-go-file ()
   "Run or build current golang file.
 To build, call `universal-argument' first.
-Version: 2018-10-12"
+Version: 2018-10-12 2023-09-29"
   (interactive)
-  (when (not buffer-file-name) (save-buffer))
+  (when (not buffer-file-name) (user-error "Buffer is not file. Save it first."))
   (when (buffer-modified-p) (save-buffer))
-  (let* (
-         (xoutputb "*xah-run output*")
-         ;; (resize-mini-windows nil)
-         (xfname buffer-file-name)
-         ;; (xfSuffix (file-name-extension xfname))
-         (xprogName "go")
-         (xcmdStr
-          (concat xprogName " \""   xfname "\" &")))
-    (setq xcmdStr (format (if current-prefix-arg
-                              "%s build \"%s\" "
-                            "%s run \"%s\" &")
-                          xprogName xfname))
-    (progn
-      (message "running %s" xfname)
-      (message "%s" xcmdStr)
-      (shell-command xcmdStr xoutputb )
-      ;;
-      )))
+  (let (xoutputb xfname xprogName xcmdStr)
+    (setq
+     xoutputb (generate-new-buffer "*xah-run output*")
+     xfname buffer-file-name
+     xprogName "go"
+     xcmdStr (format (if current-prefix-arg
+                         "%s build \"%s\" "
+                       "%s run \"%s\" &")
+                     xprogName xfname))
+    (message "running %s" xfname)
+    (message "%s" xcmdStr)
+    (shell-command xcmdStr xoutputb)))
 
-(defconst xah-run-current-file-map
+(defvar xah-run-current-file-map
   '(("clj" . "clj")
     ("go" . "go run")
     ("hs" . "runhaskell")
@@ -2567,7 +2567,10 @@ Version: 2018-10-12"
     ("wl" . "wolframscript -file")
     ("wls" . "wolframscript -file")
     ("pov" . "povray +R2 +A0.1 +J1.2 +Am2 +Q9 +H480 +W640"))
-  "A association list that maps file extension to program name, used by `xah-run-current-file'. Each item is (EXT . PROGRAM), both strings. EXT is file suffix (without the dot prefix), PROGRAM is program name or path, with possibly command options. You can customize this alist.")
+ "A association list that maps file extension to program name, used by `xah-run-current-file'.
+Each item is (EXT . PROGRAM), both strings.
+EXT is file suffix (without the dot prefix), PROGRAM is program name or path, with possibly command options.
+You can customize this alist.")
 
 (defun xah-run-current-file ()
   "Execute the current file.
@@ -2578,28 +2581,27 @@ File suffix is used to determine which program to run, set in the variable `xah-
 If the file is modified or not saved, save it automatically before run.
 
 URL `http://xahlee.info/emacs/emacs/elisp_run_current_file.html'
-Version: 2020-09-24 2022-08-12 2022-09-16 2022-09-18"
+Version: 2020-09-24 2022-09-18 2023-09-29"
   (interactive)
   (setenv "NO_COLOR" "1") ; 2022-09-10 for deno. default color has yellow parts, hard to see
-  (when (not buffer-file-name) (save-buffer))
-  (let* ((xoutBuffer (generate-new-buffer-name "*xah-run output*"))
-         ;; (resize-mini-windows nil)
-         (xextAppMap xah-run-current-file-map)
-         (xfname buffer-file-name)
-         (xfExt (file-name-extension xfname))
-         (xappCmdStr (cdr (assoc xfExt xextAppMap)))
-         xcmdStr
-         )
-
-    ;; FIXME: Rather than `shell-command' with an `&', better use
-    ;; `make-process' or `start-process' since we're not using the shell at all
-    ;; (worse, we need to use `shell-quote-argument' to circumvent the shell).
-    (setq xcmdStr
+  (when (not buffer-file-name) (user-error "Buffer is not file. Save it first."))
+  (when (buffer-modified-p) (save-buffer))
+  (let (xoutBuffer xextAppMap xfname xfExt xappCmdStr xcmdStr)
+    (setq xoutBuffer (generate-new-buffer-name "*xah-run output*")
+          xextAppMap xah-run-current-file-map
+          xfname buffer-file-name
+          xfExt (file-name-extension buffer-file-name)
+          xappCmdStr (cdr (assoc xfExt xextAppMap))
+          xcmdStr
           (when xappCmdStr
             (format "%s %s &"
                     xappCmdStr
                     (shell-quote-argument xfname))))
-    (when (buffer-modified-p) (save-buffer))
+
+    ;; FIXME: Rather than `shell-command' with an `&', better use
+    ;; `make-process' or `start-process' since we're not using the shell at all
+    ;; (worse, we need to use `shell-quote-argument' to circumvent the shell).
+
     (run-hooks 'xah-run-current-file-before-hook)
     (cond
      ((string-equal xfExt "el")
