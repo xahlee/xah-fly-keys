@@ -1790,8 +1790,8 @@ Version: 2013-05-10 2022-04-07 2023-01-01 2023-08-25 2023-09-19"
                   "all digits • 20180412224611"
                   "date and digits • 2018-04-12_224611"
                   "weekday • 2018-04-12 Thursday"
-                  "usa date + weekday • Thursday, April 12, 2018"
-                  "usa short + weekday • Thu, Apr 12, 2018"
+                  "usa date ➕ weekday • Thursday, April 12, 2018"
+                  "usa short ➕ weekday • Thu, Apr 12, 2018"
                   "usa mdy full • April 12, 2018"
                   "usa mdy short • Apr 12, 2018"
                   ) nil t))
@@ -1812,8 +1812,8 @@ Version: 2013-05-10 2022-04-07 2023-01-01 2023-08-25 2023-09-19"
         (format-time-string "%Y-%m-%d %T")
         (funcall (lambda (xx) (format "%s:%s" (substring xx 0 3) (substring xx 3 5))) (format-time-string "%z"))))
       ((string-match "^weekday" xstyle) (format-time-string "%Y-%m-%d %A"))
-      ((string-match "^usa date + weekday" xstyle) (format-time-string "%A, %B %d, %Y"))
-      ((string-match "^usa short + weekday" xstyle) (format-time-string "%a, %b %d, %Y"))
+      ((string-match "^usa date ➕ weekday" xstyle) (format-time-string "%A, %B %d, %Y"))
+      ((string-match "^usa short ➕ weekday" xstyle) (format-time-string "%a, %b %d, %Y"))
       ((string-match "^usa mdy full" xstyle) (format-time-string "%B %d, %Y"))
       ((string-match "^usa mdy short" xstyle) (format-time-string "%b %d, %Y"))
       (t (format-time-string "%Y-%m-%d"))))))
