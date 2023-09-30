@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.12.20230929141252
+;; Version: 24.12.20230930093650
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "29"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1773,50 +1773,38 @@ Version: 2016-07-17"
   "Insert current date time.
 Insert date in this format: yyyy-mm-dd.
 If `universal-argument' is called first, prompt for a format to use.
-If there is selection, delete it first.
-
-URL `http://xahlee.info/emacs/emacs/elisp_insert-date-time.html'
-Version: 2013-05-10 2022-04-07 2023-01-01 2023-08-25 2023-09-19"
+If there is selection, delete it first. URL `http://xahlee.info/emacs/emacs/elisp_insert-date-time.html'
+Version: 2013-05-10 2023-09-19 2023-09-30"
   (interactive)
-  (let ((xstyle
-         (if current-prefix-arg
-             (let ((completion-ignore-case t))
-               (completing-read
-                "Style:"
-                '(
-                  "ISO date • 2018-04-12"
-                  "ISO full • 2018-04-12T22:46:11-07:00"
-                  "ISO space • 2018-04-12 22:46:11-07:00"
-                  "all digits • 20180412224611"
-                  "date and digits • 2018-04-12_224611"
-                  "weekday • 2018-04-12 Thursday"
-                  "usa date + weekday • Thursday, April 12, 2018"
-                  "usa short + weekday • Thu, Apr 12, 2018"
-                  "usa mdy full • April 12, 2018"
-                  "usa mdy short • Apr 12, 2018"
-                  ) nil t))
-           "ISO date • 2018-04-12"
-           )))
+  (let (xmenu xstyle)
+    (setq
+     xmenu
+     '(("ISO date • 2018-04-12" . (format-time-string "%Y-%m-%d"))
+       ("all digits • 20180412224611" . (format-time-string "%Y%m%d%H%M%S"))
+       ("date and digits • 2018-04-12_224611" . (format-time-string "%Y-%m-%d_%H%M%S"))
+       ("ISO full • 2018-04-12T22:46:11-07:00" .
+        (concat
+         (format-time-string "%Y-%m-%dT%T")
+         ((lambda (xx) (format "%s:%s" (substring xx 0 3) (substring xx 3 5)))
+          (format-time-string "%z"))))
+       ("ISO space • 2018-04-12 22:46:11-07:00" .
+        (concat
+         (format-time-string "%Y-%m-%d %T")
+         ((lambda (xx) (format "%s:%s" (substring xx 0 3) (substring xx 3 5)))
+          (format-time-string "%z"))))
+       ("ISO date + weekday • 2018-04-12 Thursday" . (format-time-string "%Y-%m-%d %A"))
+       ("USA date + weekday • Thursday, April 12, 2018" . (format-time-string "%A, %B %d, %Y"))
+       ("USA date + weekday abbrev • Thu, Apr 12, 2018" . (format-time-string "%a, %b %d, %Y"))
+       ("USA date • April 12, 2018" . (format-time-string "%B %d, %Y"))
+       ("USA date abbrev • Apr 12, 2018" . (format-time-string "%b %d, %Y")))
+
+     xstyle
+     (if current-prefix-arg
+         (let ((completion-ignore-case t))
+           (completing-read "Style:" xmenu nil t nil nil (caar xmenu)))
+       (caar xmenu)))
     (when (region-active-p) (delete-region (region-beginning) (region-end)))
-    (insert
-     (cond
-      ((string-match "^ISO date" xstyle) (format-time-string "%Y-%m-%d"))
-      ((string-match "^all digits" xstyle) (format-time-string "%Y%m%d%H%M%S"))
-      ((string-match "^date and digits" xstyle) (format-time-string "%Y-%m-%d_%H%M%S"))
-      ((string-match "^ISO full" xstyle)
-       (concat
-        (format-time-string "%Y-%m-%dT%T")
-        (funcall (lambda (xx) (format "%s:%s" (substring xx 0 3) (substring xx 3 5))) (format-time-string "%z"))))
-      ((string-match "^ISO space" xstyle)
-       (concat
-        (format-time-string "%Y-%m-%d %T")
-        (funcall (lambda (xx) (format "%s:%s" (substring xx 0 3) (substring xx 3 5))) (format-time-string "%z"))))
-      ((string-match "^weekday" xstyle) (format-time-string "%Y-%m-%d %A"))
-      ((string-match "^usa date \\+ weekday" xstyle) (format-time-string "%A, %B %d, %Y"))
-      ((string-match "^usa short \\+ weekday" xstyle) (format-time-string "%a, %b %d, %Y"))
-      ((string-match "^usa mdy full" xstyle) (format-time-string "%B %d, %Y"))
-      ((string-match "^usa mdy short" xstyle) (format-time-string "%b %d, %Y"))
-      (t (format-time-string "%Y-%m-%d"))))))
+    (insert (eval (cdr (assoc xstyle xmenu))))))
 
 (defun xah-insert-bracket-pair (LBracket RBracket &optional WrapMethod)
   "Insert brackets around selection, word, at point, and maybe move cursor in between.
