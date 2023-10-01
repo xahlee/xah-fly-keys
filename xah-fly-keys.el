@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.12.20230930093650
+;; Version: 24.12.20231001114016
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "29"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1773,21 +1773,23 @@ Version: 2016-07-17"
   "Insert current date time.
 Insert date in this format: yyyy-mm-dd.
 If `universal-argument' is called first, prompt for a format to use.
-If there is selection, delete it first. URL `http://xahlee.info/emacs/emacs/elisp_insert-date-time.html'
-Version: 2013-05-10 2023-09-19 2023-09-30"
+If there is selection, delete it first.
+
+URL `http://xahlee.info/emacs/emacs/elisp_insert-date-time.html'
+Version: 2013-05-10 2023-09-30 2023-10-01"
   (interactive)
   (let (xmenu xstyle)
     (setq
      xmenu
      '(("ISO date • 2018-04-12" . (format-time-string "%Y-%m-%d"))
-       ("all digits • 20180412224611" . (format-time-string "%Y%m%d%H%M%S"))
-       ("date and digits • 2018-04-12_224611" . (format-time-string "%Y-%m-%d_%H%M%S"))
-       ("ISO full • 2018-04-12T22:46:11-07:00" .
+       ("all digits datetime • 20180412224611" . (format-time-string "%Y%m%d%H%M%S"))
+       ("date _ time digits • 2018-04-12_224611" . (format-time-string "%Y-%m-%d_%H%M%S"))
+       ("ISO datetime full • 2018-04-12T22:46:11-07:00" .
         (concat
          (format-time-string "%Y-%m-%dT%T")
          ((lambda (xx) (format "%s:%s" (substring xx 0 3) (substring xx 3 5)))
           (format-time-string "%z"))))
-       ("ISO space • 2018-04-12 22:46:11-07:00" .
+       ("ISO datetime w space • 2018-04-12 22:46:11-07:00" .
         (concat
          (format-time-string "%Y-%m-%d %T")
          ((lambda (xx) (format "%s:%s" (substring xx 0 3) (substring xx 3 5)))
