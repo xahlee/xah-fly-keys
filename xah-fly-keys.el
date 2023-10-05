@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.12.20231001114016
+;; Version: 24.13.20231005090319
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "29"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -211,22 +211,20 @@ Version: 2016-04-04 2023-09-03"
   (set-mark-command t))
 
 (defun xah-beginning-of-line-or-block ()
-  "Move cursor to beginning of line or previous block.
+  "Move cursor to beginning of indent or line, end of previous block, in that order.
 
-• When called first time, move cursor to beginning of char in current line. (if already, move to beginning of line.)
-• When called again, move cursor backward by jumping over any sequence of whitespaces containing 2 blank lines.
-• if `visual-line-mode' is on, beginning of line means visual line.
+If `visual-line-mode' is on, beginning of line means visual line.
 
 URL `http://xahlee.info/emacs/emacs/emacs_keybinding_design_beginning-of-line-or-block.html'
-Version: 2018-06-04 2021-03-16 2022-03-30 2022-07-03 2022-07-06"
+Version: 2018-06-04 2022-07-03 2022-07-06 2023-10-04"
   (interactive)
   (let ((xp (point)))
-    (if (or (equal (point) (line-beginning-position))
+    (if (or (eq (point) (line-beginning-position))
             (eq last-command this-command))
-        (when
-            (re-search-backward "\n[\t\n ]*\n+" nil :move)
+        (when (re-search-backward "\n[\t\n ]*\n+" nil :move)
           (skip-chars-backward "\n\t ")
-          (forward-char))
+          ;; (forward-char)
+          )
       (if visual-line-mode
           (beginning-of-visual-line)
         (if (eq major-mode 'eshell-mode)
@@ -245,9 +243,9 @@ Version: 2018-06-04 2021-03-16 2022-03-30 2022-07-03 2022-07-06"
 • if `visual-line-mode' is on, end of line means visual line.
 
 URL `http://xahlee.info/emacs/emacs/emacs_keybinding_design_beginning-of-line-or-block.html'
-Version: 2018-06-04 2021-03-16 2022-03-05"
+Version: 2018-06-04 2022-03-05 2023-10-04"
   (interactive)
-  (if (or (equal (point) (line-end-position))
+  (if (or (eq (point) (line-end-position))
           (eq last-command this-command))
       (re-search-forward "\n[\t\n ]*\n+" nil :move)
     (if visual-line-mode
