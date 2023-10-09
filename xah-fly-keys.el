@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.13.20231009115302
+;; Version: 24.13.20231009132304
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "29"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1665,6 +1665,8 @@ Version: 2018-06-18 2021-09-30"
 (defun xah-delete-current-text-block ()
   "Delete the current text block plus blank lines, or selection, and copy to `kill-ring'.
 
+If cursor is between blank lines, delete following blank lines.
+
 URL `http://xahlee.info/emacs/emacs/emacs_delete_block.html'
 Version: 2017-07-09 2023-06-07 2023-10-09"
   (interactive)
@@ -1673,9 +1675,8 @@ Version: 2017-07-09 2023-06-07 2023-10-09"
         (setq xp1 (region-beginning) xp2 (region-end))
       (progn
         (if (re-search-backward "\n[ \t]*\n+" nil :move)
-            (setq xp1 (match-beginning 0))
+            (setq xp1 (goto-char (match-end 0)))
           (setq xp1 (point)))
-        (skip-chars-forward " \n\t")
         (if (re-search-forward "\n[ \t]*\n+" nil :move)
             (setq xp2 (match-end 0))
           (setq xp2 (point-max)))))
