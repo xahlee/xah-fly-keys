@@ -1677,7 +1677,7 @@ Version: 2017-07-09 2023-06-07 2023-10-09"
           (setq xp1 (point)))
         (skip-chars-forward " \n\t")
         (if (re-search-forward "\n[ \t]*\n+" nil :move)
-            (setq xp2 (match-end 0))
+            (setq xp2 (match-beginning 0))
           (setq xp2 (point-max)))))
     (kill-region xp1 xp2)))
 
