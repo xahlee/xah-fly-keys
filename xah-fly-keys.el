@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.13.20231009132304
+;; Version: 24.13.20231025112537
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "29"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2230,10 +2230,10 @@ Version: 2023-07-23"
 A user buffer has buffer name NOT starts with * or space.
 This function is used by buffer switching command and close buffer command, so that next buffer shown is a user buffer.
 You can override this function to get your idea of “user buffer”.
-Version: 2016-06-18 2022-05-19"
+Version: 2016-06-18 2022-05-19 2023-10-18"
   (interactive)
   (cond
-   ((string-equal "*" (substring (buffer-name) 0 1)) nil)
+   ((string-match "^\*" (buffer-name)) nil)
    ((eq major-mode 'dired-mode) nil)
    ((eq major-mode 'eww-mode) nil)
    ((eq major-mode 'help-mode) nil)
@@ -2248,7 +2248,7 @@ Version: 2016-06-19"
   (interactive)
   (next-buffer)
   (let ((i 0))
-    (while (< i 20)
+    (while (< i 30)
       (if (not (xah-user-buffer-p))
           (progn (next-buffer)
                  (setq i (1+ i)))
@@ -2341,17 +2341,20 @@ Version: 2023-03-21")
 (defun xah-close-current-buffer ()
   "Close the current buffer with possible backup of modified file.
 
-• If the buffer a file and not modified, kill it.
-• If the buffer a file and modified, do nothing. Print a message.
+• If the buffer is a file and not modified, kill it. If is modified, do nothing. Print a message.
 • If the buffer is not a file, first save it to `xah-temp-dir-path' named untitled_‹datetime›_‹randomhex›.txt.
+
+If `universal-argument' is called first, call `kill-buffer'.
+(this is useful when a file is changed by some other app, and auto refresh is on, and emacs goes into a loop asking to save.)
 
 If the buffer is a file, add the path to the list `xah-recently-closed-buffers'.
 
 URL `http://xahlee.info/emacs/emacs/elisp_close_buffer_open_last_closed.html'
-Version: 2016-06-19 2023-09-13 2023-09-27"
+Version: 2016-06-19 2023-09-27 2023-10-25"
   (interactive)
   (widen)
   (cond
+   (current-prefix-arg (kill-buffer))
    ;; ((eq major-mode 'minibuffer-inactive-mode) (minibuffer-keyboard-quit))
    ;; ((active-minibuffer-window) (minibuffer-keyboard-quit))
    ((minibufferp (current-buffer)) (minibuffer-keyboard-quit))
