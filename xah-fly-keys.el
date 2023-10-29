@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.13.20231025112537
+;; Version: 24.13.20231029144236
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "29"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -2345,7 +2345,9 @@ Version: 2023-03-21")
 • If the buffer is not a file, first save it to `xah-temp-dir-path' named untitled_‹datetime›_‹randomhex›.txt.
 
 If `universal-argument' is called first, call `kill-buffer'.
-(this is useful when a file is changed by some other app, and auto refresh is on, and emacs goes into a loop asking to save.)
+(this is useful when a file is modified, and then it is is changed
+by some app outside emacs, and `auto-revert-mode' is on, then, emacs
+goes into a loop asking to revert or save.)
 
 If the buffer is a file, add the path to the list `xah-recently-closed-buffers'.
 
@@ -2723,36 +2725,37 @@ Backup filename is “‹name›~‹dateTimeStamp›~”. Existing file of the s
 Call `xah-open-last-closed' to open the backup file.
 
 URL `http://xahlee.info/emacs/emacs/elisp_delete-current-file.html'
-Version: 2018-05-15 2023-06-05 2023-08-07 2023-08-11"
+Version: 2018-05-15 2023-08-11 2023-10-28"
   (interactive)
-  (if (eq major-mode 'dired-mode)
-      (message "In dired. Nothing is done.")
-    (let ((xfname buffer-file-name)
-          (xbuffname (buffer-name))
-          xbackupPath)
-      (setq xbackupPath
-            (concat (if xfname xfname (format "%sxx" default-directory))
-                    (format "~%s~" (format-time-string "%Y-%m-%d_%H%M%S"))))
-      (if xfname
-          (progn
-            (save-buffer xfname)
-            (rename-file xfname xbackupPath t)
-            (kill-buffer xbuffname)
-            ;; (dired-jump nil xbackupPath)
-            ;; (revert-buffer t t t)
-            ;; (dired-goto-file xbackupPath)
-            ;; (dired-next-line 1)
-            (when (boundp 'xah-recently-closed-buffers)
-              (push (cons nil xbackupPath) xah-recently-closed-buffers)
-              (message "Deleted.\nBackup at \n%s\nCall `xah-open-last-closed' to open." xbackupPath)))
+  (when (eq major-mode 'dired-mode)
+    (user-error "%s: In dired. Nothing is done." real-this-command))
+  (let ((xfname buffer-file-name)
+        (xbuffname (buffer-name))
+        xbackupPath)
+    (setq xbackupPath
+          (concat (if xfname xfname (format "%sxx" default-directory))
+                  (format "~%s~" (format-time-string "%Y-%m-%d_%H%M%S"))))
+    (if xfname
         (progn
-          (widen)
-          (kill-new (buffer-string))
-          (kill-buffer xbuffname))
-        ;; (when (eq major-mode 'dired-mode) (revert-buffer))
-        ))
-    (when (eq major-mode 'dired-mode)
-      (revert-buffer))))
+          (save-buffer xfname)
+          (rename-file xfname xbackupPath t)
+          (kill-buffer xbuffname)
+          ;; (dired-jump nil xbackupPath)
+          ;; (revert-buffer t t t)
+          ;; (dired-goto-file xbackupPath)
+          ;; (dired-next-line 1)
+          (message "File deleted.
+Backup at
+%s
+Call `xah-open-last-closed' to open." xbackupPath)
+          (when (boundp 'xah-recently-closed-buffers)
+            (push (cons nil xbackupPath) xah-recently-closed-buffers)))
+      (progn
+        (widen)
+        (kill-new (buffer-string))
+        (kill-buffer xbuffname)
+        (message "non-file buffer killed. buffer text copied to `kill-ring'."))))
+  (when (eq major-mode 'dired-mode) (revert-buffer)))
 
 
 
