@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.13.20231029144236
+;; Version: 24.14.20231029171846 
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "29"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1466,7 +1466,7 @@ Version: 2016-10-25 2023-07-10"
             (comment-or-uncomment-region xbegin xend)
             (forward-line )))))))
 
-(defun xah-quote-lines (Begin End QuoteL QuoteR Sep)
+(defun xah-quote-lines (QuoteL QuoteR Sep)
   "Add quotes/brackets and separator (comma) to lines.
 Act on current block or selection.
 
@@ -1491,7 +1491,7 @@ or
 In lisp code, QuoteL QuoteR Sep are strings.
 
 URL `http://xahlee.info/emacs/emacs/emacs_quote_lines.html'
-Version: 2020-06-26 2023-08-05 2023-08-25 2023-09-19"
+Version: 2020-06-26 2023-09-19 2023-10-29"
   (interactive
    (let ((xbrackets
           '(
@@ -1514,14 +1514,10 @@ Version: 2020-06-26 2023-08-05 2023-08-25 2023-09-19"
             "other"
             ))
          (xcomma '("comma ," "semicolon ;" "none" "other"))
-         xp1 xp2 xbktChoice xsep xsepChoice xquoteL xquoteR)
-     (let ((xbds (xah-get-bounds-of-block-or-region)))
-       (setq xp1 (car xbds) xp2 (cdr xbds)))
-
+         xbktChoice xsep xsepChoice xquoteL xquoteR)
      (let ((completion-ignore-case t))
        (setq xbktChoice (completing-read "Quote to use:" xbrackets nil t nil nil (car xbrackets)))
        (setq xsepChoice (completing-read "line separator:" xcomma nil t nil nil (car xcomma))))
-
      (cond
       ((string-equal xbktChoice "none")
        (setq xquoteL "" xquoteR ""))
@@ -1538,8 +1534,10 @@ Version: 2020-06-26 2023-08-05 2023-08-25 2023-09-19"
             ((string-equal xsepChoice "none") "")
             ((string-equal xsepChoice "other") (read-string "Enter separator:"))
             (t xsepChoice)))
-     (list xp1 xp2 xquoteL xquoteR xsep)))
-  (let ((xp1 Begin) (xp2 End) (xquoteL QuoteL) (xquoteR QuoteR) (xsep Sep))
+     (list xquoteL xquoteR xsep)))
+  (let (xp1 xp2 (xquoteL QuoteL) (xquoteR QuoteR) (xsep Sep))
+    (let ((xbds (xah-get-bounds-of-block-or-region)))
+      (setq xp1 (car xbds) xp2 (cdr xbds)))
     (save-excursion
       (save-restriction
         (narrow-to-region xp1 xp2)
