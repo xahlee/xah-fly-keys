@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.14.20231029171846 
+;; Version: 24.15.20231102161602
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "29"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -1569,22 +1569,25 @@ Version: 2017-01-11"
         (while (search-forward "\"" nil t)
           (replace-match "\\\"" t t)))))
 
-(defun xah-unescape-quotes (Begin End)
+(defun xah-unescape-quotes (&optional Begin End)
   "Replace  「\\\"」 by 「\"」 in current line or selection.
 See also: `xah-escape-quotes'
 
 URL `http://xahlee.info/emacs/emacs/elisp_escape_quotes.html'
-Version: 2017-01-11"
-  (interactive
-   (if (region-active-p)
-       (list (region-beginning) (region-end))
-     (list (line-beginning-position) (line-end-position))))
-  (save-excursion
-    (save-restriction
-      (narrow-to-region Begin End)
-      (goto-char (point-min))
-      (while (search-forward "\\\"" nil t)
-        (replace-match "\"" t t)))))
+Version: 2017-01-11 2023-11-02"
+  (interactive)
+  (let (xp1 xp2)
+    (if (and Begin End)
+        (setq xp1 Begin xp2 End)
+      (if (region-active-p)
+          (setq xp1 (region-beginning) xp2 (region-end))
+        (setq xp1 (line-beginning-position) xp2 (line-end-position))))
+    (save-excursion
+      (save-restriction
+        (narrow-to-region xp1 xp2)
+        (goto-char (point-min))
+        (while (search-forward "\\\"" nil t)
+          (replace-match "\"" t t))))))
 
 (defun xah-cycle-hyphen-lowline-space (&optional Begin End)
   "Cycle hyphen/lowline/space chars in selection or inside quote/bracket or line, in that order.
@@ -1752,17 +1755,6 @@ Version: 2015-12-08 2023-04-07"
   (progn
     (copy-to-register ?1 (point-min) (point-min))
     (message "Cleared register 1.")))
-
-(defun xah-copy-rectangle-to-kill-ring (Begin End)
-  "Copy region as column (rectangle region) to `kill-ring'
-See also: `kill-rectangle', `copy-to-register'.
-
-URL `http://xahlee.info/emacs/emacs/emacs_copy_rectangle_text_to_clipboard.html'
-Version: 2016-07-17"
-  ;; extract-rectangle suggested by YoungFrog, 2012-07-25
-  (interactive "r")
-  (require 'rect)
-  (kill-new (mapconcat #'identity (extract-rectangle Begin End) "\n")))
 
 
 ;; insertion commands
@@ -3325,6 +3317,7 @@ Version: 2022-10-31"
        ("r ." . kmacro-start-macro)
        ("r 3" . number-to-register)
        ("r 4" . increment-register)
+
        ;; a
        ;; b
        ("r c" . replace-rectangle)
@@ -3334,13 +3327,15 @@ Version: 2022-10-31"
        ("r g" . kill-rectangle)
        ("r h" . xah-change-bracket-pairs)
        ("r i" . xah-space-to-newline)
-       ("r j" . xah-slash-to-backslash)
+       ("r j" . copy-rectangle-to-register)
        ("r k" . xah-slash-to-double-backslash)
        ("r l" . clear-rectangle)
-       ;; m
+
+       ("r m" . xah-slash-to-backslash)
        ("r n" . rectangle-number-lines)
        ("r o" . open-rectangle)
        ("r p" . kmacro-end-macro)
+
        ;; q
        ("r r" . yank-rectangle)
        ;; s t
@@ -3381,7 +3376,7 @@ Version: 2022-10-31"
        ("t o" . xah-clean-whitespace)
        ("t p" . query-replace-regexp)
        ("t q" . xah-cut-text-in-quote)
-       ("t r" . copy-rectangle-to-register)
+       ;; r
        ;; s
        ("t t" . repeat)
        ("t u" . delete-matching-lines)
