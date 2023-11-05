@@ -4,10 +4,10 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.15.20231102161602
+;; Version: 24.15.20231105091131
 ;; Created: 2013-09-10
-;; Package-Requires: ((emacs "29"))
-;; Keywords: convenience, emulations, vim, ergoemacs
+;; Package-Requires: ((emacs "27"))
+;; Keywords: convenience, vi, vim, ergoemacs, keybinding
 ;; License: GPL v3.
 ;; Homepage: http://xahlee.info/emacs/misc/xah-fly-keys.html
 
