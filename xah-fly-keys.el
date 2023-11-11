@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.15.20231105091131
+;; Version: 24.16.20231111103752
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -264,25 +264,6 @@ Version: 2023-07-31")
 (defconst xah-right-brackets
   (mapcar (lambda (x) (substring x 1 2)) xah-brackets)
   "List of right bracket chars. Each element is a string.")
-
-(defconst xah-punctuation-regex "[\"=]+"
- "A regex string for the purpose of moving cursor to a punctuation, used by `xah-forward-punct'.")
-
-(defun xah-forward-punct (&optional n)
-  "Move cursor to the next occurrence of `xah-punctuation-regex'.
-
-URL `http://xahlee.info/emacs/emacs/emacs_jump_to_punctuations.html'
-Version: 2017-06-26 2023-07-25"
-  (interactive "p")
-  (re-search-forward xah-punctuation-regex nil t n))
-
-(defun xah-backward-punct (&optional n)
-  "Move cursor to the previous occurrence of punctuation.
-See `xah-forward-punct'
-URL `http://xahlee.info/emacs/emacs/emacs_jump_to_punctuations.html'
-Version: 2017-06-26"
-  (interactive "p")
-  (re-search-backward xah-punctuation-regex nil t n))
 
 (defun xah-backward-left-bracket ()
   "Move cursor to the previous occurrence of left bracket.
@@ -1301,15 +1282,15 @@ Move cursor to the beginning of next text block.
 After this command is called, press `xah-repeat-key' to repeat it.
 
 URL `http://xahlee.info/emacs/emacs/elisp_reformat_to_sentence_lines.html'
-Version: 2020-12-02 2023-03-22 2023-05-25"
+Version: 2020-12-02 2023-05-25 2023-11-09"
   (interactive)
   (let (xp1 xp2)
     (let ((xbds (xah-get-bounds-of-block-or-region))) (setq xp1 (car xbds) xp2 (cdr xbds)))
     (save-restriction
       (narrow-to-region xp1 xp2)
       (goto-char (point-min)) (while (search-forward "。" nil t) (replace-match "。\n"))
-      (goto-char (point-min)) (while (search-forward " <a " nil t) (replace-match "\n<a "))
-      (goto-char (point-min)) (while (search-forward "</a> " nil t) (replace-match "</a>\n"))
+      ;; (goto-char (point-min)) (while (search-forward " <a " nil t) (replace-match "\n<a "))
+      ;; (goto-char (point-min)) (while (search-forward "</a> " nil t) (replace-match "</a>\n"))
       (goto-char (point-min))
       (while (re-search-forward "\\([A-Za-z0-9]+\\)[ \t]*\n[ \t]*\\([A-Za-z0-9]+\\)" nil t)
         (replace-match "\\1 \\2"))
@@ -3437,11 +3418,10 @@ Version: 2022-10-31"
        (";" . xah-comment-dwim)
        ("/" . hippie-expand)
 
-       ("[" . xah-backward-punct)
-       ("]" . xah-forward-punct)
+       ("[" . split-window-below)
+       ("]" . delete-other-windows)
+       ;; \\
        ("`" . other-frame)
-
-       ;; ("$" . xah-forward-punct)
 
        ("1" . undefined)
        ("2" . undefined)
