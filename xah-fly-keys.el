@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.16.20231111103752
+;; Version: 24.17.20231111131112
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -3413,14 +3413,13 @@ Version: 2022-10-31"
      '(("SPC" . xah-fly-leader-key-map)
        ("'" . xah-reformat-lines)
        ("," . xah-shrink-whitespaces)
-       ("-" . xah-cycle-hyphen-lowline-space)
+       ("-" . delete-other-windows)
        ("." . backward-kill-word)
-       (";" . xah-comment-dwim)
        ("/" . hippie-expand)
-
+       (";" . xah-comment-dwim)
        ("[" . split-window-below)
-       ("]" . delete-other-windows)
-       ;; \\
+       ("\\" . xah-cycle-hyphen-lowline-space)
+       ("]" . split-window-right)
        ("`" . other-frame)
 
        ("1" . undefined)
