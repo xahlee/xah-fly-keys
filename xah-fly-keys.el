@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.18.20231112185021
+;; Version: 24.18.20231114193811
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -2025,8 +2025,8 @@ Version: 2021-01-05 2023-08-25 2023-08-31 2023-09-19"
   "Select the current/next block plus 1 blankline.
 If region is active, extend selection downward by block.
 
-URL `http://xahlee.info/emacs/emacs/modernization_mark-word.html'
-Version: 2019-12-26 2021-04-04 2021-08-13"
+URL `http://xahlee.info/emacs/emacs/emacs_select_text_block.html'
+Version: 2019-12-26 2021-08-13 2023-11-14"
   (interactive)
   (if (region-active-p)
       (re-search-forward "\n[ \t]*\n[ \t]*\n*" nil :move)
@@ -2041,8 +2041,8 @@ Version: 2019-12-26 2021-04-04 2021-08-13"
   "Select current line. If region is active, extend selection downward by line.
 If `visual-line-mode' is on, consider line as visual line.
 
-URL `http://xahlee.info/emacs/emacs/modernization_mark-word.html'
-Version: 2017-11-01 2021-03-19 2023-07-16"
+URL `http://xahlee.info/emacs/emacs/emacs_select_line.html'
+Version: 2017-11-01 2023-07-16 2023-11-14"
   (interactive)
   (if (region-active-p)
       (if visual-line-mode
@@ -2071,8 +2071,8 @@ when there is no selection,
 
 when there is a selection, the selection extension behavior is still experimental. But when cursor is on a any type of bracket (parenthesis, quote), it extends selection to outer bracket.
 
-URL `http://xahlee.info/emacs/emacs/modernization_mark-word.html'
-Version: 2020-02-04 2023-07-23 2023-08-02 2023-08-24"
+URL `http://xahlee.info/emacs/emacs/emacs_extend_selection.html'
+Version: 2020-02-04 2023-08-24 2023-11-14"
   (interactive)
 
   (cond
@@ -2173,13 +2173,13 @@ Version: 2020-02-04 2023-07-23 2023-08-02 2023-08-24"
 
 (defun xah-select-text-in-quote ()
   "Select text between the nearest left and right delimiters.
-Delimiters here includes the following chars: \" ` and anything in `xah-brackets'.
+Delimiters here includes QUOTATION MARK, GRAVE ACCENT, and anything in `xah-brackets'.
 This command ignores nesting. For example, if text is
-    (a(b)c▮)
-the selected char is “c”, not “a(b)c”.
+「(a(b)c▮)」
+the selected char is 「c」, not 「a(b)c」.
 
-URL `http://xahlee.info/emacs/emacs/modernization_mark-word.html'
-Version: 2020-11-24 2023-07-16 2023-07-23"
+URL `http://xahlee.info/emacs/emacs/emacs_select_quote_text.html'
+Version: 2020-11-24 2023-07-23 2023-11-14"
   (interactive)
   (let ((xskipChars (concat "^\"`" (mapconcat #'identity xah-brackets ""))))
     (skip-chars-backward xskipChars)
@@ -2188,13 +2188,9 @@ Version: 2020-11-24 2023-07-16 2023-07-23"
 
 (defun xah-cut-text-in-quote ()
   "Cut text between the nearest left and right delimiters.
-Delimiters here includes the following chars: \" ` and anything in `xah-brackets'.
-This command ignores nesting. For example, if text is
-    (a(b)c▮)
-the selected char is “c”, not “a(b)c”.
+See `xah-select-text-in-quote'
 
-URL `http://xahlee.info/emacs/emacs/modernization_mark-word.html'
-Version: 2023-07-23"
+Version: 2023-07-23 2023-11-14"
   (interactive)
   (let ((xskipChars (concat "^\"`" (mapconcat #'identity xah-brackets ""))))
     (skip-chars-backward xskipChars)
