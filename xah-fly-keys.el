@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.18.20231114222037
+;; Version: 24.18.20231115084756
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -2358,6 +2358,7 @@ Version: 2016-06-19 2023-09-27 2023-10-25"
                             xah-temp-dir-path
                             (format-time-string "%Y%m%d_%H%M%S")
                             (random #xfffff))))
+      (when (not (file-exists-p xah-temp-dir-path)) (make-directory xah-temp-dir-path))
       (write-region (point-min) (point-max) xnewName)
       (xah-add-to-recently-closed (buffer-name) xnewName)
       (kill-buffer)))
