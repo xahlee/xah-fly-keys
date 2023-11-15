@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.18.20231114193811
+;; Version: 24.18.20231114222037
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -989,8 +989,8 @@ Version: 2020-11-01 2023-03-31 2023-08-25 2023-09-29"
   "Toggle the letter case of current word or selection.
 Always cycle in this order: Init Caps, ALL CAPS, all lower.
 
-URL `http://xahlee.info/emacs/emacs/modernization_upcase-word.html'
-Version: 2020-06-26"
+URL `http://xahlee.info/emacs/emacs/emacs_toggle_letter_case.html'
+Version: 2020-06-26 2023-11-14"
   (interactive)
   (let ( (deactivate-mark nil) xp1 xp2)
     (if (region-active-p)
@@ -1021,8 +1021,8 @@ Version: 2020-06-26"
 (defun xah-toggle-previous-letter-case ()
   "Toggle the letter case of the letter to the left of cursor.
 
-URL `http://xahlee.info/emacs/emacs/modernization_upcase-word.html'
-Version: 2015-12-22"
+URL `http://xahlee.info/emacs/emacs/emacs_toggle_letter_case.html'
+Version: 2015-12-22 2023-11-14"
   (interactive)
   (let ((case-fold-search nil))
     (left-char 1)
