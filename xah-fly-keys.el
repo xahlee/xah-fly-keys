@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.18.20231115084756
+;; Version: 24.18.20231124130215
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -865,9 +865,10 @@ Version: 2023-07-22 2023-08-10 2023-08-23 2023-11-12"
      ((eq (char-before) 9) (while (eq (char-before) 9) (delete-char -1)))
      ((eq (char-before) 10) (while (eq (char-before) 10) (delete-char -1)))
      ((setq xfun (assq major-mode xah-smart-delete-dispatch))
-      (message "calling %s" xfun)
+      (message "calling cdr of %s" xfun)
       (funcall (cdr xfun)))
      ((prog2 (backward-char) (looking-at "\\s(\\|\\s)") (forward-char))
+      (message "calling xah-delete-bracket-text-backward")
       (xah-delete-bracket-text-backward))
      ((prog2 (backward-char) (looking-at "\\s\"") (forward-char))
       (message "calling xah-delete-string-backward")
