@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.18.20231124130215
+;; Version: 24.19.20231204080156
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -1979,7 +1979,7 @@ xString can be any string, needs not be a char or emoji.
    ("sparkles ✨" . "✨")
    ("rocket 🚀" . "🚀")
    ("sun 🌞" . "🌞")
-   ("red heart 💓" . "💓")
+   ("heart 🧡" . "🧡")
    ("clown 🤡" . "🤡")
    ("large circle" . "⭕")
    ("cross ❌" . "❌")
@@ -2547,16 +2547,18 @@ You can customize this alist.")
 
 (defun xah-run-current-file ()
   "Execute the current file.
-For example, if the current buffer is x.py, then it'll call [python x.py] in a shell.
+For example, if the current buffer is x.py, then it'll call python x.py in a shell.
 Output is printed to buffer “*xah-run output*”.
 File suffix is used to determine which program to run, set in the variable `xah-run-current-file-map'.
+
+When `universal-argument' is called first, prompt user to enter command line options.
 
 If the file is modified or not saved, save it automatically before run.
 
 URL `http://xahlee.info/emacs/emacs/elisp_run_current_file.html'
-Version: 2020-09-24 2022-09-18 2023-09-29"
+Version: 2020-09-24 2022-09-18 2023-09-29 2023-12-04"
   (interactive)
-  (setenv "NO_COLOR" "1") ; 2022-09-10 for deno. default color has yellow parts, hard to see
+  ;; (setenv "NO_COLOR" "1") ; 2022-09-10 for deno. default color has yellow parts, hard to see
   (when (not buffer-file-name) (user-error "Buffer is not file. Save it first."))
   (when (buffer-modified-p) (save-buffer))
   (let (xoutBuffer xextAppMap xfname xfExt xappCmdStr xcmdStr)
@@ -2598,13 +2600,20 @@ Version: 2020-09-24 2022-09-18 2023-09-29"
         (shell-command (format "java %s" (file-name-sans-extension
                                           (file-name-nondirectory xfname)))
                        xoutBuffer)))
-     (t (if xappCmdStr
-            (progn
-              (message "Running 「%s」" xcmdStr)
-              (shell-command xcmdStr xoutBuffer))
-          (error "%s: Unknown file extension: %s" real-this-command xfExt))))
+     (t
+      (if xappCmdStr
+          (progn
+            (if current-prefix-arg
+                (let ((xuserCmd (read-string "run with command:" xcmdStr)))
+                  (message "Running 「%s」" xuserCmd)
+                  (shell-command xuserCmd xoutBuffer))
+              (progn
+                (message "Running 「%s」" xcmdStr)
+                (shell-command xcmdStr xoutBuffer))))
+        (error "%s: Unknown file extension: %s" real-this-command xfExt))))
     (run-hooks 'xah-run-current-file-after-hook))
-  (setenv "NO_COLOR"))
+  ;; (setenv "NO_COLOR")
+  )
 
 (defun xah-clean-empty-lines ()
   "Replace repeated blank lines to just 1, in whole buffer or selection.
