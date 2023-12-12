@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.19.20231204080156
+;; Version: 24.19.20231212124900
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -1794,10 +1794,12 @@ Version: 2013-05-10 2023-09-30 2023-10-01"
 
  LBracket and RBracket are strings. WrapMethod must be either `line' or `block'. `block' means between empty lines.
 
-• If there is a an active region, add brackets around region.
+• If there is a active region, wrap around region.
+Else
 • If WrapMethod is `line', wrap around line.
 • If WrapMethod is `block', wrap around block.
-• if cursor is at beginning of line and its not empty line and contain at least 1 space, wrap around the line.
+Else
+• If cursor is at beginning of line and its not empty line and contain at least 1 space, wrap around the line.
 • If cursor is at end of a word or buffer, one of the following will happen:
  xyz▮ → xyz(▮)
  xyz▮ → (xyz▮)       if in one of the lisp modes.
@@ -1807,7 +1809,7 @@ URL `http://xahlee.info/emacs/emacs/elisp_insert_brackets_by_pair.html'
 Version: 2017-01-17 2021-08-12"
   (if (region-active-p)
       (progn
-        (let ( (xp1 (region-beginning)) (xp2 (region-end)))
+        (let ((xp1 (region-beginning)) (xp2 (region-end)))
           (goto-char xp2) (insert RBracket)
           (goto-char xp1) (insert LBracket)
           (goto-char (+ xp2 2))))
@@ -1832,7 +1834,7 @@ Version: 2017-01-17 2021-08-12"
         (and
          (eq (point) (line-beginning-position))
          (not (eq (line-beginning-position) (line-end-position))))
-        (insert LBracket )
+        (insert LBracket)
         (end-of-line)
         (insert  RBracket))
        ((and
@@ -1851,7 +1853,7 @@ Version: 2017-01-17 2021-08-12"
         (progn
           (setq xp1 (point) xp2 (point))
           (insert LBracket RBracket)
-          (search-backward RBracket )))
+          (search-backward RBracket)))
        (t (progn
             ;; wrap around “word”. basically, want all alphanumeric, plus hyphen and underscore, but don't want space or punctuations. Also want chinese chars
             ;; 我有一帘幽梦，不知与谁能共。多少秘密在其中，欲诉无人能懂。
