@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.19.20231230171204
+;; Version: 24.19.20231231134718
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -2558,7 +2558,7 @@ When `universal-argument' is called first, prompt user to enter command line opt
 If the file is modified or not saved, save it automatically before run.
 
 URL `http://xahlee.info/emacs/emacs/elisp_run_current_file.html'
-Version: 2020-09-24 2023-12-04 2023-12-30"
+Version: 2020-09-24 2023-12-30 2023-12-31"
   (interactive)
   ;; (setenv "NO_COLOR" "1") ; 2022-09-10 for deno. default color has yellow parts, hard to see
   (when (not buffer-file-name) (user-error "Buffer is not file. Save it first."))
@@ -2588,9 +2588,9 @@ Version: 2020-09-24 2023-12-04 2023-12-30"
      ((string-equal xfExt "go")
       (xah-run-current-go-file))
      ((string-match "\\.\\(ws?l\\|m\\|nb\\)\\'" xfExt)
-      (if (fboundp 'xah-run-wolfram-script)
+      (if (fboundp 'xah-wolfram-run-script)
           (progn
-            (xah-run-wolfram-script nil current-prefix-arg))
+            (xah-wolfram-run-script nil current-prefix-arg))
         (if xappCmdStr
             (progn
               (message "Running")
