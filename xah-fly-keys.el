@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.19.20231212124900
+;; Version: 24.19.20231230171204
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -2550,7 +2550,7 @@ You can customize this alist.")
 (defun xah-run-current-file ()
   "Execute the current file.
 For example, if the current buffer is x.py, then it'll call python x.py in a shell.
-Output is printed to buffer “*xah-run output*”.
+Output is printed to buffer “*xah-run*”.
 File suffix is used to determine which program to run, set in the variable `xah-run-current-file-map'.
 
 When `universal-argument' is called first, prompt user to enter command line options.
@@ -2558,22 +2558,24 @@ When `universal-argument' is called first, prompt user to enter command line opt
 If the file is modified or not saved, save it automatically before run.
 
 URL `http://xahlee.info/emacs/emacs/elisp_run_current_file.html'
-Version: 2020-09-24 2022-09-18 2023-09-29 2023-12-04"
+Version: 2020-09-24 2023-12-04 2023-12-30"
   (interactive)
   ;; (setenv "NO_COLOR" "1") ; 2022-09-10 for deno. default color has yellow parts, hard to see
   (when (not buffer-file-name) (user-error "Buffer is not file. Save it first."))
   (when (buffer-modified-p) (save-buffer))
   (let (xoutBuffer xextAppMap xfname xfExt xappCmdStr xcmdStr)
-    (setq xoutBuffer (generate-new-buffer-name "*xah-run output*")
-          xextAppMap xah-run-current-file-map
-          xfname buffer-file-name
-          xfExt (file-name-extension buffer-file-name)
-          xappCmdStr (cdr (assoc xfExt xextAppMap))
-          xcmdStr
-          (when xappCmdStr
-            (format "%s %s &"
-                    xappCmdStr
-                    (shell-quote-argument xfname))))
+    (setq
+     ;; xoutBuffer (generate-new-buffer-name "*xah-run")
+     xoutBuffer "*xah-run*"
+     xextAppMap xah-run-current-file-map
+     xfname buffer-file-name
+     xfExt (file-name-extension buffer-file-name)
+     xappCmdStr (cdr (assoc xfExt xextAppMap))
+     xcmdStr
+     (when xappCmdStr
+       (format "%s %s &"
+               xappCmdStr
+               (shell-quote-argument xfname))))
 
     ;; FIXME: Rather than `shell-command' with an `&', better use
     ;; `make-process' or `start-process' since we're not using the shell at all
