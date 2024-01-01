@@ -1,10 +1,10 @@
 ;;; xah-fly-keys.el --- ergonomic modal keybinding minor mode. -*- coding: utf-8; lexical-binding: t; -*-
 
-;; Copyright © 2013-2023 by Xah Lee
+;; Copyright © 2013-2024 by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.19.20231231134718
+;; Version: 24.19.20240101152046
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -252,10 +252,10 @@ Version: 2018-06-04 2022-03-05 2023-10-04"
         (end-of-visual-line)
       (end-of-line))))
 
-(defvar xah-brackets '("“”" "()" "[]" "{}" "<>" "＜＞" "（）" "［］" "｛｝" "⦅⦆" "〚〛" "⦃⦄" "‹›" "«»" "「」" "〈〉" "《》" "【】" "〔〕" "⦗⦘" "『』" "〖〗" "〘〙" "｢｣" "⟦⟧" "⟨⟩" "⟪⟫" "⟮⟯" "⟬⟭" "⌈⌉" "⌊⌋" "⦇⦈" "⦉⦊" "❛❜" "❝❞" "❨❩" "❪❫" "❴❵" "❬❭" "❮❯" "❰❱" "❲❳" "〈〉" "⦑⦒" "⧼⧽" "﹙﹚" "﹛﹜" "﹝﹞" "⁽⁾" "₍₎" "⦋⦌" "⦍⦎" "⦏⦐" "⁅⁆" "⸢⸣" "⸤⸥" "⟅⟆" "⦓⦔" "⦕⦖" "⸦⸧" "⸨⸩" "｟｠")
+(defvar xah-brackets '("\"\""  "“”" "()" "[]" "{}" "<>" "＜＞" "（）" "［］" "｛｝" "⦅⦆" "〚〛" "⦃⦄" "‹›" "«»" "「」" "〈〉" "《》" "【】" "〔〕" "⦗⦘" "『』" "〖〗" "〘〙" "｢｣" "⟦⟧" "⟨⟩" "⟪⟫" "⟮⟯" "⟬⟭" "⌈⌉" "⌊⌋" "⦇⦈" "⦉⦊" "❛❜" "❝❞" "❨❩" "❪❫" "❴❵" "❬❭" "❮❯" "❰❱" "❲❳" "〈〉" "⦑⦒" "⧼⧽" "﹙﹚" "﹛﹜" "﹝﹞" "⁽⁾" "₍₎" "⦋⦌" "⦍⦎" "⦏⦐" "⁅⁆" "⸢⸣" "⸤⸥" "⟅⟆" "⦓⦔" "⦕⦖" "⸦⸧" "⸨⸩" "｟｠")
  "A list of strings, each element is a string of 2 chars, the left bracket and a matching right bracket.
 Used by `xah-select-text-in-quote' and others.
-Version: 2023-07-31")
+Version: 2024-01-01")
 
 (defconst xah-left-brackets
   (mapcar (lambda (x) (substring x 0 1)) xah-brackets)
@@ -2499,13 +2499,13 @@ Version: 2020-10-17 2023-03-22 2023-09-29"
 (defun xah-run-current-go-file ()
   "Run or build current golang file.
 To build, call `universal-argument' first.
-Version: 2018-10-12 2023-09-29"
+Version: 2018-10-12 2023-09-29 2024-01-01"
   (interactive)
   (when (not buffer-file-name) (user-error "Buffer is not file. Save it first."))
   (when (buffer-modified-p) (save-buffer))
   (let (xoutputb xfname xprogName xcmdStr)
     (setq
-     xoutputb (generate-new-buffer "*xah-run output*")
+     xoutputb (get-buffer-create "*xah-run*" t)
      xfname buffer-file-name
      xprogName "go"
      xcmdStr (format (if current-prefix-arg
@@ -2565,8 +2565,7 @@ Version: 2020-09-24 2023-12-30 2023-12-31"
   (when (buffer-modified-p) (save-buffer))
   (let (xoutBuffer xextAppMap xfname xfExt xappCmdStr xcmdStr)
     (setq
-     ;; xoutBuffer (generate-new-buffer-name "*xah-run")
-     xoutBuffer "*xah-run*"
+     xoutBuffer (get-buffer-create "*xah-run*" t)
      xextAppMap xah-run-current-file-map
      xfname buffer-file-name
      xfExt (file-name-extension buffer-file-name)
