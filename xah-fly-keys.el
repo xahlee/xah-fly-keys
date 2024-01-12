@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.19.20240101152046
+;; Version: 24.19.20240112095825
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -1581,24 +1581,27 @@ Version: 2017-01-11 2023-11-02"
           (replace-match "\"" t t))))))
 
 (defun xah-cycle-hyphen-lowline-space (&optional Begin End)
-  "Cycle hyphen/lowline/space chars in selection or inside quote/bracket or line, in that order.
-After this command is called, press `xah-repeat-key' to repeat it.
+  "Cycle {hyphen lowline space} chars.
+
 The region to work on is by this order:
  1. if there is a selection, use that.
- 2. If cursor is string quote or any type of bracket, and is within current line, work on that region.
+ 2. If cursor is in a string quote or any type of bracket, and is within current line, work on that region.
  3. else, work on current line.
 
+After this command is called, press `xah-repeat-key' to repeat it.
+
 URL `http://xahlee.info/emacs/emacs/elisp_change_space-hyphen_underscore.html'
-Version: 2019-02-12 2022-10-20 2023-07-16"
+Version: 2019-02-12 2023-07-16 2024-01-04"
   (interactive)
   ;; this function sets a property 'state. Possible values are 0 to length of xcharArray.
-  (let* (xp1
-         xp2
-         (xcharArray ["-" "_" " "])
-         (xn (length xcharArray))
-         (xregionWasActive-p (region-active-p))
-         (xnowState (if (eq last-command this-command) (get 'xah-cycle-hyphen-lowline-space 'state) 0))
-         (xchangeTo (elt xcharArray xnowState)))
+  (let (xp1 xp2 xlen
+            (xcharArray ["-" "_" " "])
+            (xregionWasActive-p (region-active-p))
+            (xnowState (if (eq last-command this-command) (get 'xah-cycle-hyphen-lowline-space 'state) 0))
+            xchangeTo)
+    (setq
+     xlen (length xcharArray)
+     xchangeTo (elt xcharArray xnowState))
     (if (and Begin End)
         (setq xp1 Begin xp2 End)
       (if (region-active-p)
@@ -1613,13 +1616,13 @@ Version: 2019-02-12 2022-10-20 2023-07-16"
       (save-restriction
         (narrow-to-region xp1 xp2)
         (goto-char (point-min))
-        (while (re-search-forward (elt xcharArray (% (+ xnowState 2) xn)) (point-max) 1)
+        (while (re-search-forward (elt xcharArray (% (+ xnowState 2) xlen)) (point-max) 1)
           (replace-match xchangeTo t t))))
     (when (or (string-equal xchangeTo " ") xregionWasActive-p)
       (goto-char xp2)
       (push-mark xp1)
       (setq deactivate-mark nil))
-    (put 'xah-cycle-hyphen-lowline-space 'state (% (+ xnowState 1) xn)))
+    (put 'xah-cycle-hyphen-lowline-space 'state (% (+ xnowState 1) xlen)))
   (set-transient-map (let ((xkmap (make-sparse-keymap))) (define-key xkmap (or xah-repeat-key (kbd "DEL")) this-command) xkmap)))
 
 (defun xah-copy-file-path (&optional DirPathOnlyQ)
@@ -2550,7 +2553,7 @@ You can customize this alist.")
 (defun xah-run-current-file ()
   "Execute the current file.
 For example, if the current buffer is x.py, then it'll call python x.py in a shell.
-Output is printed to buffer “*xah-run*”.
+Output is printed to buffer “*xah-run output*”.
 File suffix is used to determine which program to run, set in the variable `xah-run-current-file-map'.
 
 When `universal-argument' is called first, prompt user to enter command line options.
@@ -2558,14 +2561,14 @@ When `universal-argument' is called first, prompt user to enter command line opt
 If the file is modified or not saved, save it automatically before run.
 
 URL `http://xahlee.info/emacs/emacs/elisp_run_current_file.html'
-Version: 2020-09-24 2023-12-30 2023-12-31"
+Version: 2020-09-24 2023-12-31 2024-01-06"
   (interactive)
   ;; (setenv "NO_COLOR" "1") ; 2022-09-10 for deno. default color has yellow parts, hard to see
   (when (not buffer-file-name) (user-error "Buffer is not file. Save it first."))
   (when (buffer-modified-p) (save-buffer))
   (let (xoutBuffer xextAppMap xfname xfExt xappCmdStr xcmdStr)
     (setq
-     xoutBuffer (get-buffer-create "*xah-run*" t)
+     xoutBuffer (get-buffer-create "*xah-run output*" t)
      xextAppMap xah-run-current-file-map
      xfname buffer-file-name
      xfExt (file-name-extension buffer-file-name)
