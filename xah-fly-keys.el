@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.19.20240112095825
+;; Version: 24.20.20240120121202
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -252,7 +252,7 @@ Version: 2018-06-04 2022-03-05 2023-10-04"
         (end-of-visual-line)
       (end-of-line))))
 
-(defvar xah-brackets '("\"\""  "“”" "()" "[]" "{}" "<>" "＜＞" "（）" "［］" "｛｝" "⦅⦆" "〚〛" "⦃⦄" "‹›" "«»" "「」" "〈〉" "《》" "【】" "〔〕" "⦗⦘" "『』" "〖〗" "〘〙" "｢｣" "⟦⟧" "⟨⟩" "⟪⟫" "⟮⟯" "⟬⟭" "⌈⌉" "⌊⌋" "⦇⦈" "⦉⦊" "❛❜" "❝❞" "❨❩" "❪❫" "❴❵" "❬❭" "❮❯" "❰❱" "❲❳" "〈〉" "⦑⦒" "⧼⧽" "﹙﹚" "﹛﹜" "﹝﹞" "⁽⁾" "₍₎" "⦋⦌" "⦍⦎" "⦏⦐" "⁅⁆" "⸢⸣" "⸤⸥" "⟅⟆" "⦓⦔" "⦕⦖" "⸦⸧" "⸨⸩" "｟｠")
+(defvar xah-brackets '( "“”" "()" "[]" "{}" "<>" "＜＞" "（）" "［］" "｛｝" "⦅⦆" "〚〛" "⦃⦄" "‹›" "«»" "「」" "〈〉" "《》" "【】" "〔〕" "⦗⦘" "『』" "〖〗" "〘〙" "｢｣" "⟦⟧" "⟨⟩" "⟪⟫" "⟮⟯" "⟬⟭" "⌈⌉" "⌊⌋" "⦇⦈" "⦉⦊" "❛❜" "❝❞" "❨❩" "❪❫" "❴❵" "❬❭" "❮❯" "❰❱" "❲❳" "〈〉" "⦑⦒" "⧼⧽" "﹙﹚" "﹛﹜" "﹝﹞" "⁽⁾" "₍₎" "⦋⦌" "⦍⦎" "⦏⦐" "⁅⁆" "⸢⸣" "⸤⸥" "⟅⟆" "⦓⦔" "⦕⦖" "⸦⸧" "⸨⸩" "｟｠")
  "A list of strings, each element is a string of 2 chars, the left bracket and a matching right bracket.
 Used by `xah-select-text-in-quote' and others.
 Version: 2024-01-01")
@@ -308,47 +308,26 @@ Version: 2016-11-22 2023-07-22 2023-08-02"
       (backward-sexp))
      (t (backward-up-list 1 'ESCAPE-STRINGS 'NO-SYNTAX-CROSSING)))))
 
-(defun xah-forward-quote ()
-  "Move cursor to the next occurrence of \".
-If there are consecutive quotes of the same char, keep moving until none.
-Returns `t' if found, else `nil'.
+(defvar xah-punctuation-regex nil "A regex string for the purpose of moving cursor to a punctuation.")
+(setq xah-punctuation-regex "[\"=+]")
 
-URL `http://xahlee.info/emacs/emacs/emacs_navigating_keys_for_brackets.html'
-Version: 2016-07-23"
+(defun xah-forward-punct ()
+  "Move cursor to the next occurrence of punctuation.
+Punctuations is defined by `xah-punctuation-regex'
+
+URL `http://xahlee.info/emacs/emacs/emacs_jump_to_punctuations.html'
+Version 2017-06-26 2024-01-20"
   (interactive)
-  (if (re-search-forward "\\\"+" nil t)
-      t
-    (progn
-      (message "No more quotes after cursor..")
-      nil)))
+  (re-search-forward xah-punctuation-regex nil t))
 
-(defun xah-forward-quote-twice ()
-  "Call `xah-forward-quote' twice.
-Returns `t' if found, else `nil'.
+(defun xah-backward-punct ()
+  "Move cursor to the previous occurrence of punctuation.
+See `xah-forward-punct'
 
-URL `http://xahlee.info/emacs/emacs/emacs_navigating_keys_for_brackets.html'
-Version: 2016-07-23"
+URL `http://xahlee.info/emacs/emacs/emacs_jump_to_punctuations.html'
+Version 2017-06-26 2024-01-20"
   (interactive)
-  (when (xah-forward-quote)
-    (xah-forward-quote)))
-
-(defun xah-forward-quote-smart ()
-  "Move cursor to the current or next string quote.
-Place cursor at the position after the left quote.
-Repeated call will find the next string.
-
-URL `http://xahlee.info/emacs/emacs/emacs_navigating_keys_for_brackets.html'
-Version: 2016-11-22"
-  (interactive)
-  (let ((xpos (point)))
-    (if (nth 3 (syntax-ppss))
-        (progn
-          (backward-up-list 1 'ESCAPE-STRINGS 'NO-SYNTAX-CROSSING)
-          (forward-sexp)
-          (re-search-forward "\\\"" nil t))
-      (progn (re-search-forward "\\\"" nil t)))
-    (when (<= (point) xpos)
-      (progn (re-search-forward "\\\"" nil t)))))
+  (re-search-backward xah-punctuation-regex nil t))
 
 (defun xah-sort-lines ()
   "Like `sort-lines' but if no region, do the current block.
@@ -3444,8 +3423,8 @@ Version: 2022-10-31"
        ("]" . split-window-right)
        ("`" . other-frame)
 
-       ("1" . undefined)
-       ("2" . undefined)
+       ("1" . xah-backward-punct)
+       ("2" . xah-forward-punct)
        ("3" . delete-other-windows)
        ("4" . split-window-below)
        ("5" . delete-char)
