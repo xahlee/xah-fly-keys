@@ -1,10 +1,10 @@
 ;;; xah-fly-keys.el --- ergonomic modal keybinding minor mode. -*- coding: utf-8; lexical-binding: t; -*-
 
-;; Copyright © 2013-2024 by Xah Lee
+;; Copyright © 2013, 2024 by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.20.20240120121202
+;; Version: 24.21.20240213125545
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -309,7 +309,7 @@ Version: 2016-11-22 2023-07-22 2023-08-02"
      (t (backward-up-list 1 'ESCAPE-STRINGS 'NO-SYNTAX-CROSSING)))))
 
 (defvar xah-punctuation-regex nil "A regex string for the purpose of moving cursor to a punctuation.")
-(setq xah-punctuation-regex "[\"=+]")
+(setq xah-punctuation-regex "[\"]")
 
 (defun xah-forward-punct ()
   "Move cursor to the next occurrence of punctuation.
@@ -3306,20 +3306,19 @@ Version: 2022-10-31"
        ("r d" . delete-rectangle)
        ("r e" . call-last-kbd-macro)
        ;; f
-       ("r g" . kill-rectangle)
+       ("r q" . kill-rectangle) ; changed
        ("r h" . xah-change-bracket-pairs)
        ("r i" . xah-space-to-newline)
        ("r j" . copy-rectangle-to-register)
-       ("r k" . xah-slash-to-double-backslash)
+       ("r k" . yank-rectangle) ; changed
+       ("r /" . xah-slash-to-double-backslash) ; changed
        ("r l" . clear-rectangle)
 
        ("r m" . xah-slash-to-backslash)
        ("r n" . rectangle-number-lines)
        ("r o" . open-rectangle)
        ("r p" . kmacro-end-macro)
-
-       ;; q
-       ("r r" . yank-rectangle)
+       ;; r
        ;; s t
        ("r u" . xah-quote-lines)
        ;; v w
