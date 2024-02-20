@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.21.20240213125545
+;; Version: 24.21.20240220095736
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -3478,6 +3478,8 @@ Version: 2022-10-31"
   (global-set-key (kbd "<help>") nil)
   (global-set-key (kbd "<f1>") nil))
 
+(global-set-key (kbd "<f7>") 'xah-fly-leader-key-map)
+
 (when xah-fly-use-meta-key
 
   (global-set-key (kbd "M-<home>") nil) ; beginning-of-buffer-other-window
@@ -3562,8 +3564,6 @@ Version: 2022-10-31"
 
   (global-set-key (kbd "<C-prior>") #'xah-previous-user-buffer)
   (global-set-key (kbd "<C-next>") #'xah-next-user-buffer)
-
-  (global-set-key (kbd "<f7>") 'xah-fly-leader-key-map)
 
   ;; (global-set-key (kbd "C-1") nil)
   (global-set-key (kbd "C-2") #'pop-global-mark)
