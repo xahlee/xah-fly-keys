@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.21.20240220095736
+;; Version: 24.22.20240306092400
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -1856,6 +1856,8 @@ Version: 2017-01-17 2021-08-12"
 (defun xah-insert-markdown-quote () (interactive) (xah-insert-bracket-pair "`" "`") )
 (defun xah-insert-markdown-triple-quote () (interactive) (xah-insert-bracket-pair "```\n" "\n```"))
 
+(defun xah-insert-ascii-angle-bracket () (interactive) (xah-insert-bracket-pair "<" ">"))
+
 (defun xah-insert-double-curly-quote () (interactive) (xah-insert-bracket-pair "“" "”") )
 (defun xah-insert-curly-single-quote () (interactive) (xah-insert-bracket-pair "‘" "’") )
 (defun xah-insert-single-angle-quote () (interactive) (xah-insert-bracket-pair "‹" "›") )
@@ -1990,6 +1992,7 @@ xString can be any string, needs not be a char or emoji.
    ("right arrow →" . "→")
    ("up arrow ↑" . "↑")
    ("down arrow ↓" . "↓")
+   ("f hook ƒ" . "ƒ")
    ;;
    ))
 
@@ -3200,6 +3203,7 @@ Version: 2022-10-31"
        ("e m" . xah-insert-corner-bracket)     ; 「」
        ("e n" . xah-insert-square-bracket)     ; []
        ("e o" . xah-insert-ascii-single-quote) ; ''
+       ("e s" . xah-insert-ascii-angle-bracket) ; <>
 
        ("e p" . xah-insert-single-angle-quote)     ; ‹›
        ;; q
