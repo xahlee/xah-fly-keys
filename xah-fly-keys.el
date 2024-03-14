@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.22.20240306092400
+;; Version: 24.22.20240314031621
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -599,8 +599,9 @@ Version: 2017-07-02 2023-07-30"
 (defun xah-delete-string-backward ()
   "Delete string to the left of cursor.
 e.g. 「\"▮some\"▮」
+If `universal-argument' is called first, just delete the quotation marks.
 
-Version: 2023-11-12"
+Version: 2023-11-12 2024-03-14"
   (interactive)
   (when (prog2 (backward-char) (looking-at "\\s\"") (forward-char))
     (let ((xp0 (point)) xp1 xp2)
@@ -619,7 +620,7 @@ Version: 2023-11-12"
           (progn (goto-char xp2)
                  (delete-char -1)
                  (goto-char xp1)
-                 (delete-char -1))
+                 (delete-char 1))
         (kill-region xp1 xp2)))))
 
 (defun xah-delete-backward-bracket-text ()
@@ -3200,9 +3201,9 @@ Version: 2022-10-31"
        ("e j" . insert-char)
        ("e k" . xah-insert-markdown-quote) ; ``
        ("e l" . xah-insert-formfeed)
-       ("e m" . xah-insert-corner-bracket)     ; 「」
-       ("e n" . xah-insert-square-bracket)     ; []
-       ("e o" . xah-insert-ascii-single-quote) ; ''
+       ("e m" . xah-insert-corner-bracket)      ; 「」
+       ("e n" . xah-insert-square-bracket)      ; []
+       ("e o" . xah-insert-ascii-single-quote)  ; ''
        ("e s" . xah-insert-ascii-angle-bracket) ; <>
 
        ("e p" . xah-insert-single-angle-quote)     ; ‹›
@@ -3314,7 +3315,7 @@ Version: 2022-10-31"
        ("r h" . xah-change-bracket-pairs)
        ("r i" . xah-space-to-newline)
        ("r j" . copy-rectangle-to-register)
-       ("r k" . yank-rectangle) ; changed
+       ("r k" . yank-rectangle)                ; changed
        ("r /" . xah-slash-to-double-backslash) ; changed
        ("r l" . clear-rectangle)
 
@@ -3344,8 +3345,8 @@ Version: 2022-10-31"
        ("t 4" . xah-paste-from-register-1)
        ("t 7" . xah-append-to-register-1)
        ("t 8" . xah-clear-register-1)
+       ;; a
 
-       ("t a" . xah-reformat-to-sentence-lines)
        ;; c b
        ("t d" . mark-defun)
        ("t e" . list-matching-lines)
@@ -3362,7 +3363,7 @@ Version: 2022-10-31"
        ("t p" . query-replace-regexp)
        ("t q" . xah-cut-text-in-quote)
        ;; r
-       ;; s
+       ("t s" . xah-reformat-to-sentence-lines)
        ("t t" . repeat)
        ("t u" . delete-matching-lines)
 
@@ -3389,18 +3390,18 @@ Version: 2022-10-31"
 
        ;; vc command keys subject to change. need a frequency stat of the commands.
 
-       ("z b" . vc-root-diff)   ; D
-       ("z c" . vc-update)      ; git pull, +
-       ("z d" . vc-annotate)    ; g
-       ("z f" . vc-revert)      ; u
-       ("z g" . vc-push)        ; git push, P
-       ("z h" . vc-diff)        ; git diff, =
+       ("z b" . vc-root-diff)      ; D
+       ("z c" . vc-update)         ; git pull, +
+       ("z d" . vc-annotate)       ; g
+       ("z f" . vc-revert)         ; u
+       ("z g" . vc-push)           ; git push, P
+       ("z h" . vc-diff)           ; git diff, =
        ("z l" . vc-print-root-log) ; L
-       ("z m" . vc-dir)         ; git status, C-x v d
-       ("z n" . vc-print-log)   ; git log, l
-       ("z r" . vc-merge)       ; m
-       ("z t" . vc-register)    ; git add, i
-       ("z z" . vc-next-action) ; v
+       ("z m" . vc-dir)            ; git status, C-x v d
+       ("z n" . vc-print-log)      ; git log, l
+       ("z r" . vc-merge)          ; m
+       ("z t" . vc-register)       ; git add, i
+       ("z z" . vc-next-action)    ; v
 
        ("z 1" . vc-create-tag)            ; s
        ("z 2" . vc-insert-headers)        ; h
