@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.22.20240314031621
+;; Version: 24.22.20240315150218
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -2504,6 +2504,8 @@ Version: 2018-10-12 2023-09-29 2024-01-01"
 
 (defvar xah-run-current-file-map
   '(("clj" . "clj")
+    ("fs" . "dotnet fsi")
+    ("fsx" . "dotnet fsi")
     ("go" . "go run")
     ("hs" . "runhaskell")
     ("java" . "javac")
@@ -3346,8 +3348,7 @@ Version: 2022-10-31"
        ("t 7" . xah-append-to-register-1)
        ("t 8" . xah-clear-register-1)
        ;; a
-
-       ;; c b
+       ;; b c
        ("t d" . mark-defun)
        ("t e" . list-matching-lines)
        ("t f" . move-to-column)
@@ -3356,13 +3357,15 @@ Version: 2022-10-31"
        ("t i" . delete-non-matching-lines)
        ("t j" . copy-to-register)
        ("t k" . insert-register)
-       ("t l" . xah-escape-quotes)
+
+       ;; l
        ("t m" . xah-make-backup-and-save)
        ("t n" . goto-char)
        ("t o" . xah-clean-whitespace)
        ("t p" . query-replace-regexp)
        ("t q" . xah-cut-text-in-quote)
-       ;; r
+       ("t r" . xah-escape-quotes)
+       
        ("t s" . xah-reformat-to-sentence-lines)
        ("t t" . repeat)
        ("t u" . delete-matching-lines)
