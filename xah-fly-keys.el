@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.22.20240317212656
+;; Version: 24.22.20240319015202
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -141,8 +141,9 @@
 
 ;;; Code:
 
-(require 'dired) ; in emacs
-(require 'dired-x) ; in emacs
+(require 'dired)
+(require 'dired-x)
+(require 'seq)
 
 
 
@@ -174,11 +175,11 @@
   (defvar xah-repeat-key nil "A key that some xah command use as a key to repeat the command, pressed right after command call. Value should be the same format that `kbd' returns. e.g. (kbd \"m\")")
   (if xah-repeat-key nil (setq xah-repeat-key (kbd "m"))))
 
-(defun xah-get-bounds-of-block ()
-  "Return the boundary (START . END) of current block.
+(defun xah-get-block-pos ()
+  "Return the [begin end] positions of current text block.
+Return value is a vector.
 
-URL `http://xahlee.info/emacs/emacs/elisp_get-selection-or-unit.html'
-Version: 2021-08-12"
+Version: 2024-03-19"
   (let (xp1 xp2 (xblankRegex "\n[ \t]*\n"))
     (save-excursion
       (setq xp1 (if (re-search-backward xblankRegex nil 1)
@@ -187,16 +188,16 @@ Version: 2021-08-12"
       (setq xp2 (if (re-search-forward xblankRegex nil 1)
                     (match-beginning 0)
                   (point))))
-    (cons xp1 xp2)))
+    (vector xp1 xp2)))
 
-(defun xah-get-bounds-of-block-or-region ()
-  "If region is active, return its boundary, else same as `xah-get-bounds-of-block'.
+(defun xah-get-block-pos-or ()
+  "If region is active, return its [begin end] positions, else same as `xah-get-block-pos'.
+Return value is a vector.
 
-URL `http://xahlee.info/emacs/emacs/elisp_get-selection-or-unit.html'
-Version: 2021-08-12"
+Version: 2024-03-19"
   (if (region-active-p)
-      (cons (region-beginning) (region-end))
-    (xah-get-bounds-of-block)))
+      (vector (region-beginning) (region-end))
+    (xah-get-block-pos)))
 
 
 ;; cursor movement
@@ -331,18 +332,18 @@ Version 2017-06-26 2024-01-20"
 
 (defun xah-sort-lines ()
   "Like `sort-lines' but if no region, do the current block.
-Version: 2022-01-22 2022-01-23"
+Version: 2022-01-22 2024-03-19"
   (interactive)
   (let (xp1 xp2)
-    (let ((xbds (xah-get-bounds-of-block-or-region))) (setq xp1 (car xbds) xp2 (cdr xbds)))
+    (seq-setq (xp1 xp2) (xah-get-block-pos-or))
     (sort-lines current-prefix-arg xp1 xp2)))
 
 (defun xah-narrow-to-region ()
   "Same as `narrow-to-region', but if no selection, narrow to the current block.
-Version: 2022-01-22"
+Version: 2022-01-22 2024-03-19"
   (interactive)
   (let (xp1 xp2)
-    (let ((xbds (xah-get-bounds-of-block-or-region))) (setq xp1 (car xbds) xp2 (cdr xbds)))
+    (seq-setq (xp1 xp2) (xah-get-block-pos-or))
     (narrow-to-region xp1 xp2)))
 
 
@@ -874,7 +875,7 @@ followed by 2 spaces.
 ,it means replace by empty string.
 
 URL `http://xahlee.info/emacs/emacs/elisp_change_brackets.html'
-Version: 2020-11-01 2023-03-31 2023-08-25 2023-09-29"
+Version: 2020-11-01 2023-09-29 2024-03-19"
   (interactive
    (let ((xbrackets
           '(
@@ -927,7 +928,7 @@ Version: 2020-11-01 2023-03-31 2023-08-25 2023-09-29"
         (completing-read "Replace this:" xbrackets nil t nil nil (car xbrackets))
         (completing-read "To:" xbrackets nil t nil nil (car (last xbrackets)))))))
   (let (xp1 xp2 xleft xright xtoL xtoR)
-    (let ((xbds (xah-get-bounds-of-block-or-region))) (setq xp1 (car xbds) xp2 (cdr xbds)))
+    (seq-setq (xp1 xp2) (xah-get-block-pos-or))
     (let ((xsFrom (last (split-string FromChars " ") 2))
           (xsTo (last (split-string ToChars " ") 2)))
 
@@ -1016,10 +1017,10 @@ Version: 2015-12-22 2023-11-14"
   "Upcase first letters of sentences of current block or selection.
 
 URL `http://xahlee.info/emacs/emacs/emacs_upcase_sentence.html'
-Version: 2020-12-08 2020-12-24 2021-08-13 2022-05-16 2022-08-27"
+Version: 2020-12-08 2022-08-27 2024-03-19"
   (interactive)
   (let (xp1 xp2)
-    (let ((xbds (xah-get-bounds-of-block-or-region))) (setq xp1 (car xbds) xp2 (cdr xbds)))
+    (seq-setq (xp1 xp2) (xah-get-block-pos-or))
     (save-restriction
       (narrow-to-region xp1 xp2)
       (let ((case-fold-search nil))
@@ -1115,10 +1116,10 @@ Version: 2017-01-11 2021-03-30 2021-09-19"
 (defun xah-add-space-after-comma ()
   "Add a space after comma of current block or selection.
 and highlight changes made.
-Version: 2022-01-20"
+Version: 2022-01-20 2024-03-19"
   (interactive)
   (let (xp1 xp2)
-    (let ((xbds (xah-get-bounds-of-block-or-region))) (setq xp1 (car xbds) xp2 (cdr xbds)))
+    (seq-setq (xp1 xp2) (xah-get-block-pos-or))
     (save-restriction
       (narrow-to-region xp1 xp2)
       (goto-char (point-min))
@@ -1160,13 +1161,13 @@ First call will break into multiple short lines. Repeated call toggles between s
 This commands calls `fill-region' to do its work. Set `fill-column' for short line length.
 
 URL `http://xahlee.info/emacs/emacs/modernization_fill-paragraph.html'
-Version: 2020-11-22 2021-08-13"
+Version: 2020-11-22 2021-08-13 2024-03-19"
   (interactive)
   ;; This command symbol has a property “'longline-p”, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
   (let ( (xisLongline (if (eq last-command this-command) (get this-command 'longline-p) t))
          (deactivate-mark nil)
          xp1 xp2 )
-    (let ((xbds (xah-get-bounds-of-block-or-region))) (setq xp1 (car xbds) xp2 (cdr xbds)))
+    (seq-setq (xp1 xp2) (xah-get-block-pos-or))
     (if xisLongline
         (fill-region xp1 xp2)
       (let ((fill-column 99999 ))
@@ -1226,13 +1227,13 @@ Version: 2017-01-11 2022-01-08"
 If `universal-argument' is called first, ask user for max width.
 
 URL `http://xahlee.info/emacs/emacs/emacs_reformat_lines.html'
-Version: 2018-12-16 2021-07-06 2021-08-12"
+Version: 2018-12-16 2021-08-12 2024-03-19"
   (interactive)
   (let ( xp1 xp2 xminlen )
     (setq xminlen (if MinLength MinLength (if current-prefix-arg (prefix-numeric-value current-prefix-arg) fill-column)))
     (if (and Begin End)
         (setq xp1 Begin xp2 End)
-      (let ((xbds (xah-get-bounds-of-block-or-region))) (setq xp1 (car xbds) xp2 (cdr xbds))))
+      (seq-setq (xp1 xp2) (xah-get-block-pos-or)))
     (save-excursion
       (save-restriction
         (narrow-to-region xp1 xp2)
@@ -1251,13 +1252,13 @@ This command never adds or delete non-whitespace chars. It only exchange whitesp
 
 URL `http://xahlee.info/emacs/emacs/emacs_reformat_lines.html'
 Created 2016 or before.
-Version: 2021-07-05 2021-08-13 2022-03-12 2022-05-16 2022-12-24"
+Version: 2021-07-05 2022-12-24 2024-03-19"
   (interactive)
   ;; This symbol has a property 'is-long-p, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
   (let (xisLong xwidth xp1 xp2)
     (setq xwidth (if Width Width (if current-prefix-arg (prefix-numeric-value current-prefix-arg) 66)))
     (setq xisLong (if (eq last-command this-command) (get this-command 'is-long-p) nil))
-    (let ((xbds (xah-get-bounds-of-block-or-region))) (setq xp1 (car xbds) xp2 (cdr xbds)))
+    (seq-setq (xp1 xp2) (xah-get-block-pos-or))
     (if current-prefix-arg
         (xah-reformat-to-multi-lines xp1 xp2 xwidth)
       (if xisLong
@@ -1272,10 +1273,10 @@ Move cursor to the beginning of next text block.
 After this command is called, press `xah-repeat-key' to repeat it.
 
 URL `http://xahlee.info/emacs/emacs/elisp_reformat_to_sentence_lines.html'
-Version: 2020-12-02 2023-05-25 2023-11-09"
+Version: 2020-12-02 2023-11-09 2024-03-19"
   (interactive)
   (let (xp1 xp2)
-    (let ((xbds (xah-get-bounds-of-block-or-region))) (setq xp1 (car xbds) xp2 (cdr xbds)))
+    (seq-setq (xp1 xp2) (xah-get-block-pos-or))
     (save-restriction
       (narrow-to-region xp1 xp2)
       (goto-char (point-min)) (while (search-forward "。" nil t) (replace-match "。\n"))
@@ -1301,11 +1302,10 @@ Version: 2020-12-02 2023-05-25 2023-11-09"
   "Replace space sequence to a newline char in current block or selection.
 
 URL `http://xahlee.info/emacs/emacs/emacs_space_to_newline.html'
-Version: 2017-08-19 2021-11-28"
+Version: 2017-08-19 2021-11-28 2024-03-19"
   (interactive)
-  (let* ((xbds (xah-get-bounds-of-block-or-region))
-         (xp1 (car xbds))
-         (xp2 (cdr xbds)))
+  (let (xp1 xp2)
+    (seq-setq (xp1 xp2) (xah-get-block-pos-or))
     (save-restriction
       (narrow-to-region xp1 xp2)
       (goto-char (point-min))
@@ -1462,7 +1462,7 @@ or
 In lisp code, QuoteL QuoteR Sep are strings.
 
 URL `http://xahlee.info/emacs/emacs/emacs_quote_lines.html'
-Version: 2020-06-26 2023-09-19 2023-10-29"
+Version: 2020-06-26 2023-10-29 2024-03-19"
   (interactive
    (let ((xbrackets
           '(
@@ -1507,8 +1507,7 @@ Version: 2020-06-26 2023-09-19 2023-10-29"
             (t xsepChoice)))
      (list xquoteL xquoteR xsep)))
   (let (xp1 xp2 (xquoteL QuoteL) (xquoteR QuoteR) (xsep Sep))
-    (let ((xbds (xah-get-bounds-of-block-or-region)))
-      (setq xp1 (car xbds) xp2 (cdr xbds)))
+    (seq-setq (xp1 xp2) (xah-get-block-pos-or))
     (save-excursion
       (save-restriction
         (narrow-to-region xp1 xp2)
@@ -1789,7 +1788,7 @@ Else
 • wrap brackets around word if any. e.g. xy▮z → (xyz▮). Or just (▮)
 
 URL `http://xahlee.info/emacs/emacs/elisp_insert_brackets_by_pair.html'
-Version: 2017-01-17 2021-08-12"
+Version: 2017-01-17 2021-08-12 2024-03-19"
   (if (region-active-p)
       (progn
         (let ((xp1 (region-beginning)) (xp2 (region-end)))
@@ -1807,7 +1806,7 @@ Version: 2017-01-17 2021-08-12"
         (goto-char (+ xp2 (length LBracket))))
        ((eq WrapMethod 'block)
         (save-excursion
-          (let ((xbds (xah-get-bounds-of-block-or-region))) (setq xp1 (car xbds) xp2 (cdr xbds)))
+          (seq-setq (xp1 xp2) (xah-get-block-pos-or))
           (goto-char xp2)
           (insert RBracket)
           (goto-char xp1)
@@ -2298,10 +2297,7 @@ Version: 2023-03-02"
 by default, the value is dir named temp at `user-emacs-directory'.
 Version: 2023-03-21")
 
-(setq xah-temp-dir-path
-      (if xah-temp-dir-path
-          xah-temp-dir-path
-        (concat user-emacs-directory "temp/")))
+(setq xah-temp-dir-path (expand-file-name (concat user-emacs-directory "temp/")))
 
 (defun xah-close-current-buffer ()
   "Close the current buffer with possible backup of modified file.
@@ -3365,7 +3361,7 @@ Version: 2022-10-31"
        ("t p" . query-replace-regexp)
        ("t q" . xah-cut-text-in-quote)
        ("t r" . xah-escape-quotes)
-       
+
        ("t s" . xah-reformat-to-sentence-lines)
        ("t t" . repeat)
        ("t u" . delete-matching-lines)
