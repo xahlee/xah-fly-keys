@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.22.20240319015202
+;; Version: 24.23.20240321233250
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -1973,6 +1973,7 @@ xString can be any string, needs not be a char or emoji.
    ("diamond 💠" . "💠")
    ("square" . "⬛")
    ("cursor ▮" . "▮")
+   ("dagger †" . "†")
 
    ("double angle bracket" . "《》")
    ("black lenticular bracket" . "【】")
@@ -2474,131 +2475,100 @@ Version: 2020-10-17 2023-03-22 2023-09-29"
 
 
 
-(defvar xah-run-current-file-before-hook nil "Hook for `xah-run-current-file'. Before the file is run.")
+(defvar xah-run-current-file-dispatch nil
+"A dispatch table used by `xah-run-current-file' to call a dedicated elisp function to do the job, if any.
+Value is a association list.
+Each item is (EXT . FUNCTION).
+EXT is file suffix (without the dot prefix) (type string),
+FUNCTION is a elisp function name to call (type symbol).
+If file extension is found, call the associated function pass current buffer's filepath as arg, else `xah-run-current-file' continues.
+You can customize this variable." )
 
-(defvar xah-run-current-file-after-hook nil "Hook for `xah-run-current-file'. After the file is run.")
+(setq
+ xah-run-current-file-dispatch
+ '(
+   ;;
 
-(defun xah-run-current-go-file ()
-  "Run or build current golang file.
-To build, call `universal-argument' first.
-Version: 2018-10-12 2023-09-29 2024-01-01"
-  (interactive)
-  (when (not buffer-file-name) (user-error "Buffer is not file. Save it first."))
-  (when (buffer-modified-p) (save-buffer))
-  (let (xoutputb xfname xprogName xcmdStr)
-    (setq
-     xoutputb (get-buffer-create "*xah-run*" t)
-     xfname buffer-file-name
-     xprogName "go"
-     xcmdStr (format (if current-prefix-arg
-                         "%s build \"%s\" "
-                       "%s run \"%s\" &")
-                     xprogName xfname))
-    (message "running %s" xfname)
-    (message "%s" xcmdStr)
-    (shell-command xcmdStr xoutputb)))
+   ("el" . load)
+   ("elc" . load)
+   ("go" . xah-go-run-current-file)
+   ("m" . xah-wolfram-run-script)
+   ("wl" . xah-wolfram-run-script)
+   ("wls" . xah-wolfram-run-script)
+
+   ;;
+   ))
 
 (defvar xah-run-current-file-map
-  '(("clj" . "clj")
-    ("fs" . "dotnet fsi")
-    ("fsx" . "dotnet fsi")
-    ("go" . "go run")
-    ("hs" . "runhaskell")
-    ("java" . "javac")
-    ("js" . "deno run")
-    ("latex" . "pdflatex")
-    ("m" . "wolframscript -file")
-    ("mjs" . "node --experimental-modules ")
-    ("ml" . "ocaml")
-    ("php" . "php")
-    ("pl" . "perl")
-    ("ps1" . "pwsh")
-    ("py" . "python")
-    ("py2" . "python2")
-    ("py3" . "python3")
-    ("rb" . "ruby")
-    ("rkt" . "racket")
-    ("sh" . "bash")
-    ("tex" . "pdflatex")
-    ("ts" . "deno run")
-    ("tsx" . "tsc")
-    ("vbs" . "cscript")
-    ("wl" . "wolframscript -file")
-    ("wls" . "wolframscript -file")
-    ("pov" . "povray +R2 +A0.1 +J1.2 +Am2 +Q9 +H480 +W640"))
- "A association list that maps file extension to program name, used by `xah-run-current-file'.
+  "A association list that maps file extension to program name, used by `xah-run-current-file'.
 Each item is (EXT . PROGRAM), both strings.
 EXT is file suffix (without the dot prefix), PROGRAM is program name or path, with possibly command options.
 You can customize this alist.")
 
-(defun xah-run-current-file ()
-  "Execute the current file.
-For example, if the current buffer is x.py, then it'll call python x.py in a shell.
-Output is printed to buffer “*xah-run output*”.
-File suffix is used to determine which program to run, set in the variable `xah-run-current-file-map'.
+(setq
+ xah-run-current-file-map
+ '(("clj" . "clj")
+   ("fs" . "dotnet fsi")
+   ("fsx" . "dotnet fsi")
+   ("go" . "go run")
+   ("hs" . "runhaskell")
+   ("js" . "deno run")
+   ("latex" . "pdflatex")
+   ("m" . "wolframscript -file")
+   ("mjs" . "node --experimental-modules ")
+   ("ml" . "ocaml")
+   ("php" . "php")
+   ("pl" . "perl")
+   ("ps1" . "pwsh")
+   ("py" . "python")
+   ("py2" . "python2")
+   ("py3" . "python3")
+   ("rb" . "ruby")
+   ("rkt" . "racket")
+   ("sh" . "bash")
+   ("tex" . "pdflatex")
+   ("ts" . "deno run")
+   ("tsx" . "tsc")
+   ("vbs" . "cscript")
+   ("wl" . "wolframscript -file")
+   ("wls" . "wolframscript -file")
+   ("pov" . "povray +R2 +A0.1 +J1.2 +Am2 +Q9 +H480 +W640")))
 
-When `universal-argument' is called first, prompt user to enter command line options.
+(defun xah-run-current-file (Filename)
+  "Execute the current file.
+Output is printed to buffer *xah-run output*.
+
+File suffix is used to determine what external command to run, in the variable `xah-run-current-file-map'.
 
 If the file is modified or not saved, save it automatically before run.
 
+The variable `xah-run-current-file-dispatch' allows you to customize this command to call other function to run the current file.
+
 URL `http://xahlee.info/emacs/emacs/elisp_run_current_file.html'
-Version: 2020-09-24 2024-01-06 2024-03-17"
-  (interactive)
+Version: 2020-09-24 2024-03-17 2024-03-21"
+  (interactive
+   (if buffer-file-name
+       (progn
+         (when (buffer-modified-p) (save-buffer))
+         (list buffer-file-name))
+     (user-error "Buffer is not file. Save it first.")))
   ;; (setenv "NO_COLOR" "1") ; 2022-09-10 for deno. default color has yellow parts, hard to see
-  (when (not buffer-file-name) (user-error "Buffer is not file. Save it first."))
-  (when (buffer-modified-p) (save-buffer))
-  (let (xoutBuffer xextAppMap xfname xfExt xappCmdStr xcmdStr)
-    (setq
-     xoutBuffer (get-buffer-create "*xah-run output*" t)
-     xextAppMap xah-run-current-file-map
-     xfname buffer-file-name
-     xfExt (file-name-extension buffer-file-name)
-     xappCmdStr (cdr (assoc xfExt xextAppMap))
-     xcmdStr
-     (when xappCmdStr
-       (format "%s %s &"
-               xappCmdStr
-               (shell-quote-argument xfname))))
-
-    ;; FIXME: Rather than `shell-command' with an `&', better use
-    ;; `make-process' or `start-process' since we're not using the shell at all
-    ;; (worse, we need to use `shell-quote-argument' to circumvent the shell).
-
-    (run-hooks 'xah-run-current-file-before-hook)
-    (cond
-     ((string-equal xfExt "el")
-      (load xfname))
-     ((string-equal xfExt "go")
-      (xah-run-current-go-file))
-     ((string-match "wls?" xfExt)
-      (if (fboundp 'xah-wolfram-run-script)
-          (progn
-            (xah-wolfram-run-script nil current-prefix-arg))
-        (if xappCmdStr
-            (progn
-              (message "Running")
-              (shell-command xcmdStr xoutBuffer))
-          (error "%s: Unknown file extension: %s" real-this-command xfExt))))
-     ((string-equal xfExt "java")
-      (progn
-        ;; FIXME: Better use `call-process', or else at least use
-        ;; `shell-quote-argument'.
-        (shell-command (format "javac %s" xfname) xoutBuffer)
-        (shell-command (format "java %s" (file-name-sans-extension
-                                          (file-name-nondirectory xfname)))
-                       xoutBuffer)))
-     (t
-      (if xappCmdStr
-          (progn
-            (if current-prefix-arg
-                (let ((xuserCmd (read-string "run with command:" xcmdStr)))
-                  (message "Running 「%s」" xuserCmd)
-                  (shell-command xuserCmd xoutBuffer))
-              (progn
-                (message "Running 「%s」" xcmdStr)
-                (shell-command xcmdStr xoutBuffer))))
-        (error "%s: Unknown file extension: %s" real-this-command xfExt))))
-    (run-hooks 'xah-run-current-file-after-hook))
+  (let ((xoutBuffer (get-buffer-create "*xah-run output*" t))
+        (xext (file-name-extension Filename))
+        xdispatch)
+    (setq xdispatch (assoc xext xah-run-current-file-dispatch))
+    (if (and xdispatch (fboundp (cdr xdispatch)))
+        (progn
+          (message "calling %s" (cdr xdispatch))
+          (funcall (cdr xdispatch) Filename))
+      (let ((xappCmdStr (cdr (assoc xext xah-run-current-file-map))))
+        (when (and xdispatch (not (fboundp (cdr xdispatch))))
+          (warn "`xah-run-current-file' found function %s in xah-run-current-file-dispatch but it is unbound. Normal run continues using `xah-run-current-file-map'." xdispatch))
+        (when (not xappCmdStr) (error "%s: Unknown file extension: %s. check `xah-run-current-file-map'" real-this-command xext))
+        (let ((xcmdStr (format "%s %s &" xappCmdStr (shell-quote-argument Filename))))
+          (message "Running 「%s」" xcmdStr)
+          ;; xtodo FIXME: instead of calling shell-command , try to use make-process, start-process or call-process
+          (shell-command xcmdStr xoutBuffer)))))
   ;; (setenv "NO_COLOR")
   )
 
