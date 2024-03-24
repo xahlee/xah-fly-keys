@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.23.20240321233250
+;; Version: 24.24.20240324101507
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -175,11 +175,10 @@
   (defvar xah-repeat-key nil "A key that some xah command use as a key to repeat the command, pressed right after command call. Value should be the same format that `kbd' returns. e.g. (kbd \"m\")")
   (if xah-repeat-key nil (setq xah-repeat-key (kbd "m"))))
 
-(defun xah-get-block-pos ()
+(defun xah-get-pos-of-block ()
   "Return the [begin end] positions of current text block.
 Return value is a vector.
-
-Version: 2024-03-19"
+Version: 2024-03-23"
   (let (xp1 xp2 (xblankRegex "\n[ \t]*\n"))
     (save-excursion
       (setq xp1 (if (re-search-backward xblankRegex nil 1)
@@ -190,14 +189,13 @@ Version: 2024-03-19"
                   (point))))
     (vector xp1 xp2)))
 
-(defun xah-get-block-pos-or ()
-  "If region is active, return its [begin end] positions, else same as `xah-get-block-pos'.
+(defun xah-get-pos-of-block-or ()
+  "If region is active, return its [begin end] positions, else same as `xah-get-pos-of-block'.
 Return value is a vector.
-
-Version: 2024-03-19"
+Version: 2024-03-23"
   (if (region-active-p)
       (vector (region-beginning) (region-end))
-    (xah-get-block-pos)))
+    (xah-get-pos-of-block)))
 
 
 ;; cursor movement
@@ -335,7 +333,7 @@ Version 2017-06-26 2024-01-20"
 Version: 2022-01-22 2024-03-19"
   (interactive)
   (let (xp1 xp2)
-    (seq-setq (xp1 xp2) (xah-get-block-pos-or))
+    (seq-setq (xp1 xp2) (xah-get-pos-of-block-or))
     (sort-lines current-prefix-arg xp1 xp2)))
 
 (defun xah-narrow-to-region ()
@@ -343,7 +341,7 @@ Version: 2022-01-22 2024-03-19"
 Version: 2022-01-22 2024-03-19"
   (interactive)
   (let (xp1 xp2)
-    (seq-setq (xp1 xp2) (xah-get-block-pos-or))
+    (seq-setq (xp1 xp2) (xah-get-pos-of-block-or))
     (narrow-to-region xp1 xp2)))
 
 
@@ -928,7 +926,7 @@ Version: 2020-11-01 2023-09-29 2024-03-19"
         (completing-read "Replace this:" xbrackets nil t nil nil (car xbrackets))
         (completing-read "To:" xbrackets nil t nil nil (car (last xbrackets)))))))
   (let (xp1 xp2 xleft xright xtoL xtoR)
-    (seq-setq (xp1 xp2) (xah-get-block-pos-or))
+    (seq-setq (xp1 xp2) (xah-get-pos-of-block-or))
     (let ((xsFrom (last (split-string FromChars " ") 2))
           (xsTo (last (split-string ToChars " ") 2)))
 
@@ -1020,7 +1018,7 @@ URL `http://xahlee.info/emacs/emacs/emacs_upcase_sentence.html'
 Version: 2020-12-08 2022-08-27 2024-03-19"
   (interactive)
   (let (xp1 xp2)
-    (seq-setq (xp1 xp2) (xah-get-block-pos-or))
+    (seq-setq (xp1 xp2) (xah-get-pos-of-block-or))
     (save-restriction
       (narrow-to-region xp1 xp2)
       (let ((case-fold-search nil))
@@ -1119,7 +1117,7 @@ and highlight changes made.
 Version: 2022-01-20 2024-03-19"
   (interactive)
   (let (xp1 xp2)
-    (seq-setq (xp1 xp2) (xah-get-block-pos-or))
+    (seq-setq (xp1 xp2) (xah-get-pos-of-block-or))
     (save-restriction
       (narrow-to-region xp1 xp2)
       (goto-char (point-min))
@@ -1167,7 +1165,7 @@ Version: 2020-11-22 2021-08-13 2024-03-19"
   (let ( (xisLongline (if (eq last-command this-command) (get this-command 'longline-p) t))
          (deactivate-mark nil)
          xp1 xp2 )
-    (seq-setq (xp1 xp2) (xah-get-block-pos-or))
+    (seq-setq (xp1 xp2) (xah-get-pos-of-block-or))
     (if xisLongline
         (fill-region xp1 xp2)
       (let ((fill-column 99999 ))
@@ -1233,7 +1231,7 @@ Version: 2018-12-16 2021-08-12 2024-03-19"
     (setq xminlen (if MinLength MinLength (if current-prefix-arg (prefix-numeric-value current-prefix-arg) fill-column)))
     (if (and Begin End)
         (setq xp1 Begin xp2 End)
-      (seq-setq (xp1 xp2) (xah-get-block-pos-or)))
+      (seq-setq (xp1 xp2) (xah-get-pos-of-block-or)))
     (save-excursion
       (save-restriction
         (narrow-to-region xp1 xp2)
@@ -1258,7 +1256,7 @@ Version: 2021-07-05 2022-12-24 2024-03-19"
   (let (xisLong xwidth xp1 xp2)
     (setq xwidth (if Width Width (if current-prefix-arg (prefix-numeric-value current-prefix-arg) 66)))
     (setq xisLong (if (eq last-command this-command) (get this-command 'is-long-p) nil))
-    (seq-setq (xp1 xp2) (xah-get-block-pos-or))
+    (seq-setq (xp1 xp2) (xah-get-pos-of-block-or))
     (if current-prefix-arg
         (xah-reformat-to-multi-lines xp1 xp2 xwidth)
       (if xisLong
@@ -1276,7 +1274,7 @@ URL `http://xahlee.info/emacs/emacs/elisp_reformat_to_sentence_lines.html'
 Version: 2020-12-02 2023-11-09 2024-03-19"
   (interactive)
   (let (xp1 xp2)
-    (seq-setq (xp1 xp2) (xah-get-block-pos-or))
+    (seq-setq (xp1 xp2) (xah-get-pos-of-block-or))
     (save-restriction
       (narrow-to-region xp1 xp2)
       (goto-char (point-min)) (while (search-forward "。" nil t) (replace-match "。\n"))
@@ -1305,7 +1303,7 @@ URL `http://xahlee.info/emacs/emacs/emacs_space_to_newline.html'
 Version: 2017-08-19 2021-11-28 2024-03-19"
   (interactive)
   (let (xp1 xp2)
-    (seq-setq (xp1 xp2) (xah-get-block-pos-or))
+    (seq-setq (xp1 xp2) (xah-get-pos-of-block-or))
     (save-restriction
       (narrow-to-region xp1 xp2)
       (goto-char (point-min))
@@ -1507,7 +1505,7 @@ Version: 2020-06-26 2023-10-29 2024-03-19"
             (t xsepChoice)))
      (list xquoteL xquoteR xsep)))
   (let (xp1 xp2 (xquoteL QuoteL) (xquoteR QuoteR) (xsep Sep))
-    (seq-setq (xp1 xp2) (xah-get-block-pos-or))
+    (seq-setq (xp1 xp2) (xah-get-pos-of-block-or))
     (save-excursion
       (save-restriction
         (narrow-to-region xp1 xp2)
@@ -1806,7 +1804,7 @@ Version: 2017-01-17 2021-08-12 2024-03-19"
         (goto-char (+ xp2 (length LBracket))))
        ((eq WrapMethod 'block)
         (save-excursion
-          (seq-setq (xp1 xp2) (xah-get-block-pos-or))
+          (seq-setq (xp1 xp2) (xah-get-pos-of-block-or))
           (goto-char xp2)
           (insert RBracket)
           (goto-char xp1)
@@ -2540,12 +2538,12 @@ Output is printed to buffer *xah-run output*.
 
 File suffix is used to determine what external command to run, in the variable `xah-run-current-file-map'.
 
-If the file is modified or not saved, save it automatically before run.
+If file is modified, it is auto saved before run.
 
 The variable `xah-run-current-file-dispatch' allows you to customize this command to call other function to run the current file.
 
 URL `http://xahlee.info/emacs/emacs/elisp_run_current_file.html'
-Version: 2020-09-24 2024-03-17 2024-03-21"
+Version: 2020-09-24 2024-03-21 2024-03-22"
   (interactive
    (if buffer-file-name
        (progn
@@ -2567,7 +2565,7 @@ Version: 2020-09-24 2024-03-17 2024-03-21"
         (when (not xappCmdStr) (error "%s: Unknown file extension: %s. check `xah-run-current-file-map'" real-this-command xext))
         (let ((xcmdStr (format "%s %s &" xappCmdStr (shell-quote-argument Filename))))
           (message "Running 「%s」" xcmdStr)
-          ;; xtodo FIXME: instead of calling shell-command , try to use make-process, start-process or call-process
+          ;; note, not using make-process or start-process. problem is, they are too complex to create, and have issues or variation on different operating system.
           (shell-command xcmdStr xoutBuffer)))))
   ;; (setenv "NO_COLOR")
   )
