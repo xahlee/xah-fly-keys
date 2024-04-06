@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.24.20240324101507
+;; Version: 24.24.20240406145635
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -350,7 +350,7 @@ Version: 2022-01-22 2024-03-19"
 (defun xah-copy-line-or-region ()
   "Copy current line or selection.
 When called repeatedly, append copy subsequent lines.
-When `universal-argument' is called first, copy whole buffer (respects `narrow-to-region').
+If `universal-argument' is called first, copy whole buffer (respects `narrow-to-region').
 
 URL `http://xahlee.info/emacs/emacs/emacs_copy_cut_current_line.html'
 Version: 2010-05-21 2022-10-03"
@@ -386,7 +386,7 @@ Version: 2010-05-21 2022-10-03"
 
 (defun xah-cut-line-or-region ()
   "Cut current line or selection.
-When `universal-argument' is called first, cut whole buffer (respects `narrow-to-region').
+If `universal-argument' is called first, cut whole buffer (respects `narrow-to-region').
 
 URL `http://xahlee.info/emacs/emacs/emacs_copy_cut_current_line.html'
 Version: 2010-05-21 2015-06-10"
@@ -449,7 +449,7 @@ Version: 2017-01-03"
   "Paste. When called repeatedly, paste previous.
 This command calls `yank', and if repeated, call `yank-pop'.
 
-When `universal-argument' is called first with a number arg, paste that many times.
+If `universal-argument' is called first with a number arg, paste that many times.
 
 URL `http://xahlee.info/emacs/emacs/emacs_paste_or_paste_previous.html'
 Version: 2017-07-25 2020-09-08"
@@ -1972,6 +1972,7 @@ xString can be any string, needs not be a char or emoji.
    ("square" . "⬛")
    ("cursor ▮" . "▮")
    ("dagger †" . "†")
+   ("double dagger ‡" . "‡")
 
    ("double angle bracket" . "《》")
    ("black lenticular bracket" . "【】")
@@ -2384,9 +2385,13 @@ Version: 2016-06-19"
           xah-recently-closed-buffers)))
 
 (defvar xah-open-file-at-cursor-pre-hook nil "Hook for `xah-open-file-at-cursor'.
-Functions in the hook will be called in order, each given the path as arg.
-The first return non-nil, its value is given to `xah-open-file-at-cursor' as input.
-This is useful for transforming certain url into file path (your website url), so instead of opening in browser, it opens in emacs as file.")
+Functions in the hook is called in order, each given the raw input text (path) as arg.
+The first return non-nil, its value is given to `xah-open-file-at-cursor' as input. rest functions in hook is ignored.
+This is useful for transforming certain url into file path. e.g. change
+http://xahlee.info/emacs/index.html
+to
+C:/Users/xah/web/xahlee_info/emacs/index.html
+, so instead of opening in browser, it opens in emacs as file.")
 
 (defun xah-open-file-at-cursor ()
   "Open the file path under cursor.
@@ -2403,29 +2408,30 @@ See also `xah-open-file-at-cursor-pre-hook'.
 This command is similar to `find-file-at-point' but without prompting for confirmation.
 
 URL `http://xahlee.info/emacs/emacs/emacs_open_file_path_fast.html'
-Version: 2020-10-17 2023-03-22 2023-09-29"
+Version: 2020-10-17 2023-09-29 2024-04-06"
   (interactive)
   (let (xinput xinput2 xpath)
-    (setq
-     xinput
-     (if (region-active-p)
-         (buffer-substring-no-properties (region-beginning) (region-end))
-       (let ((xp0 (point)) xp1 xp2
-             (xpathStops "^  \t\n\"`'‘’“”|()[]{}「」<>〔〕〈〉《》【】〖〗«»‹›❮❯❬❭〘〙·。\\"))
-         (skip-chars-backward xpathStops)
-         (setq xp1 (point))
-         (goto-char xp0)
-         (skip-chars-forward xpathStops)
-         (setq xp2 (point))
-         (goto-char xp0)
-         (buffer-substring-no-properties xp1 xp2)))
-     xinput2
-     (if (> (length xah-open-file-at-cursor-pre-hook) 0)
-         (let ((xprehook (run-hook-with-args-until-success 'xah-open-file-at-cursor-pre-hook xinput)))
-           (if xprehook xprehook xinput))
-       xinput)
-     xpath
-     (replace-regexp-in-string "^/C:/" "/" (replace-regexp-in-string "^file://" "" (replace-regexp-in-string ":\\'" "" xinput2))))
+    (setq xinput (if (region-active-p)
+                     (buffer-substring-no-properties (region-beginning) (region-end))
+                   (let ((xp0 (point)) xp1 xp2
+                         (xpathStops "^  \t\n\"`'‘’“”|()[]{}「」<>〔〕〈〉《》【】〖〗«»‹›❮❯❬❭〘〙·。\\"))
+                     (skip-chars-backward xpathStops)
+                     (setq xp1 (point))
+                     (goto-char xp0)
+                     (skip-chars-forward xpathStops)
+                     (setq xp2 (point))
+                     (goto-char xp0)
+                     (buffer-substring-no-properties xp1 xp2))))
+    (setq xinput2 (if (> (length xah-open-file-at-cursor-pre-hook) 0)
+                      (let ((xprehook (run-hook-with-args-until-success 'xah-open-file-at-cursor-pre-hook xinput)))
+                        (if xprehook xprehook xinput))
+                    xinput))
+
+    (setq xpath
+          (cond
+           ((string-match "^file:///[A-Za-z]:/" xinput2) (substring xinput2 8))
+           ((string-match "^file://[A-Za-z]:/" xinput2) (substring xinput2 7))
+           (t xinput2)))
 
     (if (string-match-p "\\`https?://" xpath)
         (browse-url xpath)
@@ -3012,19 +3018,14 @@ Effectively, this map takes precedence over all others when command mode
 is enabled.")
 
 (defvar xah-fly-insert-map (cons 'keymap xah-fly-shared-map)
-  "Keymap for bindings that will be checked in insert mode. Active whenever
-`xah-fly-keys' is non-nil.
+  "Keymap for bindings that is checked in insert mode. Active whenever `xah-fly-keys' is non-nil.
 
-Inherits bindings from `xah-fly-shared-map'. In insert mode, if no binding
-is found in this map `xah-fly-shared-map' is checked, then if there is
-still no binding, the other active keymaps are checked like normal. However,
-if a key is explicitly bound to nil in this map, it will not be looked
-up in `xah-fly-shared-map' and lookup will skip directly to the normally
-active maps. In this way, bindings in `xah-fly-shared-map' can be disabled
-by this map.
+Inherits bindings from `xah-fly-shared-map'.
+In insert mode, if no binding is found in this map `xah-fly-shared-map' is checked, then if there is still no binding, the other active keymaps are checked like normal.
+However, if a key is explicitly bound to nil in this map, it will not be looked up in `xah-fly-shared-map' and lookup will skip directly to the normally active maps.
+In this way, bindings in `xah-fly-shared-map' can be disabled by this map.
 
-Keep in mind that this acts like a normal global minor mode map, so other
-minor modes loaded later may override bindings in this map.")
+Keep in mind that this acts like a normal global minor mode map, so other minor modes loaded later may override bindings in this map.")
 
 (defvar xah-fly--deactivate-command-mode-func nil)
 
