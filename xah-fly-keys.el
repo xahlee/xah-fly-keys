@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 24.24.20240422075003
+;; Version: 25.0.20240422075003
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -112,31 +112,31 @@
 ;; (xah-fly-keys 1)
 ;;
 ;; possible layout values:
-;; adnw
+
+;; adnw (German)
 ;; azerty
 ;; azerty-be
-;; beopy
-;; bepo
-;; carpalx-qfmlwy
-;; carpalx-qgmlwb
-;; carpalx-qgmlwy
+;; bepo (French)
 ;; colemak
-;; colemak-dhm
-;; colemak-dhm-angle
-;; colemak-dhk
+;; colemak-dh
 ;; dvorak
-;; koy
-;; neo2
+;; engrammer
+;; koy (German)
+;; halmak
+;; minimak
+;; neo2 (German)
 ;; norman
 ;; programer-dvorak
-;; pt-nativo
+;; pt-nativo (Brazil)
+;; qfmlwy
 ;; qwerty
-;; qwerty-abnt
-;; qwerty-no (qwerty Norwegian)
+;; qwerty-abnt (Brazil)
+;; qwerty-no (Norwegian)
 ;; qwertz
+;; qwpr
 ;; workman
-;;
-;; supported layouts are stored in the variable xah-fly-layouts
+
+;; supported layouts are stored in the variable xah-fly-layout-diagrams
 
 
 ;;; Code:
@@ -2874,795 +2874,392 @@ Version: 2017-01-29"
 
 ;; layout lookup tables for key conversion
 
-(defvar xah-fly-layouts nil "A alist.
-Key is layout name, string type.
-Value is a alist, each element is of the form (\"e\" . \"d\").
-First char is Dvorak, second is corresponding char of the destination layout.
-When a char is not in this alist, they are assumed to be the same. ")
+(defvar xah-fly-layout-diagrams (make-hash-table :test 'equal)
+  "A hashtable.
+Key is string, of keyboard layout name.
+Value is a string, of text-art (aka ASCII-art) form of the layout.
+The text-art string, each key (sequence of chars) is separated by whitespace.
+The string is split by white space, and each item is considered a key.
+The key is usually a single char, can be unicode, but may also be alt ctrl tab shift return and other.
+It is used to generate key conversion table of a key from layout to layout.
+")
 
-(push '("azerty" . (("." . "e")
-                    ("," . "z")
-                    ("'" . "a")
-                    (";" . "w")
-                    ("/" . "^")
-                    ("[" . ")")
-                    ("]" . "=")
-                    ("=" . "$")
-                    ("-" . "ù")
-                    ("a" . "q")
-                    ("b" . "n")
-                    ("c" . "i")
-                    ("d" . "h")
-                    ("e" . "d")
-                    ("f" . "y")
-                    ("g" . "u")
-                    ("h" . "j")
-                    ("i" . "g")
-                    ("j" . "c")
-                    ("k" . "v")
-                    ("l" . "p")
-                    ("m" . ",")
-                    ("n" . "l")
-                    ("o" . "s")
-                    ("p" . "r")
-                    ("q" . "x")
-                    ("r" . "o")
-                    ("s" . "m")
-                    ("t" . "k")
-                    ("u" . "f")
-                    ("v" . ":")
-                    ("w" . ";")
-                    ("x" . "b")
-                    ("y" . "t")
-                    ("z" . "!")
-                    ("1" . "&")
-                    ("2" . "é")
-                    ("3" . "\"")
-                    ("4" . "'")
-                    ("5" . "(")
-                    ("6" . "-")
-                    ("7" . "è")
-                    ("8" . "_")
-                    ("9" . "ç")
-                    ("0" . "à")
-                    ("\\" . "*")
-                    ("`" . "²"))) xah-fly-layouts)
+(progn
 
-(push '("azerty-be" . (("." . "e")
-                       ("," . "z")
-                       ("'" . "a")
-                       (";" . "w")
-                       ("/" . "^")
-                       ("[" . ")")
-                       ("]" . "-")
-                       ("=" . "$")
-                       ("-" . "ù")
-                       ("a" . "q")
-                       ("b" . "n")
-                       ("c" . "i")
-                       ("d" . "h")
-                       ("e" . "d")
-                       ("f" . "y")
-                       ("g" . "u")
-                       ("h" . "j")
-                       ("i" . "g")
-                       ("j" . "c")
-                       ("k" . "v")
-                       ("l" . "p")
-                       ("m" . ",")
-                       ("n" . "l")
-                       ("o" . "s")
-                       ("p" . "r")
-                       ("q" . "x")
-                       ("r" . "o")
-                       ("s" . "m")
-                       ("t" . "k")
-                       ("u" . "f")
-                       ("v" . ":")
-                       ("w" . ";")
-                       ("x" . "b")
-                       ("y" . "t")
-                       ("z" . "=")
-                       ("1" . "&")
-                       ("2" . "é")
-                       ("3" . "\"")
-                       ("4" . "'")
-                       ("5" . "(")
-                       ("6" . "§")
-                       ("7" . "è")
-                       ("8" . "!")
-                       ("9" . "ç")
-                       ("0" . "à")
-                       ("\\" . "µ")
-                       ("`" . "²"))) xah-fly-layouts)
+  (puthash "adnw" "
+~ ! @ # $ % ^ & * ( ) { }
+` 1 2 3 4 5 6 7 8 9 0 [ ]
 
-(push '("colemak" . (("'" . "q")
-                     ("," . "w")
-                     ("." . "f")
-                     ("y" . "g")
-                     ("f" . "j")
-                     ("g" . "l")
-                     ("c" . "u")
-                     ("r" . "y")
-                     ("l" . ";")
-                     ("o" . "r")
-                     ("e" . "s")
-                     ("u" . "t")
-                     ("i" . "d")
-                     ("d" . "h")
-                     ("h" . "n")
-                     ("t" . "e")
-                     ("n" . "i")
-                     ("s" . "o")
-                     (";" . "z")
-                     ("q" . "x")
-                     ("j" . "c")
-                     ("k" . "v")
-                     ("x" . "b")
-                     ("b" . "k")
-                     ("w" . ",")
-                     ("v" . ".")
-                     ("z" . "/"))) xah-fly-layouts)
+k u ü . ä v g c l j f = \\
+h i e a o d t r n s ß
+x y ö , q b p w m z
 
-(push '("colemak-dhm" . (("'" . "q")
-                         ("," . "w")
-                         ("." . "f")
-                         (";" . "z")
-                         ("b" . "k")
-                         ("c" . "u")
-                         ("d" . "m")
-                         ("e" . "s")
-                         ("f" . "j")
-                         ("g" . "l")
-                         ("h" . "n")
-                         ("i" . "g")
-                         ("j" . "c")
-                         ("k" . "d")
-                         ("l" . ";")
-                         ("m" . "h")
-                         ("n" . "i")
-                         ("o" . "r")
-                         ("q" . "x")
-                         ("r" . "y")
-                         ("s" . "o")
-                         ("t" . "e")
-                         ("u" . "t")
-                         ("v" . ".")
-                         ("w" . ",")
-                         ("x" . "v")
-                         ("y" . "b")
-                         ("z" . "/"))) xah-fly-layouts)
+K U Ü > Ä V G C L J F + |
+H I E A O D T R N S ẞ
+X Y Ö < Q B P W M Z
+" xah-fly-layout-diagrams)
 
-(push '("colemak-dhm-angle" . (("'" . "q")
-                               ("," . "w")
-                               ("." . "f")
-                               (";" . "x")
-                               ("b" . "k")
-                               ("c" . "u")
-                               ("d" . "m")
-                               ("e" . "s")
-                               ("f" . "j")
-                               ("g" . "l")
-                               ("h" . "n")
-                               ("i" . "g")
-                               ("j" . "d")
-                               ("k" . "v")
-                               ("l" . ";")
-                               ("m" . "h")
-                               ("n" . "i")
-                               ("o" . "r")
-                               ("q" . "c")
-                               ("r" . "y")
-                               ("s" . "o")
-                               ("t" . "e")
-                               ("u" . "t")
-                               ("v" . ".")
-                               ("w" . ",")
-                               ("x" . "\\")
-                               ("y" . "b")
-                               ("z" . "/"))) xah-fly-layouts)
+  (puthash "azerty"
+           "
+~ ! @ # $ % ^ & * ( ) { }
+² & é \" ' ( - è _ ç à ) =
 
-(push '("colemak-dhk" . (("'" . "q")
-                         ("," . "w")
-                         ("." . "f")
-                         (";" . "z")
-                         ("b" . "m")
-                         ("c" . "u")
-                         ("d" . "k")
-                         ("e" . "s")
-                         ("f" . "j")
-                         ("g" . "l")
-                         ("h" . "n")
-                         ("i" . "g")
-                         ("j" . "c")
-                         ("k" . "d")
-                         ("l" . ";")
-                         ("m" . "h")
-                         ("n" . "i")
-                         ("o" . "r")
-                         ("q" . "x")
-                         ("r" . "y")
-                         ("s" . "o")
-                         ("t" . "e")
-                         ("u" . "t")
-                         ("v" . ".")
-                         ("w" . ",")
-                         ("x" . "v")
-                         ("y" . "b")
-                         ("z" . "/"))) xah-fly-layouts)
+a z e r t y u i o p ^ $ *
+q s d f g h j k l m ù
+w x c v b n , ; : !
 
-(push '("dvorak" . nil) xah-fly-layouts)
+A Z E R T Y U I O P ? + |
+Q S D F G H J K L M Ù
+W X C V B N ? . / §
+" xah-fly-layout-diagrams)
 
-(push '("optimot" . (("-" . "^")
-                     ("'" . "à")
-                     ("," . "j")
-                     ("." . "o")
-                     (";" . "k")
-                     ("/" . "x")
-                     ("[" . "#")
-                     ("]" . "@")
-                     ("=" . "ç")
-                     ("a" . "a")
-                     ("b" . "g")
-                     ("c" . "l")
-                     ("d" . "p")
-                     ("e" . "e")
-                     ("f" . "f")
-                     ("g" . "d")
-                     ("h" . "t")
-                     ("i" . ",")
-                     ("j" . "è")
-                     ("k" . ".")
-                     ("l" . "q")
-                     ("m" . "c")
-                     ("n" . "r")
-                     ("o" . "i")
-                     ("p" . "é")
-                     ("q" . "y")
-                     ("r" . "'")
-                     ("s" . "n")
-                     ("t" . "s")
-                     ("u" . "u")
-                     ("v" . "h")
-                     ("w" . "m")
-                     ("x" . "w")
-                     ("y" . "b")
-                     ("z" . "v")
-                     ("1" . "«")
-                     ("2" . "»")
-                     ("3" . "\"")
-                     ("4" . "-")
-                     ("5" . "+")
-                     ("6" . "*")
-                     ("7" . "/")
-                     ("8" . "=")
-                     ("9" . "(")
-                     ("0" . ")")
-                     ("\\" . "ç")
-                     ("`" . "$"))) xah-fly-layouts)
+  (puthash "azerty-be"
+           "
+~ ! @ # $ % ^ & * ( ) { }
+² & é \" ' ( § è ! ç à ) -
 
-(push '("programer-dvorak" . (("`" . "$")
-                              ("1" . "&")
-                              ("2" . "[")
-                              ("3" . "{")
-                              ("4" . "}")
-                              ("5" . "(")
-                              ("6" . "=")
-                              ("7" . "*")
-                              ("8" . ")")
-                              ("9" . "+")
-                              ("0" . "]")
-                              ("[" . "!")
-                              ("]" . "#")
-                              ("!" . "%")
-                              ("@" . "7")
-                              ("#" . "5")
-                              ("$" . "3")
-                              ("%" . "1")
-                              ("^" . "9")
-                              ("&" . "0")
-                              ("*" . "2")
-                              ("(" . "4")
-                              (")" . "6")
-                              ("{" . "8")
-                              ("}" . "`")
-                              ("'" . ";")
-                              ("\"" . ":")
-                              (";" . "'")
-                              (":" . "\"")
-                              ("=" . "@")
-                              ("+" . "^"))) xah-fly-layouts)
+a z e r t y u i o p ^ $ µ
+q s d f g h j k l m ù
+w x c v b n , ; : =
 
-(push '("qwerty" . (("." . "e")
-                    ("," . "w")
-                    ("'" . "q")
-                    (";" . "z")
-                    ("/" . "[")
-                    ("[" . "-")
-                    ("]" . "=")
-                    ("=" . "]")
-                    ("-" . "'")
-                    ("a" . "a")
-                    ("b" . "n")
-                    ("c" . "i")
-                    ("d" . "h")
-                    ("e" . "d")
-                    ("f" . "y")
-                    ("g" . "u")
-                    ("h" . "j")
-                    ("i" . "g")
-                    ("j" . "c")
-                    ("k" . "v")
-                    ("l" . "p")
-                    ("n" . "l")
-                    ("o" . "s")
-                    ("p" . "r")
-                    ("q" . "x")
-                    ("r" . "o")
-                    ("s" . ";")
-                    ("t" . "k")
-                    ("u" . "f")
-                    ("v" . ".")
-                    ("w" . ",")
-                    ("x" . "b")
-                    ("y" . "t")
-                    ("z" . "/"))) xah-fly-layouts)
+A Z E R T Y U I O P ^ $ Μ
+Q S D F G H J K L M Ù
+W X C V B N ? . / +
+" xah-fly-layout-diagrams)
 
-;; QWERTY Norwegian
-(push '("qwerty-no" . (("." . "e")
-                       ("," . "w")
-                       ("'" . "q")
-                       (";" . "z")
-                       ("/" . "å")
-                       ("[" . "+")
-                       ("]" . "´")
-                       ("=" . "¨")
-                       ("-" . "æ")
-                       ("b" . "n")
-                       ("c" . "i")
-                       ("d" . "h")
-                       ("e" . "d")
-                       ("f" . "y")
-                       ("g" . "u")
-                       ("h" . "j")
-                       ("i" . "g")
-                       ("j" . "c")
-                       ("k" . "v")
-                       ("l" . "p")
-                       ("n" . "l")
-                       ("o" . "s")
-                       ("p" . "r")
-                       ("q" . "x")
-                       ("r" . "o")
-                       ("s" . "ø")
-                       ("t" . "k")
-                       ("u" . "f")
-                       ("v" . ".")
-                       ("w" . ",")
-                       ("x" . "b")
-                       ("y" . "t")
-                       ("z" . "-"))) xah-fly-layouts)
+  (puthash "bepo" "
+$ \" « » ( ) @ + - / * = %
+#  1 2 3 4 5 6 7 8 9 0 ° `
 
-(push '("qwerty-abnt" . (("." . "e")
-                         ("," . "w")
-                         ("'" . "q")
-                         (";" . "z")
-                         ("/" . "'")
-                         ("[" . "-")
-                         ("]" . "=")
-                         ("=" . "[")
-                         ("-" . "~")
-                         ("b" . "n")
-                         ("c" . "i")
-                         ("d" . "h")
-                         ("e" . "d")
-                         ("f" . "y")
-                         ("g" . "u")
-                         ("h" . "j")
-                         ("i" . "g")
-                         ("j" . "c")
-                         ("k" . "v")
-                         ("l" . "p")
-                         ("n" . "l")
-                         ("o" . "s")
-                         ("p" . "r")
-                         ("q" . "x")
-                         ("r" . "o")
-                         ("s" . "ç")
-                         ("t" . "k")
-                         ("u" . "f")
-                         ("v" . ".")
-                         ("w" . ",")
-                         ("x" . "b")
-                         ("y" . "t")
-                         ("z" . ";"))) xah-fly-layouts)
+b é p o è ^ v d l j z w \\
+a u i e , c t s r n m
+à y x . k ' q g h f
 
-(push '("qwertz" . (("." . "e")
-                    ("," . "w")
-                    ("'" . "q")
-                    (";" . "y")
-                    ("/" . "ü")
-                    ("[" . "ß")
-                    ("]" . "´")
-                    ("=" . "+")
-                    ("-" . "ä")
-                    ("b" . "n")
-                    ("c" . "i")
-                    ("d" . "h")
-                    ("e" . "d")
-                    ("f" . "z")
-                    ("g" . "u")
-                    ("h" . "j")
-                    ("i" . "g")
-                    ("j" . "c")
-                    ("k" . "v")
-                    ("l" . "p")
-                    ("n" . "l")
-                    ("o" . "s")
-                    ("p" . "r")
-                    ("q" . "x")
-                    ("r" . "o")
-                    ("s" . "ö")
-                    ("t" . "k")
-                    ("u" . "f")
-                    ("v" . ".")
-                    ("w" . ",")
-                    ("x" . "b")
-                    ("y" . "t")
-                    ("z" . "-"))) xah-fly-layouts)
+B É P O È ! V D L J Z W |
+A U I E ; C T S R N M
+À Y X : K ? Q G H F
+" xah-fly-layout-diagrams)
 
-(push '("workman" . (("[" . "-")
-                     ("]" . "=")
-                     ("'" . "q")
-                     ("," . "d")
-                     ("." . "r")
-                     ("p" . "w")
-                     ("y" . "b")
-                     ("f" . "j")
-                     ("g" . "f")
-                     ("c" . "u")
-                     ("r" . "p")
-                     ("l" . ";")
-                     ("/" . "[")
-                     ("=" . "]")
-                     ("o" . "s")
-                     ("e" . "h")
-                     ("u" . "t")
-                     ("i" . "g")
-                     ("d" . "y")
-                     ("h" . "n")
-                     ("t" . "e")
-                     ("n" . "o")
-                     ("s" . "i")
-                     ("-" . "'")
-                     (";" . "z")
-                     ("q" . "x")
-                     ("j" . "m")
-                     ("k" . "c")
-                     ("x" . "v")
-                     ("b" . "k")
-                     ("m" . "l")
-                     ("w" . ",")
-                     ("v" . ".")
-                     ("z" . "/"))) xah-fly-layouts)
+  (puthash "colemak" "
+~ ! @ # $ % ^ & * ( ) _ +
+` 1 2 3 4 5 6 7 8 9 0 - =
 
-(push '("norman" . (("'" . "q")
-                    ("," . "w")
-                    ("." . "d")
-                    ("p" . "f")
-                    ("y" . "k")
-                    ("f" . "j")
-                    ("g" . "u")
-                    ("c" . "r")
-                    ("r" . "l")
-                    ("l" . ";")
-                    ("o" . "s")
-                    ("u" . "t")
-                    ("i" . "g")
-                    ("d" . "y")
-                    ("h" . "n")
-                    ("t" . "i")
-                    ("n" . "o")
-                    ("s" . "h")
-                    (";" . "z")
-                    ("q" . "x")
-                    ("j" . "c")
-                    ("k" . "v")
-                    ("x" . "b")
-                    ("b" . "p")
-                    ("w" . ",")
-                    ("v" . ".")
-                    ("z" . "/"))) xah-fly-layouts)
+q w f p g j l u y ; [ ] \\
+a r s t d h n e i o '
+z x c v b k m , . /
 
-(push '("neo2" . (("'" . "x")
-                  ("," . "v")
-                  ("." . "l")
-                  ("p" . "c")
-                  ("y" . "w")
-                  ("f" . "k")
-                  ("g" . "h")
-                  ("c" . "g")
-                  ("r" . "f")
-                  ("l" . "q")
-                  ("a" . "u")
-                  ("o" . "i")
-                  ("e" . "a")
-                  ("u" . "e")
-                  ("i" . "o")
-                  ("d" . "s")
-                  ("h" . "n")
-                  ("t" . "r")
-                  ("n" . "t")
-                  ("s" . "d")
-                  (";" . "ü")
-                  ("q" . "ö")
-                  ("j" . "ä")
-                  ("k" . "p")
-                  ("x" . "z")
-                  ("w" . ",")
-                  ("v" . ".")
-                  ("z" . "j")
-                  ("/" . "ß")
-                  ("[" . "-")
-                  ("-" . "y"))) xah-fly-layouts)
+Q W F P G J L U Y : { } |
+A R S T D H N E I O \"
+Z X C V B K M < > ?
+" xah-fly-layout-diagrams)
 
-(push '("koy" . (("'" . "k")
-                 ("," . ".")
-                 ("." . "o")
-                 ("p" . ",")
-                 ("f" . "v")
-                 ("r" . "l")
-                 ("l" . "ß")
-                 ("a" . "h")
-                 ("o" . "a")
-                 ("u" . "i")
-                 ("i" . "u")
-                 ("h" . "t")
-                 ("t" . "r")
-                 (";" . "x")
-                 ("j" . "ä")
-                 ("k" . "ü")
-                 ("x" . "ö")
-                 ("m" . "p")
-                 ("v" . "m")
-                 ("z" . "j"))) xah-fly-layouts)
+  (puthash "colemak-dh" "
+~ ! @ # $ % ^ & * ( ) _ +
+` 1 2 3 4 5 6 7 8 9 0 - =
 
-(push '("adnw" . (("'" . "k")
-                  ("," . "u")
-                  ("." . "ü")
-                  ("p" . ".")
-                  ("y" . "ä")
-                  ("f" . "v")
-                  ("r" . "l")
-                  ("l" . "j")
-                  ("/" . "f")
-                  ("a" . "h")
-                  ("o" . "i")
-                  ("u" . "a")
-                  ("i" . "o")
-                  ("h" . "t")
-                  ("t" . "r")
-                  ("-" . "ß")
-                  (";" . "x")
-                  ("q" . "y")
-                  ("j" . "ö")
-                  ("k" . ",")
-                  ("x" . "q")
-                  ("m" . "p")
-                  ("v" . "m"))) xah-fly-layouts)
+q w f p b j l u y ; [ ] \\
+a r s t g m n e i o '
+z x c d v k h , . /
 
-(push '("pt-nativo" . ((";" . "«")
-                       ("/" . "~")
-                       ("[" . "º")
-                       ("]" . "<")
-                       ("=" . "-")
-                       ("-" . "´")
-                       ("a" . "i")
-                       ("b" . "q")
-                       ("c" . "t")
-                       ("d" . "m")
-                       ("e" . "a")
-                       ("f" . "w")
-                       ("g" . "l")
-                       ("h" . "d")
-                       ("i" . "u")
-                       ("k" . "b")
-                       ("l" . "p")
-                       ("m" . "v")
-                       ("n" . "r")
-                       ("o" . "e")
-                       ("p" . "h")
-                       ("q" . "ç")
-                       ("r" . "c")
-                       ("s" . "n")
-                       ("t" . "s")
-                       ("u" . "o")
-                       ("v" . "f")
-                       ("w" . "g")
-                       ("x" . "k")
-                       ("y" . "x"))) xah-fly-layouts)
+Q W F P B J L U Y : { } |
+A R S T G M N E I O \"
+Z X C D V K H < > ?
+" xah-fly-layout-diagrams)
 
-(push '("carpalx-qgmlwy" . (("." . "m")
-                            ("," . "g")
-                            ("'" . "q")
-                            (";" . "z")
-                            ("/" . "[")
-                            ("[" . "-")
-                            ("]" . "=")
-                            ("=" . "]")
-                            ("-" . "'")
-                            ("a" . "d")
-                            ("b" . "k")
-                            ("c" . "u")
-                            ("d" . "i")
-                            ("e" . "t")
-                            ("f" . "y")
-                            ("g" . "f")
-                            ("h" . "a")
-                            ("i" . "r")
-                            ("j" . "c")
-                            ("k" . "v")
-                            ("l" . ";")
-                            ("m" . "p")
-                            ("n" . "o")
-                            ("o" . "s")
-                            ("p" . "l")
-                            ("q" . "x")
-                            ("r" . "b")
-                            ("s" . "h")
-                            ("t" . "e")
-                            ("u" . "n")
-                            ("v" . ".")
-                            ("w" . ",")
-                            ("x" . "j")
-                            ("y" . "w")
-                            ("z" . "/"))) xah-fly-layouts)
+  (puthash "dvorak" "
+~ ! @ # $ % ^ & * ( ) { }
+` 1 2 3 4 5 6 7 8 9 0 [ ]
 
-(push '("carpalx-qgmlwb" . (("." . "m")
-                            ("," . "g")
-                            ("'" . "q")
-                            (";" . "z")
-                            ("/" . "[")
-                            ("[" . "-")
-                            ("]" . "=")
-                            ("=" . "]")
-                            ("-" . "'")
-                            ("a" . "d")
-                            ("b" . "k")
-                            ("c" . "u")
-                            ("d" . "i")
-                            ("e" . "t")
-                            ("f" . "b")
-                            ("g" . "y")
-                            ("h" . "a")
-                            ("i" . "r")
-                            ("j" . "c")
-                            ("k" . "f")
-                            ("l" . ";")
-                            ("m" . "p")
-                            ("n" . "o")
-                            ("o" . "s")
-                            ("p" . "l")
-                            ("q" . "x")
-                            ("r" . "v")
-                            ("s" . "h")
-                            ("t" . "e")
-                            ("u" . "n")
-                            ("v" . ".")
-                            ("w" . ",")
-                            ("x" . "j")
-                            ("y" . "w")
-                            ("z" . "/"))) xah-fly-layouts)
+' , . p y f g c r l / = \\
+a o e u i d h t n s -
+; q j k x b m w v z
 
-(push '("carpalx-qfmlwy" . (("." . "m")
-                            ("," . "f")
-                            ("'" . "q")
-                            (";" . "z")
-                            ("/" . "[")
-                            ("[" . "-")
-                            ("]" . "=")
-                            ("=" . "]")
-                            ("-" . "'")
-                            ("a" . "d")
-                            ("b" . "p")
-                            ("c" . "o")
-                            ("d" . "i")
-                            ("e" . "t")
-                            ("f" . "y")
-                            ("g" . "u")
-                            ("h" . "a")
-                            ("i" . "r")
-                            ("j" . "g")
-                            ("k" . "c")
-                            ("l" . "j")
-                            ("m" . "k")
-                            ("n" . "h")
-                            ("o" . "s")
-                            ("p" . "l")
-                            ("q" . "v")
-                            ("r" . "b")
-                            ("s" . ";")
-                            ("t" . "e")
-                            ("u" . "n")
-                            ("v" . ".")
-                            ("w" . ",")
-                            ("y" . "w")
-                            ("z" . "/"))) xah-fly-layouts)
+\" < > P Y F G C R L ? + |
+A O E U I D H T N S _
+: Q J K X B M W V Z
+" xah-fly-layout-diagrams)
 
-(push '("bepo" . (("'" . "b")
-                  ("," . "é")
-                  ("." . "p")
-                  ("p" . "o")
-                  ("y" . "è")
-                  ("f" . "^")
-                  ("g" . "v")
-                  ("c" . "d")
-                  ("r" . "l")
-                  ("l" . "j")
-                  ("o" . "u")
-                  ("e" . "i")
-                  ("u" . "e")
-                  ("i" . ",")
-                  ("d" . "c")
-                  ("h" . "t")
-                  ("t" . "s")
-                  ("n" . "r")
-                  ("s" . "n")
-                  (":" . "à")
-                  ("q" . "y")
-                  ("j" . "x")
-                  ("k" . ".")
-                  ("x" . "k")
-                  ("b" . "’")
-                  ("m" . "q")
-                  ("w" . "g")
-                  ("v" . "h")
-                  ("z" . "f")
-                  ("3" . "»")
-                  ("4" . "(")
-                  ("5" . ")")
-                  ("6" . "@")
-                  ("7" . "+")
-                  ("8" . "-")
-                  ("9" . "/"))) xah-fly-layouts)
+  (puthash "engrammer" "
+~ ! @ # $ % ^ & * ( ) { }
+` 1 2 3 4 5 6 7 8 9 0 [ ]
+
+b y o u ' ; l d w v z = \\
+c i e a , . h t s n q
+g x j k - / r m f p
+
+B Y O U \" : L D W V Z + |
+C I E A < > H T S N Q
+G X J K _ ? R M F P
+" xah-fly-layout-diagrams)
+
+  (puthash "koy" "
+^ ! @ # $ % ^ & * ( ) _ ~
+˘ 1 2 3 4 5 6 7 8 9 0 - `
+
+k . o , y v g c l ß / = \\
+h a e i u d t r n s f
+x q ä ü ö b p w m j
+
+K > O < Y V G C L ẞ ? + |
+H A E I U D T R N S F
+X Q Ä Ü Ö B P W M J
+" xah-fly-layout-diagrams)
+
+  (puthash "halmak" "
+~ ! @ # $ % ^ & * ( ) _ +
+` 1 2 3 4 5 6 7 8 9 0 - =
+
+w l r b z ; q u d j [ ] \\
+s h n t , . a e o i '
+f m v c / g p x k y
+
+W L R B Z : Q U D J { } |
+S H N T < > A E O I \"
+F M V C ? G P X K Y
+" xah-fly-layout-diagrams)
+
+  (puthash "minimak" "
+~ ! @ # $ % ^ & * ( ) _ +
+` 1 2 3 4 5 6 7 8 9 0 - =
+
+q w d r k y u i o p [ ] \\
+a s t f g h j e l ; '
+z x c v b n m , . /
+
+Q W D R K Y U I O P { } |
+A S T F G H J E L : \"
+Z X C V B N M < > ?
+" xah-fly-layout-diagrams)
+
+  ;; todo. need fix
+  (puthash "neo2" "
+^ ! @ # $ % ^ & * ( ) { }
+` 1 2 3 4 5 6 7 8 9 0 - ]
+
+x v l c w k h g f q ß = \\
+u i a e o s n r t d y
+ü ö ä p z b m , . j
+
+X V L C W K H G F Q ? + |
+U I A E O S N R T D Y
+Ü Ö Ä P Z B M , . J
+" xah-fly-layout-diagrams)
+
+  (puthash "norman" "
+~ ! @ # $ % ^ & * ( ) _ +
+` 1 2 3 4 5 6 7 8 9 0 - =
+
+q w d f k j u r l ; [ ] \\
+a s e t g y n i o h '
+z x c v b p m , . /
+
+Q W D F K J U R L : { } |
+A S E T G Y N I O H \"
+Z X C V B P M < > ?
+" xah-fly-layout-diagrams)
+
+  (puthash "programer-dvorak" "
+~ % 7 5 3 1 9 0 2 4 6 8 `
+$ & [ { } ( = * ) + ] ! #
+
+; , . p y f g c r l / @ \\
+a o e u i d h t n s -
+' q j k x b m w v z
+
+: < > P Y F G C R L ? ^ |
+A O E U I D H T N S _
+\" Q J K X B M W V Z
+" xah-fly-layout-diagrams)
+
+  (puthash "pt-nativo" "
+* ! \" # $ % & / ( ) = ª >
++ 1  2 3 4 5 6 7 8 9 0 º <
+
+' , . h x w l t c p ~ - \\
+i e a o u m d s r n ´
+« ç j b k q v g f z
+
+? ; : H X W L T C P ^ _ |
+I E A O U M D S R N `
+Y Ç J B K Q V G F Z
+" xah-fly-layout-diagrams)
+
+  (puthash "qfmlwy" "
+~ ! @ # $ % ^ & * ( ) _ +
+` 1 2 3 4 5 6 7 8 9 0 - =
+
+q f m l w y u o b j [ ] \\
+d s t n r i a e h ; '
+z v g c x p k , . /
+
+Q F M L W Y U O B J { } |
+D S T N R I A E H : \"
+Z V G C X P K < > ?
+" xah-fly-layout-diagrams)
+
+  (puthash "qwerty" "
+~ ! @ # $ % ^ & * ( ) _ +
+` 1 2 3 4 5 6 7 8 9 0 - =
+
+q w e r t y u i o p [ ] \\
+a s d f g h j k l ; '
+z x c v b n m , . /
+
+Q W E R T Y U I O P { } |
+A S D F G H J K L : \"
+Z X C V B N M < > ?
+" xah-fly-layout-diagrams)
+
+  (puthash "qwerty-abnt" "
+\" ! @ # $ % ^ & * ( ) _ +
+ ' 1 2 3 4 5 6 7 8 9 0 - =
+
+q w e r t y u i o p ´ [ ]
+a s d f g h j k l ç ~
+z x c v b n m , . ;
+
+Q W E R T Y U I O P ` + |
+A S D F G H J K L Ç ^
+Z X C V B N M < > :
+" xah-fly-layout-diagrams)
+
+  (puthash "qwerty-no" "
+§ ! \" # ¤ % & / ( ) = ? `
+| 1  2 3 4 5 6 7 8 9 0 + \\
+
+q w e r t y u i o p å ¨ '
+a s d f g h j k l ø æ
+z x c v b n m , . -
+
+Q W E R T Y U I O P Å ^ *
+A S D F G H J K L Ø Æ
+Z X C V B N M < > _
+" xah-fly-layout-diagrams)
+
+  (puthash "qwertz" "
+~ ! @ # $ % ^ & * ( ) _ +
+` 1 2 3 4 5 6 7 8 9 0 - =
+
+q w e r t z u i o p [ ] \\
+a s d f g h j k l ; '
+y x c v b n m , . /
+
+Q W E R T Z U I O P { } |
+A S D F G H J K L : \"
+Y X C V B N M < > ?
+" xah-fly-layout-diagrams)
+
+  (puthash "qwpr" "
+~ ! @ # $ % ^ & * ( ) _ +
+` 1 2 3 4 5 6 7 8 9 0 - =
+
+q w p r f y u k l ; [ ] \\
+a s d t g h n i o e '
+z x c v b j m , . /
+
+Q W P R F Y U K L : { } |
+A S D T G H N I O E \"
+Z X C V B J M < > ?
+" xah-fly-layout-diagrams)
+
+  (puthash "workman" "
+~ ! @ # $ % ^ & * ( ) _ +
+` 1 2 3 4 5 6 7 8 9 0 - =
+
+q d r w b j f u p ; [ ] \\
+a s h t g y n e o i '
+z x m c v k l , . /
+
+Q D R W B J F U P : { } |
+A S H T G Y N E O I \"
+Z X M C V K L < > ?
+" xah-fly-layout-diagrams))
+
+(defun xah-fly-create-key-conv-table (Layout1 Layout2)
+  "Takes two text diagrams Layout1 Layout2, return a hashtable.
+For remapping key from layout1 to layout2.
+
+example:
+
+Layout1 is a string. e.g.
+
+a b c d
+e f shift
+
+Layout2 is a string. e.g.
+
+a o e i
+m n ctrl
+
+return a hashtable, e.g.
+
+b → o
+c → e
+d → i
+e → m
+f → n
+shift → ctrl
+
+If the keys in layouts are the same, it's not in the table.
+
+Version 2024-04-19"
+  (let (xkeys1 xkeys2 (xtable (make-hash-table :test 'equal)))
+    (setq xkeys1 (split-string Layout1 "[ \n]+"))
+    (setq xkeys2 (split-string Layout2 "[ \n]+"))
+    (when (not (eq (length xkeys1) (length xkeys2)))
+      (error "layout %s and %s lengths not same." (length Layout1) (length Layout2)))
+    (seq-mapn
+     (lambda (x y)
+       (if (string-equal x y)
+           nil
+         (puthash x y xtable)))
+     xkeys1 xkeys2)
+    xtable
+    ))
+
+;; (xah-fly-create-key-conv-table
+;;   (gethash "qwerty" xah-fly-layout-diagrams)
+;;   (gethash "dvorak" xah-fly-layout-diagrams))
 
 (defvar xah-fly-key-current-layout nil
  "The current keyboard layout.
-Value is a key in `xah-fly-layouts'.
+Value is a key in `xah-fly-layout-diagrams'.
 Do not set this variable manually.
 Use `xah-fly-keys-set-layout' to set it.
-If the value is nil, it is automatically set to \"qwerty\".
+Default to qwerty.
 Version: 2022-10-22")
 
 (if xah-fly-key-current-layout nil (setq xah-fly-key-current-layout "qwerty"))
 
 (defvar xah-fly--key-convert-table nil
   "A alist that's the conversion table from dvorak to current layout.
-Value structure is one of the key's value of `xah-fly-layouts'.
-Value is programtically set from value of `xah-fly-key-current-layout'.
-Do not manually set this variable.
-Version: 2019-02-12 2022-10-22" )
+Value is a hashtable.
+Version: 2019-02-12 2024-04-22" )
 
-(setq xah-fly--key-convert-table
-      (cdr (assoc xah-fly-key-current-layout xah-fly-layouts)))
+(setq
+ xah-fly--key-convert-table
+ (xah-fly-create-key-conv-table
+  (gethash "dvorak" xah-fly-layout-diagrams)
+  (gethash xah-fly-key-current-layout xah-fly-layout-diagrams)))
 
-(defun xah-fly--convert-kbd-str (Charstr)
- "Return the corresponding char Charstr according to `xah-fly--key-convert-table'.
-Charstr must be a string that is the valid argument to `kbd'.
-Version: 2022-10-25"
+(defun xah-fly--convert-key (Keystr)
+ "Return the corresponding Keystr according to `xah-fly--key-convert-table'.
+Keystr must be a string that is the valid argument to `kbd'.
+Keystr may be a single key, or key sequence separated by whitespaces.
+Version: 2022-10-25 2024-04-22"
   (interactive)
   (mapconcat
    'identity
    (mapcar
     (lambda (x)
-      (let ((xresult (assoc x xah-fly--key-convert-table)))
-        (if xresult (cdr xresult) x)))
-    (split-string Charstr " +"))
+      (let ((xnew (gethash x xah-fly--key-convert-table)))
+        (if xnew xnew x)))
+    (split-string Keystr " +"))
    " "))
 
 (defun xah-fly--define-keys (KeymapName KeyCmdAlist &optional Direct-p)
   "Map `define-key' over a alist KeyCmdAlist, with key layout remap.
-The key is remapped from Dvorak to the current keyboard layout by `xah-fly--convert-kbd-str'.
+The key is remapped from Dvorak to the current keyboard layout by `xah-fly--convert-key'.
 If Direct-p is t, do not remap key to current keyboard layout.
 Example usage:
  (xah-fly--define-keys
@@ -3676,7 +3273,7 @@ Version: 2020-04-18 2022-10-25 2023-08-21"
    (lambda (x)
      (define-key
       KeymapName
-      (kbd (if Direct-p (car x) (xah-fly--convert-kbd-str (car x))))
+      (kbd (if Direct-p (car x) (xah-fly--convert-key (car x))))
       (cdr x)))
    KeyCmdAlist))
 
@@ -3730,8 +3327,7 @@ Keep in mind that this acts like a normal global minor mode map, so other minor 
 
 (defun xah-fly-define-keys ()
   "Define the keys for xah-fly-keys.
-Used by `xah-fly-keys-set-layout' for changing layout.
-Version: 2022-10-31"
+Version: 2022-10-31 2024-04-22"
   (interactive)
   (let ()
 
@@ -4419,8 +4015,8 @@ Version: 2022-10-31"
 
 (defun xah-fly-keys-set-layout (Layout)
   "Set a keyboard layout.
-Argument must be one of the key name in `xah-fly-layouts'
-Version: 2021-05-19 2022-09-11 2022-10-22 2022-10-31"
+Argument must be one of the key name in `xah-fly-layout-diagrams'
+Version: 2021-05-19 2022-10-31 2024-04-22"
   (interactive "sType a layout: ")
   (let ((xnewlout
          (cond
@@ -4429,10 +4025,13 @@ Version: 2021-05-19 2022-09-11 2022-10-22 2022-10-31"
           (t (user-error "Layout %s must be a string." Layout))))
         (xoldlout xah-fly-key-current-layout))
     (setq xah-fly-key-current-layout xnewlout)
-    (setq xah-fly--key-convert-table
-          (cdr (assoc xah-fly-key-current-layout xah-fly-layouts)))
+    (setq
+     xah-fly--key-convert-table
+     (xah-fly-create-key-conv-table
+      (gethash "dvorak" xah-fly-layout-diagrams)
+      (gethash xah-fly-key-current-layout xah-fly-layout-diagrams)))
     (when (and (featurep 'xah-fly-keys)
-               (not (string-equal xoldlout xnewlout)))
+               (not (equal xoldlout xnewlout)))
       (xah-fly-define-keys))))
 
 (defun xah-fly-space-key ()
