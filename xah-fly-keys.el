@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 25.0.20240422075003
+;; Version: 25.0.20240423134705
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -95,9 +95,7 @@
 ;; For detail about design and other info, see home page at
 ;; http://xahlee.info/emacs/misc/xah-fly-keys.html
 
-;; If you like this project, Buy Xah Emacs Tutorial
-;; http://xahlee.info/emacs/emacs/buy_xah_emacs_tutorial.html or make
-;; a donation. Thanks.
+;; If you like this project, paypal me $30 to Xah@XahLee.org 
 
 ;;; Installation:
 ;; here's how to manual install
@@ -108,7 +106,7 @@
 ;; put the following in your emacs init file:
 ;; (add-to-list 'load-path "~/.emacs.d/lisp/")
 ;; (require 'xah-fly-keys)
-;; (xah-fly-keys-set-layout "qwerty") ; required
+;; (xah-fly-keys-set-layout "qwerty") ; optional
 ;; (xah-fly-keys 1)
 ;;
 ;; possible layout values:
@@ -2678,14 +2676,14 @@ If buffer is not a file, the backup file name starts with “xx_”.
 Call `xah-open-last-closed' to open the backup file.
 
 URL `http://xahlee.info/emacs/emacs/elisp_delete-current-file.html'
-Version: 2018-05-15 2023-10-28 2024-04-21"
+Version: 2018-05-15 2024-04-21 2024-04-23"
   (interactive)
   (when (eq major-mode 'dired-mode)
     (user-error "%s: In dired. Nothing is done." real-this-command))
   (let ((xfname buffer-file-name)
         (xbuffname (buffer-name)))
     (if xfname
-        (let ((xbackupPath (format "xfname~%s~" (format-time-string "%Y-%m-%d_%H%M%S"))))
+        (let ((xbackupPath (format "%s~%s~" xfname (format-time-string "%Y-%m-%d_%H%M%S"))))
           (save-buffer xfname)
           (kill-buffer xbuffname)
           (rename-file xfname xbackupPath t)
