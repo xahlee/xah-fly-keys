@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 25.0.20240423134705
+;; Version: 25.1.20240423172921
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -95,7 +95,7 @@
 ;; For detail about design and other info, see home page at
 ;; http://xahlee.info/emacs/misc/xah-fly-keys.html
 
-;; If you like this project, paypal me $30 to Xah@XahLee.org 
+;; If you like this project, paypal me $30 to Xah@XahLee.org
 
 ;;; Installation:
 ;; here's how to manual install
@@ -3160,6 +3160,19 @@ A S D T G H N I O E \"
 Z X C V B J M < > ?
 " xah-fly-layout-diagrams)
 
+  (puthash "russian" "
+Ё ! \" № ; % : ? * ( ) _ +
+ё 1  2 3 4 5 6 7 8 9 0 - =
+
+й ц у к е н г ш щ з х ъ \\
+ф ы в а п р о л д ж э
+я ч с м и т ь б ю .
+
+Й Ц У К Е Н Г Ш Щ З Х Ъ |
+Ф Ы В А П Р О Л Д Ж Э
+Я Ч С М И Т Ь Б Ю ,
+" xah-fly-layout-diagrams)
+
   (puthash "workman" "
 ~ ! @ # $ % ^ & * ( ) _ +
 ` 1 2 3 4 5 6 7 8 9 0 - =
@@ -3200,10 +3213,10 @@ shift → ctrl
 
 If the keys in layouts are the same, it's not in the table.
 
-Version 2024-04-19"
+Version 2024-04-19 2024-04-23"
   (let (xkeys1 xkeys2 (xtable (make-hash-table :test 'equal)))
-    (setq xkeys1 (split-string Layout1 "[ \n]+"))
-    (setq xkeys2 (split-string Layout2 "[ \n]+"))
+    (setq xkeys1 (split-string Layout1 "[ \n]+" t))
+    (setq xkeys2 (split-string Layout2 "[ \n]+" t))
     (when (not (eq (length xkeys1) (length xkeys2)))
       (error "layout %s and %s lengths not same." (length Layout1) (length Layout2)))
     (seq-mapn
