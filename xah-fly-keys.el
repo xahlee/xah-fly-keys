@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 25.1.20240423172921
+;; Version: 25.2.20240427131540
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -119,8 +119,8 @@
 ;; colemak-dh
 ;; dvorak
 ;; engrammer
-;; koy (German)
 ;; halmak
+;; koy (German)
 ;; minimak
 ;; neo2 (German)
 ;; norman
@@ -132,6 +132,7 @@
 ;; qwerty-no (Norwegian)
 ;; qwertz
 ;; qwpr
+;; russian
 ;; workman
 
 ;; supported layouts are stored in the variable xah-fly-layout-diagrams
@@ -2926,8 +2927,8 @@ W X C V B N ? . / +
 " xah-fly-layout-diagrams)
 
   (puthash "bepo" "
-$ \" « » ( ) @ + - / * = %
 #  1 2 3 4 5 6 7 8 9 0 ° `
+$ \" « » ( ) @ + - / * = %
 
 b é p o è ^ v d l j z w \\
 a u i e , c t s r n m
