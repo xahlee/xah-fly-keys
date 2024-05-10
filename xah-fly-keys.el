@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 25.3.20240508203211
+;; Version: 25.4.20240510104842
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -3968,6 +3968,8 @@ Version: 2024-04-22"
   (global-set-key (kbd "C-z") #'undo)
   ;;
   )
+
+  (global-set-key (kbd "<f7>") 'xah-fly-leader-key-map)
 
 
 
