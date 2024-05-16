@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 25.5.20240512100142
+;; Version: 25.5.20240515230030
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -4244,11 +4244,5 @@ URL `http://xahlee.info/emacs/misc/xah-fly-keys.html'"
       )))
 
 (provide 'xah-fly-keys)
-
-
-
-;; Local Variables:
-;; byte-compile-docstring-max-column: 999
-;; End:
 
 ;;; xah-fly-keys.el ends here
