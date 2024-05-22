@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 25.5.20240515230030
+;; Version: 25.6.20240521220424
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -1936,44 +1936,15 @@ Version: 2021-08-12 2024-03-19"
   (insert " ")
   (left-char))
 
-(defun xah-insert-formfeed ()
-  "Insert a form feed char (codepoint 12)"
+(defun xah-insert-seperator ()
+  "Insert a seperator line. "
   (interactive)
-  (insert "\n\u000c\n"))
-
-(defun xah-show-formfeed-as-line ()
-  "Display the formfeed ^L char as line.
-URL `http://xahlee.info/emacs/emacs/emacs_show_form_feed_as_line.html'
-Created: 2018-08-30
-Version: 2023-07-29"
-  (interactive)
-  ;; 2016-10-11 thanks to Steve Purcell's page-break-lines.el
-  (progn
-    (when (not buffer-display-table)
-      (setq buffer-display-table (make-display-table)))
-    (aset buffer-display-table ?\^L
-          (vconcat (make-list 70 (make-glyph-code ?─ 'font-lock-comment-face))))
-    (redraw-frame)))
-
-(defun xah-insert-column-az ()
-  "Insert letters A to Z vertically, similar to `rectangle-number-lines'.
-The commpand will prompt for a start char, and number of chars to insert.
-The start char can be any char in Unicode.
-
-URL `http://xahlee.info/emacs/emacs/emacs_insert-alphabets.html'
-Created: 2013-06-12
-Version: 2019-03-07"
-  (interactive)
-  (let (
-        (xstartChar (string-to-char (read-string "Start char: " "a")))
-        (xhowmany (string-to-number (read-string "How many: " "26")))
-        (xcolpos (- (point) (line-beginning-position))))
-    (dotimes (xi xhowmany )
-      (progn
-        (insert-char (+ xi xstartChar))
-        (forward-line)
-        (beginning-of-line)
-        (forward-char xcolpos)))))
+  (insert "\nHHHH---------------------------------------------------\n")
+  (backward-char)
+  (comment-line 1)
+  (forward-char)
+  ;; (comment-region (region-beginning) (region-end) )
+  )
 
 (defvar xah-unicode-list nil
  "A alist.
@@ -2461,7 +2432,7 @@ This command is similar to `find-file-at-point' but without prompting for confir
 
 URL `http://xahlee.info/emacs/emacs/emacs_open_file_path_fast.html'
 Created: 2020-10-17
-Version: 2023-09-29 2024-04-06"
+Version: 2024-05-20"
   (interactive)
   (let (xinput xinput2 xpath)
     (setq xinput (if (region-active-p)
@@ -2522,7 +2493,10 @@ Version: 2023-09-29 2024-04-06"
                   (xfnamecore (file-name-sans-extension xpathNoQ)))
               (if (and (string-equal xext "js")
                        (file-exists-p (concat xfnamecore ".ts")))
-                  (find-file (concat xfnamecore ".ts"))
+                  (progn
+                    (find-file (concat xfnamecore ".ts"))
+                    (warn "Typescript file .ts exist, opening it"))
+
                 (find-file xpathNoQ)))))
          ((file-exists-p (concat xpathNoQ ".el"))
           (find-file (concat xpathNoQ ".el")))
@@ -3539,7 +3513,7 @@ Version: 2024-04-22"
        ("e i" . xah-insert-curly-single-quote) ; ‘’
        ("e j" . insert-char)
        ("e k" . xah-insert-markdown-quote) ; ``
-       ("e l" . xah-insert-formfeed)
+       ("e l" . xah-insert-seperator)
        ("e m" . xah-insert-corner-bracket)      ; 「」
        ("e n" . xah-insert-square-bracket)      ; []
        ("e o" . xah-insert-ascii-single-quote)  ; ''
