@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 25.6.20240523014915
+;; Version: 25.6.20240523015137
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -4078,7 +4078,7 @@ Version: 2024-05-23"
         (xkeydiagram (gethash Layout xah-fly-layout-diagrams)))
     (when (not xkeydiagram)
       (user-error
-       "xah-fly-keys-set-layout error: layout must be one of string:\n%"
+       "xah-fly-keys-set-layout error: layout must be one of string:\n%s"
        (mapconcat 'identity (hash-table-keys xah-fly-layout-diagrams) "\n")))
     (setq xah-fly-key-current-layout Layout)
     (setq
