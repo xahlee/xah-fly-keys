@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 25.6.20240523015137
+;; Version: 25.6.20240523134425
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -4073,8 +4073,13 @@ Version: 2024-04-22"
 Argument must be one of the key name in `xah-fly-layout-diagrams'
 Created: 2021-05-19
 Version: 2024-05-23"
-  (interactive "sType a layout: ")
-  (let ((xoldlout xah-fly-key-current-layout)
+  (interactive
+   (list
+    (completing-read
+     "Choose a layout: "
+     (seq-sort 'string< (hash-table-keys xah-fly-layout-diagrams))
+     nil t)))
+  (let ((xold xah-fly-key-current-layout)
         (xkeydiagram (gethash Layout xah-fly-layout-diagrams)))
     (when (not xkeydiagram)
       (user-error
@@ -4086,7 +4091,7 @@ Version: 2024-05-23"
      (xah-fly-create-key-conv-table
       (gethash "dvorak" xah-fly-layout-diagrams)
       xkeydiagram))
-    (when (not (equal xoldlout Layout)) (xah-fly-define-keys))))
+    (when (not (equal xold Layout)) (xah-fly-define-keys))))
 
 (defun xah-fly-space-key ()
   "Switch to command mode if the char before cursor is a space.
