@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 25.6.20240521220424
+;; Version: 25.6.20240523014915
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -172,7 +172,7 @@
 
 (defun xah-get-pos-of-block ()
   "Return the [begin end] positions of current text block.
-Return value is a vector.
+Return value is a `vector'.
 Version: 2024-03-23"
   (let (xp1 xp2 (xblankRegex "\n[ \t]*\n"))
     (save-excursion
@@ -186,7 +186,7 @@ Version: 2024-03-23"
 
 (defun xah-get-pos-of-block-or ()
   "If region is active, return its [begin end] positions, else same as `xah-get-pos-of-block'.
-Return value is a vector.
+Return value is a `vector'.
 Version: 2024-03-23"
   (if (region-active-p)
       (vector (region-beginning) (region-end))
@@ -1950,8 +1950,8 @@ Version: 2021-08-12 2024-03-19"
  "A alist.
 Each item is (prompStr . xString). Used by `xah-insert-unicode'.
 prompStr is used for prompt.
-xString is used for insert a unicode.
-xString can be any string, needs not be a char or emoji.
+xString is is the char to insert.
+xString can be multiple chars or any string.
 ")
 
 (setq
@@ -2011,7 +2011,7 @@ xString can be any string, needs not be a char or emoji.
   "Insert a unicode from a custom list `xah-unicode-list'.
 URL `http://xahlee.info/emacs/emacs/emacs_insert_unicode.html'
 Created: 2021-01-05
-Version: 2023-08-25 2023-08-31 2023-09-19"
+Version: 2023-09-19"
   (interactive)
   (let ((xkey
          (let ((completion-ignore-case t))
@@ -4072,23 +4072,21 @@ Version: 2024-04-22"
   "Set a keyboard layout.
 Argument must be one of the key name in `xah-fly-layout-diagrams'
 Created: 2021-05-19
-Version: 2022-10-31 2024-04-22"
+Version: 2024-05-23"
   (interactive "sType a layout: ")
-  (let ((xnewlout
-         (cond
-          ((stringp Layout) Layout)
-          ((symbolp Layout) (symbol-name Layout))
-          (t (user-error "Layout %s must be a string." Layout))))
-        (xoldlout xah-fly-key-current-layout))
-    (setq xah-fly-key-current-layout xnewlout)
+  (let ((xoldlout xah-fly-key-current-layout)
+        (xkeydiagram (gethash Layout xah-fly-layout-diagrams)))
+    (when (not xkeydiagram)
+      (user-error
+       "xah-fly-keys-set-layout error: layout must be one of string:\n%"
+       (mapconcat 'identity (hash-table-keys xah-fly-layout-diagrams) "\n")))
+    (setq xah-fly-key-current-layout Layout)
     (setq
      xah-fly--key-convert-table
      (xah-fly-create-key-conv-table
       (gethash "dvorak" xah-fly-layout-diagrams)
-      (gethash xah-fly-key-current-layout xah-fly-layout-diagrams)))
-    (when (and (featurep 'xah-fly-keys)
-               (not (equal xoldlout xnewlout)))
-      (xah-fly-define-keys))))
+      xkeydiagram))
+    (when (not (equal xoldlout Layout)) (xah-fly-define-keys))))
 
 (defun xah-fly-space-key ()
   "Switch to command mode if the char before cursor is a space.
