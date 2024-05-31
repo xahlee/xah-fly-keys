@@ -1,4 +1,4 @@
-;;; xah-fly-keys.el --- ergonomic modal keybinding minor mode. -*- coding: utf-8; lexical-binding: t; -*-
+2;;; xah-fly-keys.el --- ergonomic modal keybinding minor mode. -*- coding: utf-8; lexical-binding: t; -*-
 
 ;; Copyright © 2013, 2024 by Xah Lee
 
@@ -127,6 +127,7 @@
 ;; programer-dvorak
 ;; pt-nativo (Brazil)
 ;; qfmlwy
+;; qgmlwb
 ;; qwerty
 ;; qwerty-abnt (Brazil)
 ;; qwerty-no (Norwegian)
@@ -3132,7 +3133,20 @@ Q F M L W Y U O B J { } |
 D S T N R I A E H : \"
 Z V G C X P K < > ?
 " xah-fly-layout-diagrams)
+  
+  (puthash "qgmlwb" "
+~ ! @ # $ % ^ & * ( ) _ + 
+` 1 2 3 4 5 6 7 8 9 0 - =
 
+q g m l w b y u v ; [ ] \\
+d s t n r i a e o h '
+z x c f j k p , . / 
+
+Q G M L W B Y U V : { } |
+D S T N R I A E O H \"
+Z X C F J K P < > ?
+" xah-fly-layout-diagrams)
+  
   (puthash "qwerty" "
 ~ ! @ # $ % ^ & * ( ) _ +
 ` 1 2 3 4 5 6 7 8 9 0 - =
