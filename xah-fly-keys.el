@@ -1,10 +1,10 @@
-2;;; xah-fly-keys.el --- ergonomic modal keybinding minor mode. -*- coding: utf-8; lexical-binding: t; -*-
+;;; xah-fly-keys.el --- ergonomic modal keybinding minor mode. -*- coding: utf-8; lexical-binding: t; -*-
 
 ;; Copyright © 2013, 2024 by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 25.6.20240523134425
+;; Version: 25.7.20240602075123
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -138,14 +138,14 @@
 
 ;; supported layouts are stored in the variable xah-fly-layout-diagrams
 
-
+;; HHHH---------------------------------------------------
 ;;; Code:
 
 (require 'dired)
 (require 'dired-x)
 (require 'seq)
 
-
+;; HHHH---------------------------------------------------
 
 (defgroup xah-fly-keys nil
   "Ergonomic modal keybinding minor mode."
@@ -193,7 +193,7 @@ Version: 2024-03-23"
       (vector (region-beginning) (region-end))
     (xah-get-pos-of-block)))
 
-
+;; HHHH---------------------------------------------------
 ;; cursor movement
 
 (defun xah-pop-local-mark-ring ()
@@ -213,7 +213,7 @@ If `visual-line-mode' is on, beginning of line means visual line.
 
 URL `http://xahlee.info/emacs/emacs/emacs_keybinding_design_beginning-of-line-or-block.html'
 Created: 2018-06-04
-Version: 2022-07-03 2022-07-06 2023-10-04"
+Version: 2023-10-04"
   (interactive)
   (let ((xp (point)))
     (if (or (eq (point) (line-beginning-position))
@@ -241,7 +241,7 @@ Version: 2022-07-03 2022-07-06 2023-10-04"
 
 URL `http://xahlee.info/emacs/emacs/emacs_keybinding_design_beginning-of-line-or-block.html'
 Created: 2018-06-04
-Version: 2022-03-05 2023-10-04"
+Version: 2023-10-04"
   (interactive)
   (if (or (eq (point) (line-end-position))
           (eq last-command this-command))
@@ -288,7 +288,7 @@ The list of brackets to jump to is defined by `xah-left-brackets' and `xah-right
 
 URL `http://xahlee.info/emacs/emacs/emacs_navigating_keys_for_brackets.html'
 Created: 2016-11-22
-Version: 2023-07-22 2023-08-02"
+Version: 2023-08-02"
   (interactive)
   (if (nth 3 (syntax-ppss))
       (backward-up-list 1 'ESCAPE-STRINGS 'NO-SYNTAX-CROSSING)
@@ -348,7 +348,7 @@ Version: 2024-03-19"
     (seq-setq (xp1 xp2) (xah-get-pos-of-block-or))
     (narrow-to-region xp1 xp2)))
 
-
+;; HHHH---------------------------------------------------
 ;; editing commands
 
 (defun xah-copy-line-or-region ()
@@ -682,7 +682,7 @@ If `universal-argument' is called first, do not delete inner text.
 
 URL `http://xahlee.info/emacs/emacs/emacs_delete_backward_char_or_bracket_text.html'
 Created: 2017-07-02
-Version: 2023-07-22 2023-07-30"
+Version: 2023-07-30"
   (interactive)
   (cond
    ((prog2 (backward-char) (looking-at "\\s)") (forward-char))
@@ -733,7 +733,7 @@ Shrink neighboring spaces, then newlines, then spaces again, leaving one space o
 
 URL `http://xahlee.info/emacs/emacs/emacs_shrink_whitespace.html'
 Created: 2014-10-21
-Version: 2021-11-26 2021-11-30 2023-07-12"
+Version: 2023-07-12"
   (interactive)
   (let ((xeol-count 0)
         (xp0 (point))
@@ -789,7 +789,7 @@ Version: 2021-11-26 2021-11-30 2023-07-12"
 ;; Repeated calls eventually results in no whitespace around cursor.
 
 ;; URL `http://xahlee.info/emacs/emacs/emacs_shrink_whitespace.html'
-;; Version: 2014-10-21 2023-07-26 2023-08-02"
+;; Version: 2023-08-02"
 ;;   (interactive)
 ;;   (cond
 ;;    ((if (eq (point-min) (point))
@@ -845,7 +845,7 @@ If cursor left is bracket, delete the bracketed text.
 Else just delete one char to the left.
 
 Created: 2023-07-22
-Version: 2023-08-10 2023-08-23 2023-11-12"
+Version: 2023-11-12"
   (interactive)
   (let (xfun)
     (cond
@@ -885,7 +885,7 @@ followed by 2 spaces.
 
 URL `http://xahlee.info/emacs/emacs/elisp_change_brackets.html'
 Created: 2020-11-01
-Version: 2024-03-19 2024-04-13"
+Version: 2024-04-13"
   (interactive
    (let ((xbrackets
           '(
@@ -1030,7 +1030,7 @@ Version: 2023-11-14"
 
 URL `http://xahlee.info/emacs/emacs/emacs_upcase_sentence.html'
 Created: 2020-12-08
-Version: 2022-08-27 2024-03-19"
+Version: 2024-03-19"
   (interactive)
   (let (xp1 xp2)
     (seq-setq (xp1 xp2) (xah-get-pos-of-block-or))
@@ -1072,7 +1072,7 @@ When called in a elisp program, Begin End are region boundaries.
 
 URL `http://xahlee.info/emacs/emacs/elisp_title_case_text.html'
 Created: 2017-01-11
-Version: 2021-03-30 2021-09-19"
+Version: 2021-09-19"
   (interactive)
   (let* ((xskipChars "^\"<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕")
          (xp0 (point))
@@ -1178,7 +1178,7 @@ This commands calls `fill-region' to do its work. Set `fill-column' for short li
 
 URL `http://xahlee.info/emacs/emacs/modernization_fill-paragraph.html'
 Created: 2020-11-22
-Version: 2021-08-13 2024-03-19"
+Version: 2024-03-19"
   (interactive)
   ;; This command symbol has a property “'longline-p”, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
   (let ( (xisLongline (if (eq last-command this-command) (get this-command 'longline-p) t))
@@ -1248,7 +1248,7 @@ If `universal-argument' is called first, ask user for max width.
 
 URL `http://xahlee.info/emacs/emacs/emacs_reformat_lines.html'
 Created: 2018-12-16
-Version: 2021-08-12 2024-03-19"
+Version: 2024-03-19"
   (interactive)
   (let ( xp1 xp2 xminlen )
     (setq xminlen (if MinLength MinLength (if current-prefix-arg (prefix-numeric-value current-prefix-arg) fill-column)))
@@ -1274,7 +1274,7 @@ This command never adds or delete non-whitespace chars. It only exchange whitesp
 URL `http://xahlee.info/emacs/emacs/emacs_reformat_lines.html'
 Created 2016 or before.
 Created: 2021-07-05
-Version: 2022-12-24 2024-03-19"
+Version: 2024-03-19"
   (interactive)
   ;; This symbol has a property 'is-long-p, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
   (let (xisLong xwidth xp1 xp2)
@@ -1296,7 +1296,7 @@ After this command is called, press `xah-repeat-key' to repeat it.
 
 URL `http://xahlee.info/emacs/emacs/elisp_reformat_to_sentence_lines.html'
 Created: 2020-12-02
-Version: 2023-11-09 2024-03-19"
+Version: 2024-03-19"
   (interactive)
   (let (xp1 xp2)
     (seq-setq (xp1 xp2) (xah-get-pos-of-block-or))
@@ -1326,7 +1326,7 @@ Version: 2023-11-09 2024-03-19"
 
 URL `http://xahlee.info/emacs/emacs/emacs_space_to_newline.html'
 Created: 2017-08-19
-Version: 2021-11-28 2024-03-19"
+Version: 2024-03-19"
   (interactive)
   (let (xp1 xp2)
     (seq-setq (xp1 xp2) (xah-get-pos-of-block-or))
@@ -1489,7 +1489,7 @@ In lisp code, QuoteL QuoteR Sep are strings.
 
 URL `http://xahlee.info/emacs/emacs/emacs_quote_lines.html'
 Created: 2020-06-26
-Version: 2023-10-29 2024-03-19"
+Version: 2024-03-19"
   (interactive
    (let ((xbrackets
           '(
@@ -1599,7 +1599,7 @@ After this command is called, press `xah-repeat-key' to repeat it.
 
 URL `http://xahlee.info/emacs/emacs/elisp_change_space-hyphen_underscore.html'
 Created: 2019-02-12
-Version: 2023-07-16 2024-01-04"
+Version: 2024-01-04"
   (interactive)
   ;; this function sets a property 'state. Possible values are 0 to length of xcharArray.
   (let (xp1 xp2 xlen
@@ -1673,7 +1673,7 @@ If cursor is between blank lines, delete following blank lines.
 
 URL `http://xahlee.info/emacs/emacs/emacs_delete_block.html'
 Created: 2017-07-09
-Version: 2023-06-07 2023-10-09"
+Version: 2023-10-09"
   (interactive)
   (let (xp1 xp2)
     (if (region-active-p)
@@ -1698,7 +1698,7 @@ See also:
 
 URL `http://xahlee.info/emacs/emacs/elisp_copy-paste_register_1.html'
 Created: 2012-07-17
-Version: 2023-04-07 2023-08-05"
+Version: 2023-08-05"
   (interactive)
   (let (xp1 xp2)
     (if (region-active-p)
@@ -1719,7 +1719,7 @@ See also:
 
 URL `http://xahlee.info/emacs/emacs/emacs_copy_append.html'
 Created: 2015-12-08
-Version: 2023-04-07 2023-08-05"
+Version: 2023-08-05"
   (interactive)
   (let (xp1 xp2)
     (if (region-active-p)
@@ -1764,7 +1764,7 @@ Version: 2023-04-07"
     (copy-to-register ?1 (point-min) (point-min))
     (message "Cleared register 1.")))
 
-
+;; HHHH---------------------------------------------------
 ;; insertion commands
 
 (defun xah-insert-date ()
@@ -1775,7 +1775,7 @@ If there is selection, delete it first.
 
 URL `http://xahlee.info/emacs/emacs/elisp_insert-date-time.html'
 Created: 2013-05-10
-Version: 2023-09-30 2023-10-01"
+Version: 2023-10-01"
   (interactive)
   (let (xmenu xstyle)
     (setq
@@ -1825,7 +1825,7 @@ Else
 
 URL `http://xahlee.info/emacs/emacs/elisp_insert_brackets_by_pair.html'
 Created: 2017-01-17
-Version: 2021-08-12 2024-03-19"
+Version: 2024-03-19"
   (if (region-active-p)
       (progn
         (let ((xp1 (region-beginning)) (xp2 (region-end)))
@@ -2019,7 +2019,7 @@ Version: 2023-09-19"
            (completing-read "Insert:" xah-unicode-list nil t))))
     (insert (cdr (assoc xkey xah-unicode-list)))))
 
-
+;; HHHH---------------------------------------------------
 ;; text selection
 
 (defun xah-select-block ()
@@ -2028,7 +2028,7 @@ If region is active, extend selection downward by block.
 
 URL `http://xahlee.info/emacs/emacs/emacs_select_text_block.html'
 Created: 2019-12-26
-Version: 2021-08-13 2023-11-14"
+Version: 2023-11-14"
   (interactive)
   (if (region-active-p)
       (re-search-forward "\n[ \t]*\n[ \t]*\n*" nil :move)
@@ -2045,7 +2045,7 @@ If `visual-line-mode' is on, consider line as visual line.
 
 URL `http://xahlee.info/emacs/emacs/emacs_select_line.html'
 Created: 2017-11-01
-Version: 2023-07-16 2023-11-14"
+Version: 2023-11-14"
   (interactive)
   (if (region-active-p)
       (if visual-line-mode
@@ -2076,7 +2076,7 @@ when there is a selection, the selection extension behavior is still experimenta
 
 URL `http://xahlee.info/emacs/emacs/emacs_extend_selection.html'
 Created: 2020-02-04
-Version: 2023-08-24 2023-11-14"
+Version: 2023-11-14"
   (interactive)
 
   (cond
@@ -2184,7 +2184,7 @@ the selected char is 「c」, not 「a(b)c」.
 
 URL `http://xahlee.info/emacs/emacs/emacs_select_quote_text.html'
 Created: 2020-11-24
-Version: 2023-07-23 2023-11-14"
+Version: 2023-11-14"
   (interactive)
   (let ((xskipChars (concat "^\"`" (mapconcat #'identity xah-brackets ""))))
     (skip-chars-backward xskipChars)
@@ -2204,7 +2204,7 @@ Version: 2023-11-14"
     (skip-chars-forward xskipChars)
     (kill-region nil nil t)))
 
-
+;; HHHH---------------------------------------------------
 ;; misc
 
 (defun xah-user-buffer-p ()
@@ -2213,7 +2213,7 @@ A user buffer has buffer name NOT starts with * or space.
 This function is used by buffer switching command and close buffer command, so that next buffer shown is a user buffer.
 You can override this function to get your idea of “user buffer”.
 Created: 2016-06-18
-Version: 2023-10-18 2024-05-01"
+Version: 2024-05-01"
   (interactive)
   (cond
    ((string-match "^\*" (buffer-name)) nil)
@@ -2335,7 +2335,7 @@ If the buffer is a file, add the path to the list `xah-recently-closed-buffers'.
 
 URL `http://xahlee.info/emacs/emacs/elisp_close_buffer_open_last_closed.html'
 Created: 2016-06-19
-Version: 2023-09-27 2023-10-25"
+Version: 2023-10-25"
   (interactive)
   (widen)
   (cond
@@ -2387,7 +2387,7 @@ Prompt for a choice.
 
 URL `http://xahlee.info/emacs/emacs/elisp_close_buffer_open_last_closed.html'
 Created: 2016-06-19
-Version: 2023-08-25 2023-09-19"
+Version: 2023-09-19"
   (interactive)
   (find-file
    (let ((completion-ignore-case t))
@@ -2505,7 +2505,7 @@ Version: 2024-05-20"
               (message "File does not exist. Created at\n%s" xpathNoQ)
               (find-file xpathNoQ))))))))
 
-
+;; HHHH---------------------------------------------------
 
 (defvar xah-run-current-file-dispatch nil
 "A dispatch table used by `xah-run-current-file' to call a dedicated elisp function to do the job, if any.
@@ -2578,7 +2578,7 @@ The variable `xah-run-current-file-dispatch' allows you to customize this comman
 
 URL `http://xahlee.info/emacs/emacs/elisp_run_current_file.html'
 Created: 2020-09-24
-Version: 2024-03-21 2024-03-22"
+Version: 2024-03-22"
   (interactive
    (if buffer-file-name
        (progn
@@ -2632,7 +2632,7 @@ Works on whole buffer or selection, respects `narrow-to-region'.
 
 URL `http://xahlee.info/emacs/emacs/elisp_compact_empty_lines.html'
 Created: 2017-09-22
-Version: 2021-08-27 2022-08-06"
+Version: 2022-08-06"
   (interactive)
   (let (xbegin xend)
     (if (region-active-p)
@@ -2662,7 +2662,7 @@ If the current buffer is not associated with a file, nothing's done.
 
 URL `http://xahlee.info/emacs/emacs/elisp_make-backup.html'
 Created: 2018-06-06
-Version: 2022-06-13 2024-04-21"
+Version: 2024-04-21"
   (interactive)
   (let ((xfname buffer-file-name)
         (xdateTimeFormat "%Y-%m-%d_%H%M%S"))
@@ -2711,7 +2711,7 @@ Call `xah-open-last-closed' to open the backup file.
 
 URL `http://xahlee.info/emacs/emacs/elisp_delete-current-file.html'
 Created: 2018-05-15
-Version: 2024-04-21 2024-04-23"
+Version: 2024-04-23"
   (interactive)
   (when (eq major-mode 'dired-mode)
     (user-error "%s: In dired. Nothing is done." real-this-command))
@@ -2735,7 +2735,7 @@ Call `xah-open-last-closed' to open." xbackupPath)
         (message "non-file buffer killed. buffer text copied to `kill-ring'."))))
   (when (eq major-mode 'dired-mode) (revert-buffer)))
 
-
+;; HHHH---------------------------------------------------
 
 (defun xah-search-current-word ()
   "Call `isearch' on current word or selection.
@@ -2768,7 +2768,7 @@ This command can be called when in a file buffer or in `dired'.
 
 URL `http://xahlee.info/emacs/emacs/emacs_show_in_desktop.html'
 Created: 2020-11-20
-Version: 2022-08-19 2023-06-26 2023-09-09"
+Version: 2023-09-09"
   (interactive)
   (let ((xpath (if (eq major-mode 'dired-mode)
                    (if (eq nil (dired-get-marked-files))
@@ -2801,7 +2801,7 @@ Version: 2022-08-19 2023-06-26 2023-09-09"
 URL `http://xahlee.info/emacs/emacs/emacs_open_in_vscode.html'
 
 Created: 2020-02-13
-Version: 2021-01-18 2022-08-04 2023-06-26"
+Version: 2023-06-26"
   (interactive)
   (let ((xpath (if buffer-file-name buffer-file-name (expand-file-name default-directory))))
     (message "path is %s" xpath)
@@ -2819,7 +2819,7 @@ When called in emacs lisp, if Fname is given, open that.
 
 URL `http://xahlee.info/emacs/emacs/emacs_dired_open_file_in_ext_apps.html'
 Created: 2019-11-04
-Version: 2023-04-05 2023-06-26"
+Version: 2023-06-26"
   (interactive)
   (let (xfileList xdoIt)
     (setq xfileList
@@ -2867,7 +2867,7 @@ On Microsoft Windows, which terminal it starts depends on `xah-fly-mswin-termina
 
 URL `http://xahlee.info/emacs/emacs/emacs_open_in_terminal.html'
 Created: 2020-11-21
-Version: 2022-08-04 2023-03-01 2023-06-26"
+Version: 2023-06-26"
   (interactive)
   (cond
    ((eq system-type 'windows-nt)
@@ -2908,7 +2908,7 @@ Version: 2017-01-29"
       (other-frame 1)
     (delete-other-windows)))
 
-
+;; HHHH---------------------------------------------------
 ;; layout lookup tables for key conversion
 
 (defvar xah-fly-layout-diagrams (make-hash-table :test 'equal)
@@ -3133,8 +3133,8 @@ Q F M L W Y U O B J { } |
 D S T N R I A E H : \"
 Z V G C X P K < > ?
 " xah-fly-layout-diagrams)
-  
-  (puthash "qgmlwb" "
+
+(puthash "qgmlwb" "
 ~ ! @ # $ % ^ & * ( ) _ + 
 ` 1 2 3 4 5 6 7 8 9 0 - =
 
@@ -3146,7 +3146,7 @@ Q G M L W B Y U V : { } |
 D S T N R I A E O H \"
 Z X C F J K P < > ?
 " xah-fly-layout-diagrams)
-  
+
   (puthash "qwerty" "
 ~ ! @ # $ % ^ & * ( ) _ +
 ` 1 2 3 4 5 6 7 8 9 0 - =
@@ -3335,7 +3335,7 @@ Example usage:
     (\".\" . isearch-forward-symbol-at-point)
     (\"w\" . isearch-forward-word)))
 Created: 2020-04-18
-Version: 2022-10-25 2023-08-21"
+Version: 2023-08-21"
   (mapcar
    (lambda (x)
      (define-key
@@ -3344,7 +3344,7 @@ Version: 2022-10-25 2023-08-21"
       (cdr x)))
    KeyCmdAlist))
 
-
+;; HHHH---------------------------------------------------
 ;; keymaps
 
 (defvar xah-fly-key-map (make-sparse-keymap)
@@ -3389,7 +3389,7 @@ Keep in mind that this acts like a normal global minor mode map, so other minor 
 
 (defvar xah-fly--deactivate-command-mode-func nil)
 
-
+;; HHHH---------------------------------------------------
 ;; setting keys
 
 (defun xah-fly-define-keys ()
@@ -3756,7 +3756,7 @@ Version: 2024-04-22"
        (";" . xah-comment-dwim)
        ("[" . split-window-below)
        ("\\" . xah-cycle-hyphen-lowline-space)
-       ("]" . split-window-right)
+       ;; ("]" . split-window-right)
        ("`" . other-frame)
 
        ("1" . xah-backward-punct)
@@ -3803,7 +3803,7 @@ Version: 2024-04-22"
 
 (xah-fly-define-keys)
 
-
+;; HHHH---------------------------------------------------
 ;; set control meta, etc keys
 
 (defcustom xah-fly-unset-useless-key t
@@ -3955,12 +3955,12 @@ Version: 2024-04-22"
 
   (global-set-key (kbd "<f7>") 'xah-fly-leader-key-map)
 
-
+;; HHHH---------------------------------------------------
 
 (when (< emacs-major-version 28)
   (defalias 'execute-extended-command-for-buffer #'execute-extended-command))
 
-
+;; HHHH---------------------------------------------------
 ;;;; misc
 
 ;; the following have keys in gnu emacs, but i decided not to give them a key, because either they are rarely used (say, 95% of emacs users use them less than once a month ), or there is a more efficient command/workflow with key in xah-fly-keys
@@ -3995,7 +3995,7 @@ Version: 2024-04-22"
 ;; C-x l   →   count-lines-page
 ;; C-x m   →   compose-mail
 
-
+;; HHHH---------------------------------------------------
 ;; undecided yet
 
 ;; C-x e   →   kmacro-end-and-call-macro
@@ -4040,7 +4040,7 @@ Version: 2024-04-22"
 ;; C-x C-k n   →   kmacro-name-last-macro
 ;; C-x C-k q   →   kbd-macro-query
 
-
+;; HHHH---------------------------------------------------
 
 ;; C-x 4 C-f   →   find-file-other-window
 ;; C-x 4 C-o   →   display-buffer
@@ -4073,7 +4073,7 @@ Version: 2024-04-22"
 ;; r o   →   other-frame
 ;; r r   →   find-file-read-only-other-frame
 
-
+;; HHHH---------------------------------------------------
 
 (defvar xah-fly-insert-state-p t "non-nil means insertion mode is on.")
 
@@ -4195,7 +4195,7 @@ Version: 2017-07-07"
   (xah-fly-insert-mode-activate)
   (left-char))
 
-
+;; HHHH---------------------------------------------------
 
 ;;;###autoload
 (define-minor-mode xah-fly-keys
