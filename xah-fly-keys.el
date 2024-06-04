@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 25.7.20240602075123
+;; Version: 25.8.20240604084157
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -4218,7 +4218,7 @@ Version: 2017-07-07"
 
 URL `http://xahlee.info/emacs/misc/xah-fly-keys.html'"
   :global t
-  :lighter " ∑flykeys"
+  :lighter " xflykeys"
   :keymap xah-fly-insert-map
   (delete-selection-mode 1)
   (setq shift-select-mode nil)
