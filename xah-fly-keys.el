@@ -703,10 +703,17 @@ Version: 2024-06-05"
   (interactive)
   (cond
    ((prog2 (backward-char) (looking-at "\\s)") (forward-char))
-    (if current-prefix-arg
-        (xah-delete-backward-bracket-pair DeletePrefix)
-      (xah-delete-backward-bracket-text DeletePrefix)))
+    (if  (condition-case nil
+	     (scan-sexps (- (point) 1) 2)
+	   (error nil))
+	(if current-prefix-arg
+            (xah-delete-backward-bracket-pair DeletePrefix)
+	  (xah-delete-backward-bracket-text DeletePrefix))
+      (delete-backward-char 1)))
    ((prog2 (backward-char) (looking-at "\\s(") (forward-char))
+    (if (condition-case nil
+	    (scan-sexps (point) 1)
+	  (error nil))
     (let ((xp0 (point)))
       (progn
         (goto-char (1- xp0))
@@ -720,7 +727,8 @@ Version: 2024-06-05"
               (delete-char -1)
               (goto-char xp0)
               (delete-char -1))
-          (kill-region (1- xp0) (point))))))
+          (kill-region (1- xp0) (point)))))
+    (delete-backward-char 1)))
    ))
 
 (defun xah-delete-blank-lines ()
@@ -884,15 +892,7 @@ Version: 2024-06-05"
      ((eq (char-before) 32) (while (eq (char-before) 32) (delete-char -1)))
      ((eq (char-before) 9) (while (eq (char-before) 9) (delete-char -1)))
      ((eq (char-before) 10) (while (eq (char-before) 10) (delete-char -1)))
-     ((prog2 (backward-char)
-	  (or
-	   (and (looking-at "\\s(") (condition-case nil
-					(scan-sexps (point) 1)
-				      (error nil)))
-	   (and (looking-at "\\s)") (condition-case nil
-					(scan-sexps (+ (point) 1) -1)
-				      (error nil))))
-	(forward-char))
+     ((prog2 (backward-char) (looking-at "\\s(\\|\\s)") (forward-char))
       (message "calling xah-delete-bracket-text-backward")
       (xah-delete-bracket-text-backward))
      ((prog2 (backward-char) (looking-at "\\s\"") (forward-char))
