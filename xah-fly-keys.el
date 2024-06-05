@@ -644,15 +644,12 @@ URL `http://xahlee.info/emacs/emacs/emacs_delete_backward_char_or_bracket_text.h
 Created: 2017-09-21
 Version: 2024-06-05"
   (interactive)
-  (progn
-    (forward-sexp -1)
-    (if DeletePrefix
-	(while (looking-at "\\s'")
-	  (delete-char 1))
-      (while (looking-at "\\s'")
-	  (forward-char)))
-    (mark-sexp)
-    (kill-region (region-beginning) (region-end))))
+  (forward-sexp -1)
+  (unless DeletePrefix
+    (while (looking-at "\\s'")
+      (forward-char)))
+  (mark-sexp)
+  (kill-region (region-beginning) (region-end)))
 
 (defun xah-delete-backward-bracket-pair (&optional DeletePrefix)
   "Delete the matching brackets/quotes to the left of cursor.
@@ -713,24 +710,23 @@ Version: 2024-06-05"
 	  (xah-delete-backward-bracket-text DeletePrefix))
       (delete-char -1)))
    ((prog2 (backward-char) (looking-at "\\s(") (forward-char))
-    (let ((xp0 (point)))
+    (let ((xp0 (point))
+	  (xp1 (1- (point))))
       (progn
-        (goto-char (1- xp0))
+        (goto-char xp1)
 	(when DeletePrefix
 	  (while (looking-back "\\s'")
-	    (delete-char -1)
-	    (setq xp0 (1- xp0))))
+	    (backward-char)
+	    (setq xp1 (1- xp1))))
 	(condition-case nil
 	    (progn
-	      (goto-char (scan-sexps (point) 1))
+	      (goto-char (scan-sexps (1- xp0) 1))
 	      (if current-prefix-arg
 		  (progn
 		    (delete-char -1)
-		    (goto-char xp0)
-		    (delete-char -1))
-		(kill-region (1- xp0) (point))))
-	  (scan-error
-	   (delete-char 1))))))
+		    (delete-region xp1 xp0))
+		(kill-region xp1 (point))))
+	  (scan-error (delete-region xp1 xp0))))))
    ))
 
 (defun xah-delete-blank-lines ()
