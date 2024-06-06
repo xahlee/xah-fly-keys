@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 25.8.20240605215642
+;; Version: 25.8.20240606155625
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -604,12 +604,13 @@ Version: 2023-07-30"
 
 (defun xah-delete-string-backward ()
   "Delete string to the left of cursor.
-e.g. 「\"▮some\"▮」
+Cursor must be on the right of a string delimiters. e.g. \"▮some\"▮.
+Else, do nothing.
+
 If `universal-argument' is called first, just delete the quotation marks.
 
 Created: 2023-11-12
-Version: 2024-03-14"
-  (interactive)
+Version: 2024-06-06"
   (when (prog2 (backward-char) (looking-at "\\s\"") (forward-char))
     (let ((xp0 (point)) xp1 xp2)
       ;; xp1 xp2 are the begin and end pos of the string
@@ -634,26 +635,28 @@ Version: 2024-03-14"
   "Delete the matching bracket text to the left of cursor, including the brackets.
 
 Cursor must be on the right of a closing bracket, e.g. (a b c)▮
+Else, do nothing.
 Both brackets and innertext are deleted.
-Brackets here includes string quote and other determined by current syntax table. (see `describe-syntax')
+Brackets here is determined by current syntax table. (see `describe-syntax')
 
 If DeletePrefix is non-nil, also delete any prefix characters before the opening bracket. e.g. the dollar sign ${x} in `sh-mode'.
 
 URL `http://xahlee.info/emacs/emacs/emacs_delete_backward_char_or_bracket_text.html'
 Created: 2017-09-21
 Version: 2024-06-05"
-  (interactive)
-  (forward-sexp -1)
-  (unless DeletePrefix
-    (while (looking-at "\\s'")
-      (forward-char)))
-  (mark-sexp)
-  (kill-region (region-beginning) (region-end)))
+  (when (prog2 (backward-char) (looking-at "\\s)") (forward-char))
+    (forward-sexp -1)
+    (unless DeletePrefix
+      (while (looking-at "\\s'")
+        (forward-char)))
+    (mark-sexp)
+    (kill-region (region-beginning) (region-end))))
 
 (defun xah-delete-backward-bracket-pair (&optional DeletePrefix)
-  "Delete the matching brackets/quotes to the left of cursor.
+  "Delete the matching brackets/quotes pairs to the left of cursor.
 
-Cursor must be on the right of a bracket, e.g. (some)▮, and there's matching one. Else, error or unpredictable behavior.
+Cursor must be on the right of a bracket, e.g. (some)▮, or right of end of string quote e.g. \"some\"▮.
+Else, do nothing.
 
 Brackets here includes string quote and other determined by current syntax table. (see `describe-syntax')
 
@@ -662,22 +665,26 @@ After call, mark is set at the matching bracket position, so you can `exchange-p
 If DeletePrefix is non-nil, also delete any prefix characters before the opening bracket. e.g. the dollar sign ${x} in `sh-mode'.
 
 URL `http://xahlee.info/emacs/emacs/emacs_delete_backward_char_or_bracket_text.html'
-Version: 2024-06-05"
-  (interactive)
-  (let ((xp0 (point)) xp1)
-    (forward-sexp -1)
-    (setq xp1 (point))
-    (goto-char xp0)
-    (delete-char -1)
-    (goto-char xp1)
-    (if DeletePrefix
+Created: 2024-06-05
+Version: 2024-06-06"
+  (when (prog2
+            (backward-char)
+            (or (looking-at "\\s)") (looking-at "\\s\""))
+          (forward-char))
+    (let ((xp0 (point)) xp1)
+      (forward-sexp -1)
+      (setq xp1 (point))
+      (goto-char xp0)
+      (delete-char -1)
+      (goto-char xp1)
+      (if DeletePrefix
+          (while (looking-at "\\s'")
+            (delete-char 1))
         (while (looking-at "\\s'")
-          (delete-char 1))
-      (while (looking-at "\\s'")
-        (forward-char)))
-    (delete-char 1)
-    (push-mark (point) t)
-    (goto-char (- xp0 2))))
+          (forward-char)))
+      (delete-char 1)
+      (push-mark (point) t)
+      (goto-char (- xp0 2)))))
 
 (defun xah-delete-bracket-text-backward (&optional DeletePrefix)
   "Delete bracket pair and inner text to the left of cursor.
@@ -687,7 +694,7 @@ If `universal-argument' is called first, do not delete inner text.
 Cursor must be on the right of a bracket, e.g. (▮some)▮, else, do nothing.
 If the bracket left of cursor is unbalanced, simply delete it.
 
-Brackets here includes string quote and other determined by current syntax table. (see `describe-syntax')
+Brackets here is determined by current syntax table. (see `describe-syntax')
 
 The deleted text can be pasted later. (pushed to `kill-ring')
 
@@ -696,7 +703,6 @@ If DeletePrefix is non-nil, also delete any prefix characters before the opening
 URL `http://xahlee.info/emacs/emacs/emacs_delete_backward_char_or_bracket_text.html'
 Created: 2017-07-02
 Version: 2024-06-05"
-  (interactive)
   (cond
    ((prog2 (backward-char) (looking-at "\\s)") (forward-char))
     (if (condition-case nil
@@ -766,9 +772,7 @@ Version: 2023-07-12"
         (xcharBefore (char-before))
         (xcharAfter (char-after))
         xspace-neighbor-p)
-
     (setq xspace-neighbor-p (or (eq xcharBefore 32) (eq xcharBefore 9) (eq xcharAfter 32) (eq xcharAfter 9)))
-
     (skip-chars-backward " \n\t　")
     (setq xp1 (point))
     (goto-char xp0)
