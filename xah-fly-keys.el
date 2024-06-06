@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 25.8.20240604084157
+;; Version: 25.8.20240605215642
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -631,14 +631,13 @@ Version: 2024-03-14"
         (kill-region xp1 xp2)))))
 
 (defun xah-delete-backward-bracket-text (&optional DeletePrefix)
-  "Delete the matching bracket/quote text to the left of cursor.
-e.g. (a b c)▮
+  "Delete the matching bracket text to the left of cursor, including the brackets.
 
-If DeletePrefix is non-nil, also delete any prefix characters before the opening bracket.
+Cursor must be on the right of a closing bracket, e.g. (a b c)▮
+Both brackets and innertext are deleted.
+Brackets here includes string quote and other determined by current syntax table. (see `describe-syntax')
 
-This command assumes the left of cursor is a right bracket, and there is a matching one before it.
-
-What char is considered bracket or quote is determined by current syntax table.
+If DeletePrefix is non-nil, also delete any prefix characters before the opening bracket. e.g. the dollar sign ${x} in `sh-mode'.
 
 URL `http://xahlee.info/emacs/emacs/emacs_delete_backward_char_or_bracket_text.html'
 Created: 2017-09-21
@@ -653,13 +652,14 @@ Version: 2024-06-05"
 
 (defun xah-delete-backward-bracket-pair (&optional DeletePrefix)
   "Delete the matching brackets/quotes to the left of cursor.
+
+Cursor must be on the right of a bracket, e.g. (some)▮, and there's matching one. Else, error or unpredictable behavior.
+
+Brackets here includes string quote and other determined by current syntax table. (see `describe-syntax')
+
 After call, mark is set at the matching bracket position, so you can `exchange-point-and-mark' to select it.
 
-If DeletePrefix is non-nil, also delete any prefix characters before the opening bracket.
-
-This command assumes the left of point is a right bracket, and there is a matching one before it.
-
-What char is considered bracket or quote is determined by current syntax table.
+If DeletePrefix is non-nil, also delete any prefix characters before the opening bracket. e.g. the dollar sign ${x} in `sh-mode'.
 
 URL `http://xahlee.info/emacs/emacs/emacs_delete_backward_char_or_bracket_text.html'
 Version: 2024-06-05"
@@ -671,30 +671,27 @@ Version: 2024-06-05"
     (delete-char -1)
     (goto-char xp1)
     (if DeletePrefix
-	(while (looking-at "\\s'")
-	  (delete-char 1))
+        (while (looking-at "\\s'")
+          (delete-char 1))
       (while (looking-at "\\s'")
-	  (forward-char)))
+        (forward-char)))
     (delete-char 1)
     (push-mark (point) t)
     (goto-char (- xp0 2))))
 
 (defun xah-delete-bracket-text-backward (&optional DeletePrefix)
   "Delete bracket pair and inner text to the left of cursor.
-e.g.  「(▮some)▮」
-The bracket can be paren, square bracket, curly bracket, or any matching pair in syntax table.
-
-The deleted text can be pasted later.
-
-What char is considered bracket is determined by current syntax table.
-
-If DeletePrefix is non-nil, also delete any prefix characters before the opening bracket.
-
-If the bracket left of cursor is unbalanced, simply delete it.
-
-If cursor left is not a bracket, nothing is done.
 
 If `universal-argument' is called first, do not delete inner text.
+
+Cursor must be on the right of a bracket, e.g. (▮some)▮, else, do nothing.
+If the bracket left of cursor is unbalanced, simply delete it.
+
+Brackets here includes string quote and other determined by current syntax table. (see `describe-syntax')
+
+The deleted text can be pasted later. (pushed to `kill-ring')
+
+If DeletePrefix is non-nil, also delete any prefix characters before the opening bracket. e.g. the dollar sign ${x} in `sh-mode'.
 
 URL `http://xahlee.info/emacs/emacs/emacs_delete_backward_char_or_bracket_text.html'
 Created: 2017-07-02
@@ -847,14 +844,11 @@ Version: 2023-07-12"
 (defvar xah-smart-delete-dispatch
   nil
   "Used by `xah-smart-delete'.
-This makes that function behavior `major-mode' dependent.
+This makes that function behavior dependent on current major-mode.
 Value is Alist of pairs, each is of the form
 (‹major-mode-name› . ‹function-name›)
-If the major mode name match current buffer, the paired function is called.
+If ‹major-mode-name› match current var `major-mode', the paired function is called.
 If no major mode matches, `xah-smart-delete' default behavior is used.
-If the Alist contains a value pair of the form
-(default . ‹function-name›)
-Then that function replaces the `xah-smart-delete' default behavior.
 
 Version: 2024-06-05")
 
@@ -882,8 +876,6 @@ Version: 2024-06-05"
     (cond
      ((setq xfun (assq major-mode xah-smart-delete-dispatch))
       (message "calling cdr of %s" xfun)
-      (funcall (cdr xfun)))
-     ((setq xfun (assq 'default xah-smart-delete-dispatch))
       (funcall (cdr xfun)))
      ((region-active-p) (delete-region (region-beginning) (region-end)))
      ;; 32 is space, 9 is tab, 10 is linefeed
@@ -3168,12 +3160,12 @@ Z V G C X P K < > ?
 " xah-fly-layout-diagrams)
 
 (puthash "qgmlwb" "
-~ ! @ # $ % ^ & * ( ) _ + 
+~ ! @ # $ % ^ & * ( ) _ +
 ` 1 2 3 4 5 6 7 8 9 0 - =
 
 q g m l w b y u v ; [ ] \\
 d s t n r i a e o h '
-z x c f j k p , . / 
+z x c f j k p , . /
 
 Q G M L W B Y U V : { } |
 D S T N R I A E O H \"
