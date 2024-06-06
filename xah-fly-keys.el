@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 25.8.20240606155625
+;; Version: 25.8.20240606162109
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -602,12 +602,16 @@ Version: 2023-07-30"
       (goto-char xpt)
       (delete-char 1))))
 
-(defun xah-delete-string-backward ()
+(defun xah-delete-string-backward (&optional DeleteJustQuote)
   "Delete string to the left of cursor.
-Cursor must be on the right of a string delimiters. e.g. \"▮some\"▮.
+
+Cursor must be on the right of a string delimiter. 
+e.g. \"▮some\" or \"some\"▮
 Else, do nothing.
 
-If `universal-argument' is called first, just delete the quotation marks.
+String delimiter is determined by current syntax table. (see `describe-syntax')
+
+If DeleteJustQuote is true, delete only the quotation marks.
 
 Created: 2023-11-12
 Version: 2024-06-06"
@@ -624,7 +628,7 @@ Version: 2024-06-06"
         (setq xp2 (point)
               xp1
               (progn (forward-sexp -1) (point))))
-      (if current-prefix-arg
+      (if DeleteJustQuote
           (progn (goto-char xp2)
                  (delete-char -1)
                  (goto-char xp1)
@@ -891,7 +895,7 @@ Version: 2024-06-05"
       (xah-delete-bracket-text-backward))
      ((prog2 (backward-char) (looking-at "\\s\"") (forward-char))
       (message "calling xah-delete-string-backward")
-      (xah-delete-string-backward))
+      (xah-delete-string-backward current-prefix-arg))
      (t (delete-char -1)))))
 
 (defun xah-change-bracket-pairs (FromChars ToChars)
