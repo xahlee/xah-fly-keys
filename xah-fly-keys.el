@@ -630,9 +630,11 @@ Version: 2024-03-14"
                  (delete-char 1))
         (kill-region xp1 xp2)))))
 
-(defun xah-delete-backward-bracket-text ()
+(defun xah-delete-backward-bracket-text (&optional DeletePrefix)
   "Delete the matching bracket/quote text to the left of cursor.
 e.g. (a b c)▮
+
+If DeletePrefix is non-nil, also delete any prefix characters before the opening bracket.
 
 This command assumes the left of cursor is a right bracket, and there is a matching one before it.
 
@@ -640,23 +642,27 @@ What char is considered bracket or quote is determined by current syntax table.
 
 URL `http://xahlee.info/emacs/emacs/emacs_delete_backward_char_or_bracket_text.html'
 Created: 2017-09-21
-Version: 2023-07-30"
+Version: 2024-06-05"
   (interactive)
-  (progn
-    (forward-sexp -1)
-    (mark-sexp)
-    (kill-region (region-beginning) (region-end))))
+  (forward-sexp -1)
+  (unless DeletePrefix
+    (while (looking-at "\\s'")
+      (forward-char)))
+  (mark-sexp)
+  (kill-region (region-beginning) (region-end)))
 
-(defun xah-delete-backward-bracket-pair ()
+(defun xah-delete-backward-bracket-pair (&optional DeletePrefix)
   "Delete the matching brackets/quotes to the left of cursor.
 After call, mark is set at the matching bracket position, so you can `exchange-point-and-mark' to select it.
+
+If DeletePrefix is non-nil, also delete any prefix characters before the opening bracket.
 
 This command assumes the left of point is a right bracket, and there is a matching one before it.
 
 What char is considered bracket or quote is determined by current syntax table.
 
 URL `http://xahlee.info/emacs/emacs/emacs_delete_backward_char_or_bracket_text.html'
-Version: 2017-07-02"
+Version: 2024-06-05"
   (interactive)
   (let ((xp0 (point)) xp1)
     (forward-sexp -1)
@@ -664,11 +670,16 @@ Version: 2017-07-02"
     (goto-char xp0)
     (delete-char -1)
     (goto-char xp1)
+    (if DeletePrefix
+	(while (looking-at "\\s'")
+	  (delete-char 1))
+      (while (looking-at "\\s'")
+	  (forward-char)))
     (delete-char 1)
     (push-mark (point) t)
     (goto-char (- xp0 2))))
 
-(defun xah-delete-bracket-text-backward ()
+(defun xah-delete-bracket-text-backward (&optional DeletePrefix)
   "Delete bracket pair and inner text to the left of cursor.
 e.g.  「(▮some)▮」
 The bracket can be paren, square bracket, curly bracket, or any matching pair in syntax table.
@@ -677,30 +688,45 @@ The deleted text can be pasted later.
 
 What char is considered bracket is determined by current syntax table.
 
+If DeletePrefix is non-nil, also delete any prefix characters before the opening bracket.
+
+If the bracket left of cursor is unbalanced, simply delete it.
+
 If cursor left is not a bracket, nothing is done.
 
 If `universal-argument' is called first, do not delete inner text.
 
 URL `http://xahlee.info/emacs/emacs/emacs_delete_backward_char_or_bracket_text.html'
 Created: 2017-07-02
-Version: 2023-07-30"
+Version: 2024-06-05"
   (interactive)
   (cond
    ((prog2 (backward-char) (looking-at "\\s)") (forward-char))
-    (if current-prefix-arg
-        (xah-delete-backward-bracket-pair)
-      (xah-delete-backward-bracket-text)))
+    (if (condition-case nil
+	    (scan-sexps (point) -1)
+	  (scan-error nil))
+	(if current-prefix-arg
+            (xah-delete-backward-bracket-pair DeletePrefix)
+	  (xah-delete-backward-bracket-text DeletePrefix))
+      (delete-char -1)))
    ((prog2 (backward-char) (looking-at "\\s(") (forward-char))
-    (let ((xp0 (point)))
+    (let ((xp0 (point))
+	  (xp1 (1- (point))))
       (progn
-        (goto-char (1- xp0))
-        (forward-sexp)
-        (if current-prefix-arg
-            (progn
-              (delete-char -1)
-              (goto-char xp0)
-              (delete-char -1))
-          (kill-region (1- xp0) (point))))))
+        (goto-char xp1)
+	(when DeletePrefix
+	  (while (looking-back "\\s'")
+	    (backward-char)
+	    (setq xp1 (1- xp1))))
+	(condition-case nil
+	    (progn
+	      (goto-char (scan-sexps (1- xp0) 1))
+	      (if current-prefix-arg
+		  (progn
+		    (delete-char -1)
+		    (delete-region xp1 xp0))
+		(kill-region xp1 (point))))
+	  (scan-error (delete-region xp1 xp0))))))
    ))
 
 (defun xah-delete-blank-lines ()
@@ -825,8 +851,12 @@ This makes that function behavior `major-mode' dependent.
 Value is Alist of pairs, each is of the form
 (‹major-mode-name› . ‹function-name›)
 If the major mode name match current buffer, the paired function is called.
-If nothing match, `xah-smart-delete' default behavior is used.
-Version: 2023-11-12")
+If no major mode matches, `xah-smart-delete' default behavior is used.
+If the Alist contains a value pair of the form
+(default . ‹function-name›)
+Then that function replaces the `xah-smart-delete' default behavior.
+
+Version: 2024-06-05")
 
 (setq xah-smart-delete-dispatch
       '((xah-wolfram-mode . xah-wolfram-smart-delete-backward)
@@ -838,26 +868,28 @@ Typically, delete to the left 1 char or entire bracketed text.
 Behavior depends on what's left char, and current `major-mode'.
 This command never delete text to the right of cursor.
 
+If `xah-smart-delete-dispatch' match, call the matched function instead.
 If region active, delete region.
 If cursor left is space tab linefeed, delete continuous sequence of them.
-If `xah-smart-delete-dispatch' match, call the matched function.
 If cursor left is string quote, delete the string.
 If cursor left is bracket, delete the bracketed text.
 Else just delete one char to the left.
 
 Created: 2023-07-22
-Version: 2023-11-12"
+Version: 2024-06-05"
   (interactive)
   (let (xfun)
     (cond
+     ((setq xfun (assq major-mode xah-smart-delete-dispatch))
+      (message "calling cdr of %s" xfun)
+      (funcall (cdr xfun)))
+     ((setq xfun (assq 'default xah-smart-delete-dispatch))
+      (funcall (cdr xfun)))
      ((region-active-p) (delete-region (region-beginning) (region-end)))
      ;; 32 is space, 9 is tab, 10 is linefeed
      ((eq (char-before) 32) (while (eq (char-before) 32) (delete-char -1)))
      ((eq (char-before) 9) (while (eq (char-before) 9) (delete-char -1)))
      ((eq (char-before) 10) (while (eq (char-before) 10) (delete-char -1)))
-     ((setq xfun (assq major-mode xah-smart-delete-dispatch))
-      (message "calling cdr of %s" xfun)
-      (funcall (cdr xfun)))
      ((prog2 (backward-char) (looking-at "\\s(\\|\\s)") (forward-char))
       (message "calling xah-delete-bracket-text-backward")
       (xah-delete-bracket-text-backward))
