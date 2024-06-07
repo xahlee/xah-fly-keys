@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 25.8.20240606162109
+;; Version: 25.8.20240606205522
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -561,19 +561,116 @@ Version: 2022-03-04"
      (define-key xkmap (kbd "<down>") #'xah-move-block-down)
      xkmap)))
 
-(defun xah-delete-left-char-or-selection ()
-  "Delete backward 1 character, or selection.
-Version: 2022-01-22"
-  (interactive)
-  (if (region-active-p)
-      (progn (delete-region (region-beginning) (region-end)))
-    (delete-char -1)))
+(defun xah-delete-blank-lines ()
+  "Delete all newline around cursor.
 
-(defun xah-delete-backward-char ()
-  "Delete one char backward.
-Version: 2023-07-22"
+URL `http://xahlee.info/emacs/emacs/emacs_shrink_whitespace.html'
+Version: 2018-04-02"
+  (let (xp3 xp4)
+          (skip-chars-backward "\n")
+          (setq xp3 (point))
+          (skip-chars-forward "\n")
+          (setq xp4 (point))
+          (delete-region xp3 xp4)))
+
+(defun xah-fly-delete-spaces ()
+  "Delete space, tab, IDEOGRAPHIC SPACE (U+3000) around cursor.
+Version: 2019-06-13"
+  (let (xp1 xp2)
+    (skip-chars-forward " \t　")
+    (setq xp2 (point))
+    (skip-chars-backward " \t　")
+    (setq xp1 (point))
+    (delete-region xp1 xp2)))
+
+(defun xah-shrink-whitespaces ()
+  "Remove whitespaces around cursor .
+
+Shrink neighboring spaces, then newlines, then spaces again, leaving one space or newline at each step, till no more white space.
+
+URL `http://xahlee.info/emacs/emacs/emacs_shrink_whitespace.html'
+Created: 2014-10-21
+Version: 2023-07-12"
   (interactive)
-  (delete-char -1))
+  (let ((xeol-count 0)
+        (xp0 (point))
+        xp1  ; whitespace begin
+        xp2  ; whitespace end
+        (xcharBefore (char-before))
+        (xcharAfter (char-after))
+        xspace-neighbor-p)
+    (setq xspace-neighbor-p (or (eq xcharBefore 32) (eq xcharBefore 9) (eq xcharAfter 32) (eq xcharAfter 9)))
+    (skip-chars-backward " \n\t　")
+    (setq xp1 (point))
+    (goto-char xp0)
+    (skip-chars-forward " \n\t　")
+    (setq xp2 (point))
+    (goto-char xp1)
+    (while (search-forward "\n" xp2 t)
+      (setq xeol-count (1+ xeol-count)))
+    (goto-char xp0)
+    (cond
+     ((eq xeol-count 0)
+      (if (> (- xp2 xp1) 1)
+          (progn
+            (delete-horizontal-space) (insert " "))
+        (progn (delete-horizontal-space))))
+     ((eq xeol-count 1)
+      (if xspace-neighbor-p
+          (xah-fly-delete-spaces)
+        (progn (xah-delete-blank-lines) (insert " "))))
+     ((eq xeol-count 2)
+      (if xspace-neighbor-p
+          (xah-fly-delete-spaces)
+        (progn
+          (xah-delete-blank-lines)
+          (insert "\n"))))
+     ((> xeol-count 2)
+      (if xspace-neighbor-p
+          (xah-fly-delete-spaces)
+        (progn
+          (goto-char xp2)
+          (search-backward "\n")
+          (delete-region xp1 (point))
+          (insert "\n"))))
+     (t (progn
+          (message "nothing done. logic error 40873. shouldn't reach here"))))))
+
+;; (defun xah-shrink-whitespaces ()
+;;   "Remove whitespaces around cursor.
+
+;; Shrink neighboring whitespace.
+;; First shrink space or tab, then newlines.
+;; Repeated calls eventually results in no whitespace around cursor.
+
+;; URL `http://xahlee.info/emacs/emacs/emacs_shrink_whitespace.html'
+;; Version: 2023-08-02"
+;;   (interactive)
+;;   (cond
+;;    ((if (eq (point-min) (point))
+;;         nil
+;;       (prog2 (backward-char) (looking-at "[ \t]") (forward-char)))
+;;     (progn
+;;       ;; (print (format "space on left"))
+;;       (delete-char (- (skip-chars-backward " \t")))))
+;;    ((looking-at "[ \t]")
+;;     (progn
+;;       ;; (print (format "space on right"))
+;;       (delete-char (- (skip-chars-forward " \t")))))
+;;    ((or
+;;      (and (eq (char-before) 10) (eq (char-after) 10))
+;;      (looking-at "\n\n")
+;;      (and (eq (char-before (point)) 10) (eq (char-before (1- (point))) 10)))
+;;     (progn
+;;       ;; (print (format "2 newlines on left or right, or one each"))
+;;       (delete-char (- (skip-chars-backward "\n")))
+;;       (delete-char (- (skip-chars-forward "\n")))
+;;       (insert "\n")))
+;;    (t
+;;     (progn
+;;       ;; (print (format "catch all"))
+;;       (delete-char (- (skip-chars-backward " \n")))
+;;       (delete-char (- (skip-chars-forward " \n")))))))
 
 (defun xah-delete-forward-bracket-pairs (&optional DeleteInnerTextQ)
   "Delete the matching bracket/quote text to the right of cursor.
@@ -693,8 +790,6 @@ Version: 2024-06-06"
 (defun xah-delete-bracket-text-backward (&optional DeletePrefix)
   "Delete bracket pair and inner text to the left of cursor.
 
-If `universal-argument' is called first, do not delete inner text.
-
 Cursor must be on the right of a bracket, e.g. (▮some)▮, else, do nothing.
 If the bracket left of cursor is unbalanced, simply delete it.
 
@@ -736,119 +831,6 @@ Version: 2024-06-05"
 	  (scan-error (delete-region xp1 xp0))))))
    ))
 
-(defun xah-delete-blank-lines ()
-  "Delete all newline around cursor.
-
-URL `http://xahlee.info/emacs/emacs/emacs_shrink_whitespace.html'
-Version: 2018-04-02"
-  (interactive)
-  (let (xp3 xp4)
-          (skip-chars-backward "\n")
-          (setq xp3 (point))
-          (skip-chars-forward "\n")
-          (setq xp4 (point))
-          (delete-region xp3 xp4)))
-
-(defun xah-fly-delete-spaces ()
-  "Delete space, tab, IDEOGRAPHIC SPACE (U+3000) around cursor.
-Version: 2019-06-13"
-  (interactive)
-  (let (xp1 xp2)
-    (skip-chars-forward " \t　")
-    (setq xp2 (point))
-    (skip-chars-backward " \t　")
-    (setq xp1 (point))
-    (delete-region xp1 xp2)))
-
-(defun xah-shrink-whitespaces ()
-  "Remove whitespaces around cursor .
-
-Shrink neighboring spaces, then newlines, then spaces again, leaving one space or newline at each step, till no more white space.
-
-URL `http://xahlee.info/emacs/emacs/emacs_shrink_whitespace.html'
-Created: 2014-10-21
-Version: 2023-07-12"
-  (interactive)
-  (let ((xeol-count 0)
-        (xp0 (point))
-        xp1  ; whitespace begin
-        xp2  ; whitespace end
-        (xcharBefore (char-before))
-        (xcharAfter (char-after))
-        xspace-neighbor-p)
-    (setq xspace-neighbor-p (or (eq xcharBefore 32) (eq xcharBefore 9) (eq xcharAfter 32) (eq xcharAfter 9)))
-    (skip-chars-backward " \n\t　")
-    (setq xp1 (point))
-    (goto-char xp0)
-    (skip-chars-forward " \n\t　")
-    (setq xp2 (point))
-    (goto-char xp1)
-    (while (search-forward "\n" xp2 t)
-      (setq xeol-count (1+ xeol-count)))
-    (goto-char xp0)
-    (cond
-     ((eq xeol-count 0)
-      (if (> (- xp2 xp1) 1)
-          (progn
-            (delete-horizontal-space) (insert " "))
-        (progn (delete-horizontal-space))))
-     ((eq xeol-count 1)
-      (if xspace-neighbor-p
-          (xah-fly-delete-spaces)
-        (progn (xah-delete-blank-lines) (insert " "))))
-     ((eq xeol-count 2)
-      (if xspace-neighbor-p
-          (xah-fly-delete-spaces)
-        (progn
-          (xah-delete-blank-lines)
-          (insert "\n"))))
-     ((> xeol-count 2)
-      (if xspace-neighbor-p
-          (xah-fly-delete-spaces)
-        (progn
-          (goto-char xp2)
-          (search-backward "\n")
-          (delete-region xp1 (point))
-          (insert "\n"))))
-     (t (progn
-          (message "nothing done. logic error 40873. shouldn't reach here"))))))
-
-;; (defun xah-shrink-whitespaces ()
-;;   "Remove whitespaces around cursor.
-
-;; Shrink neighboring whitespace.
-;; First shrink space or tab, then newlines.
-;; Repeated calls eventually results in no whitespace around cursor.
-
-;; URL `http://xahlee.info/emacs/emacs/emacs_shrink_whitespace.html'
-;; Version: 2023-08-02"
-;;   (interactive)
-;;   (cond
-;;    ((if (eq (point-min) (point))
-;;         nil
-;;       (prog2 (backward-char) (looking-at "[ \t]") (forward-char)))
-;;     (progn
-;;       ;; (print (format "space on left"))
-;;       (delete-char (- (skip-chars-backward " \t")))))
-;;    ((looking-at "[ \t]")
-;;     (progn
-;;       ;; (print (format "space on right"))
-;;       (delete-char (- (skip-chars-forward " \t")))))
-;;    ((or
-;;      (and (eq (char-before) 10) (eq (char-after) 10))
-;;      (looking-at "\n\n")
-;;      (and (eq (char-before (point)) 10) (eq (char-before (1- (point))) 10)))
-;;     (progn
-;;       ;; (print (format "2 newlines on left or right, or one each"))
-;;       (delete-char (- (skip-chars-backward "\n")))
-;;       (delete-char (- (skip-chars-forward "\n")))
-;;       (insert "\n")))
-;;    (t
-;;     (progn
-;;       ;; (print (format "catch all"))
-;;       (delete-char (- (skip-chars-backward " \n")))
-;;       (delete-char (- (skip-chars-forward " \n")))))))
-
 (defvar xah-smart-delete-dispatch
   nil
   "Used by `xah-smart-delete'.
@@ -868,14 +850,15 @@ Version: 2024-06-05")
   "Smart backward delete.
 Typically, delete to the left 1 char or entire bracketed text.
 Behavior depends on what's left char, and current `major-mode'.
-This command never delete text to the right of cursor.
 
 If `xah-smart-delete-dispatch' match, call the matched function instead.
 If region active, delete region.
-If cursor left is space tab linefeed, delete continuous sequence of them.
+If cursor left is space tab newline, delete them.
 If cursor left is string quote, delete the string.
 If cursor left is bracket, delete the bracketed text.
 Else just delete one char to the left.
+
+If `universal-argument' is called first, do not delete bracket's inner text.
 
 Created: 2023-07-22
 Version: 2024-06-05"
