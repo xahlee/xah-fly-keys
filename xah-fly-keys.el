@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 25.8.20240606205522
+;; Version: 25.8.20240608142416
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -869,10 +869,14 @@ Version: 2024-06-05"
       (message "calling cdr of %s" xfun)
       (funcall (cdr xfun)))
      ((region-active-p) (delete-region (region-beginning) (region-end)))
-     ;; 32 is space, 9 is tab, 10 is linefeed
-     ((eq (char-before) 32) (while (eq (char-before) 32) (delete-char -1)))
-     ((eq (char-before) 9) (while (eq (char-before) 9) (delete-char -1)))
-     ((eq (char-before) 10) (while (eq (char-before) 10) (delete-char -1)))
+     ((or
+       ;; 32 is space, 9 is tab, 10 is newline
+       (eq (char-before) 32)
+       (eq (char-before) 10)
+       (eq (char-before) 9))
+      (let ((xp0 (point)))
+        (skip-chars-backward " \t\n")
+        (kill-region (point) xp0)))
      ((prog2 (backward-char) (looking-at "\\s(\\|\\s)") (forward-char))
       (message "calling xah-delete-bracket-text-backward")
       (xah-delete-bracket-text-backward))
