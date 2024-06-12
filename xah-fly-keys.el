@@ -289,7 +289,7 @@ The list of brackets to jump to is defined by `xah-left-brackets' and `xah-right
 
 URL `http://xahlee.info/emacs/emacs/emacs_navigating_keys_for_brackets.html'
 Created: 2016-11-22
-Version: 2023-08-02"
+Version: 2024-06-12"
   (interactive)
   (if (nth 3 (syntax-ppss))
       (backward-up-list 1 'ESCAPE-STRINGS 'NO-SYNTAX-CROSSING)
@@ -305,7 +305,10 @@ Version: 2023-08-02"
             (looking-at (regexp-opt xah-right-brackets))
           (forward-char)))
       ;; (prog2 (backward-char) (looking-at (regexp-opt xah-right-brackets)) (forward-char))
-      (backward-sexp))
+      (progn
+	(backward-sexp)
+	(while (looking-at "\\s'")
+	  (forward-char))))
      (t (backward-up-list 1 'ESCAPE-STRINGS 'NO-SYNTAX-CROSSING)))))
 
 (defvar xah-punctuation-regex nil "A regex string for the purpose of moving cursor to a punctuation.")
@@ -744,14 +747,14 @@ If DeletePrefix is non-nil, also delete any prefix characters before the opening
 
 URL `http://xahlee.info/emacs/emacs/emacs_delete_backward_char_or_bracket_text.html'
 Created: 2017-09-21
-Version: 2024-06-05"
+Version: 2024-06-12"
   (when (prog2 (backward-char) (looking-at "\\s)") (forward-char))
-    (forward-sexp -1)
-    (unless DeletePrefix
-      (while (looking-at "\\s'")
-        (forward-char)))
-    (mark-sexp)
-    (kill-region (region-beginning) (region-end))))
+    (let ((xp0 (point)))
+      (forward-sexp -1)
+      (unless DeletePrefix
+        (while (looking-at "\\s'")
+          (forward-char)))
+      (kill-region (point) xp0))))
 
 (defun xah-delete-backward-bracket-pair (&optional DeletePrefix)
   "Delete the matching brackets/quotes pairs to the left of cursor.
@@ -767,7 +770,7 @@ If DeletePrefix is non-nil, also delete any prefix characters before the opening
 
 URL `http://xahlee.info/emacs/emacs/emacs_delete_backward_char_or_bracket_text.html'
 Created: 2024-06-05
-Version: 2024-06-06"
+Version: 2024-06-12"
   (when (prog2
             (backward-char)
             (or (looking-at "\\s)") (looking-at "\\s\""))
@@ -780,7 +783,8 @@ Version: 2024-06-06"
       (goto-char xp1)
       (if DeletePrefix
           (while (looking-at "\\s'")
-            (delete-char 1))
+            (delete-char 1)
+            (setq xp0 (1- xp0)))
         (while (looking-at "\\s'")
           (forward-char)))
       (delete-char 1)
@@ -801,7 +805,7 @@ If DeletePrefix is non-nil, also delete any prefix characters before the opening
 
 URL `http://xahlee.info/emacs/emacs/emacs_delete_backward_char_or_bracket_text.html'
 Created: 2017-07-02
-Version: 2024-06-05"
+Version: 2024-06-12"
   (cond
    ((prog2 (backward-char) (looking-at "\\s)") (forward-char))
     (if (condition-case nil
@@ -826,7 +830,8 @@ Version: 2024-06-05"
 	      (if current-prefix-arg
 		  (progn
 		    (delete-char -1)
-		    (delete-region xp1 xp0))
+		    (delete-region xp1 xp0)
+		    (push-mark xp1 t))
 		(kill-region xp1 (point))))
 	  (scan-error (delete-region xp1 xp0))))))
    ))
