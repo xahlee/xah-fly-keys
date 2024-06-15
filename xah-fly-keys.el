@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 25.8.20240608142416
+;; Version: 25.8.20240615160942
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -702,7 +702,7 @@ Version: 2023-07-30"
 (defun xah-delete-string-backward (&optional DeleteJustQuote)
   "Delete string to the left of cursor.
 
-Cursor must be on the right of a string delimiter. 
+Cursor must be on the right of a string delimiter.
 e.g. \"▮some\" or \"some\"▮
 Else, do nothing.
 
@@ -730,7 +730,9 @@ Version: 2024-06-06"
                  (delete-char -1)
                  (goto-char xp1)
                  (delete-char 1))
-        (kill-region xp1 xp2)))))
+        (if (eq real-this-command real-last-command)
+            (kill-append (delete-and-extract-region xp1 xp2) t)
+          (kill-region xp1 xp2))))))
 
 (defun xah-delete-backward-bracket-text (&optional DeletePrefix)
   "Delete the matching bracket text to the left of cursor, including the brackets.
@@ -751,7 +753,9 @@ Version: 2024-06-05"
       (while (looking-at "\\s'")
         (forward-char)))
     (mark-sexp)
-    (kill-region (region-beginning) (region-end))))
+    (if (eq real-this-command real-last-command)
+        (kill-append (delete-and-extract-region (region-beginning) (region-end)) t)
+      (kill-region (region-beginning) (region-end)))))
 
 (defun xah-delete-backward-bracket-pair (&optional DeletePrefix)
   "Delete the matching brackets/quotes pairs to the left of cursor.
@@ -805,31 +809,32 @@ Version: 2024-06-05"
   (cond
    ((prog2 (backward-char) (looking-at "\\s)") (forward-char))
     (if (condition-case nil
-	    (scan-sexps (point) -1)
-	  (scan-error nil))
-	(if current-prefix-arg
+            (scan-sexps (point) -1)
+          (scan-error nil))
+        (if current-prefix-arg
             (xah-delete-backward-bracket-pair DeletePrefix)
-	  (xah-delete-backward-bracket-text DeletePrefix))
+          (xah-delete-backward-bracket-text DeletePrefix))
       (delete-char -1)))
    ((prog2 (backward-char) (looking-at "\\s(") (forward-char))
     (let ((xp0 (point))
-	  (xp1 (1- (point))))
+          (xp1 (1- (point))))
       (progn
         (goto-char xp1)
-	(when DeletePrefix
-	  (while (looking-back "\\s'")
-	    (backward-char)
-	    (setq xp1 (1- xp1))))
-	(condition-case nil
-	    (progn
-	      (goto-char (scan-sexps (1- xp0) 1))
-	      (if current-prefix-arg
-		  (progn
-		    (delete-char -1)
-		    (delete-region xp1 xp0))
-		(kill-region xp1 (point))))
-	  (scan-error (delete-region xp1 xp0))))))
-   ))
+        (when DeletePrefix
+          (while (looking-back "\\s'" (1- (point)))
+            (backward-char)
+            (setq xp1 (1- xp1))))
+        (condition-case nil
+            (progn
+              (goto-char (scan-sexps (1- xp0) 1))
+              (if current-prefix-arg
+                  (progn
+                    (delete-char -1)
+                    (delete-region xp1 xp0))
+                (if (eq real-this-command real-last-command)
+                    (kill-append (delete-and-extract-region xp1 xp0) t)
+                  (kill-region xp1 (point)))))
+          (scan-error (delete-region xp1 xp0))))))))
 
 (defvar xah-smart-delete-dispatch
   nil
@@ -863,6 +868,7 @@ If `universal-argument' is called first, do not delete bracket's inner text.
 Created: 2023-07-22
 Version: 2024-06-05"
   (interactive)
+  (message "real-this-command this-command %s  %s" real-this-command this-command)
   (let (xfun)
     (cond
      ((setq xfun (assq major-mode xah-smart-delete-dispatch))
@@ -876,7 +882,9 @@ Version: 2024-06-05"
        (eq (char-before) 9))
       (let ((xp0 (point)))
         (skip-chars-backward " \t\n")
-        (kill-region (point) xp0)))
+        (if (eq real-this-command real-last-command)
+            (kill-append (delete-and-extract-region (point) xp0) t)
+          (kill-region (point) xp0))))
      ((prog2 (backward-char) (looking-at "\\s(\\|\\s)") (forward-char))
       (message "calling xah-delete-bracket-text-backward")
       (xah-delete-bracket-text-backward))
