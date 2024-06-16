@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 25.8.20240615160942
+;; Version: 25.8.20240615182258
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -734,108 +734,6 @@ Version: 2024-06-06"
             (kill-append (delete-and-extract-region xp1 xp2) t)
           (kill-region xp1 xp2))))))
 
-(defun xah-delete-backward-bracket-text (&optional DeletePrefix)
-  "Delete the matching bracket text to the left of cursor, including the brackets.
-
-Cursor must be on the right of a closing bracket, e.g. (a b c)▮
-Else, do nothing.
-Both brackets and innertext are deleted.
-Brackets here is determined by current syntax table. (see `describe-syntax')
-
-If DeletePrefix is non-nil, also delete any prefix characters before the opening bracket. e.g. the dollar sign ${x} in `sh-mode'.
-
-URL `http://xahlee.info/emacs/emacs/emacs_delete_backward_char_or_bracket_text.html'
-Created: 2017-09-21
-Version: 2024-06-05"
-  (when (prog2 (backward-char) (looking-at "\\s)") (forward-char))
-    (forward-sexp -1)
-    (unless DeletePrefix
-      (while (looking-at "\\s'")
-        (forward-char)))
-    (mark-sexp)
-    (if (eq real-this-command real-last-command)
-        (kill-append (delete-and-extract-region (region-beginning) (region-end)) t)
-      (kill-region (region-beginning) (region-end)))))
-
-(defun xah-delete-backward-bracket-pair (&optional DeletePrefix)
-  "Delete the matching brackets/quotes pairs to the left of cursor.
-
-Cursor must be on the right of a bracket, e.g. (some)▮, or right of end of string quote e.g. \"some\"▮.
-Else, do nothing.
-
-Brackets here includes string quote and other determined by current syntax table. (see `describe-syntax')
-
-After call, mark is set at the matching bracket position, so you can `exchange-point-and-mark' to select it.
-
-If DeletePrefix is non-nil, also delete any prefix characters before the opening bracket. e.g. the dollar sign ${x} in `sh-mode'.
-
-URL `http://xahlee.info/emacs/emacs/emacs_delete_backward_char_or_bracket_text.html'
-Created: 2024-06-05
-Version: 2024-06-06"
-  (when (prog2
-            (backward-char)
-            (or (looking-at "\\s)") (looking-at "\\s\""))
-          (forward-char))
-    (let ((xp0 (point)) xp1)
-      (forward-sexp -1)
-      (setq xp1 (point))
-      (goto-char xp0)
-      (delete-char -1)
-      (goto-char xp1)
-      (if DeletePrefix
-          (while (looking-at "\\s'")
-            (delete-char 1))
-        (while (looking-at "\\s'")
-          (forward-char)))
-      (delete-char 1)
-      (push-mark (point) t)
-      (goto-char (- xp0 2)))))
-
-(defun xah-delete-bracket-text-backward (&optional DeletePrefix)
-  "Delete bracket pair and inner text to the left of cursor.
-
-Cursor must be on the right of a bracket, e.g. (▮some)▮, else, do nothing.
-If the bracket left of cursor is unbalanced, simply delete it.
-
-Brackets here is determined by current syntax table. (see `describe-syntax')
-
-The deleted text can be pasted later. (pushed to `kill-ring')
-
-If DeletePrefix is non-nil, also delete any prefix characters before the opening bracket. e.g. the dollar sign ${x} in `sh-mode'.
-
-URL `http://xahlee.info/emacs/emacs/emacs_delete_backward_char_or_bracket_text.html'
-Created: 2017-07-02
-Version: 2024-06-05"
-  (cond
-   ((prog2 (backward-char) (looking-at "\\s)") (forward-char))
-    (if (condition-case nil
-            (scan-sexps (point) -1)
-          (scan-error nil))
-        (if current-prefix-arg
-            (xah-delete-backward-bracket-pair DeletePrefix)
-          (xah-delete-backward-bracket-text DeletePrefix))
-      (delete-char -1)))
-   ((prog2 (backward-char) (looking-at "\\s(") (forward-char))
-    (let ((xp0 (point))
-          (xp1 (1- (point))))
-      (progn
-        (goto-char xp1)
-        (when DeletePrefix
-          (while (looking-back "\\s'" (1- (point)))
-            (backward-char)
-            (setq xp1 (1- xp1))))
-        (condition-case nil
-            (progn
-              (goto-char (scan-sexps (1- xp0) 1))
-              (if current-prefix-arg
-                  (progn
-                    (delete-char -1)
-                    (delete-region xp1 xp0))
-                (if (eq real-this-command real-last-command)
-                    (kill-append (delete-and-extract-region xp1 xp0) t)
-                  (kill-region xp1 (point)))))
-          (scan-error (delete-region xp1 xp0))))))))
-
 (defvar xah-smart-delete-dispatch
   nil
   "Used by `xah-smart-delete'.
@@ -868,7 +766,6 @@ If `universal-argument' is called first, do not delete bracket's inner text.
 Created: 2023-07-22
 Version: 2024-06-05"
   (interactive)
-  (message "real-this-command this-command %s  %s" real-this-command this-command)
   (let (xfun)
     (cond
      ((setq xfun (assq major-mode xah-smart-delete-dispatch))
@@ -880,14 +777,65 @@ Version: 2024-06-05"
        (eq (char-before) 32)
        (eq (char-before) 10)
        (eq (char-before) 9))
-      (let ((xp0 (point)))
+      (let ((xp0 (point)) xp1 xp2)
         (skip-chars-backward " \t\n")
+        (setq xp1 (point) xp2 xp0)
         (if (eq real-this-command real-last-command)
-            (kill-append (delete-and-extract-region (point) xp0) t)
-          (kill-region (point) xp0))))
-     ((prog2 (backward-char) (looking-at "\\s(\\|\\s)") (forward-char))
-      (message "calling xah-delete-bracket-text-backward")
-      (xah-delete-bracket-text-backward))
+            (kill-append (delete-and-extract-region xp1 xp2) t)
+          (kill-region xp1 xp2))))
+     ((prog2 (backward-char) (looking-at "\\s)") (forward-char))
+      ;; (message "cursor left is closing bracket")
+      (cond
+       ;; unmatched bracket, just delete it
+       ((not (condition-case nil (scan-sexps (point) -1) (scan-error nil)))
+        (warn "There was unmatched bracket, no properly paired opening bracket on left of cursor")
+        (delete-char -1))
+       ;; delete just the brackets
+       (current-prefix-arg
+        (let ((xp0 (point)) xp1)
+          (forward-sexp -1)
+          (while (looking-at "\\s'") (forward-char))
+          (setq xp1 (point))
+          (goto-char xp0)
+          (delete-char -1)
+          (goto-char xp1)
+          (delete-char 1)))
+       ;; delete the bracket block
+       (t
+        (let ((xp0 (point)) xp1 xp2)
+          (forward-sexp -1)
+          (setq xp1 (point) xp2 xp0)
+          (if (eq real-this-command real-last-command)
+              (kill-append (delete-and-extract-region xp1 xp2) t)
+            (kill-region xp1 xp2))))))
+     ((prog2 (backward-char) (looking-at "\\s(") (forward-char))
+      ;; (message "cursor left is opening bracket")
+      (cond
+       ;; unmatched bracket, just delete it
+       ((save-excursion
+          (backward-char)
+          (not (condition-case nil (scan-sexps (point) 1) (scan-error nil))))
+        (warn "There was unmatched bracket, no properly paired closing bracket on right of cursor")
+        (delete-char -1))
+       ;; delete just the brackets
+       (current-prefix-arg
+        (let (xp1)
+          (backward-char)
+          (setq xp1 (point))
+          (forward-sexp 1)
+          (delete-char -1)
+          (goto-char xp1)
+          (delete-char 1)))
+       ;; delete the bracket block
+       (t
+        (let (xp1 xp2)
+          (backward-char)
+          (setq xp1 (point))
+          (forward-sexp 1)
+          (setq xp2 (point))
+          (if (eq real-this-command real-last-command)
+              (kill-append (delete-and-extract-region xp1 xp2) t)
+            (kill-region xp1 xp2))))))
      ((prog2 (backward-char) (looking-at "\\s\"") (forward-char))
       (message "calling xah-delete-string-backward")
       (xah-delete-string-backward current-prefix-arg))
