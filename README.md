@@ -35,7 +35,7 @@ put the following in your emacs init file:
 (xah-fly-keys-set-layout "qwerty")
 
 ;; possible values
-;; adnw , azerty , azerty-be , beopy , bepo , carpalx-qfmlwy , carpalx-qgmlwb , carpalx-qgmlwy , colemak , colemak-dhm , colemak-dhm-angle , colemak-dhk , dvorak , koy , neo2 , norman , programer-dvorak , pt-nativo , qwerty , qwerty-abnt , qwerty-no (qwerty Norwegian) , qwertz , workman
+;; adnw (German), azerty, azerty-be, bepo (French), colemak, colemak-dh, dvorak, engrammer, halmak, koy (German), minimak, neo2 (German), norman, programer-dvorak, pt-nativo (Brazil), qfmlwy, qgmlwb, qwerty, qwerty-abnt (Brazil), qwerty-no (Norwegian), qwerty-se (Swedish), qwertz, qwpr, russian, workman
 
 (xah-fly-keys 1)
 ```
