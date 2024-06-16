@@ -15,7 +15,7 @@ Major key engine rewrite by Dan Langlois (https://github.com/DanLanglois) and Wi
 
 QWERTY layout
 -------------------
-![xah-fly-keys qwerty layout](xah_fly_keys_qwerty_layout_2023-04-09.png)
+![xah-fly-keys qwerty layout](xah_fly_keys_qwerty_layout_2024-06-16.png)
 
 Manual Install
 -------------------
@@ -34,8 +34,25 @@ put the following in your emacs init file:
 ;; specify a layout
 (xah-fly-keys-set-layout "qwerty")
 
-;; possible values
-;; adnw (German), azerty, azerty-be, bepo (French), colemak, colemak-dh, dvorak, engrammer, halmak, koy (German), minimak, neo2 (German), norman, programer-dvorak, pt-nativo (Brazil), qfmlwy, qgmlwb, qwerty, qwerty-abnt (Brazil), qwerty-no (Norwegian), qwerty-se (Swedish), qwertz, qwpr, russian, workman
+;; other popular values
+;; adnw (German)
+;; azerty
+;; azerty-be
+;; bepo
+;; colemak
+;; colemak-dh
+;; dvorak
+;; neo2 (German)
+;; norman
+;; programer-dvorak
+;; pt-nativo (Brazil)
+;; qwerty-abnt (Brazil)
+;; qwerty-no (Norwegian)
+;; qwerty-se (Swedish)
+;; qwertz
+;; russian
+;; workman
+;; and more
 
 (xah-fly-keys 1)
 ```
