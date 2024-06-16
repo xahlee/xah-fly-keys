@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 25.8.20240615200058
+;; Version: 25.8.20240615211050
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -289,7 +289,7 @@ The list of brackets to jump to is defined by `xah-left-brackets' and `xah-right
 
 URL `http://xahlee.info/emacs/emacs/emacs_navigating_keys_for_brackets.html'
 Created: 2016-11-22
-Version: 2023-08-02"
+Version: 2024-06-15"
   (interactive)
   (if (nth 3 (syntax-ppss))
       (backward-up-list 1 'ESCAPE-STRINGS 'NO-SYNTAX-CROSSING)
@@ -304,8 +304,8 @@ Version: 2023-08-02"
             (backward-char)
             (looking-at (regexp-opt xah-right-brackets))
           (forward-char)))
-      ;; (prog2 (backward-char) (looking-at (regexp-opt xah-right-brackets)) (forward-char))
-      (backward-sexp))
+      (backward-sexp)
+      (while (looking-at "\\s'") (forward-char)))
      (t (backward-up-list 1 'ESCAPE-STRINGS 'NO-SYNTAX-CROSSING)))))
 
 (defvar xah-punctuation-regex nil "A regex string for the purpose of moving cursor to a punctuation.")
