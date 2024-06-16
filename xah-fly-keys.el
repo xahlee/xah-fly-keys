@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 25.8.20240615183945
+;; Version: 25.8.20240615200058
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -636,69 +636,6 @@ Version: 2023-07-12"
      (t (progn
           (message "nothing done. logic error 40873. shouldn't reach here"))))))
 
-;; (defun xah-shrink-whitespaces ()
-;;   "Remove whitespaces around cursor.
-
-;; Shrink neighboring whitespace.
-;; First shrink space or tab, then newlines.
-;; Repeated calls eventually results in no whitespace around cursor.
-
-;; URL `http://xahlee.info/emacs/emacs/emacs_shrink_whitespace.html'
-;; Version: 2023-08-02"
-;;   (interactive)
-;;   (cond
-;;    ((if (eq (point-min) (point))
-;;         nil
-;;       (prog2 (backward-char) (looking-at "[ \t]") (forward-char)))
-;;     (progn
-;;       ;; (print (format "space on left"))
-;;       (delete-char (- (skip-chars-backward " \t")))))
-;;    ((looking-at "[ \t]")
-;;     (progn
-;;       ;; (print (format "space on right"))
-;;       (delete-char (- (skip-chars-forward " \t")))))
-;;    ((or
-;;      (and (eq (char-before) 10) (eq (char-after) 10))
-;;      (looking-at "\n\n")
-;;      (and (eq (char-before (point)) 10) (eq (char-before (1- (point))) 10)))
-;;     (progn
-;;       ;; (print (format "2 newlines on left or right, or one each"))
-;;       (delete-char (- (skip-chars-backward "\n")))
-;;       (delete-char (- (skip-chars-forward "\n")))
-;;       (insert "\n")))
-;;    (t
-;;     (progn
-;;       ;; (print (format "catch all"))
-;;       (delete-char (- (skip-chars-backward " \n")))
-;;       (delete-char (- (skip-chars-forward " \n")))))))
-
-(defun xah-delete-forward-bracket-pairs (&optional DeleteInnerTextQ)
-  "Delete the matching bracket/quote text to the right of cursor.
-e.g. ▮(a b c)
-
-In lisp code, if DeleteInnerTextQ is true, also delete the inner text.
-
-After the command, mark is set at the left matching bracket position, so you can `exchange-point-and-mark' to select it.
-
-This command assumes the char to the right of point is a left bracket or quote, and have a matching one after.
-
-What char is considered bracket or quote is determined by current syntax table.
-
-URL `http://xahlee.info/emacs/emacs/emacs_delete_backward_char_or_bracket_text.html'
-Created: 2017-07-02
-Version: 2023-07-30"
-  (interactive (list t))
-  (if DeleteInnerTextQ
-      (progn
-        (mark-sexp)
-        (kill-region (region-beginning) (region-end)))
-    (let ((xpt (point)))
-      (forward-sexp)
-      (delete-char -1)
-      (push-mark (point) t)
-      (goto-char xpt)
-      (delete-char 1))))
-
 (defun xah-delete-string-backward (&optional DeleteJustQuote)
   "Delete string to the left of cursor.
 
@@ -749,7 +686,7 @@ Version: 2024-06-05")
       '((xah-wolfram-mode . xah-wolfram-smart-delete-backward)
         (xah-html-mode . xah-html-smart-delete-backward)))
 
-(defun xah-smart-delete ()
+(defun xah-smart-delete (&optional BracketOnly SkipDispatch)
   "Smart backward delete.
 Typically, delete to the left 1 char or entire bracketed text.
 Behavior depends on what's left char, and current `major-mode'.
@@ -763,12 +700,14 @@ Else just delete one char to the left.
 
 If `universal-argument' is called first, do not delete bracket's inner text.
 
+In elisp code, arg BracketOnly if true, do not delete innertext. SkipDispatch if true, skip checking `xah-smart-delete-dispatch'.
+
 Created: 2023-07-22
 Version: 2024-06-05"
-  (interactive)
+  (interactive (list current-prefix-arg nil))
   (let (xfun)
     (cond
-     ((setq xfun (assq major-mode xah-smart-delete-dispatch))
+     ((and (not SkipDispatch) (setq xfun (assq major-mode xah-smart-delete-dispatch)))
       (message "calling cdr of %s" xfun)
       (funcall (cdr xfun)))
      ((region-active-p) (delete-region (region-beginning) (region-end)))
@@ -791,7 +730,7 @@ Version: 2024-06-05"
         (warn "There was unmatched bracket, no properly paired opening bracket on left of cursor")
         (delete-char -1))
        ;; delete just the brackets
-       (current-prefix-arg
+       (BracketOnly
         (let ((xp0 (point)) xp1)
           (forward-sexp -1)
           (while (looking-at "\\s'") (forward-char))
@@ -819,7 +758,7 @@ Version: 2024-06-05"
         (warn "There was unmatched bracket, no properly paired closing bracket on right of cursor")
         (delete-char -1))
        ;; delete just the brackets
-       (current-prefix-arg
+       (BracketOnly
         (let (xp1)
           (backward-char)
           (setq xp1 (point))
@@ -839,7 +778,7 @@ Version: 2024-06-05"
             (kill-region xp1 xp2))))))
      ((prog2 (backward-char) (looking-at "\\s\"") (forward-char))
       (message "calling xah-delete-string-backward")
-      (xah-delete-string-backward current-prefix-arg))
+      (xah-delete-string-backward BracketOnly))
      (t (delete-char -1)))))
 
 (defun xah-change-bracket-pairs (FromChars ToChars)
