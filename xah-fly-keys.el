@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 25.8.20240615182258
+;; Version: 25.8.20240615183945
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -804,6 +804,7 @@ Version: 2024-06-05"
        (t
         (let ((xp0 (point)) xp1 xp2)
           (forward-sexp -1)
+          (while (looking-at "\\s'") (forward-char))
           (setq xp1 (point) xp2 xp0)
           (if (eq real-this-command real-last-command)
               (kill-append (delete-and-extract-region xp1 xp2) t)
