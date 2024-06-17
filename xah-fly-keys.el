@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 25.8.20240615211050
+;; Version: 25.8.20240617101148
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -694,11 +694,11 @@ Behavior depends on what's left char, and current `major-mode'.
 If `xah-smart-delete-dispatch' match, call the matched function instead.
 If region active, delete region.
 If cursor left is space tab newline, delete them.
+If cursor left is bracket, delete the whole bracket block.
 If cursor left is string quote, delete the string.
-If cursor left is bracket, delete the bracketed text.
 Else just delete one char to the left.
 
-If `universal-argument' is called first, do not delete bracket's inner text.
+If `universal-argument' is called first, do not delete bracket's innertext.
 
 In elisp code, arg BracketOnly if true, do not delete innertext. SkipDispatch if true, skip checking `xah-smart-delete-dispatch'.
 
@@ -727,7 +727,7 @@ Version: 2024-06-05"
       (cond
        ;; unmatched bracket, just delete it
        ((not (condition-case nil (scan-sexps (point) -1) (scan-error nil)))
-        (warn "There was unmatched bracket, no properly paired opening bracket on left of cursor")
+        (warn "There was unmatched bracket: no paired opening bracket on left of cursor")
         (delete-char -1))
        ;; delete just the brackets
        (BracketOnly
@@ -738,7 +738,8 @@ Version: 2024-06-05"
           (goto-char xp0)
           (delete-char -1)
           (goto-char xp1)
-          (delete-char 1)))
+          (delete-char 1)
+          (goto-char (- xp0 2))))
        ;; delete the bracket block
        (t
         (let ((xp0 (point)) xp1 xp2)
@@ -755,7 +756,7 @@ Version: 2024-06-05"
        ((save-excursion
           (backward-char)
           (not (condition-case nil (scan-sexps (point) 1) (scan-error nil))))
-        (warn "There was unmatched bracket, no properly paired closing bracket on right of cursor")
+        (warn "There was unmatched bracket: no paired closing bracket on right of cursor")
         (delete-char -1))
        ;; delete just the brackets
        (BracketOnly
@@ -1856,12 +1857,14 @@ Version: 2024-03-19"
 (defun xah-insert-seperator ()
   "Insert a seperator line. "
   (interactive)
-  (insert "\nHHHH---------------------------------------------------\n")
-  (backward-char)
-  (comment-line 1)
-  (forward-char)
-  ;; (comment-region (region-beginning) (region-end) )
-  )
+  (cond
+   ((and buffer-file-name (string-equal "html" (file-name-extension buffer-file-name))) (insert "<hr />\n"))
+   ((not comment-start)
+    (insert "\nHHHH---------------------------------------------------\n"))
+   (t (insert "\nHHHH---------------------------------------------------\n")
+      (backward-char)
+      (comment-line 1)
+      (forward-char))))
 
 (defvar xah-unicode-list nil
  "A alist.
