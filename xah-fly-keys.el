@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 25.8.20240618181451
+;; Version: 25.8.20240619081048
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -354,16 +354,22 @@ Version: 2024-03-19"
 
 (defun xah-copy-line-or-region ()
   "Copy current line or selection.
-When called repeatedly, append copy subsequent lines.
+
+Copy current line. When called repeatedly, append copy subsequent lines.
+Except:
+
 If `universal-argument' is called first, copy whole buffer (respects `narrow-to-region').
+If `rectangle-mark-mode' is on, copy the rectangle.
+If `region-active-p', copy the region.
 
 URL `http://xahlee.info/emacs/emacs/emacs_copy_cut_current_line.html'
 Created: 2010-05-21
-Version: 2024-06-18"
+Version: 2024-06-19"
   (interactive)
   (cond
    (current-prefix-arg (copy-region-as-kill (point-min) (point-max)))
-   (rectangle-mark-mode (copy-region-as-kill (region-beginning) (region-end) t))
+   ((and (boundp 'rectangle-mark-mode) rectangle-mark-mode)
+    (copy-region-as-kill (region-beginning) (region-end) t))
    ((region-active-p) (copy-region-as-kill (region-beginning) (region-end)))
    ((eq last-command this-command)
     (if (eobp)
