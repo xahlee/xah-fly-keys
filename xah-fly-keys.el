@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 25.8.20240617101148
+;; Version: 25.8.20240618181451
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -359,36 +359,30 @@ If `universal-argument' is called first, copy whole buffer (respects `narrow-to-
 
 URL `http://xahlee.info/emacs/emacs/emacs_copy_cut_current_line.html'
 Created: 2010-05-21
-Version: 2022-10-03"
+Version: 2024-06-18"
   (interactive)
-  (let ((inhibit-field-text-motion nil))
-    (if current-prefix-arg
-        (progn
-          (copy-region-as-kill (point-min) (point-max)))
-      (if (region-active-p)
-          (progn
-            (copy-region-as-kill (region-beginning) (region-end)))
-        (if (eq last-command this-command)
-            (if (eobp)
-                (progn )
-              (progn
-                (kill-append "\n" nil)
-                (kill-append
-                 (buffer-substring (line-beginning-position) (line-end-position))
-                 nil)
-                (progn
-                  (end-of-line)
-                  (forward-char))))
-          (if (eobp)
-              (if (eq (char-before) 10 )
-                  (progn )
-                (progn
-                  (copy-region-as-kill (line-beginning-position) (line-end-position))
-                  (end-of-line)))
-            (progn
-              (copy-region-as-kill (line-beginning-position) (line-end-position))
-              (end-of-line)
-              (forward-char))))))))
+  (cond
+   (current-prefix-arg (copy-region-as-kill (point-min) (point-max)))
+   (rectangle-mark-mode (copy-region-as-kill (region-beginning) (region-end) t))
+   ((region-active-p) (copy-region-as-kill (region-beginning) (region-end)))
+   ((eq last-command this-command)
+    (if (eobp)
+        nil
+      (progn
+        (kill-append "\n" nil)
+        (kill-append (buffer-substring (line-beginning-position) (line-end-position)) nil)
+        (end-of-line)
+        (forward-char))))
+   ((eobp)
+    (if (eq (char-before) 10)
+        (progn)
+      (progn
+        (copy-region-as-kill (line-beginning-position) (line-end-position))
+        (end-of-line))))
+   (t
+    (copy-region-as-kill (line-beginning-position) (line-end-position))
+    (end-of-line)
+    (forward-char))))
 
 (defun xah-cut-line-or-region ()
   "Cut current line or selection.
@@ -900,15 +894,15 @@ Always cycle in this order: Init Caps, ALL CAPS, all lower.
 
 URL `http://xahlee.info/emacs/emacs/emacs_toggle_letter_case.html'
 Created: 2020-06-26
-Version: 2023-11-14"
+Version: 2024-06-17"
   (interactive)
-  (let ( (deactivate-mark nil) xp1 xp2)
+  (let ((deactivate-mark nil) xp1 xp2)
     (if (region-active-p)
         (setq xp1 (region-beginning) xp2 (region-end))
       (save-excursion
-        (skip-chars-backward "[:alpha:]")
+        (skip-chars-backward "[:alnum:]")
         (setq xp1 (point))
-        (skip-chars-forward "[:alpha:]")
+        (skip-chars-forward "[:alnum:]")
         (setq xp2 (point))))
     (when (not (eq last-command this-command))
       (put this-command 'state 0))
