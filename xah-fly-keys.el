@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 25.8.20240619081048
+;; Version: 25.9.20240621104221
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -3609,7 +3609,9 @@ Version: 2024-04-22"
        ("t 7" . xah-append-to-register-1)
        ("t 8" . xah-clear-register-1)
        ;; a
-       ;; b c
+       ;; b 
+
+       ("t c" . copy-matching-lines)
        ("t d" . mark-defun)
        ("t e" . list-matching-lines)
        ("t f" . move-to-column)
@@ -3629,7 +3631,7 @@ Version: 2024-04-22"
 
        ("t s" . xah-reformat-to-sentence-lines)
        ("t t" . repeat)
-       ("t u" . delete-matching-lines)
+       ("t u" . kill-matching-lines)
 
        ("t w" . xah-next-window-or-frame)
        ("t x" . xah-title-case-region-or-line)
