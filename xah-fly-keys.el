@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 25.9.20240621104221
+;; Version: 25.9.20240703220947
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -561,28 +561,6 @@ Version: 2022-03-04"
      (define-key xkmap (kbd "<down>") #'xah-move-block-down)
      xkmap)))
 
-(defun xah-delete-blank-lines ()
-  "Delete all newline around cursor.
-
-URL `http://xahlee.info/emacs/emacs/emacs_shrink_whitespace.html'
-Version: 2018-04-02"
-  (let (xp3 xp4)
-          (skip-chars-backward "\n")
-          (setq xp3 (point))
-          (skip-chars-forward "\n")
-          (setq xp4 (point))
-          (delete-region xp3 xp4)))
-
-(defun xah-fly-delete-spaces ()
-  "Delete space, tab, IDEOGRAPHIC SPACE (U+3000) around cursor.
-Version: 2019-06-13"
-  (let (xp1 xp2)
-    (skip-chars-forward " \t　")
-    (setq xp2 (point))
-    (skip-chars-backward " \t　")
-    (setq xp1 (point))
-    (delete-region xp1 xp2)))
-
 (defun xah-shrink-whitespaces ()
   "Remove whitespaces around cursor .
 
@@ -617,17 +595,17 @@ Version: 2023-07-12"
         (progn (delete-horizontal-space))))
      ((eq xeol-count 1)
       (if xspace-neighbor-p
-          (xah-fly-delete-spaces)
-        (progn (xah-delete-blank-lines) (insert " "))))
+          (delete-horizontal-space)
+        (progn (delete-space--internal "\n" nil) (insert " "))))
      ((eq xeol-count 2)
       (if xspace-neighbor-p
-          (xah-fly-delete-spaces)
+          (delete-horizontal-space)
         (progn
-          (xah-delete-blank-lines)
+          (delete-space--internal "\n" nil)
           (insert "\n"))))
      ((> xeol-count 2)
       (if xspace-neighbor-p
-          (xah-fly-delete-spaces)
+          (delete-horizontal-space)
         (progn
           (goto-char xp2)
           (search-backward "\n")
@@ -1855,7 +1833,7 @@ Version: 2024-03-19"
   (left-char))
 
 (defun xah-insert-seperator ()
-  "Insert a seperator line. "
+  "Insert a visual seperator line."
   (interactive)
   (cond
    ((and buffer-file-name (string-equal "html" (file-name-extension buffer-file-name))) (insert "<hr />\n"))
@@ -1863,8 +1841,7 @@ Version: 2024-03-19"
     (insert "\nHHHH---------------------------------------------------\n"))
    (t (insert "\nHHHH---------------------------------------------------\n")
       (backward-char)
-      (comment-line 1)
-      (forward-char))))
+      (comment-line 1))))
 
 (defvar xah-unicode-list nil
  "A alist.
@@ -3574,12 +3551,12 @@ Version: 2024-04-22"
        ("r d" . delete-rectangle)
        ("r e" . call-last-kbd-macro)
        ;; f
-       ("r q" . kill-rectangle) ; changed
+       ("r q" . kill-rectangle)
        ("r h" . xah-change-bracket-pairs)
        ("r i" . xah-space-to-newline)
        ("r j" . copy-rectangle-to-register)
-       ("r k" . yank-rectangle)                ; changed
-       ("r /" . xah-slash-to-double-backslash) ; changed
+       ("r k" . yank-rectangle)
+       ("r /" . xah-slash-to-double-backslash)
        ("r l" . clear-rectangle)
 
        ("r m" . xah-slash-to-backslash)
@@ -3609,7 +3586,7 @@ Version: 2024-04-22"
        ("t 7" . xah-append-to-register-1)
        ("t 8" . xah-clear-register-1)
        ;; a
-       ;; b 
+       ;; b
 
        ("t c" . copy-matching-lines)
        ("t d" . mark-defun)
