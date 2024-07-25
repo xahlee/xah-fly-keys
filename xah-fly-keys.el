@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 25.9.20240703220947
+;; Version: 25.9.20240725161125
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -1864,6 +1864,7 @@ xString can be multiple chars or any string.
    ("vomit 🤮" . "🤮")
    ("thumb up 👍" . "👍")
    ("thumb down 👎" . "👎")
+   ("tv 📺" . "📺")
    ("checkmark ✅" . "✅")
    ("new 🆕" . "🆕")
    ("glowing star 🌟" . "🌟")
@@ -2231,7 +2232,7 @@ If the buffer is a file, add the path to the list `xah-recently-closed-buffers'.
 
 URL `http://xahlee.info/emacs/emacs/elisp_close_buffer_open_last_closed.html'
 Created: 2016-06-19
-Version: 2023-10-25"
+Version: 2024-07-23"
   (interactive)
   (widen)
   (cond
@@ -2239,9 +2240,15 @@ Version: 2023-10-25"
    ;; ((eq major-mode 'minibuffer-inactive-mode) (minibuffer-keyboard-quit))
    ;; ((active-minibuffer-window) (minibuffer-keyboard-quit))
    ((minibufferp (current-buffer)) (minibuffer-keyboard-quit))
+
+   ((eq major-mode 'dired-mode)
+    (xah-add-to-recently-closed (buffer-name) default-directory)
+    (kill-buffer))
+
    ((and buffer-file-name (not (buffer-modified-p)))
     (xah-add-to-recently-closed (buffer-name) buffer-file-name)
     (kill-buffer))
+
    ((and buffer-file-name (buffer-modified-p))
     (message "buffer file modified. Save it first.\n%s" buffer-file-name)
     ;; (let ((xnewName
