@@ -2165,11 +2165,11 @@ Version: 2024-05-01"
 “emacs buffer” here is buffer whose name starts with *.
 
 URL `http://xahlee.info/emacs/emacs/elisp_next_prev_user_buffer.html'
-Version: 2016-06-19"
+Version: 2024-09-16"
   (interactive)
   (next-buffer)
   (let ((i 0))
-    (while (and (not (string-equal "*" (substring (buffer-name) 0 1))) (< i 20))
+    (while (and (xah-user-buffer-p) (< i 20))
       (setq i (1+ i)) (next-buffer))))
 
 (defun xah-previous-emacs-buffer ()
@@ -2177,11 +2177,11 @@ Version: 2016-06-19"
 “emacs buffer” here is buffer whose name starts with *.
 
 URL `http://xahlee.info/emacs/emacs/elisp_next_prev_user_buffer.html'
-Version: 2016-06-19"
+Version: 2024-09-16"
   (interactive)
   (previous-buffer)
   (let ((i 0))
-    (while (and (not (string-equal "*" (substring (buffer-name) 0 1))) (< i 20))
+    (while (and (xah-user-buffer-p) (< i 20))
       (setq i (1+ i)) (previous-buffer))))
 
 (defun xah-new-empty-buffer ()
