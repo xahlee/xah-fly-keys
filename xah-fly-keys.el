@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 26.1.20240916184601
+;; Version: 26.2.20240923143235
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -178,15 +178,17 @@
 (defun xah-get-pos-of-block ()
   "Return the [begin end] positions of current text block.
 Return value is a `vector'.
-Version: 2024-03-23"
-  (let (xbeg xend (xblankRegex "\n[ \t]*\n"))
+Created: 2024-03-23
+Version: 2024-09-21"
+  (let (xbeg xend (xp (point)))
     (save-excursion
-      (setq xbeg (if (re-search-backward xblankRegex nil 1)
-                    (goto-char (match-end 0))
-                  (point)))
-      (setq xend (if (re-search-forward xblankRegex nil 1)
-                    (match-beginning 0)
-                  (point))))
+      (setq xbeg (if (search-backward "\n\n" nil 1)
+                     (match-end 0)
+                   (point)))
+      (goto-char xp)
+      (setq xend (if (search-forward "\n\n" nil 1)
+                     (match-beginning 0)
+                   (point))))
     (vector xbeg xend)))
 
 (defun xah-get-pos-of-block-or ()
@@ -1571,18 +1573,20 @@ If cursor is between blank lines, delete following blank lines.
 
 URL `http://xahlee.info/emacs/emacs/emacs_delete_block.html'
 Created: 2017-07-09
-Version: 2023-10-09"
+Version: 2024-09-21"
   (interactive)
-  (let (xbeg xend)
+  (let (xbeg xend (xp (point)))
     (if (region-active-p)
         (setq xbeg (region-beginning) xend (region-end))
       (progn
-        (if (re-search-backward "\n[ \t]*\n+" nil :move)
-            (setq xbeg (goto-char (match-end 0)))
-          (setq xbeg (point)))
-        (if (re-search-forward "\n[ \t]*\n+" nil :move)
-            (setq xend (match-end 0))
-          (setq xend (point-max)))))
+        (setq xbeg
+              (if (search-backward "\n\n" nil :move)
+                  (match-end 0)
+                (point)))
+        (goto-char xp)
+        (setq xend (if (search-forward "\n\n" nil :move)
+                       (match-end 0)
+                     (point-max)))))
     (kill-region xbeg xend)))
 
 (defun xah-copy-to-register-1 ()
@@ -2116,11 +2120,11 @@ Version: 2023-11-14"
 
 (defun xah-user-buffer-p ()
   "Return t if current buffer is a user buffer, else nil.
-A user buffer has buffer name NOT starts with * or space.
+A user buffer has buffer name NOT starts with * or space, and is not dired mode, help mode, etc.
 This function is used by buffer switching command and close buffer command, so that next buffer shown is a user buffer.
 You can override this function to get your idea of “user buffer”.
 Created: 2016-06-18
-Version: 2024-05-01"
+Version: 2024-09-23"
   (interactive)
   (cond
    ((string-match "^\*" (buffer-name)) nil)
@@ -2162,9 +2166,10 @@ Version: 2024-05-01"
 
 (defun xah-next-emacs-buffer ()
   "Switch to the next emacs buffer.
-“emacs buffer” here is buffer whose name starts with *.
+Emacs buffer here means `xah-user-buffer-p' return nil.
 
 URL `http://xahlee.info/emacs/emacs/elisp_next_prev_user_buffer.html'
+Created: 2013-05-22
 Version: 2024-09-16"
   (interactive)
   (next-buffer)
@@ -2174,9 +2179,10 @@ Version: 2024-09-16"
 
 (defun xah-previous-emacs-buffer ()
   "Switch to the previous emacs buffer.
-“emacs buffer” here is buffer whose name starts with *.
+Emacs buffer here means `xah-user-buffer-p' return nil.
 
 URL `http://xahlee.info/emacs/emacs/elisp_next_prev_user_buffer.html'
+Created: 2013-05-22
 Version: 2024-09-16"
   (interactive)
   (previous-buffer)
