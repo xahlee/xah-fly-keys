@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 26.4.20240926100036
+;; Version: 26.5.20240927134725
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -3539,7 +3539,7 @@ Version: 2024-04-22"
        ("n a" . text-scale-adjust)
        ("n b" . toggle-debug-on-error)
        ("n c" . toggle-case-fold-search)
-       ("n d" . narrow-to-page)
+       ;; ("n d" . narrow-to-page)
        ("n e" . eshell)
        ;; f
 
@@ -3549,7 +3549,7 @@ Version: 2024-04-22"
        ("n j" . flyspell-buffer)
        ("n k" . menu-bar-open)
        ("n l" . toggle-word-wrap)
-       ("n m" . jump-to-register)
+       ;; ("n m" . jump-to-register)
        ("n n" . xah-narrow-to-region)
        ("n o" . variable-pitch-mode)
        ("n p" . read-only-mode)
@@ -3595,7 +3595,35 @@ Version: 2024-04-22"
        ("r p" . kmacro-end-macro)
        ("r q" . kill-rectangle)
 
-       ;; r ;; s t
+       ;; r
+       ;; s
+
+       ;; kmacro-end-and-call-macro
+
+       ("r t RET" . #'kmacro-edit-macro)
+       ("r t SPC" . #'kmacro-step-edit-macro)
+       ("r t TAB" . #'kmacro-insert-counter)
+       ("r t a" . #'kmacro-add-counter)
+       ("r t b" . #'kmacro-bind-to-key)
+       ("r t c" . #'kmacro-set-counter)
+       ("r t d" . #'kmacro-redisplay)
+       ("r t e" . #'edit-kbd-macro)
+       ("r t f" . #'kmacro-set-format)
+       ("r t g" . #'kmacro-delete-ring-head)
+       ("r t h" . #'kmacro-edit-macro-repeat)
+       ("r t i" . #'kmacro-call-ring-2nd-repeat)
+       ("r t j" . #'kmacro-cycle-ring-next)
+       ("r t k" . #'kmacro-end-or-call-macro-repeat)
+       ("r t l" . #'kmacro-edit-lossage)
+
+       ("r t n" . #'kmacro-name-last-macro)
+       ("r t p" . #'kmacro-cycle-ring-previous)
+       ("r t q" . #'kbd-macro-query)
+
+       ("r t t" . #'kmacro-swap-ring)
+       ("r t v" . #'kmacro-view-macro-repeat)
+       ("r t x" . #'kmacro-to-register)
+
        ("r u" . xah-quote-lines)
        ;; v w
        ("r x" . xah-double-backslash-to-slash)
@@ -3849,32 +3877,30 @@ Version: 2024-04-22"
   ;; (global-set-key (kbd "C-@") nil)
 
   (global-set-key (kbd "C-a") #'mark-whole-buffer)
-  ;; (global-set-key (kbd "C-b") nil)
+  (global-set-key (kbd "C-b") nil)
   ;; (global-set-key (kbd "C-c") nil)
-  ;; (global-set-key (kbd "C-d") nil)
-  ;; (global-set-key (kbd "C-e") nil)
-  ;; (global-set-key (kbd "C-f") nil)
+  (global-set-key (kbd "C-d") nil)
+  (global-set-key (kbd "C-e") nil)
+  (global-set-key (kbd "C-f") nil)
   ;; (global-set-key (kbd "C-g") nil) ; cancel
   ;; (global-set-key (kbd "C-h") nil) ; help
   ;; (global-set-key (kbd "C-i") nil) ; tab
   ;; (global-set-key (kbd "C-j") nil) ; newline
-  ;; (global-set-key (kbd "C-k") nil)
-  ;; (global-set-key (kbd "C-l") nil)
-  ;; (global-set-key (kbd "C-m") nil)
+  (global-set-key (kbd "C-k") nil)
+  (global-set-key (kbd "C-l") nil)
+  ;; (global-set-key (kbd "C-m") nil) ; newline
   (global-set-key (kbd "C-n") #'xah-new-empty-buffer)
   (global-set-key (kbd "C-o") #'find-file)
-  ;; (global-set-key (kbd "C-p") nil)
-  ;; (global-set-key (kbd "C-q") nil)
+  (global-set-key (kbd "C-p") nil)
+  ;; (global-set-key (kbd "C-q") nil) ; quoted-insert
   ;; (global-set-key (kbd "C-r") nil)
   (global-set-key (kbd "C-s") #'save-buffer)
   (global-set-key (kbd "C-t") #'hippie-expand)
-  ;; (global-set-key (kbd "C-u") nil)
+  ;; (global-set-key (kbd "C-u") nil) ; universal-argument
   (global-set-key (kbd "C-v") #'yank)
   (global-set-key (kbd "C-w") #'xah-close-current-buffer)
-  ;; (global-set-key (kbd "C-x") nil)
-
-  (when (>= emacs-major-version 28)
-    (global-set-key (kbd "C-y") #'undo-redo))
+  (global-set-key (kbd "C-x") nil) ; c-x map
+  (global-set-key (kbd "C-y") #'undo-redo) ; emacs 28
   (global-set-key (kbd "C-z") #'undo)
   ;;
   )
@@ -3891,87 +3917,13 @@ Version: 2024-04-22"
 
 ;; the following have keys in gnu emacs, but i decided not to give them a key, because either they are rarely used (say, 95% of emacs users use them less than once a month ), or there is a more efficient command/workflow with key in xah-fly-keys
 
-;; C-x r w → window-configuration-to-register
-;; C-x r f → frameset-to-register
-
-;; C-x C-p   →   mark-page
-;; C-x C-l   →   downcase-region
-;; C-x C-u   →   upcase-region
-
-;; C-x C-t   →   transpose-lines
-;; C-x C-o   →   delete-blank-lines
-
-;; C-x C-r   →   find-file-read-only
-;; C-x C-v   →   find-alternate-file
-
-;; C-x =   →   what-cursor-position, use describe-char instead
-;; C-x <   →   scroll-left
-;; C-x >   →   scroll-right
-;; C-x [   →   backward-page
-;; C-x ]   →   forward-page
-;; C-x ^   →   enlarge-window
-
-;; C-x {   →   shrink-window-horizontally
-;; C-x }   →   enlarge-window-horizontally
-;; C-x DEL   →   backward-kill-sentence
-
-;; C-x C-z   →   suspend-frame
-
-;; C-x k   →   kill-buffer , use xah-close-current-buffer
-;; C-x l   →   count-lines-page
-;; C-x m   →   compose-mail
-
-;; HHHH---------------------------------------------------
-;; undecided yet
-
-;; C-x e   →   kmacro-end-and-call-macro
-;; C-x q   →   kbd-macro-query
-;; C-x C-k   →   kmacro-keymap
-
-;; C-x C-d   →   list-directory
-;; C-x C-n   →   set-goal-column
-;; C-x ESC   →   Prefix Command
 ;; C-x $   →   set-selective-display
 ;; C-x *   →   calc-dispatch
 ;; C-x -   →   shrink-window-if-larger-than-buffer
 ;; C-x .   →   set-fill-prefix
-
-;; C-x 4   →   ctl-x-4-prefix
-;; C-x 5   →   ctl-x-5-prefix
-;; C-x 6   →   2C-command
-;; C-x ;   →   comment-set-column
-
-;; C-x f   →   set-fill-column
-;; C-x i   →   insert-file
-;; C-x n   →   Prefix Command
-;; C-x r   →   Prefix Command
-
-;; C-x C-k C-a   →   kmacro-add-counter
-;; C-x C-k C-c   →   kmacro-set-counter
-;; C-x C-k C-d   →   kmacro-delete-ring-head
-;; C-x C-k C-e   →   kmacro-edit-macro-repeat
-;; C-x C-k C-f   →   kmacro-set-format
-;; C-x C-k TAB   →   kmacro-insert-counter
-;; C-x C-k C-k   →   kmacro-end-or-call-macro-repeat
-;; C-x C-k C-l   →   kmacro-call-ring-2nd-repeat
-;; C-x C-k RET   →   kmacro-edit-macro
-;; C-x C-k C-n   →   kmacro-cycle-ring-next
-;; C-x C-k C-p   →   kmacro-cycle-ring-previous
-;; C-x C-k C-t   →   kmacro-swap-ring
-;; C-x C-k C-v   →   kmacro-view-macro-repeat
-;; C-x C-k SPC   →   kmacro-step-edit-macro
-;; C-x C-k b   →   kmacro-bind-to-key
-;; C-x C-k e   →   edit-kbd-macro
-;; C-x C-k l   →   kmacro-edit-lossage
-;; C-x C-k n   →   kmacro-name-last-macro
-;; C-x C-k q   →   kbd-macro-query
-
-;; HHHH---------------------------------------------------
-
-;; C-x 4 C-f   →   find-file-other-window
-;; C-x 4 C-o   →   display-buffer
 ;; C-x 4 .   →   find-tag-other-window
 ;; C-x 4 0   →   kill-buffer-and-window
+;; C-x 4 C-o   →   display-buffer
 ;; C-x 4 a   →   add-change-log-entry-other-window
 ;; C-x 4 b   →   switch-to-buffer-other-window
 ;; C-x 4 c   →   clone-indirect-buffer-other-window
@@ -3979,25 +3931,54 @@ Version: 2024-04-22"
 ;; C-x 4 f   →   find-file-other-window
 ;; C-x 4 m   →   compose-mail-other-window
 ;; C-x 4 r   →   find-file-read-only-other-window
-
+;; C-x 5 .		xref-find-definitions-other-frame
+;; C-x 5 1		delete-other-frames
+;; C-x 5 5		other-frame-prefix
+;; C-x 5 C-o	display-buffer-other-frame
+;; C-x 5 b		switch-to-buffer-other-frame
+;; C-x 5 c		clone-frame
+;; C-x 5 d		dired-other-frame
+;; C-x 5 f		find-file-other-frame
+;; C-x 5 m		compose-mail-other-frame
+;; C-x 5 p		project-other-frame-command
+;; C-x 5 r		find-file-read-only-other-frame
+;; C-x 5 u		undelete-frame
 ;; C-x 6 2   →   2C-two-columns
 ;; C-x 6 b   →   2C-associate-buffer
 ;; C-x 6 s   →   2C-split
-
-;; ctl-x-5-map
-
-;; r C-f   →   find-file-other-frame
-;; r C-o   →   display-buffer-other-frame
-;; r .   →   find-tag-other-frame
-;; r 0   →   delete-frame
-;; r 1   →   delete-other-frames
-;; r 2   →   make-frame-command
-;; r b   →   switch-to-buffer-other-frame
-;; r d   →   dired-other-frame
-;; r f   →   find-file-other-frame
-;; r m   →   compose-mail-other-frame
-;; r o   →   other-frame
-;; r r   →   find-file-read-only-other-frame
+;; C-x ;   →   comment-set-column
+;; C-x <   →   scroll-left
+;; C-x =   →   what-cursor-position, use describe-char instead
+;; C-x >   →   scroll-right
+;; C-x C-d   →   list-directory
+;; C-x C-l   →   downcase-region
+;; C-x C-n   →   set-goal-column
+;; C-x C-o   →   delete-blank-lines
+;; C-x C-p   →   mark-page
+;; C-x C-r   →   find-file-read-only
+;; C-x C-t   →   transpose-lines
+;; C-x C-u   →   upcase-region
+;; C-x C-v   →   find-alternate-file
+;; C-x C-z   →   suspend-frame
+;; C-x DEL   →   backward-kill-sentence
+;; C-x ESC   →   Prefix Command
+;; C-x [   →   backward-page
+;; C-x ]   →   forward-page
+;; C-x f   →   set-fill-column
+;; C-x i   →   insert-file
+;; C-x k   →   kill-buffer
+;; C-x l   →   count-lines-page
+;; C-x m   →   compose-mail
+;; C-x n g		goto-line-relative
+;; C-x n p		narrow-to-page
+;; C-x r M		bookmark-set-no-overwrite
+;; C-x r M-w	copy-rectangle-as-kill
+;; C-x r SPC	point-to-register
+;; C-x r f		frameset-to-register
+;; C-x r j		jump-to-register
+;; C-x r w		window-configuration-to-register
+;; C-x {   →   shrink-window-horizontally
+;; C-x }   →   enlarge-window-horizontally
 
 ;; HHHH---------------------------------------------------
 
