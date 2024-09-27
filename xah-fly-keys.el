@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 26.3.20240923235902
+;; Version: 26.4.20240926100036
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -1792,27 +1792,28 @@ Version: 2024-03-19"
 (defun xah-insert-square-bracket () (interactive) (xah-insert-bracket-pair "[" "]"))
 (defun xah-insert-brace () (interactive) (xah-insert-bracket-pair "{" "}"))
 
+(defun xah-insert-ascii-double-quote () (interactive) (xah-insert-bracket-pair "\"" "\""))
+(defun xah-insert-ascii-single-quote () (interactive) (xah-insert-bracket-pair "'" "'"))
+(defun xah-insert-ascii-angle-bracket () (interactive) (xah-insert-bracket-pair "<" ">"))
+
+(defun xah-insert-emacs-quote () (interactive) (xah-insert-bracket-pair "`" "'"))
 (defun xah-insert-markdown-quote () (interactive) (xah-insert-bracket-pair "`" "`"))
 (defun xah-insert-markdown-triple-quote () (interactive) (xah-insert-bracket-pair "```\n" "\n```"))
 
-(defun xah-insert-ascii-angle-bracket () (interactive) (xah-insert-bracket-pair "<" ">"))
+(defun xah-insert-double-curly-quote“” () (interactive) (xah-insert-bracket-pair "“" "”"))
+(defun xah-insert-curly-single-quote‘’ () (interactive) (xah-insert-bracket-pair "‘" "’"))
+(defun xah-insert-single-angle-quote‹› () (interactive) (xah-insert-bracket-pair "‹" "›"))
+(defun xah-insert-double-angle-quote«» () (interactive) (xah-insert-bracket-pair "«" "»"))
 
-(defun xah-insert-double-curly-quote () (interactive) (xah-insert-bracket-pair "“" "”"))
-(defun xah-insert-curly-single-quote () (interactive) (xah-insert-bracket-pair "‘" "’"))
-(defun xah-insert-single-angle-quote () (interactive) (xah-insert-bracket-pair "‹" "›"))
-(defun xah-insert-double-angle-quote () (interactive) (xah-insert-bracket-pair "«" "»"))
-(defun xah-insert-ascii-double-quote () (interactive) (xah-insert-bracket-pair "\"" "\""))
-(defun xah-insert-ascii-single-quote () (interactive) (xah-insert-bracket-pair "'" "'"))
-(defun xah-insert-emacs-quote () (interactive) (xah-insert-bracket-pair "`" "'"))
-(defun xah-insert-corner-bracket () (interactive) (xah-insert-bracket-pair "「" "」"))
-(defun xah-insert-white-corner-bracket () (interactive) (xah-insert-bracket-pair "『" "』"))
-(defun xah-insert-angle-bracket () (interactive) (xah-insert-bracket-pair "〈" "〉"))
-(defun xah-insert-double-angle-bracket () (interactive) (xah-insert-bracket-pair "《" "》"))
-(defun xah-insert-white-lenticular-bracket () (interactive) (xah-insert-bracket-pair "〖" "〗"))
-(defun xah-insert-black-lenticular-bracket () (interactive) (xah-insert-bracket-pair "【" "】"))
-(defun xah-insert-tortoise-shell-bracket () (interactive) (xah-insert-bracket-pair "〔" "〕"))
-(defun xah-insert-deco-angle-bracket () (interactive) (xah-insert-bracket-pair "❮" "❯"))
-(defun xah-insert-deco-angle-fat-bracket () (interactive) (xah-insert-bracket-pair "❰" "❱"))
+(defun xah-insert-corner-bracket「」 () (interactive) (xah-insert-bracket-pair "「" "」"))
+(defun xah-insert-white-corner-bracket『』 () (interactive) (xah-insert-bracket-pair "『" "』"))
+(defun xah-insert-angle-bracket〈〉 () (interactive) (xah-insert-bracket-pair "〈" "〉"))
+(defun xah-insert-double-angle-bracket《》 () (interactive) (xah-insert-bracket-pair "《" "》"))
+(defun xah-insert-white-lenticular-bracket〖〗 () (interactive) (xah-insert-bracket-pair "〖" "〗"))
+(defun xah-insert-black-lenticular-bracket【】 () (interactive) (xah-insert-bracket-pair "【" "】"))
+(defun xah-insert-tortoise-shell-bracket〔〕 () (interactive) (xah-insert-bracket-pair "〔" "〕"))
+(defun xah-insert-deco-angle-bracket❮❯ () (interactive) (xah-insert-bracket-pair "❮" "❯"))
+(defun xah-insert-deco-angle-fat-bracket❰❱ () (interactive) (xah-insert-bracket-pair "❰" "❱"))
 
 (defun xah-insert-hyphen ()
   "Insert a HYPHEN-MINUS character."
@@ -2382,7 +2383,7 @@ This command is similar to `find-file-at-point' but without prompting for confir
 
 URL `http://xahlee.info/emacs/emacs/emacs_open_file_path_fast.html'
 Created: 2020-10-17
-Version: 2024-05-20"
+Version: 2024-09-25"
   (interactive)
   (let (xinput xinput2 xpath)
     (setq xinput (if (region-active-p)
@@ -2403,8 +2404,8 @@ Version: 2024-05-20"
 
     (setq xpath
           (cond
-           ((string-match "^file:///[A-Za-z]:/" xinput2) (substring xinput2 8))
-           ((string-match "^file://[A-Za-z]:/" xinput2) (substring xinput2 7))
+           ((string-match "\\`file:///[A-Za-z]:/" xinput2) (substring xinput2 8))
+           ((string-match "\\`file://[A-Za-z]:/" xinput2) (substring xinput2 7))
            (t xinput2)))
 
     (if (string-match-p "\\`https?://" xpath)
@@ -3437,8 +3438,10 @@ Version: 2024-04-22"
 
        ("d" . beginning-of-buffer)
 
-       ("e a" . xah-insert-double-angle-bracket)     ; 《》
-       ("e b" . xah-insert-black-lenticular-bracket) ; 【】
+       ("e 6" . xah-insert-white-corner-bracket『』)
+
+       ("e a" . xah-insert-double-angle-bracket《》)
+       ("e b" . xah-insert-black-lenticular-bracket【】)
 
        ("e c r" . expand-region-abbrevs)
        ("e c t" . edit-abbrevs)
@@ -3455,31 +3458,30 @@ Version: 2024-04-22"
        ("e c n" . expand-jump-to-next-slot)
        ("e c y" . abbrev-prefix-mark)
 
-       ("e d" . xah-insert-double-curly-quote) ; “”
+       ("e d" . xah-insert-double-curly-quote“”)
        ("e e" . xah-insert-unicode)
-       ("e f" . xah-insert-emacs-quote)        ; `'
-       ("e g" . xah-insert-ascii-double-quote) ; ""
+       ("e f" . xah-insert-emacs-quote)
+       ("e g" . xah-insert-ascii-double-quote)
 
-       ("e h" . xah-insert-brace)              ; {}
-       ("e i" . xah-insert-curly-single-quote) ; ‘’
+       ("e h" . xah-insert-brace)
+       ("e i" . xah-insert-curly-single-quote‘’)
        ("e j" . insert-char)
-       ("e k" . xah-insert-markdown-quote) ; ``
+       ("e k" . xah-insert-markdown-quote)
        ("e l" . xah-insert-seperator)
-       ("e m" . xah-insert-corner-bracket)     ; 「」
-       ("e n" . xah-insert-square-bracket)     ; []
-       ("e o" . xah-insert-ascii-single-quote) ; ''
-       ("e p" . xah-insert-single-angle-quote) ; ‹›
-       ("e q" . xah-insert-deco-angle-fat-bracket)
-       ("e r" . xah-insert-tortoise-shell-bracket) ; 〔〕
-       ("e s" . xah-insert-ascii-angle-bracket)    ; <>
-       ("e t" . xah-insert-paren)                  ; ()
+       ("e m" . xah-insert-corner-bracket「」)
+       ("e n" . xah-insert-square-bracket)
+       ("e o" . xah-insert-ascii-single-quote)
+       ("e p" . xah-insert-single-angle-quote‹›)
+       ("e q" . xah-insert-deco-angle-fat-bracket❰❱)
+       ("e r" . xah-insert-tortoise-shell-bracket〔〕)
+       ("e s" . xah-insert-ascii-angle-bracket)
+       ("e t" . xah-insert-paren)
        ("e u" . xah-insert-date)
-       ("e v" . xah-insert-markdown-triple-quote) ;
-       ("e w" . xah-insert-angle-bracket)         ; 〈〉
-       ("e y" . xah-insert-double-angle-quote)    ; «»
-       ("e z" . xah-insert-deco-angle-bracket)
-       ;; x
-       ;; z
+       ("e v" . xah-insert-markdown-triple-quote)
+       ("e w" . xah-insert-angle-bracket〈〉)
+       ("e x" . xah-insert-white-lenticular-bracket〖〗)
+       ("e y" . xah-insert-double-angle-quote«»)
+       ("e z" . xah-insert-deco-angle-bracket❮❯)
 
        ("f" . xah-search-current-word)
        ("g" . xah-close-current-buffer)
@@ -3540,6 +3542,7 @@ Version: 2024-04-22"
        ("n d" . narrow-to-page)
        ("n e" . eshell)
        ;; f
+
        ("n g" . xah-toggle-read-novel-mode)
        ("n h" . widen)
        ("n i" . make-frame-command)
@@ -3550,7 +3553,8 @@ Version: 2024-04-22"
        ("n n" . xah-narrow-to-region)
        ("n o" . variable-pitch-mode)
        ("n p" . read-only-mode)
-       ;; q
+       ("n q" . enlarge-window)
+
        ("n r" . count-words)
        ("n s" . count-matches)
        ("n t" . narrow-to-defun)
@@ -3569,6 +3573,7 @@ Version: 2024-04-22"
        ("r SPC" . rectangle-mark-mode)
        ("r ," . apply-macro-to-region-lines)
        ("r ." . kmacro-start-macro)
+       ("r /" . xah-slash-to-double-backslash)
        ("r 3" . number-to-register)
        ("r 4" . increment-register)
 
@@ -3578,20 +3583,19 @@ Version: 2024-04-22"
        ("r d" . delete-rectangle)
        ("r e" . call-last-kbd-macro)
        ;; f
-       ("r q" . kill-rectangle)
+
        ("r h" . xah-change-bracket-pairs)
        ("r i" . xah-space-to-newline)
        ("r j" . copy-rectangle-to-register)
        ("r k" . yank-rectangle)
-       ("r /" . xah-slash-to-double-backslash)
        ("r l" . clear-rectangle)
-
        ("r m" . xah-slash-to-backslash)
        ("r n" . rectangle-number-lines)
        ("r o" . open-rectangle)
        ("r p" . kmacro-end-macro)
-       ;; r
-       ;; s t
+       ("r q" . kill-rectangle)
+
+       ;; r ;; s t
        ("r u" . xah-quote-lines)
        ;; v w
        ("r x" . xah-double-backslash-to-slash)
