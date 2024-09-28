@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 26.5.20240927134725
+;; Version: 26.5.20240928104513
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -2427,7 +2427,7 @@ Version: 2024-09-25"
               (progn
                 (message "File does not exist. Created at\n%s" xfpath)
                 (find-file xfpath)))))
-         ((string-match "^\\`\\(.+?\\):\\([0-9]+\\)\\(:[0-9]+\\)?\\'" xpathNoQ)
+         ((string-match "\\`\\(.+?\\):\\([0-9]+\\)\\(:[0-9]+\\)?\\'" xpathNoQ)
           (let ((xfpath (match-string-no-properties 1 xpathNoQ))
                 (xlineNum (string-to-number (match-string-no-properties 2 xpathNoQ))))
             (if (file-exists-p xfpath)
@@ -3519,7 +3519,6 @@ Version: 2024-04-22"
 
        ("m" . dired-jump)
 
-       ;; ("m t" . dired-jump)
        ;; ("m e" . delete-other-windows)
        ;; ("m u" . split-window-below)
        ;; ("m w" . universal-argument)
@@ -3549,7 +3548,7 @@ Version: 2024-04-22"
        ("n j" . flyspell-buffer)
        ("n k" . menu-bar-open)
        ("n l" . toggle-word-wrap)
-       ;; ("n m" . jump-to-register)
+       ("n m" . jump-to-register)
        ("n n" . xah-narrow-to-region)
        ("n o" . variable-pitch-mode)
        ("n p" . read-only-mode)
