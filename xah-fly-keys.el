@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 26.5.20240928104513
+;; Version: 26.5.20241007132539
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -175,29 +175,28 @@
   "If nil, no change to any key in isearch (`isearch-forward'). Otherwise, arrow keys are for moving between occurrences, and C-v is paste."
   :type 'boolean)
 
-(defun xah-get-pos-of-block ()
-  "Return the [begin end] positions of current text block.
+(defun xah-fly-get-pos-block ()
+  "Return the begin end positions of current text block.
 Return value is a `vector'.
+Text block is group of lines separated by blank lines.
+
+URL `http://xahlee.info/emacs/emacs/elisp_get_text_block.html'
 Created: 2024-03-23
-Version: 2024-09-21"
+Version: 2024-10-07"
   (let (xbeg xend (xp (point)))
     (save-excursion
-      (setq xbeg (if (search-backward "\n\n" nil 1)
-                     (match-end 0)
-                   (point)))
+      (setq xbeg (if (re-search-backward "\n[ \t]*\n" nil 1) (match-end 0) (point)))
       (goto-char xp)
-      (setq xend (if (search-forward "\n\n" nil 1)
-                     (match-beginning 0)
-                   (point))))
+      (setq xend (if (re-search-forward "\n[ \t]*\n" nil 1) (match-beginning 0) (point))))
     (vector xbeg xend)))
 
-(defun xah-get-pos-of-block-or ()
-  "If region is active, return its [begin end] positions, else same as `xah-get-pos-of-block'.
+(defun xah-fly-get-pos-block-or ()
+  "If region is active, return its [begin end] positions, else same as `xah-fly-get-pos-block'.
 Return value is a `vector'.
 Version: 2024-03-23"
   (if (region-active-p)
       (vector (region-beginning) (region-end))
-    (xah-get-pos-of-block)))
+    (xah-fly-get-pos-block)))
 
 ;; HHHH---------------------------------------------------
 ;; cursor movement
@@ -258,8 +257,7 @@ Version: 2023-10-04"
 
 (defvar xah-brackets '( "“”" "()" "[]" "{}" "<>" "＜＞" "（）" "［］" "｛｝" "⦅⦆" "〚〛" "⦃⦄" "‹›" "«»" "「」" "〈〉" "《》" "【】" "〔〕" "⦗⦘" "『』" "〖〗" "〘〙" "｢｣" "⟦⟧" "⟨⟩" "⟪⟫" "⟮⟯" "⟬⟭" "⌈⌉" "⌊⌋" "⦇⦈" "⦉⦊" "❛❜" "❝❞" "❨❩" "❪❫" "❴❵" "❬❭" "❮❯" "❰❱" "❲❳" "〈〉" "⦑⦒" "⧼⧽" "﹙﹚" "﹛﹜" "﹝﹞" "⁽⁾" "₍₎" "⦋⦌" "⦍⦎" "⦏⦐" "⁅⁆" "⸢⸣" "⸤⸥" "⟅⟆" "⦓⦔" "⦕⦖" "⸦⸧" "⸨⸩" "｟｠")
  "A list of strings, each element is a string of 2 chars, the left bracket and a matching right bracket.
-Used by `xah-select-text-in-quote' and others.
-Version: 2024-01-01")
+Used by `xah-select-text-in-quote' and others.")
 
 (defconst xah-left-brackets
   (mapcar (lambda (x) (substring x 0 1)) xah-brackets)
@@ -342,7 +340,7 @@ Created: 2022-01-22
 Version: 2024-03-19"
   (interactive)
   (let (xbeg xend)
-    (seq-setq (xbeg xend) (xah-get-pos-of-block-or))
+    (seq-setq (xbeg xend) (xah-fly-get-pos-block-or))
     (sort-lines current-prefix-arg xbeg xend)))
 
 (defun xah-narrow-to-region ()
@@ -351,7 +349,7 @@ Created: 2022-01-22
 Version: 2024-03-19"
   (interactive)
   (let (xbeg xend)
-    (seq-setq (xbeg xend) (xah-get-pos-of-block-or))
+    (seq-setq (xbeg xend) (xah-fly-get-pos-block-or))
     (narrow-to-region xbeg xend)))
 
 ;; HHHH---------------------------------------------------
@@ -838,7 +836,7 @@ Version: 2024-08-07"
         (completing-read "Replace this:" xbrackets nil t nil nil (car xbrackets))
         (completing-read "To:" xbrackets nil t nil nil (car (last xbrackets)))))))
   (let (xbeg xend xleft xright xtoL xtoR)
-    (seq-setq (xbeg xend) (xah-get-pos-of-block-or))
+    (seq-setq (xbeg xend) (xah-fly-get-pos-block-or))
     (let ((xsFrom (last (split-string FromChars " ") 2))
           (xsTo (last (split-string ToChars " ") 2)))
 
@@ -933,7 +931,7 @@ Created: 2020-12-08
 Version: 2024-03-19"
   (interactive)
   (let (xbeg xend)
-    (seq-setq (xbeg xend) (xah-get-pos-of-block-or))
+    (seq-setq (xbeg xend) (xah-fly-get-pos-block-or))
     (save-restriction
       (narrow-to-region xbeg xend)
       (let ((case-fold-search nil))
@@ -1034,7 +1032,7 @@ Created: 2022-01-20
 Version: 2024-03-19"
   (interactive)
   (let (xbeg xend)
-    (seq-setq (xbeg xend) (xah-get-pos-of-block-or))
+    (seq-setq (xbeg xend) (xah-fly-get-pos-block-or))
     (save-restriction
       (narrow-to-region xbeg xend)
       (goto-char (point-min))
@@ -1084,7 +1082,7 @@ Version: 2024-03-19"
   (let ( (xisLongline (if (eq last-command this-command) (get this-command 'longline-p) t))
          (deactivate-mark nil)
          xbeg xend )
-    (seq-setq (xbeg xend) (xah-get-pos-of-block-or))
+    (seq-setq (xbeg xend) (xah-fly-get-pos-block-or))
     (if xisLongline
         (fill-region xbeg xend)
       (let ((fill-column 99999 ))
@@ -1154,7 +1152,7 @@ Version: 2024-03-19"
     (setq xminlen (if MinLength MinLength (if current-prefix-arg (prefix-numeric-value current-prefix-arg) fill-column)))
     (if (and Begin End)
         (setq xbeg Begin xend End)
-      (seq-setq (xbeg xend) (xah-get-pos-of-block-or)))
+      (seq-setq (xbeg xend) (xah-fly-get-pos-block-or)))
     (save-excursion
       (save-restriction
         (narrow-to-region xbeg xend)
@@ -1180,7 +1178,7 @@ Version: 2024-03-19"
   (let (xisLong xwidth xbeg xend)
     (setq xwidth (if Width Width (if current-prefix-arg (prefix-numeric-value current-prefix-arg) 66)))
     (setq xisLong (if (eq last-command this-command) (get this-command 'is-long-p) nil))
-    (seq-setq (xbeg xend) (xah-get-pos-of-block-or))
+    (seq-setq (xbeg xend) (xah-fly-get-pos-block-or))
     (if current-prefix-arg
         (xah-reformat-to-multi-lines xbeg xend xwidth)
       (if xisLong
@@ -1199,7 +1197,7 @@ Created: 2020-12-02
 Version: 2024-03-19"
   (interactive)
   (let (xbeg xend)
-    (seq-setq (xbeg xend) (xah-get-pos-of-block-or))
+    (seq-setq (xbeg xend) (xah-fly-get-pos-block-or))
     (save-restriction
       (narrow-to-region xbeg xend)
       (goto-char (point-min)) (while (search-forward "。" nil t) (replace-match "。\n"))
@@ -1229,7 +1227,7 @@ Created: 2017-08-19
 Version: 2024-03-19"
   (interactive)
   (let (xbeg xend)
-    (seq-setq (xbeg xend) (xah-get-pos-of-block-or))
+    (seq-setq (xbeg xend) (xah-fly-get-pos-block-or))
     (save-restriction
       (narrow-to-region xbeg xend)
       (goto-char (point-min))
@@ -1434,7 +1432,7 @@ Version: 2024-03-19"
             (t xsepChoice)))
      (list xquoteL xquoteR xsep)))
   (let (xbeg xend (xquoteL QuoteL) (xquoteR QuoteR) (xsep Sep))
-    (seq-setq (xbeg xend) (xah-get-pos-of-block-or))
+    (seq-setq (xbeg xend) (xah-fly-get-pos-block-or))
     (save-excursion
       (save-restriction
         (narrow-to-region xbeg xend)
@@ -1573,18 +1571,18 @@ If cursor is between blank lines, delete following blank lines.
 
 URL `http://xahlee.info/emacs/emacs/emacs_delete_block.html'
 Created: 2017-07-09
-Version: 2024-09-21"
+Version: 2024-10-07"
   (interactive)
   (let (xbeg xend (xp (point)))
     (if (region-active-p)
         (setq xbeg (region-beginning) xend (region-end))
       (progn
         (setq xbeg
-              (if (search-backward "\n\n" nil :move)
+              (if (re-search-backward "\n[ \t]*\n+" nil :move)
                   (match-end 0)
                 (point)))
         (goto-char xp)
-        (setq xend (if (search-forward "\n\n" nil :move)
+        (setq xend (if (re-search-forward "\n[ \t]*\n+" nil :move)
                        (match-end 0)
                      (point-max)))))
     (kill-region xbeg xend)))
@@ -1745,7 +1743,7 @@ Version: 2024-03-19"
         (goto-char (+ xend (length LBracket))))
        ((eq WrapMethod 'block)
         (save-excursion
-          (seq-setq (xbeg xend) (xah-get-pos-of-block-or))
+          (seq-setq (xbeg xend) (xah-fly-get-pos-block-or))
           (goto-char xend)
           (insert RBracket)
           (goto-char xbeg)
@@ -2089,7 +2087,7 @@ Version: 2023-11-14"
 
 (defun xah-select-text-in-quote ()
   "Select text between the nearest left and right delimiters.
-Delimiters here includes QUOTATION MARK, GRAVE ACCENT, and anything in `xah-brackets'.
+Delimiters here includes QUOTATION MARK, GRAVE ACCENT, and anything in variable `xah-brackets'.
 This command ignores nesting. For example, if text is
 「(a(b)c▮)」
 the selected char is 「c」, not 「a(b)c」.
@@ -2108,13 +2106,15 @@ Version: 2023-11-14"
 See `xah-select-text-in-quote'
 
 Created: 2023-07-23
-Version: 2023-11-14"
+Version: 2024-10-02"
   (interactive)
-  (let ((xskipChars (concat "^\"`" (mapconcat #'identity xah-brackets ""))))
+  (let (xbeg xend
+        (xskipChars (concat "^\"`" (mapconcat #'identity xah-brackets ""))))
     (skip-chars-backward xskipChars)
-    (push-mark (point) t t)
+    (setq xbeg (point))
     (skip-chars-forward xskipChars)
-    (kill-region nil nil t)))
+    (setq xend (point))
+    (kill-region xbeg xend)))
 
 ;; HHHH---------------------------------------------------
 ;; misc
@@ -2504,7 +2504,7 @@ You can customize this alist.")
    ("ps1" . "pwsh")
    ("py" . "python")
    ("py2" . "python2")
-   ("py3" . "python3")
+   ("py3" . "python")
    ("rb" . "ruby")
    ("rkt" . "racket")
    ("sh" . "bash")
