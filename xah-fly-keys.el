@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 26.5.20241007132539
+;; Version: 26.6.20241009212806
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -254,6 +254,32 @@ Version: 2023-10-04"
     (if visual-line-mode
         (end-of-visual-line)
       (end-of-line))))
+
+(defun xah-page-up ()
+  "Call `scroll-down-command'. (page up key.)
+Created: 2024-10-09
+Version: 2024-10-09"
+  (interactive)
+  (progn
+    (scroll-down-command)
+    (set-transient-map
+     (let ((xkmap (make-sparse-keymap)))
+       (define-key xkmap (kbd "<up>") #'xah-page-up)
+       (define-key xkmap (kbd "<down>") #'xah-page-down)
+       xkmap))))
+
+(defun xah-page-down ()
+  "Call `scroll-up-command'. (page down key.)
+Created: 2024-10-09
+Version: 2024-10-09"
+  (interactive)
+  (progn
+    (scroll-up-command)
+    (set-transient-map
+     (let ((xkmap (make-sparse-keymap)))
+       (define-key xkmap (kbd "<up>") #'xah-page-up)
+       (define-key xkmap (kbd "<down>") #'xah-page-down)
+       xkmap))))
 
 (defvar xah-brackets '( "“”" "()" "[]" "{}" "<>" "＜＞" "（）" "［］" "｛｝" "⦅⦆" "〚〛" "⦃⦄" "‹›" "«»" "「」" "〈〉" "《》" "【】" "〔〕" "⦗⦘" "『』" "〖〗" "〘〙" "｢｣" "⟦⟧" "⟨⟩" "⟪⟫" "⟮⟯" "⟬⟭" "⌈⌉" "⌊⌋" "⦇⦈" "⦉⦊" "❛❜" "❝❞" "❨❩" "❪❫" "❴❵" "❬❭" "❮❯" "❰❱" "❲❳" "〈〉" "⦑⦒" "⧼⧽" "﹙﹚" "﹛﹜" "﹝﹞" "⁽⁾" "₍₎" "⦋⦌" "⦍⦎" "⦏⦐" "⁅⁆" "⸢⸣" "⸤⸥" "⟅⟆" "⦓⦔" "⦕⦖" "⸦⸧" "⸨⸩" "｟｠")
  "A list of strings, each element is a string of 2 chars, the left bracket and a matching right bracket.
@@ -3535,13 +3561,15 @@ Version: 2024-04-22"
        ("n 9" . shell-command)
        ("n 0" . shell-command-on-region)
 
+       ("n <up>" . xah-page-up)
+       ("n <down>" . xah-page-down)
+
        ("n a" . text-scale-adjust)
        ("n b" . toggle-debug-on-error)
        ("n c" . toggle-case-fold-search)
-       ;; ("n d" . narrow-to-page)
+       ;; d
        ("n e" . eshell)
        ;; f
-
        ("n g" . xah-toggle-read-novel-mode)
        ("n h" . widen)
        ("n i" . make-frame-command)
@@ -3553,7 +3581,6 @@ Version: 2024-04-22"
        ("n o" . variable-pitch-mode)
        ("n p" . read-only-mode)
        ("n q" . enlarge-window)
-
        ("n r" . count-words)
        ("n s" . count-matches)
        ("n t" . narrow-to-defun)
@@ -3861,8 +3888,8 @@ Version: 2024-04-22"
   (global-set-key (kbd "C-6") #'xah-next-emacs-buffer)
   (global-set-key (kbd "C-7") #'xah-previous-user-buffer)
   (global-set-key (kbd "C-8") #'xah-next-user-buffer)
-  (global-set-key (kbd "C-9") #'scroll-down-command)
-  (global-set-key (kbd "C-0") #'scroll-up-command)
+  (global-set-key (kbd "C-9") #'xah-page-up)
+  (global-set-key (kbd "C-0") #'xah-page-down)
 
   (global-set-key (kbd "C--") #'text-scale-decrease)
   (global-set-key (kbd "C-=") #'text-scale-increase)
