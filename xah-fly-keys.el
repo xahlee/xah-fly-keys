@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 26.6.20241009212806
+;; Version: 26.6.20241021131107
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -2628,30 +2628,29 @@ Version: 2022-08-06"
 (defun xah-make-backup ()
   "Make a backup copy of current file or dired marked files.
 If in dired, backup current file or marked files.
-The backup file name is in this format
- x.html~2018-05-15_133429~
-The last part is hour, minutes, seconds.
+
+The backup file name is the original name with the datetime .yyyymmddhhmmss~ appended.
 
 Overwrite existing file.
 
-If the current buffer is not associated with a file, nothing's done.
+If the current buffer is not associated with a file, do nothing.
 
 URL `http://xahlee.info/emacs/emacs/elisp_make-backup.html'
 Created: 2018-06-06
-Version: 2024-04-21"
+Version: 2024-10-21"
   (interactive)
   (let ((xfname buffer-file-name)
-        (xdateTimeFormat "%Y-%m-%d_%H%M%S"))
+        (xtimestamp (format-time-string "%Y%m%d%H%M%S")))
     (if xfname
         (let ((xbackupName
-               (concat xfname "~" (format-time-string xdateTimeFormat) "~")))
+               (concat xfname "." xtimestamp "~")))
           (copy-file xfname xbackupName t)
           (message (concat "\nBackup saved at: " xbackupName)))
       (if (eq major-mode 'dired-mode)
           (progn
             (mapc (lambda (xx)
                     (let ((xbackupName
-                           (concat xx "~" (format-time-string xdateTimeFormat) "~")))
+                           (concat xx "." xtimestamp "~")))
                       (copy-file xx xbackupName t)))
                   (dired-get-marked-files))
             (revert-buffer))
@@ -2676,7 +2675,7 @@ Version: 2015-10-14"
 (defun xah-delete-current-file-make-backup ()
   "Makes a backup~, delete current file, close the buffer.
 
-Backup filename is “‹name›~‹dateTimeStamp›~”.
+Backup filename is ‹name›.‹dateTimeStamp›~
 Overwrite existing file.
 
 If buffer is not a file, copy content to `kill-ring', delete buffer.
@@ -2687,14 +2686,17 @@ Call `xah-open-last-closed' to open the backup file.
 
 URL `http://xahlee.info/emacs/emacs/elisp_delete-current-file.html'
 Created: 2018-05-15
-Version: 2024-04-23"
+Version: 2024-10-21"
   (interactive)
   (when (eq major-mode 'dired-mode)
     (user-error "%s: In dired. Nothing is done." real-this-command))
   (let ((xfname buffer-file-name)
         (xbuffname (buffer-name)))
     (if xfname
-        (let ((xbackupPath (format "%s~%s~" xfname (format-time-string "%Y-%m-%d_%H%M%S"))))
+        (let ((xbackupPath
+               (concat
+                xfname "."
+                (format-time-string "%Y%m%d%H%M%S") "~")))
           (save-buffer xfname)
           (kill-buffer xbuffname)
           (rename-file xfname xbackupPath t)
