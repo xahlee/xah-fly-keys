@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 26.6.20241021131107
+;; Version: 26.7.20241109085947
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -216,9 +216,9 @@ Version: 2023-09-03"
 
 If `visual-line-mode' is on, beginning of line means visual line.
 
-URL `http://xahlee.info/emacs/emacs/emacs_keybinding_design_beginning-of-line-or-block.html'
+URL `http://xahlee.info/emacs/emacs/emacs_move_by_paragraph.html'
 Created: 2018-06-04
-Version: 2023-10-04"
+Version: 2024-10-30"
   (interactive)
   (let ((xp (point)))
     (if (or (eq (point) (line-beginning-position))
@@ -244,9 +244,9 @@ Version: 2023-10-04"
 • When called again, move cursor forward by jumping over any sequence of whitespaces containing 2 blank lines.
 • if `visual-line-mode' is on, end of line means visual line.
 
-URL `http://xahlee.info/emacs/emacs/emacs_keybinding_design_beginning-of-line-or-block.html'
+URL `http://xahlee.info/emacs/emacs/emacs_move_by_paragraph.html'
 Created: 2018-06-04
-Version: 2023-10-04"
+Version: 2024-10-30"
   (interactive)
   (if (or (eq (point) (line-end-position))
           (eq last-command this-command))
@@ -2284,6 +2284,10 @@ Version: 2023-03-02"
   (when (> (length xah-recently-closed-buffers) xah-recently-closed-buffers-max)
     (setq xah-recently-closed-buffers (butlast xah-recently-closed-buffers 1))))
 
+(defvar xah-create-buffer-backup nil "If true, `xah-close-current-buffer' creates a backup file when closing non-file buffer. Version: 2024-11-09")
+
+(setq xah-create-buffer-backup t)
+
 (defvar xah-temp-dir-path nil "Path to temp dir used by xah commands.
 by default, the value is dir named temp at `user-emacs-directory'.
 Version: 2023-03-21")
@@ -2291,21 +2295,18 @@ Version: 2023-03-21")
 (setq xah-temp-dir-path (expand-file-name (concat user-emacs-directory "temp/")))
 
 (defun xah-close-current-buffer ()
-  "Close the current buffer with possible backup of modified file.
+  "Close the current buffer with possible backup.
 
 • If the buffer is a file and not modified, kill it. If is modified, do nothing. Print a message.
-• If the buffer is not a file, first save it to `xah-temp-dir-path' named untitled_‹datetime›_‹randomhex›.txt.
+• If the buffer is not a file, and variable `xah-create-buffer-backup' is true, then save a backup to `xah-temp-dir-path' named untitled_‹datetime›_‹randomhex›.txt.
 
-If `universal-argument' is called first, call `kill-buffer'.
-(this is useful when a file is modified, and then it is is changed
-by some app outside emacs, and `auto-revert-mode' is on, then, emacs
-goes into a loop asking to revert or save.)
+If `universal-argument' is called first, call `kill-buffer'. (this is useful to force kill.)
 
 If the buffer is a file, add the path to the list `xah-recently-closed-buffers'.
 
 URL `http://xahlee.info/emacs/emacs/elisp_close_buffer_open_last_closed.html'
 Created: 2016-06-19
-Version: 2024-07-23"
+Version: 2024-11-09"
   (interactive)
   (widen)
   (cond
@@ -2323,20 +2324,8 @@ Version: 2024-07-23"
     (kill-buffer))
 
    ((and buffer-file-name (buffer-modified-p))
-    (message "buffer file modified. Save it first.\n%s" buffer-file-name)
-    ;; (let ((xnewName
-    ;;            (format "%s~%s~"
-    ;;                    buffer-file-name
-    ;;                    (format-time-string "%Y-%m-%d_%H%M%S"))))
-    ;;       (write-region (point-min) (point-max) xnewName)
-    ;;       (print (format "The modified version is saved at
-    ;; %s
-    ;; call xah-open-last-closed twice to open." xnewName))
-    ;;       (xah-add-to-recently-closed (buffer-name) xnewName)
-    ;;       (xah-add-to-recently-closed (buffer-name) buffer-file-name)
-    ;;       (kill-buffer))
-    )
-   ((and (not buffer-file-name) (xah-user-buffer-p) (not (eq (point-max) 1)))
+    (message "buffer file modified. Save it first.\n%s" buffer-file-name))
+   ((and xah-create-buffer-backup (not buffer-file-name) (xah-user-buffer-p) (not (eq (point-max) 1)))
     (let ((xnewName (format "%suntitled_%s_%x.txt"
                             xah-temp-dir-path
                             (format-time-string "%Y%m%d_%H%M%S")
