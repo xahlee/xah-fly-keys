@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 26.7.20241109085947
+;; Version: 26.8.20241118173945
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -163,8 +163,9 @@
 (defvar xah-fly-insert-mode-indicator "i"
   "Character in mode line indicating insert mode is active.")
 
-(defcustom xah-fly-use-control-key t
-  "If nil, do not bind any control key. When t, standard keys for open, close, copy, paste etc, are bound."
+(defcustom xah-fly-use-control-key nil
+  "If true, standard keys for open, close, copy, paste etc, are bound, and others.
+If nil, do not modify any default emacs control key keybinding."
   :type 'boolean)
 
 (defcustom xah-fly-use-meta-key t
