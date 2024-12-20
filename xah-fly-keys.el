@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 26.8.20241118173945
+;; Version: 26.9.20241220151740
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -25,11 +25,11 @@
 
 ;; Important command/insert mode switch keys:
 
-;; `xah-fly-command-mode-activate'
-;; press F8 or Alt+Space or Ctrl+Space <escape>.
-;; Note: escape only works when in emacs is running in GUI mode, before emacs 29.
+;; M-x `xah-fly-command-mode-activate'
+;; or press F8 or Alt+Space or Ctrl+Space or <escape>.
+;; Note: if using emacs 28 or before, escape key only works when in emacs is running in graphical user interface mode.
 
-;; `xah-fly-insert-mode-activate'
+;; M-x `xah-fly-insert-mode-activate'
 ;; when in command mode, press qwerty letter key f.
 
 ;; When in command mode:
@@ -1414,12 +1414,12 @@ In lisp code, QuoteL QuoteR Sep are strings.
 
 URL `http://xahlee.info/emacs/emacs/emacs_quote_lines.html'
 Created: 2020-06-26
-Version: 2024-03-19"
+Version: 2024-11-24"
   (interactive
    (let ((xbrackets
           '(
-            "\"double quote\""
-            "'single quote'"
+            "\"QUOTATION MARK\""
+            "'APOSTROPHE'"
             "(paren)"
             "{brace}"
             "[square]"
@@ -1569,7 +1569,7 @@ If a buffer is not file and not dired, copy value of `default-directory'.
 
 URL `http://xahlee.info/emacs/emacs/emacs_copy_file_path.html'
 Created: 2018-06-18
-Version: 2021-09-30"
+Version: 2024-12-15"
   (interactive "P")
   (let ((xfpath
          (if (eq major-mode 'dired-mode)
@@ -1577,11 +1577,9 @@ Version: 2021-09-30"
                (let ((xresult (mapconcat #'identity
                                          (dired-get-marked-files) "\n")))
                  (if (equal (length xresult) 0)
-                     (progn default-directory )
+                     (progn default-directory)
                    (progn xresult))))
-           (if buffer-file-name
-               buffer-file-name
-             (expand-file-name default-directory)))))
+           (or buffer-file-name default-directory))))
     (kill-new
      (if DirPathOnlyQ
          (progn
@@ -1589,7 +1587,7 @@ Version: 2021-09-30"
            (file-name-directory xfpath))
        (progn
          (message "File path copied: %s" xfpath)
-         xfpath )))))
+         xfpath)))))
 
 (defun xah-delete-current-text-block ()
   "Delete the current text block plus blank lines, or selection, and copy to `kill-ring'.
@@ -1913,8 +1911,9 @@ xString can be multiple chars or any string.
    ("cross ❌" . "❌")
    ("red triangle 🔺" . "🔺")
    ("diamond 💠" . "💠")
-   ("square" . "⬛")
-   ("package" . "📦")
+   ("square ⬛" . "⬛")
+   ("script 📜" . "📜")
+   ("package 📦" . "📦")
    ("cursor ▮" . "▮")
    ("music 🎵" . "🎵")
 
@@ -2293,7 +2292,7 @@ Version: 2023-03-02"
 by default, the value is dir named temp at `user-emacs-directory'.
 Version: 2023-03-21")
 
-(setq xah-temp-dir-path (expand-file-name (concat user-emacs-directory "temp/")))
+(setq xah-temp-dir-path (concat user-emacs-directory "temp/"))
 
 (defun xah-close-current-buffer ()
   "Close the current buffer with possible backup.
@@ -2474,63 +2473,85 @@ Version: 2024-09-25"
 ;; HHHH---------------------------------------------------
 
 (defvar xah-run-current-file-dispatch nil
-"A dispatch table used by `xah-run-current-file' to call a dedicated elisp function to do the job, if any.
+"A dispatch table used by `xah-run-current-file' to call a dedicated function to do the job, if any.
 Value is a association list.
 Each item is (EXT . FUNCTION).
-EXT is file suffix (without the dot prefix) (type string),
-FUNCTION is a elisp function name to call (type symbol).
-If file extension is found, call the associated function pass current buffer's filepath as arg, else `xah-run-current-file' continues.
-You can customize this variable." )
+EXT is filename extension (sans the dot), type string.
+FUNCTION is a elisp function name to call, type symbol.
+If file extension match, call the associated function, pass current buffer's filepath as arg. Else `xah-run-current-file' continues." )
 
-(setq
- xah-run-current-file-dispatch
- '(
-   ;;
-
-   ("el" . load)
-   ("elc" . load)
-   ("go" . xah-go-run-current-file)
-   ("m" . xah-wolfram-run-script)
-   ("wl" . xah-wolfram-run-script)
-   ("wls" . xah-wolfram-run-script)
-
-   ;;
-   ))
+(setq xah-run-current-file-dispatch
+      '(("el" . load)
+        ("elc" . load)
+        ("go" . xah-go-run-current-file)
+        ("java" . xah-java-compile-and-run)
+        ("m" . xah-wolfram-run-script)
+        ("wl" . xah-wolfram-run-script)
+        ("wls" . xah-wolfram-run-script)))
 
 (defvar xah-run-current-file-map
-  "A association list that maps file extension to program name, used by `xah-run-current-file'.
-Each item is (EXT . PROGRAM), both strings.
-EXT is file suffix (without the dot prefix), PROGRAM is program name or path, with possibly command options.
-You can customize this alist.")
+  "A association list that maps file extension to a command for running the file, used by `xah-run-current-file'.
+Each item is (EXT . PROGRAM).
+EXT is filename extension (sans the dot), type string.
+PROGRAM is program name or path, with command options to run a file, type string.
+A filename is appended after the PROGRAM string.")
 
-(setq
- xah-run-current-file-map
- '(("clj" . "clj")
+(setq xah-run-current-file-map
+ '(
+   ;; following are tested as of 2024-12-20
+
    ("fs" . "dotnet fsi")
    ("fsx" . "dotnet fsi")
    ("go" . "go run")
-   ("hs" . "runhaskell")
    ("js" . "deno run")
-   ("latex" . "pdflatex")
-   ("m" . "wolframscript -file")
-   ("mjs" . "node --experimental-modules ")
-   ("ml" . "ocaml")
    ("php" . "php")
    ("pl" . "perl")
    ("ps1" . "pwsh")
    ("py" . "python")
    ("py2" . "python2")
-   ("py3" . "python")
+   ("py3" . "python3")
    ("rb" . "ruby")
+   ("ts" . "deno run")
+   ("wl" . "wolframscript -file")
+   ("wls" . "wolframscript -file")
+
+   ;; following may be outdated
+
+   ("clj" . "clj")
+   ("hs" . "runhaskell")
+   ("latex" . "pdflatex")
+   ("m" . "wolframscript -file")
+   ("mjs" . "node --experimental-modules ")
+   ("ml" . "ocaml")
    ("rkt" . "racket")
    ("sh" . "bash")
    ("tex" . "pdflatex")
-   ("ts" . "deno run")
    ("tsx" . "tsc")
    ("vbs" . "cscript")
-   ("wl" . "wolframscript -file")
-   ("wls" . "wolframscript -file")
    ("pov" . "povray +R2 +A0.1 +J1.2 +Am2 +Q9 +H480 +W640")))
+
+(defun xah-java-compile-and-run (Filename)
+  "Compile and run java of current buffer.
+Buffer is saved first if modified.
+
+This command is designed for a simple single java class source file.
+requires the commands 「javac」 and 「java」.
+
+If compile fails, the error is displayed in a buffer.
+
+Created: 2024-12-20
+Version: 2024-12-20"
+  (interactive (if buffer-file-name (progn (when (buffer-modified-p) (save-buffer)) (list buffer-file-name)) (user-error "Buffer is not file. Save it first.")))
+  (let ((xoutbuf (get-buffer-create "*xah java output*" t))
+        (xjavac-buf (get-buffer-create "*xah java compile output*" t)))
+    (with-current-buffer xjavac-buf (erase-buffer))
+    (call-process "javac" nil xjavac-buf nil Filename)
+    (if (eq 1 (with-current-buffer xjavac-buf (point-max)))
+        (progn
+          (with-current-buffer xoutbuf (erase-buffer))
+          (call-process "java" nil xoutbuf nil (file-name-nondirectory (file-name-sans-extension Filename)))
+          (display-buffer xoutbuf))
+      (display-buffer xjavac-buf))))
 
 (defun xah-run-current-file (Filename)
   "Execute the current file.
@@ -2545,31 +2566,25 @@ The variable `xah-run-current-file-dispatch' allows you to customize this comman
 URL `http://xahlee.info/emacs/emacs/elisp_run_current_file.html'
 Created: 2020-09-24
 Version: 2024-03-22"
-  (interactive
-   (if buffer-file-name
-       (progn
-         (when (buffer-modified-p) (save-buffer))
-         (list buffer-file-name))
-     (user-error "Buffer is not file. Save it first.")))
-  ;; (setenv "NO_COLOR" "1") ; 2022-09-10 for deno. default color has yellow parts, hard to see
-  (let ((xoutBuffer (get-buffer-create "*xah-run output*" t))
+  (interactive (if buffer-file-name (progn (when (buffer-modified-p) (save-buffer)) (list buffer-file-name)) (user-error "Buffer is not file. Save it first.")))
+  (let ((xoutbuf (get-buffer-create "*xah-run output*" t))
         (xext (file-name-extension Filename))
         xdispatch)
     (setq xdispatch (assoc xext xah-run-current-file-dispatch))
-    (if (and xdispatch (fboundp (cdr xdispatch)))
-        (progn
-          (message "calling %s" (cdr xdispatch))
-          (funcall (cdr xdispatch) Filename))
-      (let ((xappCmdStr (cdr (assoc xext xah-run-current-file-map))))
-        (when (and xdispatch (not (fboundp (cdr xdispatch))))
+    (if xdispatch
+        (if (fboundp (cdr xdispatch))
+            (progn
+              (message "calling %s" (cdr xdispatch))
+              (funcall (cdr xdispatch) Filename))
           (warn "`xah-run-current-file' found function %s in xah-run-current-file-dispatch but it is unbound. Normal run continues using `xah-run-current-file-map'." xdispatch))
+      (let ((xappCmdStr (cdr (assoc xext xah-run-current-file-map))))
         (when (not xappCmdStr) (error "%s: Unknown file extension: %s. check `xah-run-current-file-map'" real-this-command xext))
-        (let ((xcmdStr (format "%s %s &" xappCmdStr (shell-quote-argument Filename))))
-          (message "Running 「%s」" xcmdStr)
-          ;; note, not using make-process or start-process. problem is, they are too complex to create, and have issues or variation on different operating system.
-          (shell-command xcmdStr xoutBuffer)))))
-  ;; (setenv "NO_COLOR")
-  )
+        (cond
+         (t
+          (progn
+            (with-current-buffer xoutbuf (erase-buffer))
+            (apply 'start-process (append (list "xah run" xoutbuf) (split-string xappCmdStr " +" t) (list Filename) nil))
+            (display-buffer xoutbuf))))))))
 
 (defun xah-clean-empty-lines ()
   "Replace repeated blank lines to just 1, in whole buffer or selection.
@@ -2745,7 +2760,7 @@ Version: 2023-09-09"
                  (if buffer-file-name buffer-file-name default-directory))))
     (cond
      ((eq system-type 'windows-nt)
-      (shell-command (format "PowerShell -Command invoke-item '%s'" (expand-file-name default-directory )))
+      (shell-command (format "PowerShell -Command invoke-item '%s'" default-directory ))
       ;; (let ((xcmd (format "Explorer /select,%s"
       ;;                     (replace-regexp-in-string "/" "\\" xpath t t)
       ;;                     ;; (shell-quote-argument (replace-regexp-in-string "/" "\\" xpath t t ))
@@ -2769,9 +2784,9 @@ Version: 2023-09-09"
 URL `http://xahlee.info/emacs/emacs/emacs_open_in_vscode.html'
 
 Created: 2020-02-13
-Version: 2023-06-26"
+Version: 2024-12-15"
   (interactive)
-  (let ((xpath (if buffer-file-name buffer-file-name (expand-file-name default-directory))))
+  (let ((xpath (or buffer-file-name default-directory)))
     (message "path is %s" xpath)
     (cond
      ((eq system-type 'darwin)
@@ -2806,12 +2821,7 @@ Version: 2023-06-26"
            (lambda (x)
              (message "%s" x)
              (apply 'start-process (append (list "xah open in external app" xoutBuf) xcmdlist (list (format "'%s'" (if (string-match "'" x) (replace-match "`'" t t x) x))) nil)))
-           xfileList)
-          ;; (switch-to-buffer-other-window xoutBuf)
-          )
-        ;; old code. calling shell. also have a bug if filename contain apostrophe
-        ;; (mapc (lambda (xfpath) (shell-command (concat "PowerShell -Command \"Invoke-Item -LiteralPath\" " "'" (shell-quote-argument (expand-file-name xfpath)) "'"))) xfileList)
-        )
+           xfileList)))
        ((eq system-type 'darwin)
         (mapc (lambda (xfpath) (shell-command (concat "open " (shell-quote-argument xfpath)))) xfileList))
        ((eq system-type 'gnu/linux)
@@ -2850,7 +2860,7 @@ Version: 2023-06-26"
        (format "powershell -Command Start-Process powershell -WorkingDirectory '%s'" (shell-quote-argument default-directory))))
      (t (error "Error 702919: value of `xah-fly-mswin-terminal' is not expected. Its value is %s" xah-fly-mswin-terminal))))
    ((eq system-type 'darwin)
-    (shell-command (concat "open -a terminal " (shell-quote-argument (expand-file-name default-directory)))))
+    (shell-command (concat "open -a terminal " (shell-quote-argument default-directory))))
    ((eq system-type 'gnu/linux)
     (let ((process-connection-type nil)) (start-process "" nil "x-terminal-emulator" (concat "--working-directory=" default-directory))))
    ((eq system-type 'berkeley-unix)
