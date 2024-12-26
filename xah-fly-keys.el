@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 26.9.20241220195053
+;; Version: 26.9.20241225173150
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -2544,7 +2544,7 @@ Version: 2024-12-20"
     (call-process "javac" nil xjavac-buf nil Filename)
     (if (eq 1 (with-current-buffer xjavac-buf (point-max)))
         (progn
-          (with-current-buffer xoutbuf (erase-buffer))
+          (save-current-buffer (set-buffer xoutbuf) (erase-buffer))
           (call-process "java" nil xoutbuf nil (file-name-nondirectory (file-name-sans-extension Filename)))
           (display-buffer xoutbuf))
       (display-buffer xjavac-buf))))
@@ -2561,7 +2561,7 @@ The variable `xah-run-current-file-dispatch' allows you to customize this comman
 
 URL `http://xahlee.info/emacs/emacs/elisp_run_current_file.html'
 Created: 2020-09-24
-Version: 2024-12-20"
+Version: 2024-12-25"
   (interactive (if buffer-file-name (progn (when (buffer-modified-p) (save-buffer)) (list buffer-file-name)) (user-error "Buffer is not file. Save it first.")))
   (let ((xoutbuf (get-buffer-create "*xah-run output*" t))
         (xext (file-name-extension Filename))
@@ -2575,12 +2575,10 @@ Version: 2024-12-20"
           (warn "`xah-run-current-file' found function %s in xah-run-current-file-dispatch but it is unbound. Normal run continues using `xah-run-current-file-map'." xdispatch))
       (let ((xappCmdStr (cdr (assoc xext xah-run-current-file-map))))
         (when (not xappCmdStr) (error "%s: Unknown file extension: %s. check `xah-run-current-file-map'" real-this-command xext))
-        (cond
-         (t
-          (progn
-            (with-current-buffer xoutbuf (erase-buffer))
-            (apply 'start-process (append (list "xah run" xoutbuf) (split-string xappCmdStr " +" t) (list Filename) nil))
-            (display-buffer xoutbuf))))))))
+        (progn
+          (save-current-buffer (set-buffer xoutbuf) (erase-buffer))
+          (apply 'start-process (append (list "xah-run" xoutbuf) (split-string xappCmdStr " +" t) (list Filename) nil))
+          (display-buffer xoutbuf))))))
 
 (defun xah-clean-empty-lines ()
   "Replace repeated blank lines to just 1, in whole buffer or selection.
