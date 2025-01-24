@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 26.9.20241225173150
+;; Version: 26.9.20250124152808
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -142,14 +142,14 @@
 
 ;; supported layouts are stored in the variable xah-fly-layout-diagrams
 
-;; HHHH---------------------------------------------------
+;; HHHH------------------------------
 ;;; Code:
 
 (require 'dired)
 (require 'dired-x)
 (require 'seq)
 
-;; HHHH---------------------------------------------------
+;; HHHH------------------------------
 
 (defgroup xah-fly-keys nil
   "Ergonomic modal keybinding minor mode."
@@ -199,7 +199,7 @@ Version: 2024-03-23"
       (vector (region-beginning) (region-end))
     (xah-fly-get-pos-block)))
 
-;; HHHH---------------------------------------------------
+;; HHHH------------------------------
 ;; cursor movement
 
 (defun xah-pop-local-mark-ring ()
@@ -379,7 +379,7 @@ Version: 2024-03-19"
     (seq-setq (xbeg xend) (xah-fly-get-pos-block-or))
     (narrow-to-region xbeg xend)))
 
-;; HHHH---------------------------------------------------
+;; HHHH------------------------------
 ;; editing commands
 
 (defun xah-copy-line-or-region ()
@@ -1689,7 +1689,7 @@ Version: 2023-04-07"
     (copy-to-register ?1 (point-min) (point-min))
     (message "Cleared register 1.")))
 
-;; HHHH---------------------------------------------------
+;; HHHH------------------------------
 ;; insertion commands
 
 (defun xah-insert-date ()
@@ -1871,8 +1871,8 @@ Version: 2024-03-19"
   (cond
    ((and buffer-file-name (string-equal "html" (file-name-extension buffer-file-name))) (insert "<hr />\n"))
    ((not comment-start)
-    (insert "\nHHHH---------------------------------------------------\n"))
-   (t (insert "\nHHHH---------------------------------------------------\n")
+    (insert "\nHHHH------------------------------\n"))
+   (t (insert "\nHHHH------------------------------\n")
       (backward-char)
       (comment-line 1))))
 
@@ -1955,7 +1955,7 @@ Version: 2023-09-19"
            (completing-read "Insert:" xah-unicode-list nil t))))
     (insert (cdr (assoc xkey xah-unicode-list)))))
 
-;; HHHH---------------------------------------------------
+;; HHHH------------------------------
 ;; text selection
 
 (defun xah-select-block ()
@@ -2142,7 +2142,7 @@ Version: 2024-10-02"
     (setq xend (point))
     (kill-region xbeg xend)))
 
-;; HHHH---------------------------------------------------
+;; HHHH------------------------------
 ;; misc
 
 (defvar xah-fly-switch-buffer-map nil "repeat key map for `xah-next-user-buffer' etc.")
@@ -2470,7 +2470,7 @@ Version: 2024-09-25"
               (message "File does not exist. Created at\n%s" xpathNoQ)
               (find-file xpathNoQ))))))))
 
-;; HHHH---------------------------------------------------
+;; HHHH------------------------------
 
 (defvar xah-run-current-file-dispatch nil
 "A dispatch table used by `xah-run-current-file' to call dedicated function to run code.
@@ -2578,7 +2578,10 @@ Version: 2024-12-25"
         (progn
           (save-current-buffer (set-buffer xoutbuf) (erase-buffer))
           (apply 'start-process (append (list "xah-run" xoutbuf) (split-string xappCmdStr " +" t) (list Filename) nil))
-          (display-buffer xoutbuf))))))
+          ;; (display-buffer xoutbuf)
+          (pop-to-buffer xoutbuf)
+          ;; (with-current-buffer xoutbuf (goto-char (point-min)))
+          )))))
 
 (defun xah-clean-empty-lines ()
   "Replace repeated blank lines to just 1, in whole buffer or selection.
@@ -2712,7 +2715,7 @@ Call `xah-open-last-closed' to open." xbackupPath)
         (message "non-file buffer killed. buffer text copied to `kill-ring'."))))
   (when (eq major-mode 'dired-mode) (revert-buffer)))
 
-;; HHHH---------------------------------------------------
+;; HHHH------------------------------
 
 (defun xah-search-current-word ()
   "Call `isearch' on current word or selection.
@@ -2880,7 +2883,7 @@ Version: 2017-01-29"
       (other-frame 1)
     (delete-other-windows)))
 
-;; HHHH---------------------------------------------------
+;; HHHH------------------------------
 ;; layout lookup tables for key conversion
 
 (defvar xah-fly-layout-diagrams (make-hash-table :test 'equal)
@@ -3329,7 +3332,7 @@ Version: 2023-08-21"
       (cdr x)))
    KeyCmdAlist))
 
-;; HHHH---------------------------------------------------
+;; HHHH------------------------------
 ;; keymaps
 
 (defvar xah-fly-key-map (make-sparse-keymap)
@@ -3343,7 +3346,7 @@ Version: 2023-08-21"
 
 (defvar xah-fly--deactivate-command-mode-func nil)
 
-;; HHHH---------------------------------------------------
+;; HHHH------------------------------
 ;; setting keys
 
 (defun xah-fly-define-keys ()
@@ -3795,7 +3798,7 @@ Version: 2024-04-22"
 
 (xah-fly-define-keys)
 
-;; HHHH---------------------------------------------------
+;; HHHH------------------------------
 ;; set control meta, etc keys
 
 (defcustom xah-fly-unset-useless-key t
@@ -3929,12 +3932,12 @@ Version: 2024-04-22"
 
   (global-set-key (kbd "<f7>") 'xah-fly-leader-key-map)
 
-;; HHHH---------------------------------------------------
+;; HHHH------------------------------
 
 (when (< emacs-major-version 28)
   (defalias 'execute-extended-command-for-buffer #'execute-extended-command))
 
-;; HHHH---------------------------------------------------
+;; HHHH------------------------------
 ;;;; misc
 
 ;; the following have keys in gnu emacs, but i decided not to give them a key, because either they are rarely used (say, 95% of emacs users use them less than once a month ), or there is a more efficient command/workflow with key in xah-fly-keys
@@ -4002,7 +4005,7 @@ Version: 2024-04-22"
 ;; C-x {   →   shrink-window-horizontally
 ;; C-x }   →   enlarge-window-horizontally
 
-;; HHHH---------------------------------------------------
+;; HHHH------------------------------
 
 (defvar xah-fly-insert-state-p t "non-nil means insertion mode is on.")
 
@@ -4124,7 +4127,7 @@ Version: 2017-07-07"
   (xah-fly-insert-mode-activate)
   (left-char))
 
-;; HHHH---------------------------------------------------
+;; HHHH------------------------------
 
 ;;;###autoload
 (define-minor-mode xah-fly-keys
@@ -4150,8 +4153,6 @@ URL `http://xahlee.info/emacs/misc/xah-fly-keys.html'"
       (remove-hook 'minibuffer-setup-hook 'xah-fly-insert-mode-activate)
       (remove-hook 'minibuffer-exit-hook 'xah-fly-command-mode-activate)
       (remove-hook 'isearch-mode-end-hook 'xah-fly-command-mode-activate)
-      (remove-hook 'eshell-mode-hook 'xah-fly-insert-mode-activate)
-      (remove-hook 'shell-mode-hook 'xah-fly-insert-mode-activate)
       (xah-fly-insert-mode-init :no-indication)
       (setq mode-line-front-space '(:eval (if (display-graphic-p) " " "-")))
 
