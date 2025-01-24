@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 26.9.20250124152808
+;; Version: 26.9.20250124153828
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -1221,7 +1221,7 @@ After this command is called, press `xah-repeat-key' to repeat it.
 
 URL `http://xahlee.info/emacs/emacs/elisp_reformat_to_sentence_lines.html'
 Created: 2020-12-02
-Version: 2024-03-19"
+Version: 2025-01-24"
   (interactive)
   (let (xbeg xend)
     (seq-setq (xbeg xend) (xah-fly-get-pos-block-or))
@@ -1243,7 +1243,7 @@ Version: 2024-03-19"
       (goto-char (point-max))
       (while (eq (char-before) 32) (delete-char -1))))
   (re-search-forward "\n+" nil :move)
-  (set-transient-map (let ((xkmap (make-sparse-keymap))) (define-key xkmap (kbd (or xah-repeat-key "m")) this-command) xkmap))
+  (set-transient-map (let ((xkmap (make-sparse-keymap))) (define-key xkmap (kbd (if (boundp 'xah-repeat-key) xah-repeat-key "m")) this-command) xkmap))
   (set-transient-map (let ((xkmap (make-sparse-keymap))) (define-key xkmap (kbd "DEL") this-command) xkmap)))
 
 (defun xah-space-to-newline ()
@@ -1524,7 +1524,7 @@ After this command is called, press `xah-repeat-key' to repeat it.
 
 URL `http://xahlee.info/emacs/emacs/elisp_change_space-hyphen_underscore.html'
 Created: 2019-02-12
-Version: 2024-01-04"
+Version: 2025-01-24"
   (interactive)
   ;; this function sets a property 'state. Possible values are 0 to length of xcharArray.
   (let (xbeg xend xlen
@@ -1556,7 +1556,7 @@ Version: 2024-01-04"
       (push-mark xbeg)
       (setq deactivate-mark nil))
     (put 'xah-cycle-hyphen-lowline-space 'state (% (+ xnowState 1) xlen)))
-  (set-transient-map (let ((xkmap (make-sparse-keymap))) (define-key xkmap (kbd (or xah-repeat-key "m")) this-command) xkmap)))
+  (set-transient-map (let ((xkmap (make-sparse-keymap))) (define-key xkmap (kbd (if (boundp 'xah-repeat-key) xah-repeat-key "m")) this-command) xkmap)))
 
 (defun xah-copy-file-path (&optional DirPathOnlyQ)
   "Copy current buffer file path or dired path.
