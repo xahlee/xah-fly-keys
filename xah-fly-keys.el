@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 26.9.20250124153828
+;; Version: 26.9.20250205172500
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -711,7 +711,7 @@ If `universal-argument' is called first, do not delete bracket's innertext.
 In elisp code, arg BracketOnly if true, do not delete innertext. SkipDispatch if true, skip checking `xah-smart-delete-dispatch'.
 
 Created: 2023-07-22
-Version: 2024-06-05"
+Version: 2025-02-05"
   (interactive (list current-prefix-arg nil))
   (let (xfun)
     (cond
@@ -724,12 +724,15 @@ Version: 2024-06-05"
        (eq (char-before) 32)
        (eq (char-before) 10)
        (eq (char-before) 9))
-      (let ((xp0 (point)) xbeg xend)
-        (skip-chars-backward " \t\n")
-        (setq xbeg (point) xend xp0)
-        (if (eq real-this-command real-last-command)
-            (kill-append (delete-and-extract-region xbeg xend) t)
-          (kill-region xbeg xend))))
+      (if (minibufferp (current-buffer))
+          (while (or (eq (char-before) 32) (eq (char-before) 10) (eq (char-before) 9))
+            (delete-char -1))
+        (let ((xp0 (point)) xbeg xend)
+          (skip-chars-backward " \t\n")
+          (setq xbeg (point) xend xp0)
+          (if (eq real-this-command real-last-command)
+              (kill-append (delete-and-extract-region xbeg xend) t)
+            (kill-region xbeg xend)))))
      ((prog2 (backward-char) (looking-at "\\s)") (forward-char))
       ;; (message "cursor left is closing bracket")
       (cond
@@ -2722,7 +2725,8 @@ Call `xah-open-last-closed' to open." xbackupPath)
 “word” here is A to Z, a to z, and hyphen [-] and lowline [_], independent of syntax table.
 
 URL `http://xahlee.info/emacs/emacs/modernization_isearch.html'
-Version: 2015-04-09"
+Created: 2010-05-29
+Version: 2025-02-05"
   (interactive)
   (let (xbeg xend)
     (if (region-active-p)
@@ -2733,9 +2737,7 @@ Version: 2015-04-09"
         (right-char)
         (skip-chars-forward "-_A-Za-z0-9")
         (setq xend (point))))
-    (setq mark-active nil)
-    (when (< xbeg (point))
-      (goto-char xbeg))
+    (when (< xbeg (point)) (goto-char xbeg))
     (isearch-mode t)
     (isearch-yank-string (buffer-substring-no-properties xbeg xend))))
 
