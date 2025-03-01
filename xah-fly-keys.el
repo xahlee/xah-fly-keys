@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 26.9.20250205172500
+;; Version: 26.9.20250301144325
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -164,17 +164,23 @@
   "Character in mode line indicating insert mode is active.")
 
 (defcustom xah-fly-use-control-key nil
-  "If true, standard keys for open, close, copy, paste etc, are bound, and others.
-If nil, do not modify any default emacs control key keybinding."
+  "If true, change many emacs keybinding involving control key.
+Keys changed:
+Standard shortcut for open, close, copy, paste etc.
+Remove many redundant emacs default keys
+Must be set before loading xah-fly-keys."
   :type 'boolean)
 
 (defcustom xah-fly-use-meta-key t
-  "If nil, do not bind any meta key."
+  "If true, change some emacs keybinding involving meta key.
+Remove many redundant emacs default keys.
+Must be set before loading xah-fly-keys."
   :type 'boolean)
 
 (defcustom xah-fly-use-isearch-arrows t
-  "If nil, no change to any key in isearch (`isearch-forward'). Otherwise, arrow keys are for moving between occurrences, and C-v is paste."
-  :type 'boolean)
+ "If true, set arrow keys for moving between occurrences, and C-v is paste, in isearch (`isearch-forward').
+Must be set before loading xah-fly-keys."
+ :type 'boolean)
 
 (defun xah-fly-get-pos-block ()
   "Return the begin end positions of current text block.
@@ -813,24 +819,24 @@ followed by 2 spaces.
 
 URL `http://xahlee.info/emacs/emacs/elisp_change_brackets.html'
 Created: 2020-11-01
-Version: 2024-08-07"
+Version: 2025-02-27"
   (interactive
    (let ((xbrackets
           '(
             "square [ ]"
             "brace { }"
             "paren ( )"
-            "greater < >"
-            "double quote \" \""
-            "single quote ' '"
+            "less greater than < >"
+            "QUOTATION MARK \" \""
+            "APOSTROPHE ' '"
             "emacs ` '"
-            "markdown grave accent ` `"
+            "GRAVE ACCENT ` `"
             "double square [[ ]]"
             "tilde ~ ~"
             "equal = ="
             "double curly quote “ ”"
             "single curly quote ‘ ’"
-            "french angle ‹ ›"
+            "french angle quote ‹ ›"
             "french double angle « »"
             "corner 「 」"
             "white corner 『 』"
@@ -2726,7 +2732,7 @@ Call `xah-open-last-closed' to open." xbackupPath)
 
 URL `http://xahlee.info/emacs/emacs/modernization_isearch.html'
 Created: 2010-05-29
-Version: 2025-02-05"
+Version: 2025-02-21"
   (interactive)
   (let (xbeg xend)
     (if (region-active-p)
@@ -2737,6 +2743,7 @@ Version: 2025-02-05"
         (right-char)
         (skip-chars-forward "-_A-Za-z0-9")
         (setq xend (point))))
+    (deactivate-mark)
     (when (< xbeg (point)) (goto-char xbeg))
     (isearch-mode t)
     (isearch-yank-string (buffer-substring-no-properties xbeg xend))))
@@ -3753,7 +3760,7 @@ Version: 2024-04-22"
        (";" . xah-comment-dwim)
        ("[" . split-window-below)
        ("\\" . xah-cycle-hyphen-lowline-space)
-       ;; ("]" . split-window-right)
+       ("]" . split-window-right)
        ("`" . other-frame)
 
        ("1" . xah-backward-punct)
@@ -3871,15 +3878,14 @@ Version: 2024-04-22"
 
 (when xah-fly-use-control-key
 
-  (global-set-key (kbd "<C-S-prior>") #'xah-previous-emacs-buffer)
-  (global-set-key (kbd "<C-S-next>") #'xah-next-emacs-buffer)
+  (global-set-key (kbd "C-<tab>") #'xah-next-user-buffer)
+  (global-set-key (kbd "C-S-<tab>") #'xah-previous-user-buffer)
 
-  (global-set-key (kbd "<C-tab>") #'xah-next-user-buffer)
-  (global-set-key (kbd "<C-S-tab>") #'xah-previous-user-buffer)
-  (global-set-key (kbd "<C-S-iso-lefttab>") #'xah-previous-user-buffer)
+  (global-set-key (kbd "C-S-<prior>") #'xah-previous-emacs-buffer)
+  (global-set-key (kbd "C-S-<next>") #'xah-next-emacs-buffer)
 
-  (global-set-key (kbd "<C-prior>") #'xah-previous-user-buffer)
-  (global-set-key (kbd "<C-next>") #'xah-next-user-buffer)
+  (global-set-key (kbd "C-<prior>") #'xah-previous-user-buffer)
+  (global-set-key (kbd "C-<next>") #'xah-next-user-buffer)
 
   ;; (global-set-key (kbd "C-1") nil)
   (global-set-key (kbd "C-2") #'pop-global-mark)
