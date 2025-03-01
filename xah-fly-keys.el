@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 26.9.20250301144325
+;; Version: 26.9.20250301145516
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -72,8 +72,7 @@
 
 ;; When in command mode, the "SPC" is a leader key.
 
-;; the following standard keys with Control are supported:
-
+;; if you want the following standard keys with Control
 ;; "C-TAB" `xah-next-user-buffer'
 ;; "C-S-TAB" `xah-previous-user-buffer'
 ;; "C-v" paste
@@ -87,11 +86,18 @@
 ;; "C-+" `text-scale-increase'
 ;; "C--" `text-scale-decrease'
 
-;; To disable both Control and Meta shortcut keys, add the following
-;; lines to you init.el BEFORE loading xah-fly-keys:
+;; add
+;; (setq xah-fly-use-control-key t)
 
+;; To disable any change to Control keybinding
+;; add this to emacs init
 ;; (setq xah-fly-use-control-key nil)
+;; before loading xah-fly-keys
+
+;; To disable any change to meta keybinding
+;; add this to emacs init
 ;; (setq xah-fly-use-meta-key nil)
+;; before loading xah-fly-keys
 
 ;; If you have a bug, post on github.
 
