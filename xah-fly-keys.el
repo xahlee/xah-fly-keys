@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 26.9.20250301145516
+;; Version: 26.9.20250307132754
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -243,9 +243,7 @@ Version: 2024-10-30"
       (if visual-line-mode
           (beginning-of-visual-line)
         (if (eq major-mode 'eshell-mode)
-            (progn
-              (declare-function eshell-bol "esh-mode.el" ())
-              (eshell-bol))
+            (beginning-of-line)
           (back-to-indentation)
           (when (eq xp (point))
             (beginning-of-line)))))))
@@ -1715,7 +1713,7 @@ If there is selection, delete it first.
 
 URL `http://xahlee.info/emacs/emacs/elisp_insert-date-time.html'
 Created: 2013-05-10
-Version: 2023-10-01"
+Version: 2025-03-07"
   (interactive)
   (let (xmenu xstyle)
     (setq
@@ -1726,12 +1724,13 @@ Version: 2023-10-01"
        ("ISO datetime full • 2018-04-12T22:46:11-07:00" .
         (concat
          (format-time-string "%Y-%m-%dT%T")
-         ((lambda (xx) (format "%s:%s" (substring xx 0 3) (substring xx 3 5)))
-          (format-time-string "%z"))))
+         (funcall (lambda (xx) (format "%s:%s" (substring xx 0 3) (substring xx 3 5)))
+                  (format-time-string "%z"))))
        ("ISO datetime w space • 2018-04-12 22:46:11-07:00" .
         (concat
          (format-time-string "%Y-%m-%d %T")
-         ((lambda (xx) (format "%s:%s" (substring xx 0 3) (substring xx 3 5)))
+         (funcall
+          (lambda (xx) (format "%s:%s" (substring xx 0 3) (substring xx 3 5)))
           (format-time-string "%z"))))
        ("ISO date + weekday • 2018-04-12 Thursday" . (format-time-string "%Y-%m-%d %A"))
        ("USA date + weekday • Thursday, April 12, 2018" . (format-time-string "%A, %B %d, %Y"))
