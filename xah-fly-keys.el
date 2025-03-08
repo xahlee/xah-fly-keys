@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 26.9.20250307132754
+;; Version: 26.10.20250308091402
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -3580,9 +3580,9 @@ Version: 2024-04-22"
        ("n a" . text-scale-adjust)
        ("n b" . toggle-debug-on-error)
        ("n c" . toggle-case-fold-search)
-       ;; d
+       ("n d" . nil)
        ("n e" . eshell)
-       ;; f
+       ("n f" . nil)
        ("n g" . xah-toggle-read-novel-mode)
        ("n h" . widen)
        ("n i" . make-frame-command)
@@ -3609,36 +3609,38 @@ Version: 2024-04-22"
        ("q" . xah-cut-all-or-region)
 
        ;; roughly text replacement related
-       ("r SPC" . rectangle-mark-mode)
+
        ("r ," . apply-macro-to-region-lines)
        ("r ." . kmacro-start-macro)
        ("r /" . xah-slash-to-double-backslash)
        ("r 3" . number-to-register)
        ("r 4" . increment-register)
+       ("r RET" . nil)
+       ("r SPC" . call-last-kbd-macro)
+       ("r \\" . xah-slash-to-backslash)
 
-       ;; a
-       ;; b
+       ("r a" . nil)
+       ("r b" . nil)
        ("r c" . string-rectangle)
        ("r d" . delete-rectangle)
-       ("r e" . call-last-kbd-macro)
-       ;; f
-
+       ("r e" . nil)
+       ("r f" . nil)
+       ("r g" . nil)
        ("r h" . xah-change-bracket-pairs)
        ("r i" . xah-space-to-newline)
        ("r j" . copy-rectangle-to-register)
        ("r k" . yank-rectangle)
        ("r l" . clear-rectangle)
-       ("r m" . xah-slash-to-backslash)
+
+       ("r m" . nil)
        ("r n" . rectangle-number-lines)
        ("r o" . open-rectangle)
        ("r p" . kmacro-end-macro)
        ("r q" . kill-rectangle)
 
-       ;; r
-       ;; s
-
+       ("r r" . rectangle-mark-mode)
+       ("r s" . nil)
        ;; kmacro-end-and-call-macro
-
        ("r t RET" . #'kmacro-edit-macro)
        ("r t SPC" . #'kmacro-step-edit-macro)
        ("r t TAB" . #'kmacro-insert-counter)
@@ -3658,16 +3660,15 @@ Version: 2024-04-22"
        ("r t n" . #'kmacro-name-last-macro)
        ("r t p" . #'kmacro-cycle-ring-previous)
        ("r t q" . #'kbd-macro-query)
-
        ("r t t" . #'kmacro-swap-ring)
        ("r t v" . #'kmacro-view-macro-repeat)
        ("r t x" . #'kmacro-to-register)
-
        ("r u" . xah-quote-lines)
-       ;; v w
+       ("r v" . nil)
+       ("r w" . nil)
        ("r x" . xah-double-backslash-to-slash)
        ("r y" . delete-whitespace-rectangle)
-       ;; z
+       ("r z" . nil)
 
        ("s" . save-buffer)
 
@@ -3683,9 +3684,8 @@ Version: 2024-04-22"
        ("t 4" . xah-paste-from-register-1)
        ("t 7" . xah-append-to-register-1)
        ("t 8" . xah-clear-register-1)
-       ;; a
-       ;; b
-
+       ("t a" . nil)
+       ("t b" . nil)
        ("t c" . copy-matching-lines)
        ("t d" . mark-defun)
        ("t e" . list-matching-lines)
@@ -3695,23 +3695,21 @@ Version: 2024-04-22"
        ("t i" . delete-non-matching-lines)
        ("t j" . copy-to-register)
        ("t k" . insert-register)
-
-       ;; l
+       ("t l" . nil)
        ("t m" . xah-make-backup-and-save)
        ("t n" . goto-char)
        ("t o" . xah-clean-whitespace)
        ("t p" . query-replace-regexp)
        ("t q" . xah-cut-text-in-quote)
        ("t r" . xah-escape-quotes)
-
        ("t s" . xah-reformat-to-sentence-lines)
        ("t t" . repeat)
        ("t u" . kill-matching-lines)
-
+       ("t v" . nil)
        ("t w" . xah-next-window-or-frame)
        ("t x" . xah-title-case-region-or-line)
        ("t y" . delete-duplicate-lines)
-
+       ("t z" . nil)
        ("u" . switch-to-buffer)
        ("v" . universal-argument)
 
