@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 26.10.20250308091402
+;; Version: 26.11.20250321120953
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -349,7 +349,7 @@ Version: 2024-06-15"
      (t (backward-up-list 1 'ESCAPE-STRINGS 'NO-SYNTAX-CROSSING)))))
 
 (defvar xah-punctuation-regex nil "A regex string for the purpose of moving cursor to a punctuation.")
-(setq xah-punctuation-regex "[\"]")
+(setq xah-punctuation-regex "= *\"")
 
 (defun xah-forward-punct ()
   "Move cursor to the next occurrence of punctuation.
@@ -357,8 +357,14 @@ Punctuations is defined by `xah-punctuation-regex'
 
 URL `http://xahlee.info/emacs/emacs/emacs_jump_to_punctuations.html'
 Created: 2017-06-26
-Version: 2024-01-20"
+Version: 2025-03-21"
   (interactive)
+  (set-transient-map
+   (let ((xkmap (make-sparse-keymap)))
+     (define-key xkmap (kbd "<left>") #'xah-backward-punct)
+     (define-key xkmap (kbd "<right>") #'xah-forward-punct)
+     (define-key xkmap (kbd (if (boundp 'xah-repeat-key) xah-repeat-key "m")) real-this-command)
+     xkmap))
   (re-search-forward xah-punctuation-regex nil t))
 
 (defun xah-backward-punct ()
@@ -367,8 +373,14 @@ See `xah-forward-punct'
 
 URL `http://xahlee.info/emacs/emacs/emacs_jump_to_punctuations.html'
 Created: 2017-06-26
-Version: 2024-01-20"
+Version: 2025-03-21"
   (interactive)
+  (set-transient-map
+   (let ((xkmap (make-sparse-keymap)))
+     (define-key xkmap (kbd "<left>") #'xah-backward-punct)
+     (define-key xkmap (kbd "<right>") #'xah-forward-punct)
+     (define-key xkmap (kbd (if (boundp 'xah-repeat-key) xah-repeat-key "m")) real-this-command)
+     xkmap))
   (re-search-backward xah-punctuation-regex nil t))
 
 (defun xah-sort-lines ()
@@ -3580,7 +3592,7 @@ Version: 2024-04-22"
        ("n a" . text-scale-adjust)
        ("n b" . toggle-debug-on-error)
        ("n c" . toggle-case-fold-search)
-       ("n d" . nil)
+       ("n d" . display-line-numbers-mode)
        ("n e" . eshell)
        ("n f" . nil)
        ("n g" . xah-toggle-read-novel-mode)
@@ -3685,7 +3697,7 @@ Version: 2024-04-22"
        ("t 7" . xah-append-to-register-1)
        ("t 8" . xah-clear-register-1)
        ("t a" . nil)
-       ("t b" . nil)
+       ("t b" . xah-backward-punct)
        ("t c" . copy-matching-lines)
        ("t d" . mark-defun)
        ("t e" . list-matching-lines)
@@ -3766,8 +3778,8 @@ Version: 2024-04-22"
        ("]" . split-window-right)
        ("`" . other-frame)
 
-       ("1" . xah-backward-punct)
-       ("2" . xah-forward-punct)
+       ;; ("1" . nil)
+       ;; ("2" . nil)
        ("3" . delete-other-windows)
        ("4" . split-window-below)
        ("5" . delete-char)
