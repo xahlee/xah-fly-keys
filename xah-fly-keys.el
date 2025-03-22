@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 26.11.20250321120953
+;; Version: 26.11.20250321204900
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -3628,14 +3628,14 @@ Version: 2024-04-22"
        ("r 3" . number-to-register)
        ("r 4" . increment-register)
        ("r RET" . nil)
-       ("r SPC" . call-last-kbd-macro)
+       ("r SPC" . nil)
        ("r \\" . xah-slash-to-backslash)
 
        ("r a" . nil)
        ("r b" . nil)
        ("r c" . string-rectangle)
        ("r d" . delete-rectangle)
-       ("r e" . nil)
+       ("r e" . call-last-kbd-macro)
        ("r f" . nil)
        ("r g" . nil)
        ("r h" . xah-change-bracket-pairs)
