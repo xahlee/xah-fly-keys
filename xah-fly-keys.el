@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 26.11.20250321204900
+;; Version: 26.11.20250324000003
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -2119,11 +2119,11 @@ Version: 2023-11-14"
     (skip-chars-forward "-_a-zA-Z0-9")
     (setq mark-active t))
 
-   ((and (looking-at "[:blank:]")
-         (prog2 (backward-char) (looking-at "[:blank:]") (forward-char)))
-    ;; (message "debug: left and right both space" )
-    (skip-chars-backward "[:blank:]") (push-mark (point) t t)
-    (skip-chars-forward "[:blank:]"))
+   ;; ((and (looking-at "[[:blank:]]")
+   ;;       (prog2 (backward-char) (looking-at "[[:blank:]]") (forward-char)))
+   ;;  ;; (message "debug: left and right both space" )
+   ;;  (skip-chars-backward "[[:blank:]]") (push-mark (point) t t)
+   ;;  (skip-chars-forward "[[:blank:]]"))
 
    ((and (looking-at "\n")
          (eq (char-before) 10))
