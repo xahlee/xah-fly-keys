@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 26.11.20250324000003
+;; Version: 26.11.20250325184302
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "27"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -188,29 +188,6 @@ Must be set before loading xah-fly-keys."
 Must be set before loading xah-fly-keys."
  :type 'boolean)
 
-(defun xah-fly-get-pos-block ()
-  "Return the begin end positions of current text block.
-Return value is a `vector'.
-Text block is group of lines separated by blank lines.
-
-URL `http://xahlee.info/emacs/emacs/elisp_get_text_block.html'
-Created: 2024-03-23
-Version: 2024-10-07"
-  (let (xbeg xend (xp (point)))
-    (save-excursion
-      (setq xbeg (if (re-search-backward "\n[ \t]*\n" nil 1) (match-end 0) (point)))
-      (goto-char xp)
-      (setq xend (if (re-search-forward "\n[ \t]*\n" nil 1) (match-beginning 0) (point))))
-    (vector xbeg xend)))
-
-(defun xah-fly-get-pos-block-or ()
-  "If region is active, return its [begin end] positions, else same as `xah-fly-get-pos-block'.
-Return value is a `vector'.
-Version: 2024-03-23"
-  (if (region-active-p)
-      (vector (region-beginning) (region-end))
-    (xah-fly-get-pos-block)))
-
 ;; HHHH------------------------------
 ;; cursor movement
 
@@ -349,7 +326,7 @@ Version: 2024-06-15"
      (t (backward-up-list 1 'ESCAPE-STRINGS 'NO-SYNTAX-CROSSING)))))
 
 (defvar xah-punctuation-regex nil "A regex string for the purpose of moving cursor to a punctuation.")
-(setq xah-punctuation-regex "= *\"")
+(setq xah-punctuation-regex "\"")
 
 (defun xah-forward-punct ()
   "Move cursor to the next occurrence of punctuation.
@@ -386,19 +363,19 @@ Version: 2025-03-21"
 (defun xah-sort-lines ()
   "Like `sort-lines' but if no region, do the current block.
 Created: 2022-01-22
-Version: 2024-03-19"
+Version: 2025-03-25"
   (interactive)
   (let (xbeg xend)
-    (seq-setq (xbeg xend) (xah-fly-get-pos-block-or))
+    (seq-setq (xbeg xend) (seq-setq (xbeg xend) (if (region-active-p) (list (region-beginning) (region-end)) (list (save-excursion (if (re-search-backward "\n[ \t]*\n" nil 1) (match-end 0) (point))) (save-excursion (if (re-search-forward "\n[ \t]*\n" nil 1) (match-beginning 0) (point)))))))
     (sort-lines current-prefix-arg xbeg xend)))
 
 (defun xah-narrow-to-region ()
   "Same as `narrow-to-region', but if no selection, narrow to the current block.
 Created: 2022-01-22
-Version: 2024-03-19"
+Version: 2025-03-25"
   (interactive)
   (let (xbeg xend)
-    (seq-setq (xbeg xend) (xah-fly-get-pos-block-or))
+    (seq-setq (xbeg xend) (seq-setq (xbeg xend) (if (region-active-p) (list (region-beginning) (region-end)) (list (save-excursion (if (re-search-backward "\n[ \t]*\n" nil 1) (match-end 0) (point))) (save-excursion (if (re-search-forward "\n[ \t]*\n" nil 1) (match-beginning 0) (point)))))))
     (narrow-to-region xbeg xend)))
 
 ;; HHHH------------------------------
@@ -835,7 +812,7 @@ followed by 2 spaces.
 
 URL `http://xahlee.info/emacs/emacs/elisp_change_brackets.html'
 Created: 2020-11-01
-Version: 2025-02-27"
+Version: 2025-03-25"
   (interactive
    (let ((xbrackets
           '(
@@ -888,7 +865,7 @@ Version: 2025-02-27"
         (completing-read "Replace this:" xbrackets nil t nil nil (car xbrackets))
         (completing-read "To:" xbrackets nil t nil nil (car (last xbrackets)))))))
   (let (xbeg xend xleft xright xtoL xtoR)
-    (seq-setq (xbeg xend) (xah-fly-get-pos-block-or))
+    (seq-setq (xbeg xend) (seq-setq (xbeg xend) (if (region-active-p) (list (region-beginning) (region-end)) (list (save-excursion (if (re-search-backward "\n[ \t]*\n" nil 1) (match-end 0) (point))) (save-excursion (if (re-search-forward "\n[ \t]*\n" nil 1) (match-beginning 0) (point)))))))
     (let ((xsFrom (last (split-string FromChars " ") 2))
           (xsTo (last (split-string ToChars " ") 2)))
 
@@ -980,10 +957,10 @@ Version: 2023-11-14"
 
 URL `http://xahlee.info/emacs/emacs/emacs_upcase_sentence.html'
 Created: 2020-12-08
-Version: 2024-03-19"
+Version: 2025-03-25"
   (interactive)
   (let (xbeg xend)
-    (seq-setq (xbeg xend) (xah-fly-get-pos-block-or))
+    (seq-setq (xbeg xend) (seq-setq (xbeg xend) (if (region-active-p) (list (region-beginning) (region-end)) (list (save-excursion (if (re-search-backward "\n[ \t]*\n" nil 1) (match-end 0) (point))) (save-excursion (if (re-search-forward "\n[ \t]*\n" nil 1) (match-beginning 0) (point)))))))
     (save-restriction
       (narrow-to-region xbeg xend)
       (let ((case-fold-search nil))
@@ -1081,10 +1058,10 @@ Version: 2021-09-19"
   "Add a space after comma of current block or selection.
 and highlight changes made.
 Created: 2022-01-20
-Version: 2024-03-19"
+Version: 2025-03-25"
   (interactive)
   (let (xbeg xend)
-    (seq-setq (xbeg xend) (xah-fly-get-pos-block-or))
+    (seq-setq (xbeg xend) (seq-setq (xbeg xend) (if (region-active-p) (list (region-beginning) (region-end)) (list (save-excursion (if (re-search-backward "\n[ \t]*\n" nil 1) (match-end 0) (point))) (save-excursion (if (re-search-forward "\n[ \t]*\n" nil 1) (match-beginning 0) (point)))))))
     (save-restriction
       (narrow-to-region xbeg xend)
       (goto-char (point-min))
@@ -1128,13 +1105,13 @@ This commands calls `fill-region' to do its work. Set `fill-column' for short li
 
 URL `http://xahlee.info/emacs/emacs/modernization_fill-paragraph.html'
 Created: 2020-11-22
-Version: 2024-03-19"
+Version: 2025-03-25"
   (interactive)
   ;; This command symbol has a property “'longline-p”, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
   (let ( (xisLongline (if (eq last-command this-command) (get this-command 'longline-p) t))
          (deactivate-mark nil)
          xbeg xend )
-    (seq-setq (xbeg xend) (xah-fly-get-pos-block-or))
+    (seq-setq (xbeg xend) (seq-setq (xbeg xend) (if (region-active-p) (list (region-beginning) (region-end)) (list (save-excursion (if (re-search-backward "\n[ \t]*\n" nil 1) (match-end 0) (point))) (save-excursion (if (re-search-forward "\n[ \t]*\n" nil 1) (match-beginning 0) (point)))))))
     (if xisLongline
         (fill-region xbeg xend)
       (let ((fill-column 99999 ))
@@ -1198,13 +1175,13 @@ If `universal-argument' is called first, ask user for max width.
 
 URL `http://xahlee.info/emacs/emacs/emacs_reformat_lines.html'
 Created: 2018-12-16
-Version: 2024-03-19"
+Version: 2025-03-25"
   (interactive)
   (let ( xbeg xend xminlen )
     (setq xminlen (if MinLength MinLength (if current-prefix-arg (prefix-numeric-value current-prefix-arg) fill-column)))
     (if (and Begin End)
         (setq xbeg Begin xend End)
-      (seq-setq (xbeg xend) (xah-fly-get-pos-block-or)))
+      (seq-setq (xbeg xend) (seq-setq (xbeg xend) (if (region-active-p) (list (region-beginning) (region-end)) (list (save-excursion (if (re-search-backward "\n[ \t]*\n" nil 1) (match-end 0) (point))) (save-excursion (if (re-search-forward "\n[ \t]*\n" nil 1) (match-beginning 0) (point))))))))
     (save-excursion
       (save-restriction
         (narrow-to-region xbeg xend)
@@ -1222,15 +1199,14 @@ Note: this command is different from emacs `fill-region' or `fill-paragraph'.
 This command never adds or delete non-whitespace chars. It only exchange whitespace sequence.
 
 URL `http://xahlee.info/emacs/emacs/emacs_reformat_lines.html'
-Created 2016 or before.
-Created: 2021-07-05
-Version: 2024-03-19"
+Created: 2016
+Version: 2025-03-25"
   (interactive)
   ;; This symbol has a property 'is-long-p, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
   (let (xisLong xwidth xbeg xend)
     (setq xwidth (if Width Width (if current-prefix-arg (prefix-numeric-value current-prefix-arg) 66)))
     (setq xisLong (if (eq last-command this-command) (get this-command 'is-long-p) nil))
-    (seq-setq (xbeg xend) (xah-fly-get-pos-block-or))
+    (seq-setq (xbeg xend) (seq-setq (xbeg xend) (if (region-active-p) (list (region-beginning) (region-end)) (list (save-excursion (if (re-search-backward "\n[ \t]*\n" nil 1) (match-end 0) (point))) (save-excursion (if (re-search-forward "\n[ \t]*\n" nil 1) (match-beginning 0) (point)))))))
     (if current-prefix-arg
         (xah-reformat-to-multi-lines xbeg xend xwidth)
       (if xisLong
@@ -1246,10 +1222,10 @@ After this command is called, press `xah-repeat-key' to repeat it.
 
 URL `http://xahlee.info/emacs/emacs/elisp_reformat_to_sentence_lines.html'
 Created: 2020-12-02
-Version: 2025-01-24"
+Version: 2025-03-25"
   (interactive)
   (let (xbeg xend)
-    (seq-setq (xbeg xend) (xah-fly-get-pos-block-or))
+    (seq-setq (xbeg xend) (seq-setq (xbeg xend) (if (region-active-p) (list (region-beginning) (region-end)) (list (save-excursion (if (re-search-backward "\n[ \t]*\n" nil 1) (match-end 0) (point))) (save-excursion (if (re-search-forward "\n[ \t]*\n" nil 1) (match-beginning 0) (point)))))))
     (save-restriction
       (narrow-to-region xbeg xend)
       (goto-char (point-min)) (while (search-forward "。" nil t) (replace-match "。\n"))
@@ -1276,10 +1252,10 @@ Version: 2025-01-24"
 
 URL `http://xahlee.info/emacs/emacs/emacs_space_to_newline.html'
 Created: 2017-08-19
-Version: 2024-03-19"
+Version: 2025-03-25"
   (interactive)
   (let (xbeg xend)
-    (seq-setq (xbeg xend) (xah-fly-get-pos-block-or))
+    (seq-setq (xbeg xend) (seq-setq (xbeg xend) (if (region-active-p) (list (region-beginning) (region-end)) (list (save-excursion (if (re-search-backward "\n[ \t]*\n" nil 1) (match-end 0) (point))) (save-excursion (if (re-search-forward "\n[ \t]*\n" nil 1) (match-beginning 0) (point)))))))
     (save-restriction
       (narrow-to-region xbeg xend)
       (goto-char (point-min))
@@ -1439,7 +1415,7 @@ In lisp code, QuoteL QuoteR Sep are strings.
 
 URL `http://xahlee.info/emacs/emacs/emacs_quote_lines.html'
 Created: 2020-06-26
-Version: 2024-11-24"
+Version: 2025-03-25"
   (interactive
    (let ((xbrackets
           '(
@@ -1484,7 +1460,7 @@ Version: 2024-11-24"
             (t xsepChoice)))
      (list xquoteL xquoteR xsep)))
   (let (xbeg xend (xquoteL QuoteL) (xquoteR QuoteR) (xsep Sep))
-    (seq-setq (xbeg xend) (xah-fly-get-pos-block-or))
+    (seq-setq (xbeg xend) (seq-setq (xbeg xend) (if (region-active-p) (list (region-beginning) (region-end)) (list (save-excursion (if (re-search-backward "\n[ \t]*\n" nil 1) (match-end 0) (point))) (save-excursion (if (re-search-forward "\n[ \t]*\n" nil 1) (match-beginning 0) (point)))))))
     (save-excursion
       (save-restriction
         (narrow-to-region xbeg xend)
@@ -1776,7 +1752,7 @@ Else
 
 URL `http://xahlee.info/emacs/emacs/elisp_insert_brackets_by_pair.html'
 Created: 2017-01-17
-Version: 2024-03-19"
+Version: 2025-03-25"
   (if (region-active-p)
       (progn
         (let ((xbeg (region-beginning)) (xend (region-end)))
@@ -1794,7 +1770,7 @@ Version: 2024-03-19"
         (goto-char (+ xend (length LBracket))))
        ((eq WrapMethod 'block)
         (save-excursion
-          (seq-setq (xbeg xend) (xah-fly-get-pos-block-or))
+          (seq-setq (xbeg xend) (seq-setq (xbeg xend) (if (region-active-p) (list (region-beginning) (region-end)) (list (save-excursion (if (re-search-backward "\n[ \t]*\n" nil 1) (match-end 0) (point))) (save-excursion (if (re-search-forward "\n[ \t]*\n" nil 1) (match-beginning 0) (point)))))))
           (goto-char xend)
           (insert RBracket)
           (goto-char xbeg)
