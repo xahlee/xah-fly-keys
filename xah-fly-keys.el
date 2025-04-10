@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 26.11.20250405204855
+;; Version: 26.11.20250409222002
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -154,6 +154,7 @@
 (require 'dired)
 (require 'dired-x)
 (require 'seq)
+(require 'ido)
 
 ;; HHHH------------------------------
 
@@ -1729,7 +1730,7 @@ Version: 2025-03-07"
     (setq xstyle
           (if current-prefix-arg
               (let ((completion-ignore-case t))
-                (completing-read "Style:" xmenu nil t nil nil (caar xmenu)))
+                (ido-completing-read "Style:" xmenu nil t))
             (caar xmenu)))
     (when (region-active-p) (delete-region (region-beginning) (region-end)))
     (insert (eval (cdr (assoc xstyle xmenu))))))
