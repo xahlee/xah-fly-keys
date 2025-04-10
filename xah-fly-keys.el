@@ -4,9 +4,9 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 26.11.20250325184849
+;; Version: 26.11.20250405204855
 ;; Created: 2013-09-10
-;; Package-Requires: ((emacs "27"))
+;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
 ;; License: GPL v3.
 ;; Homepage: http://xahlee.info/emacs/misc/xah-fly-keys.html
@@ -213,7 +213,7 @@ Version: 2024-10-30"
   (let ((xp (point)))
     (if (or (eq (point) (line-beginning-position))
             (eq last-command this-command))
-        (when (re-search-backward "\n[\t\n ]*\n+" nil :move)
+        (when (re-search-backward "\n[\t\n ]*\n+" nil 1)
           (skip-chars-backward "\n\t ")
           ;; (forward-char)
           )
@@ -238,7 +238,7 @@ Version: 2024-10-30"
   (interactive)
   (if (or (eq (point) (line-end-position))
           (eq last-command this-command))
-      (re-search-forward "\n[\t\n ]*\n+" nil :move)
+      (re-search-forward "\n[\t\n ]*\n+" nil 1)
     (if visual-line-mode
         (end-of-visual-line)
       (end-of-line))))
@@ -531,11 +531,11 @@ Version: 2022-03-04"
         xbeg ; prev Block Begin
         xend ; prev Block end
         )
-    (if (re-search-forward "\n[ \t]*\n+" nil "move")
+    (if (re-search-forward "\n[ \t]*\n+" nil 1)
         (setq xc2 (match-beginning 0))
       (setq xc2 (point)))
     (goto-char xp0)
-    (if (re-search-backward "\n[ \t]*\n+" nil "move")
+    (if (re-search-backward "\n[ \t]*\n+" nil 1)
         (progn
           (skip-chars-backward "\n \t")
           (setq xend (point))
@@ -543,7 +543,7 @@ Version: 2022-03-04"
           (setq xc1 (point)))
       (error "No previous block."))
     (goto-char xend)
-    (if (re-search-backward "\n[ \t]*\n+" nil "move")
+    (if (re-search-backward "\n[ \t]*\n+" nil 1)
         (progn
           (setq xbeg (match-end 0)))
       (setq xbeg (point)))
@@ -568,17 +568,17 @@ Version: 2022-03-04"
         )
     (if (eq (point-min) (point))
         (setq xc1 (point))
-      (if (re-search-backward "\n\n+" nil "move")
+      (if (re-search-backward "\n\n+" nil 1)
           (progn
             (setq xc1 (match-end 0)))
         (setq xc1 (point))))
     (goto-char xp0)
-    (if (re-search-forward "\n[ \t]*\n+" nil "move")
+    (if (re-search-forward "\n[ \t]*\n+" nil 1)
         (progn
           (setq xc2 (match-beginning 0))
           (setq xn1 (match-end 0)))
       (error "No next block."))
-    (if (re-search-forward "\n[ \t]*\n+" nil "move")
+    (if (re-search-forward "\n[ \t]*\n+" nil 1)
         (progn
           (setq xn2 (match-beginning 0)))
       (setq xn2 (point)))
@@ -966,12 +966,12 @@ Version: 2025-03-25"
       (let ((case-fold-search nil))
         ;; after period or question mark or exclamation
         (goto-char (point-min))
-        (while (re-search-forward "\\(\\.\\|\\?\\|!\\)[ \n]+ *\\([a-z]\\)" nil :move)
+        (while (re-search-forward "\\(\\.\\|\\?\\|!\\)[ \n]+ *\\([a-z]\\)" nil 1)
           (upcase-region (match-beginning 2) (match-end 2))
           (overlay-put (make-overlay (match-beginning 2) (match-end 2)) 'face 'highlight))
         ;; after a blank line, after a bullet, or beginning of buffer
         (goto-char (point-min))
-        (while (re-search-forward "\\(\\`\\|• \\|\n\n\\)\\([a-z]\\)" nil :move)
+        (while (re-search-forward "\\(\\`\\|• \\|\n\n\\)\\([a-z]\\)" nil 1)
           (upcase-region (match-beginning 2) (match-end 2))
           (overlay-put (make-overlay (match-beginning 2) (match-end 2)) 'face 'highlight))
         ;; for HTML. first letter after tag
@@ -985,7 +985,7 @@ Version: 2025-03-25"
              (eq major-mode 'mhtml-mode))
           (goto-char (point-min))
           (while
-              (re-search-forward "\\(<title>[ \n]?\\|<h[1-6]>[ \n]?\\|<p>[ \n]?\\|<li>[ \n]?\\|<dd>[ \n]?\\|<td>[ \n]?\\|<br ?/?>[ \n]?\\|<figcaption>[ \n]?\\)\\([a-z]\\)" nil :move)
+              (re-search-forward "\\(<title>[ \n]?\\|<h[1-6]>[ \n]?\\|<p>[ \n]?\\|<li>[ \n]?\\|<dd>[ \n]?\\|<td>[ \n]?\\|<br ?/?>[ \n]?\\|<figcaption>[ \n]?\\)\\([a-z]\\)" nil 1)
             (upcase-region (match-beginning 2) (match-end 2))
             (overlay-put (make-overlay (match-beginning 2) (match-end 2)) 'face 'highlight))))
       (goto-char (point-max)))
@@ -1150,7 +1150,7 @@ Version: 2021-07-06"
     (save-restriction
       (narrow-to-region Begin End)
       (goto-char (point-min))
-      (while (re-search-forward "\n\n+" nil :move) (replace-match "\n")))))
+      (while (re-search-forward "\n\n+" nil 1) (replace-match "\n")))))
 
 (defun xah-reformat-whitespaces-to-one-space (Begin End)
   "Replace whitespaces by one space.
@@ -1162,33 +1162,34 @@ Version: 2022-01-08"
   (save-restriction
       (narrow-to-region Begin End)
       (goto-char (point-min))
-      (while (search-forward "\n" nil :move) (replace-match " "))
+      (while (search-forward "\n" nil 1) (replace-match " "))
       (goto-char (point-min))
-      (while (search-forward "\t" nil :move) (replace-match " "))
+      (while (search-forward "\t" nil 1) (replace-match " "))
       (goto-char (point-min))
-      (while (re-search-forward " +" nil :move) (replace-match " "))
+      (while (re-search-forward " +" nil 1) (replace-match " "))
       (goto-char (point-max))))
 
-(defun xah-reformat-to-multi-lines ( &optional Begin End MinLength)
+(defun xah-reformat-to-multi-lines (&optional Begin End MinLength)
   "Replace spaces by a newline at ~70 chars, on current block or selection.
 If `universal-argument' is called first, ask user for max width.
 
 URL `http://xahlee.info/emacs/emacs/emacs_reformat_lines.html'
 Created: 2018-12-16
-Version: 2025-03-25"
+Version: 2025-04-08"
   (interactive)
-  (let ( xbeg xend xminlen )
-    (setq xminlen (if MinLength MinLength (if current-prefix-arg (prefix-numeric-value current-prefix-arg) fill-column)))
-    (if (and Begin End)
-        (setq xbeg Begin xend End)
-      (seq-setq (xbeg xend) (if (region-active-p) (list (region-beginning) (region-end)) (list (save-excursion (if (re-search-backward "\n[ \t]*\n" nil 1) (match-end 0) (point))) (save-excursion (if (re-search-forward "\n[ \t]*\n" nil 1) (match-beginning 0) (point)))))))
+  (let (xbeg xend)
+    (seq-setq
+     (xbeg xend)
+     (if (and Begin End)
+         (list  Begin  End)
+       (if (region-active-p) (list (region-beginning) (region-end)) (list (save-excursion (if (re-search-backward "\n[ \t]*\n" nil 1) (match-end 0) (point))) (save-excursion (if (re-search-forward "\n[ \t]*\n" nil 1) (match-beginning 0) (point)))))))
     (save-excursion
       (save-restriction
         (narrow-to-region xbeg xend)
         (goto-char (point-min))
-        (while (re-search-forward " +" nil :move)
-          (when (> (- (point) (line-beginning-position)) xminlen)
-            (replace-match "\n" )))))))
+        (while (re-search-forward " +" nil 1)
+          (when (> (- (point) (line-beginning-position)) (if MinLength MinLength (if current-prefix-arg (prefix-numeric-value current-prefix-arg) fill-column)))
+            (replace-match "\n")))))))
 
 (defun xah-reformat-lines (&optional Width)
   "Reformat current block or selection into short lines or 1 long line.
@@ -1243,7 +1244,7 @@ Version: 2025-03-25"
       (while (re-search-forward "\\([.?!]\\) +\\([(0-9A-Za-z]+\\)" nil t) (replace-match "\\1\n\\2"))
       (goto-char (point-max))
       (while (eq (char-before) 32) (delete-char -1))))
-  (re-search-forward "\n+" nil :move)
+  (re-search-forward "\n+" nil 1)
   (set-transient-map (let ((xkmap (make-sparse-keymap))) (define-key xkmap (kbd (if (boundp 'xah-repeat-key) xah-repeat-key "m")) this-command) xkmap))
   (set-transient-map (let ((xkmap (make-sparse-keymap))) (define-key xkmap (kbd "DEL") this-command) xkmap)))
 
@@ -1604,11 +1605,11 @@ Version: 2024-10-07"
         (setq xbeg (region-beginning) xend (region-end))
       (progn
         (setq xbeg
-              (if (re-search-backward "\n[ \t]*\n+" nil :move)
+              (if (re-search-backward "\n[ \t]*\n+" nil 1)
                   (match-end 0)
                 (point)))
         (goto-char xp)
-        (setq xend (if (re-search-forward "\n[ \t]*\n+" nil :move)
+        (setq xend (if (re-search-forward "\n[ \t]*\n+" nil 1)
                        (match-end 0)
                      (point-max)))))
     (kill-region xbeg xend)))
@@ -1706,31 +1707,30 @@ Version: 2025-03-07"
   (let (xmenu xstyle)
     (setq
      xmenu
-     '(("ISO date • 2018-04-12" . (format-time-string "%Y-%m-%d"))
-       ("all digits datetime • 20180412224611" . (format-time-string "%Y%m%d%H%M%S"))
-       ("date _ time digits • 2018-04-12_224611" . (format-time-string "%Y-%m-%d_%H%M%S"))
-       ("ISO datetime full • 2018-04-12T22:46:11-07:00" .
+     '(("ISO date • 2025-04-12" . (format-time-string "%Y-%m-%d"))
+       ("all digits • 20250412224611" . (format-time-string "%Y%m%d%H%M%S"))
+       ("coder • 2025-04-12_224611" . (format-time-string "%Y-%m-%d_%H%M%S"))
+       ("ISO full • 2025-04-12T22:46:11-07:00" .
         (concat
          (format-time-string "%Y-%m-%dT%T")
          (funcall (lambda (xx) (format "%s:%s" (substring xx 0 3) (substring xx 3 5)))
                   (format-time-string "%z"))))
-       ("ISO datetime w space • 2018-04-12 22:46:11-07:00" .
+       ("ISO space • 2025-04-12 22:46:11-07:00" .
         (concat
          (format-time-string "%Y-%m-%d %T")
          (funcall
           (lambda (xx) (format "%s:%s" (substring xx 0 3) (substring xx 3 5)))
           (format-time-string "%z"))))
-       ("ISO date + weekday • 2018-04-12 Thursday" . (format-time-string "%Y-%m-%d %A"))
-       ("USA date + weekday • Thursday, April 12, 2018" . (format-time-string "%A, %B %d, %Y"))
-       ("USA date + weekday abbrev • Thu, Apr 12, 2018" . (format-time-string "%a, %b %d, %Y"))
-       ("USA date • April 12, 2018" . (format-time-string "%B %d, %Y"))
-       ("USA date abbrev • Apr 12, 2018" . (format-time-string "%b %d, %Y")))
-
-     xstyle
-     (if current-prefix-arg
-         (let ((completion-ignore-case t))
-           (completing-read "Style:" xmenu nil t nil nil (caar xmenu)))
-       (caar xmenu)))
+       ("ISO + weekday • 2025-04-12 Thursday" . (format-time-string "%Y-%m-%d %A"))
+       ("USA + weekday • Thursday, April 12, 2025" . (format-time-string "%A, %B %d, %Y"))
+       ("USA + weekday abbrev • Thu, Apr 12, 2025" . (format-time-string "%a, %b %d, %Y"))
+       ("USA • April 12, 2025" . (format-time-string "%B %d, %Y"))
+       ("USA abbrev • Apr 12, 2025" . (format-time-string "%b %d, %Y"))))
+    (setq xstyle
+          (if current-prefix-arg
+              (let ((completion-ignore-case t))
+                (completing-read "Style:" xmenu nil t nil nil (caar xmenu)))
+            (caar xmenu)))
     (when (region-active-p) (delete-region (region-beginning) (region-end)))
     (insert (eval (cdr (assoc xstyle xmenu))))))
 
@@ -1969,13 +1969,13 @@ Created: 2019-12-26
 Version: 2023-11-14"
   (interactive)
   (if (region-active-p)
-      (re-search-forward "\n[ \t]*\n[ \t]*\n*" nil :move)
+      (re-search-forward "\n[ \t]*\n[ \t]*\n*" nil 1)
     (progn
       (skip-chars-forward " \n\t")
-      (when (re-search-backward "\n[ \t]*\n" nil :move)
+      (when (re-search-backward "\n[ \t]*\n" nil 1)
         (goto-char (match-end 0)))
       (push-mark (point) t t)
-      (re-search-forward "\n[ \t]*\n" nil :move))))
+      (re-search-forward "\n[ \t]*\n" nil 1))))
 
 (defun xah-select-line ()
   "Select current line. If region is active, extend selection downward by line.
@@ -2602,7 +2602,7 @@ Version: 2020-09-08"
         (narrow-to-region xbegin xend)
         (progn
           (goto-char (point-min))
-          (while (re-search-forward "\n\n\n+" nil :move)
+          (while (re-search-forward "\n\n\n+" nil 1)
             (replace-match "\n\n")))))))
 
 (defun xah-clean-whitespace ()
@@ -2622,9 +2622,9 @@ Version: 2022-08-06"
       (save-restriction
         (narrow-to-region xbegin xend)
         (goto-char (point-min))
-        (while (re-search-forward "[ \t]+\n" nil :move) (replace-match "\n"))
+        (while (re-search-forward "[ \t]+\n" nil 1) (replace-match "\n"))
         (goto-char (point-min))
-        (while (re-search-forward "\n\n\n+" nil :move) (replace-match "\n\n"))
+        (while (re-search-forward "\n\n\n+" nil 1) (replace-match "\n\n"))
         (goto-char (point-max))
         (while (eq (char-before) 32) (delete-char -1)))))
   (message "%s done" real-this-command))
@@ -3670,8 +3670,6 @@ Version: 2024-04-22"
        ("t 2" . xah-clear-register-1)
        ("t 3" . xah-copy-to-register-1)
        ("t 4" . xah-paste-from-register-1)
-       ("t 7" . xah-append-to-register-1)
-       ("t 8" . xah-clear-register-1)
        ("t a" . nil)
        ("t b" . xah-backward-punct)
        ("t c" . copy-matching-lines)
