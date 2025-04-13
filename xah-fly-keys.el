@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 26.11.20250409222002
+;; Version: 26.11.20250412183917
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -1703,37 +1703,34 @@ If there is selection, delete it first.
 
 URL `http://xahlee.info/emacs/emacs/elisp_insert-date-time.html'
 Created: 2013-05-10
-Version: 2025-03-07"
+Version: 2025-04-12"
   (interactive)
   (let (xmenu xstyle)
     (setq
      xmenu
-     '(("ISO date • 2025-04-12" . (format-time-string "%Y-%m-%d"))
-       ("all digits • 20250412224611" . (format-time-string "%Y%m%d%H%M%S"))
-       ("coder • 2025-04-12_224611" . (format-time-string "%Y-%m-%d_%H%M%S"))
-       ("ISO full • 2025-04-12T22:46:11-07:00" .
-        (concat
-         (format-time-string "%Y-%m-%dT%T")
-         (funcall (lambda (xx) (format "%s:%s" (substring xx 0 3) (substring xx 3 5)))
-                  (format-time-string "%z"))))
-       ("ISO space • 2025-04-12 22:46:11-07:00" .
-        (concat
-         (format-time-string "%Y-%m-%d %T")
-         (funcall
-          (lambda (xx) (format "%s:%s" (substring xx 0 3) (substring xx 3 5)))
-          (format-time-string "%z"))))
-       ("ISO + weekday • 2025-04-12 Thursday" . (format-time-string "%Y-%m-%d %A"))
-       ("USA + weekday • Thursday, April 12, 2025" . (format-time-string "%A, %B %d, %Y"))
-       ("USA + weekday abbrev • Thu, Apr 12, 2025" . (format-time-string "%a, %b %d, %Y"))
-       ("USA • April 12, 2025" . (format-time-string "%B %d, %Y"))
-       ("USA abbrev • Apr 12, 2025" . (format-time-string "%b %d, %Y"))))
+     (list
+      (concat "ISO date⚫" (format-time-string "%Y-%m-%d"))
+      (concat "coder⚫" (format-time-string "%Y-%m-%d_%H%M%S"))
+      (concat "all digits⚫" (format-time-string "%Y%m%d%H%M%S"))
+
+      (concat "unix seconds⚫" (number-to-string (car (let ((current-time-list nil)) (current-time)))))
+
+      ;; (concat "ISO full⚫" (format-time-string "%Y-%m-%dT%T") (funcall (lambda (xx) (format "%s:%s" (substring xx 0 3) (substring xx 3 5))) (format-time-string "%z")))
+
+      (concat "ISO full⚫" (format-time-string "%FT%T%z"))
+
+      (concat "ISO + weekday⚫" (format-time-string "%Y-%m-%d %A"))
+      (concat "USA + weekday⚫" (format-time-string "%A, %B %d, %Y"))
+      (concat "USA + weekday abbrev⚫" (format-time-string "%a, %b %d, %Y"))
+      (concat "USA⚫" (format-time-string "%B %d, %Y"))
+      (concat "USA abbrev⚫" (format-time-string "%b %d, %Y"))))
     (setq xstyle
           (if current-prefix-arg
               (let ((completion-ignore-case t))
                 (ido-completing-read "Style:" xmenu nil t))
-            (caar xmenu)))
+            (car xmenu)))
     (when (region-active-p) (delete-region (region-beginning) (region-end)))
-    (insert (eval (cdr (assoc xstyle xmenu))))))
+    (insert (nth 1 (split-string xstyle "⚫")))))
 
 (defun xah-insert-bracket-pair (LBracket RBracket &optional WrapMethod)
   "Insert brackets around selection, word, at point, and maybe move cursor in between.
@@ -1919,6 +1916,7 @@ xString can be multiple chars or any string.
    ("package 📦" . "📦")
    ("cursor ▮" . "▮")
    ("music 🎵" . "🎵")
+   ("ok 🆗" . "🆗")
 
    ("dagger †" . "†")
    ("double dagger ‡" . "‡")
@@ -3536,13 +3534,13 @@ Version: 2024-04-22"
        ("h u" . elisp-index-search)
        ("h v" . apropos-value)
        ("h x" . describe-command) ; emacs 28
-       ;; y
+
        ("h z" . describe-coding-system)
 
        ("i" . kill-line)
        ("j" . xah-copy-all-or-region)
-       ("k" . xah-show-kill-ring)
 
+       ;; k
        ("l" . recenter-top-bottom)
 
        ("m" . dired-jump)
@@ -3712,8 +3710,7 @@ Version: 2024-04-22"
        ("w j" . xah-run-current-file)
 
        ("x" . xah-toggle-previous-letter-case)
-       ;; y
-
+       ("y" . xah-show-kill-ring)
        ;; vc command keys subject to change. need a frequency stat of the commands.
 
        ("z b" . vc-root-diff)      ; D
