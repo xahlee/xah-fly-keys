@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 26.11.20250412183917
+;; Version: 26.11.20250418094205
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -154,7 +154,6 @@
 (require 'dired)
 (require 'dired-x)
 (require 'seq)
-(require 'ido)
 
 ;; HHHH------------------------------
 
@@ -1727,7 +1726,7 @@ Version: 2025-04-12"
     (setq xstyle
           (if current-prefix-arg
               (let ((completion-ignore-case t))
-                (ido-completing-read "Style:" xmenu nil t))
+                (completing-read "Style:" xmenu nil t))
             (car xmenu)))
     (when (region-active-p) (delete-region (region-beginning) (region-end)))
     (insert (nth 1 (split-string xstyle "⚫")))))
@@ -2307,7 +2306,7 @@ If the buffer is a file, add the path to the list `xah-recently-closed-buffers'.
 
 URL `http://xahlee.info/emacs/emacs/elisp_close_buffer_open_last_closed.html'
 Created: 2016-06-19
-Version: 2024-11-09"
+Version: 2025-04-13"
   (interactive)
   (widen)
   (cond
@@ -2329,7 +2328,7 @@ Version: 2024-11-09"
    ((and xah-create-buffer-backup (not buffer-file-name) (xah-user-buffer-p) (not (eq (point-max) 1)))
     (let ((xnewName (format "%suntitled_%s_%x.txt"
                             xah-temp-dir-path
-                            (format-time-string "%Y%m%d_%H%M%S")
+                            (format-time-string "%Y-%m-%d_%H%M%S")
                             (random #xfffff))))
       (when (not (file-exists-p xah-temp-dir-path)) (make-directory xah-temp-dir-path))
       (write-region (point-min) (point-max) xnewName)
@@ -2800,7 +2799,7 @@ When called in emacs lisp, if Fname is given, open that.
 
 URL `http://xahlee.info/emacs/emacs/emacs_dired_open_file_in_ext_apps.html'
 Created: 2019-11-04
-Version: 2023-06-26"
+Version: 2025-04-18"
   (interactive)
   (let (xfileList xdoIt)
     (setq xfileList
@@ -2817,8 +2816,7 @@ Version: 2023-06-26"
               (xcmdlist (list "PowerShell" "-Command" "Invoke-Item" "-LiteralPath")))
           (mapc
            (lambda (x)
-             (message "%s" x)
-             (apply 'start-process (append (list "xah open in external app" xoutBuf) xcmdlist (list (format "'%s'" (if (string-match "'" x) (replace-match "`'" t t x) x))) nil)))
+             (apply 'start-process (append (list "xah open in external app" xoutBuf) xcmdlist (list (format "'%s'" (string-replace "'" "`'" x))) nil)))
            xfileList)))
        ((eq system-type 'darwin)
         (mapc (lambda (xfpath) (shell-command (concat "open " (shell-quote-argument xfpath)))) xfileList))
@@ -4131,7 +4129,7 @@ Version: 2017-07-07"
 
 URL `http://xahlee.info/emacs/misc/xah-fly-keys.html'"
   :global t
-  :lighter " xflykeys"
+  :lighter "xahflykeys"
   :keymap xah-fly-insert-map
   (delete-selection-mode 1)
   (setq shift-select-mode nil)
