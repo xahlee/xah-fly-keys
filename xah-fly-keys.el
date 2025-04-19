@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 26.11.20250418094205
+;; Version: 26.12.20250419130746
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -1072,31 +1072,6 @@ Version: 2025-03-25"
          (make-overlay
           (match-beginning 0)
           (match-end 0)) 'face 'highlight)))))
-
-(defun xah-toggle-read-novel-mode ()
-  "Setup current frame to be suitable for reading long novel/article text.
-• Set frame width to 70
-• Line wrap at word boundaries.
-• Line spacing is increased.
-• Proportional width font is used.
-Call again to toggle back.
-
-URL `http://xahlee.info/emacs/emacs/emacs_novel_reading_mode.html'
-Created: 2019-01-30
-Version: 2021-01-16"
-  (interactive)
-  (if (eq (frame-parameter (selected-frame) 'width) 70)
-      (progn
-        (set-frame-parameter (selected-frame) 'width 106)
-        (variable-pitch-mode 0)
-        (setq line-spacing nil)
-        (setq word-wrap nil))
-    (progn
-      (set-frame-parameter (selected-frame) 'width 70)
-      (variable-pitch-mode 1)
-      (setq line-spacing 0.5)
-      (setq word-wrap t)))
-  (redraw-frame (selected-frame)))
 
 (defun xah-fill-or-unfill ()
   "Reformat current block or selection to short/long line.
@@ -3567,8 +3542,8 @@ Version: 2024-04-22"
        ("n c" . toggle-case-fold-search)
        ("n d" . display-line-numbers-mode)
        ("n e" . eshell)
-       ("n f" . nil)
-       ("n g" . xah-toggle-read-novel-mode)
+       ;; ("n f" . nil)
+       ;; ("n g" . nil)
        ("n h" . widen)
        ("n i" . make-frame-command)
        ("n j" . flyspell-buffer)
