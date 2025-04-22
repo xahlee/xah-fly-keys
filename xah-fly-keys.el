@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 26.12.20250419130746
+;; Version: 26.12.20250422103806
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -2120,14 +2120,7 @@ Version: 2024-10-02"
 ;; HHHH------------------------------
 ;; misc
 
-(defvar xah-fly-switch-buffer-map nil "repeat key map for `xah-next-user-buffer' etc.")
-(setq xah-fly-switch-buffer-map
-      (let ((xkmap (make-sparse-keymap)))
-        (define-key xkmap (kbd "<up>") 'xah-previous-emacs-buffer)
-        (define-key xkmap (kbd "<down>") 'xah-next-emacs-buffer)
-        (define-key xkmap (kbd "<left>") 'xah-previous-user-buffer)
-        (define-key xkmap (kbd "<right>") 'xah-next-user-buffer)
-        xkmap))
+
 
 (defun xah-user-buffer-p ()
   "Return t if current buffer is a user buffer, else nil.
@@ -2154,7 +2147,7 @@ Any other key to exit.
 
 URL `http://xahlee.info/emacs/emacs/elisp_next_prev_user_buffer.html'
 Created: 2016-06-19
-Version: 2024-09-23"
+Version: 2025-04-22"
   (interactive)
   (next-buffer)
   (let ((i 0))
@@ -2162,8 +2155,7 @@ Version: 2024-09-23"
       (if (not (xah-user-buffer-p))
           (progn (next-buffer)
                  (setq i (1+ i)))
-        (progn (setq i 100)))))
-  (set-transient-map xah-fly-switch-buffer-map))
+        (progn (setq i 100))))))
 
 (defun xah-previous-user-buffer ()
   "Switch to the previous user buffer.
@@ -2175,7 +2167,7 @@ Any other key to exit.
 
 URL `http://xahlee.info/emacs/emacs/elisp_next_prev_user_buffer.html'
 Created: 2016-06-19
-Version: 2024-05-01"
+Version: 2025-04-22"
   (interactive)
   (previous-buffer)
   (let ((i 0))
@@ -2183,8 +2175,7 @@ Version: 2024-05-01"
       (if (not (xah-user-buffer-p))
           (progn (previous-buffer)
                  (setq i (1+ i)))
-        (progn (setq i 100)))))
-  (set-transient-map xah-fly-switch-buffer-map))
+        (progn (setq i 100))))))
 
 (defun xah-next-emacs-buffer ()
   "Switch to the next emacs buffer.
@@ -2196,13 +2187,12 @@ Any other key to exit.
 
 URL `http://xahlee.info/emacs/emacs/elisp_next_prev_user_buffer.html'
 Created: 2013-05-22
-Version: 2024-09-16"
+Version: 2025-04-22"
   (interactive)
   (next-buffer)
   (let ((i 0))
     (while (and (xah-user-buffer-p) (< i 20))
-      (setq i (1+ i)) (next-buffer)))
-  (set-transient-map xah-fly-switch-buffer-map))
+      (setq i (1+ i)) (next-buffer))))
 
 (defun xah-previous-emacs-buffer ()
   "Switch to the previous emacs buffer.
@@ -2214,13 +2204,12 @@ Any other key to exit.
 
 URL `http://xahlee.info/emacs/emacs/elisp_next_prev_user_buffer.html'
 Created: 2013-05-22
-Version: 2024-09-16"
+Version: 2025-04-22"
   (interactive)
   (previous-buffer)
   (let ((i 0))
     (while (and (xah-user-buffer-p) (< i 20))
-      (setq i (1+ i)) (previous-buffer)))
-  (set-transient-map xah-fly-switch-buffer-map))
+      (setq i (1+ i)) (previous-buffer))))
 
 (defun xah-new-empty-buffer ()
   "Create a new empty buffer.
