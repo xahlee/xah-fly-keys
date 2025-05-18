@@ -1,10 +1,10 @@
 ;;; xah-fly-keys.el --- ergonomic modal keybinding minor mode. -*- coding: utf-8; lexical-binding: t; -*-
 
-;; Copyright © 2013, 2024 by Xah Lee
+;; Copyright © 2013, 2025 by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 26.12.20250503115607
+;; Version: 26.12.20250517213917
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -1198,7 +1198,7 @@ After this command is called, press `xah-repeat-key' to repeat it.
 
 URL `http://xahlee.info/emacs/emacs/elisp_reformat_to_sentence_lines.html'
 Created: 2020-12-02
-Version: 2025-03-25"
+Version: 2025-05-17"
   (interactive)
   (let (xbeg xend)
     (seq-setq (xbeg xend) (if (region-active-p) (list (region-beginning) (region-end)) (list (save-excursion (if (re-search-backward "\n[ \t]*\n" nil 1) (match-end 0) (point))) (save-excursion (if (re-search-forward "\n[ \t]*\n" nil 1) (match-beginning 0) (point))))))
@@ -1217,6 +1217,8 @@ Version: 2025-03-25"
       (while (re-search-forward "  +" nil t) (replace-match " "))
       (goto-char (point-min))
       (while (re-search-forward "\\([.?!]\\) +\\([(0-9A-Za-z]+\\)" nil t) (replace-match "\\1\n\\2"))
+      (goto-char (point-min))
+      (while (re-search-forward "\\(<br ?/?>\\)" nil t) (replace-match "\\1\n"))
       (goto-char (point-max))
       (while (eq (char-before) 32) (delete-char -1))))
   (re-search-forward "\n+" nil 1)
@@ -2567,29 +2569,35 @@ Version: 2020-09-08"
           (while (re-search-forward "\n\n\n+" nil 1)
             (replace-match "\n\n")))))))
 
-(defun xah-clean-whitespace ()
+(defun xah-clean-whitespace (&optional Begin End)
   "Delete trailing whitespace, and replace repeated blank lines to just 1.
 Only space and tab is considered whitespace here.
 Works on whole buffer or selection, respects `narrow-to-region'.
 
 URL `http://xahlee.info/emacs/emacs/elisp_compact_empty_lines.html'
 Created: 2017-09-22
-Version: 2022-08-06"
+Version: 2025-05-04"
   (interactive)
-  (let (xbegin xend)
-    (if (region-active-p)
-        (setq xbegin (region-beginning) xend (region-end))
-      (setq xbegin (point-min) xend (point-max)))
+  (let (xbeg xend)
+    (seq-setq (xbeg xend)
+              (if (and Begin End)
+                  (list Begin End)
+                (if (region-active-p)
+                    (list (region-beginning) (region-end))
+                  (list (point-min) (point-max)))))
     (save-excursion
       (save-restriction
-        (narrow-to-region xbegin xend)
-        (goto-char (point-min))
-        (while (re-search-forward "[ \t]+\n" nil 1) (replace-match "\n"))
-        (goto-char (point-min))
-        (while (re-search-forward "\n\n\n+" nil 1) (replace-match "\n\n"))
-        (goto-char (point-max))
-        (while (eq (char-before) 32) (delete-char -1)))))
-  (message "%s done" real-this-command))
+        (narrow-to-region xbeg xend)
+        (progn
+          (goto-char (point-min))
+          (while (re-search-forward "[ \t]+\n" nil t) (replace-match "\n")))
+        (progn
+          (goto-char (point-min))
+          (while (re-search-forward "\n\n\n+" nil t) (replace-match "\n\n")))
+        (progn
+          (goto-char (point-max))
+          (while (eq (char-before) 32) (delete-char -1))))))
+  (message "done xah-clean-whitespace"))
 
 (defun xah-make-backup ()
   "Make a backup copy of current file or dired marked files.
