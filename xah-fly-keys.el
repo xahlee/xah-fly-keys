@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 26.12.20250517213917
+;; Version: 26.12.20250606101544
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -869,10 +869,10 @@ Version: 2025-03-25"
     (let ((xsFrom (last (split-string FromChars " ") 2))
           (xsTo (last (split-string ToChars " ") 2)))
 
-      ;; (when (< (length xsFrom) 3)
+      ;; (when (length< xsFrom 3)
       ;; (error "cannot find input brackets %s" xsFrom))
 
-      ;; (when (< (length xsTo) 3)
+      ;; (when (length< xsTo 3)
       ;;   (message "replace blacket is empty string")
       ;;   (setq xsTo (list "" "" "")))
 
@@ -1198,7 +1198,7 @@ After this command is called, press `xah-repeat-key' to repeat it.
 
 URL `http://xahlee.info/emacs/emacs/elisp_reformat_to_sentence_lines.html'
 Created: 2020-12-02
-Version: 2025-05-17"
+Version: 2025-05-21"
   (interactive)
   (let (xbeg xend)
     (seq-setq (xbeg xend) (if (region-active-p) (list (region-beginning) (region-end)) (list (save-excursion (if (re-search-backward "\n[ \t]*\n" nil 1) (match-end 0) (point))) (save-excursion (if (re-search-forward "\n[ \t]*\n" nil 1) (match-beginning 0) (point))))))
@@ -1216,9 +1216,13 @@ Version: 2025-05-17"
       (goto-char (point-min))
       (while (re-search-forward "  +" nil t) (replace-match " "))
       (goto-char (point-min))
-      (while (re-search-forward "\\([.?!]\\) +\\([(0-9A-Za-z]+\\)" nil t) (replace-match "\\1\n\\2"))
+      (while (re-search-forward "\\([.?!]\\) +\\([(0-9A-Za-z<]+\\)" nil t) (replace-match "\\1\n\\2"))
       (goto-char (point-min))
       (while (re-search-forward "\\(<br ?/?>\\)" nil t) (replace-match "\\1\n"))
+
+      (goto-char (point-min))
+      (while (search-forward "e.g.\n" nil t) (replace-match "e.g. "))
+
       (goto-char (point-max))
       (while (eq (char-before) 32) (delete-char -1))))
   (re-search-forward "\n+" nil 1)
@@ -1548,17 +1552,18 @@ If a buffer is not file and not dired, copy value of `default-directory'.
 
 URL `http://xahlee.info/emacs/emacs/emacs_copy_file_path.html'
 Created: 2018-06-18
-Version: 2024-12-15"
+Version: 2025-05-23"
   (interactive "P")
-  (let ((xfpath
-         (if (eq major-mode 'dired-mode)
-             (progn
-               (let ((xresult (mapconcat #'identity
-                                         (dired-get-marked-files) "\n")))
-                 (if (equal (length xresult) 0)
-                     (progn default-directory)
-                   (progn xresult))))
-           (or buffer-file-name default-directory))))
+  (let (xfpath)
+    (setq xfpath
+          (if (eq major-mode 'dired-mode)
+              (progn
+                (let ((xresult (mapconcat #'identity
+                                          (dired-get-marked-files) "\n")))
+                  (if (length= xresult 0)
+                      default-directory
+                    xresult)))
+            (or buffer-file-name default-directory)))
     (kill-new
      (if DirPathOnlyQ
          (progn
@@ -2234,7 +2239,7 @@ Version: 2022-04-05"
 (declare-function minibuffer-keyboard-quit "delsel" ())
 (declare-function org-edit-src-save "org-src" ())
 
-(defcustom xah-recently-closed-buffers-max 40 "The maximum length for `xah-recently-closed-buffers'."
+(defcustom xah-recently-closed-buffers-max 100 "The maximum length for `xah-recently-closed-buffers'."
   :type 'integer)
 
 (defvar xah-recently-closed-buffers nil "A Alist of recently closed buffers.
@@ -2243,11 +2248,12 @@ The max number to track is controlled by the variable `xah-recently-closed-buffe
 
 (defun xah-add-to-recently-closed (&optional BufferName BufferFileName)
   "Add to `xah-recently-closed-buffers'.
-Version: 2023-03-02"
-  (let ((xbn (if BufferName BufferName (buffer-name)))
-        (xbfn (if BufferFileName BufferFileName buffer-file-name)))
-    (setq xah-recently-closed-buffers (cons (cons xbn xbfn) xah-recently-closed-buffers)))
-  (when (> (length xah-recently-closed-buffers) xah-recently-closed-buffers-max)
+Created: 2023-03-02
+Version: 2025-06-05"
+  (let ((bufname (if BufferName BufferName (buffer-name)))
+        (fpath (if BufferFileName BufferFileName buffer-file-name)))
+    (setq xah-recently-closed-buffers (cons (cons bufname fpath) xah-recently-closed-buffers)))
+  (when (length> xah-recently-closed-buffers xah-recently-closed-buffers-max)
     (setq xah-recently-closed-buffers (butlast xah-recently-closed-buffers 1))))
 
 (defvar xah-create-buffer-backup nil "If true, `xah-close-current-buffer' creates a backup file when closing non-file buffer. Version: 2024-11-09")
@@ -2308,7 +2314,7 @@ URL `http://xahlee.info/emacs/emacs/elisp_close_buffer_open_last_closed.html'
 Created: 2016-06-19
 Version: 2022-03-22"
   (interactive)
-  (if (> (length xah-recently-closed-buffers) 0)
+  (if (length> xah-recently-closed-buffers 0)
       (find-file (cdr (pop xah-recently-closed-buffers)))
     (progn (message "No recently close buffer in this session."))))
 
@@ -2378,7 +2384,7 @@ Version: 2024-09-25"
                      (setq xend (point))
                      (goto-char xp0)
                      (buffer-substring-no-properties xbeg xend))))
-    (setq xinput2 (if (> (length xah-open-file-at-cursor-pre-hook) 0)
+    (setq xinput2 (if (length> xah-open-file-at-cursor-pre-hook 0)
                       (let ((xprehook (run-hook-with-args-until-success 'xah-open-file-at-cursor-pre-hook xinput)))
                         (if xprehook xprehook xinput))
                     xinput))
@@ -2780,7 +2786,7 @@ Version: 2025-04-18"
             (if (eq major-mode 'dired-mode)
                 (dired-get-marked-files)
               (list buffer-file-name))))
-    (setq xdoIt (if (<= (length xfileList) 10) t (y-or-n-p "Open more than 10 files? ")))
+    (setq xdoIt (if (length< xfileList 10) t (y-or-n-p "Open more than 10 files? ")))
     (when xdoIt
       (cond
        ((eq system-type 'windows-nt)
@@ -3225,7 +3231,7 @@ shift → ctrl
 If the keys in layouts are the same, it's not in the table.
 
 Created: 2024-04-19
-Version: 2024-04-23"
+Version: 2025-06-05"
   (let (xkeys1 xkeys2 (xtable (make-hash-table :test 'equal)))
     (setq xkeys1 (split-string Layout1 "[ \n]+" t))
     (setq xkeys2 (split-string Layout2 "[ \n]+" t))
@@ -3237,8 +3243,7 @@ Version: 2024-04-23"
            nil
          (puthash x y xtable)))
      xkeys1 xkeys2)
-    xtable
-    ))
+    xtable))
 
 ;; (xah-fly-create-key-conv-table
 ;;   (gethash "qwerty" xah-fly-layout-diagrams)
