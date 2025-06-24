@@ -3020,18 +3020,17 @@ A S T F G H J E L : \"
 Z X C V B N M < > ?
 " xah-fly-layout-diagrams)
 
-  ;; todo. need fix
   (puthash "neo2" "
-^ ! @ # $ % ^ & * ( ) { }
-` 1 2 3 4 5 6 7 8 9 0 - ]
+ˇ ° § ℓ » « $ € „ “ ” — ¸
+^ 1 2 3 4 5 6 7 8 9 0 - `
 
-x v l c w k h g f q ß = \\
+x v l c w k h g f q ß ´ \\
 u i a e o s n r t d y
 ü ö ä p z b m , . j
 
-X V L C W K H G F Q ? + |
+X V L C W K H G F Q ẞ ~ |
 U I A E O S N R T D Y
-Ü Ö Ä P Z B M , . J
+Ü Ö Ä P Z B M – • J
 " xah-fly-layout-diagrams)
 
   (puthash "norman" "
