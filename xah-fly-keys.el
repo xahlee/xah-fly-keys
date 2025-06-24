@@ -2127,8 +2127,6 @@ Version: 2024-10-02"
 ;; HHHH------------------------------
 ;; misc
 
-
-
 (defun xah-user-buffer-p ()
   "Return t if current buffer is a user buffer, else nil.
 A user buffer has buffer name NOT starts with * or space, and is not dired mode, help mode, etc.
@@ -3533,8 +3531,8 @@ Version: 2024-04-22"
        ("n 4" . global-display-line-numbers-mode)
        ("n 6" . calendar)
        ("n 7" . calc)
-       ("n 9" . shell-command)
-       ("n 0" . shell-command-on-region)
+       ("n 9" . nil)
+       ("n 0" . nil)
 
        ("n <up>" . xah-page-up)
        ("n <down>" . xah-page-down)
@@ -3544,8 +3542,8 @@ Version: 2024-04-22"
        ("n c" . toggle-case-fold-search)
        ("n d" . display-line-numbers-mode)
        ("n e" . eshell)
-       ;; ("n f" . nil)
-       ;; ("n g" . nil)
+       ("n f" . shell-command-on-region)
+       ("n g" . shell-command)
        ("n h" . widen)
        ("n i" . make-frame-command)
        ("n j" . flyspell-buffer)
