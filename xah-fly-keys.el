@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 26.12.20250606101544
+;; Version: 26.12.20250628080356
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -1941,21 +1941,20 @@ Version: 2023-09-19"
 ;; text selection
 
 (defun xah-select-block ()
-  "Select the current/next block plus 1 blankline.
-If region is active, extend selection downward by block.
+  "Select the current/next block.
 
 URL `http://xahlee.info/emacs/emacs/emacs_select_text_block.html'
 Created: 2019-12-26
-Version: 2023-11-14"
+Version: 2025-06-25"
   (interactive)
   (if (region-active-p)
       (re-search-forward "\n[ \t]*\n[ \t]*\n*" nil 1)
     (progn
-      (skip-chars-forward " \n\t")
       (when (re-search-backward "\n[ \t]*\n" nil 1)
         (goto-char (match-end 0)))
       (push-mark (point) t t)
-      (re-search-forward "\n[ \t]*\n" nil 1))))
+      (re-search-forward "\n[ \t]*\n" nil 1)
+      (skip-chars-backward " \t\n"))))
 
 (defun xah-select-line ()
   "Select current line. If region is active, extend selection downward by line.
@@ -3572,12 +3571,11 @@ Version: 2024-04-22"
 
        ("r ," . apply-macro-to-region-lines)
        ("r ." . kmacro-start-macro)
-       ("r /" . xah-slash-to-double-backslash)
+
        ("r 3" . number-to-register)
        ("r 4" . increment-register)
        ("r RET" . nil)
        ("r SPC" . nil)
-       ("r \\" . xah-slash-to-backslash)
 
        ("r a" . nil)
        ("r b" . nil)
@@ -3599,7 +3597,14 @@ Version: 2024-04-22"
        ("r q" . kill-rectangle)
 
        ("r r" . rectangle-mark-mode)
-       ("r s" . nil)
+
+       ("r s e" . xah-slash-to-backslash)
+       ("r s h" . xah-slash-to-double-backslash)
+       ("r s m" . xah-double-backslash-to-slash)
+       ("r s s" . xah-double-backslash-to-single)
+       ("r s t" . xah-double-backslash)
+       ("r s u" . xah-backslash-to-slash)
+
        ;; kmacro-end-and-call-macro
        ("r t RET" . #'kmacro-edit-macro)
        ("r t SPC" . #'kmacro-step-edit-macro)
@@ -3626,7 +3631,7 @@ Version: 2024-04-22"
        ("r u" . xah-quote-lines)
        ("r v" . nil)
        ("r w" . nil)
-       ("r x" . xah-double-backslash-to-slash)
+       ("r x" . nil)
        ("r y" . delete-whitespace-rectangle)
        ("r z" . nil)
 
