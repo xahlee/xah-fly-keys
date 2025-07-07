@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 26.12.20250628080356
+;; Version: 27.0.20250707145105
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -197,9 +197,13 @@ Repeat call cycles all positions in `mark-ring'.
 
 URL `http://xahlee.info/emacs/emacs/emacs_cycle_local_mark_ring.html'
 Created: 2016-04-04
-Version: 2023-09-03"
+Version: 2025-07-07"
   (interactive)
-  (set-mark-command t))
+  (set-mark-command t)
+  (set-transient-map
+   (let ((xkmap (make-sparse-keymap)))
+     (define-key xkmap (kbd (if (boundp 'xah-repeat-key) xah-repeat-key "SPC")) real-this-command)
+     xkmap)))
 
 (defun xah-beginning-of-line-or-block ()
   "Move cursor to beginning of indent or line, end of previous block, in that order.
@@ -1945,7 +1949,7 @@ Version: 2023-09-19"
 
 URL `http://xahlee.info/emacs/emacs/emacs_select_text_block.html'
 Created: 2019-12-26
-Version: 2025-06-25"
+Version: 2025-07-07"
   (interactive)
   (if (region-active-p)
       (re-search-forward "\n[ \t]*\n[ \t]*\n*" nil 1)
@@ -2787,11 +2791,11 @@ Version: 2025-04-18"
     (when xdoIt
       (cond
        ((eq system-type 'windows-nt)
-        (let ((xoutBuf (get-buffer-create "*xah open in external app*"))
+        (let ((xoutbuf (get-buffer-create "*xah open in external app*"))
               (xcmdlist (list "PowerShell" "-Command" "Invoke-Item" "-LiteralPath")))
           (mapc
            (lambda (x)
-             (apply 'start-process (append (list "xah open in external app" xoutBuf) xcmdlist (list (format "'%s'" (string-replace "'" "`'" x))) nil)))
+             (apply 'start-process (append (list "xah open in external app" xoutbuf) xcmdlist (list (format "'%s'" (string-replace "'" "`'" x))) nil)))
            xfileList)))
        ((eq system-type 'darwin)
         (mapc (lambda (xfpath) (shell-command (concat "open " (shell-quote-argument xfpath)))) xfileList))
@@ -3730,14 +3734,23 @@ Version: 2024-04-22"
 
        ;; ("1" . nil)
        ;; ("2" . nil)
-       ("3" . delete-other-windows)
-       ("4" . split-window-below)
-       ("5" . delete-char)
-       ("6" . xah-select-block)
-       ("7" . xah-select-line)
-       ("8" . xah-extend-selection)
-       ("9" . xah-select-text-in-quote)
-       ("0" . xah-pop-local-mark-ring)
+       ;; ("3" . delete-other-windows)
+       ;; ("4" . split-window-below)
+       ;; ("5" . delete-char)
+       ;; ("6" . xah-select-block)
+       ;; ("7" . xah-select-line)
+       ;; ("8" . xah-extend-selection)
+       ;; ("9" . xah-select-text-in-quote)
+       ;; ("0" . xah-pop-local-mark-ring)
+
+       ("H" . xah-extend-selection)
+       ("T" . xah-select-text-in-quote)
+       ("S" . xah-select-line)
+
+       ("U" . delete-char)
+       ("E" . delete-backward-char)
+
+       ("Y" . xah-pop-local-mark-ring)
 
        ("a" . execute-extended-command)
        ("b" . isearch-forward)
@@ -3747,7 +3760,9 @@ Version: 2024-04-22"
        ("f" . undo)
        ("g" . backward-word)
        ("h" . backward-char)
-       ("i" . xah-delete-current-text-block)
+       ;; ("i" . xah-delete-current-text-block)
+       ("i" . xah-select-block)
+
        ("j" . xah-copy-line-or-region)
        ("k" . xah-paste-or-paste-previous)
        ("l" . xah-insert-space-before)
