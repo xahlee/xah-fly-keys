@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 27.0.20250707145105
+;; Version: 27.0.20250708194130
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -2517,7 +2517,7 @@ Version: 2024-12-20"
     (call-process "javac" nil xjavac-buf nil Filename)
     (if (eq 1 (with-current-buffer xjavac-buf (point-max)))
         (progn
-          (save-current-buffer (set-buffer xoutbuf) (erase-buffer))
+          (with-current-buffer xoutbuf (erase-buffer))
           (call-process "java" nil xoutbuf nil (file-name-nondirectory (file-name-sans-extension Filename)))
           (display-buffer xoutbuf))
       (display-buffer xjavac-buf))))
@@ -2549,7 +2549,7 @@ Version: 2024-12-25"
       (let ((xappCmdStr (cdr (assoc xext xah-run-current-file-map))))
         (when (not xappCmdStr) (error "%s: Unknown file extension: %s. check `xah-run-current-file-map'" real-this-command xext))
         (progn
-          (save-current-buffer (set-buffer xoutbuf) (erase-buffer))
+          (with-current-buffer xoutbuf (erase-buffer))
           (apply 'start-process (append (list "xah-run" xoutbuf) (split-string xappCmdStr " +" t) (list Filename) nil))
           ;; (display-buffer xoutbuf)
           (pop-to-buffer xoutbuf)
@@ -3746,6 +3746,7 @@ Version: 2024-04-22"
        ("H" . xah-extend-selection)
        ("T" . xah-select-text-in-quote)
        ("S" . xah-select-line)
+       ("D" . xah-select-block)
 
        ("U" . delete-char)
        ("E" . delete-backward-char)
@@ -3760,8 +3761,7 @@ Version: 2024-04-22"
        ("f" . undo)
        ("g" . backward-word)
        ("h" . backward-char)
-       ;; ("i" . xah-delete-current-text-block)
-       ("i" . xah-select-block)
+       ("i" . xah-delete-current-text-block)
 
        ("j" . xah-copy-line-or-region)
        ("k" . xah-paste-or-paste-previous)
