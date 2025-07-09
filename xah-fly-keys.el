@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 27.1.20250709073708
+;; Version: 27.2.20250709101028
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -3523,12 +3523,21 @@ Version: 2024-04-22"
        ("m" . dired-jump)
 
        ;; commands here are harmless. they don't modify text etc. they turn on modes, change display, prompt, start shell, etc.
-       ("n SPC" . whitespace-mode)
+
+("n SPC SPC" . whitespace-mode)
+
+("n SPC t" . visual-line-mode)
+("n SPC h" . toggle-word-wrap)
+("n SPC n" . variable-pitch-mode)
+("n SPC s" . toggle-truncate-lines)
+("n SPC d" . display-line-numbers-mode)
+
+("n SPC ," . global-hl-line-mode)
+("n SPC p" . global-display-line-numbers-mode)
+
        ("n ," . abbrev-mode)
-       ("n ." . toggle-frame-maximized)
+       ("n ." . toggle-frame-maximized) ; xxwindow
        ("n 1" . set-input-method)
-       ("n 2" . global-hl-line-mode)
-       ("n 4" . global-display-line-numbers-mode)
        ("n 6" . calendar)
        ("n 7" . calc)
        ("n 9" . nil)
@@ -3540,7 +3549,6 @@ Version: 2024-04-22"
        ("n a" . text-scale-adjust)
        ("n b" . toggle-debug-on-error)
        ("n c" . toggle-case-fold-search)
-       ("n d" . display-line-numbers-mode)
        ("n e" . eshell)
        ("n f" . shell-command-on-region)
        ("n g" . shell-command)
@@ -3548,21 +3556,17 @@ Version: 2024-04-22"
        ("n i" . make-frame-command)
        ("n j" . flyspell-buffer)
        ("n k" . menu-bar-open)
-       ("n l" . toggle-word-wrap)
-       ("n m" . jump-to-register)
+       ("n m" . jump-to-register) ; bad orig
        ("n n" . xah-narrow-to-region)
-       ("n o" . variable-pitch-mode)
        ("n p" . read-only-mode)
        ("n q" . nil)
-       
+
        ("n r" . count-words)
        ("n s" . count-matches)
        ("n t" . narrow-to-defun)
        ("n u" . shell)
-       ("n v" . visual-line-mode)
-       ("n w" . eww)
+       ("n w" . eww)              ; xxmode
        ("n x" . save-some-buffers)
-       ("n y" . toggle-truncate-lines)
        ("n z" . abort-recursive-edit)
 
        ("o" . exchange-point-and-mark)
