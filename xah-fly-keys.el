@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 27.0.20250708194130
+;; Version: 27.1.20250709073708
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -3400,13 +3400,6 @@ Version: 2024-04-22"
        ("\\" . toggle-input-method)
        ;; `
 
-       ("3" . delete-window)
-       ("4" . split-window-right)
-       ("5" . balance-windows)
-       ("6" . xah-upcase-sentence)
-
-       ("9" . ispell-word)
-
        ("a" . mark-whole-buffer)
        ("b" . end-of-buffer)
 
@@ -3516,16 +3509,20 @@ Version: 2024-04-22"
        ("i" . kill-line)
        ("j" . xah-copy-all-or-region)
 
-       ;; k
-       ("l" . recenter-top-bottom)
+("k h" . delete-other-windows)
+("k t" . delete-window)
+("k m" . split-window-below)
+("k w" . split-window-right)
+("k n" . balance-windows)
 
+("k n" . xah-upcase-sentence)
+("k s" . ispell-word)
+("k q" . enlarge-window)
+
+       ("l" . recenter-top-bottom)
        ("m" . dired-jump)
 
-       ;; ("m e" . delete-other-windows)
-       ;; ("m u" . split-window-below)
-       ;; ("m w" . universal-argument)
-
-       ;; commands here are “harmless”, they don't modify text etc. they turn on modes, change display, prompt, start shell, etc.
+       ;; commands here are harmless. they don't modify text etc. they turn on modes, change display, prompt, start shell, etc.
        ("n SPC" . whitespace-mode)
        ("n ," . abbrev-mode)
        ("n ." . toggle-frame-maximized)
@@ -3556,7 +3553,8 @@ Version: 2024-04-22"
        ("n n" . xah-narrow-to-region)
        ("n o" . variable-pitch-mode)
        ("n p" . read-only-mode)
-       ("n q" . enlarge-window)
+       ("n q" . nil)
+       
        ("n r" . count-words)
        ("n s" . count-matches)
        ("n t" . narrow-to-defun)
