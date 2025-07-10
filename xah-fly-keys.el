@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 27.2.20250709101028
+;; Version: 27.2.20250709211910
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -3509,31 +3509,31 @@ Version: 2024-04-22"
        ("i" . kill-line)
        ("j" . xah-copy-all-or-region)
 
-("k h" . delete-other-windows)
-("k t" . delete-window)
-("k m" . split-window-below)
-("k w" . split-window-right)
-("k n" . balance-windows)
+       ("k h" . delete-other-windows)
+       ("k t" . delete-window)
+       ("k m" . split-window-below)
+       ("k w" . split-window-right)
+       ("k n" . balance-windows)
 
-("k n" . xah-upcase-sentence)
-("k s" . ispell-word)
-("k q" . enlarge-window)
+       ("k n" . xah-upcase-sentence)
+       ("k s" . ispell-word)
+       ("k q" . enlarge-window)
 
        ("l" . recenter-top-bottom)
        ("m" . dired-jump)
 
        ;; commands here are harmless. they don't modify text etc. they turn on modes, change display, prompt, start shell, etc.
 
-("n SPC SPC" . whitespace-mode)
+       ("n SPC SPC" . whitespace-mode)
 
-("n SPC t" . visual-line-mode)
-("n SPC h" . toggle-word-wrap)
-("n SPC n" . variable-pitch-mode)
-("n SPC s" . toggle-truncate-lines)
-("n SPC d" . display-line-numbers-mode)
+       ("n SPC t" . visual-line-mode)
+       ("n SPC h" . toggle-word-wrap)
+       ("n SPC n" . variable-pitch-mode)
+       ("n SPC s" . toggle-truncate-lines)
+       ("n SPC d" . display-line-numbers-mode)
 
-("n SPC ," . global-hl-line-mode)
-("n SPC p" . global-display-line-numbers-mode)
+       ("n SPC ," . global-hl-line-mode)
+       ("n SPC p" . global-display-line-numbers-mode)
 
        ("n ," . abbrev-mode)
        ("n ." . toggle-frame-maximized) ; xxwindow
@@ -3549,6 +3549,7 @@ Version: 2024-04-22"
        ("n a" . text-scale-adjust)
        ("n b" . toggle-debug-on-error)
        ("n c" . toggle-case-fold-search)
+       ("n d" . nil)
        ("n e" . eshell)
        ("n f" . shell-command-on-region)
        ("n g" . shell-command)
@@ -3556,17 +3557,20 @@ Version: 2024-04-22"
        ("n i" . make-frame-command)
        ("n j" . flyspell-buffer)
        ("n k" . menu-bar-open)
+       ("n l" . nil)
        ("n m" . jump-to-register) ; bad orig
        ("n n" . xah-narrow-to-region)
+       ("n o" . nil)
        ("n p" . read-only-mode)
        ("n q" . nil)
-
        ("n r" . count-words)
        ("n s" . count-matches)
        ("n t" . narrow-to-defun)
        ("n u" . shell)
-       ("n w" . eww)              ; xxmode
+       ("n v" . nil)
+       ("n w" . eww) ; xxmode
        ("n x" . save-some-buffers)
+       ("n y" . nil)
        ("n z" . abort-recursive-edit)
 
        ("o" . exchange-point-and-mark)
