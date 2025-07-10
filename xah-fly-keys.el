@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 27.2.20250709211910
+;; Version: 27.2.20250710142243
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -3514,10 +3514,10 @@ Version: 2024-04-22"
        ("k m" . split-window-below)
        ("k w" . split-window-right)
        ("k n" . balance-windows)
+       ("k c" . enlarge-window)
 
-       ("k n" . xah-upcase-sentence)
+       ("k x" . xah-upcase-sentence)
        ("k s" . ispell-word)
-       ("k q" . enlarge-window)
 
        ("l" . recenter-top-bottom)
        ("m" . dired-jump)
@@ -3738,17 +3738,6 @@ Version: 2024-04-22"
        ("]" . split-window-right)
        ("`" . other-frame)
 
-       ;; ("1" . nil)
-       ;; ("2" . nil)
-       ;; ("3" . delete-other-windows)
-       ;; ("4" . split-window-below)
-       ;; ("5" . delete-char)
-       ;; ("6" . xah-select-block)
-       ;; ("7" . xah-select-line)
-       ;; ("8" . xah-extend-selection)
-       ;; ("9" . xah-select-text-in-quote)
-       ;; ("0" . xah-pop-local-mark-ring)
-
        ("H" . xah-extend-selection)
        ("T" . xah-select-text-in-quote)
        ("S" . xah-select-line)
@@ -3758,6 +3747,8 @@ Version: 2024-04-22"
        ("E" . delete-backward-char)
 
        ("Y" . xah-pop-local-mark-ring)
+
+       ("B" . isearch-backward)
 
        ("a" . execute-extended-command)
        ("b" . isearch-forward)
