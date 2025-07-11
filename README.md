@@ -15,7 +15,7 @@ Major key engine rewrite by Dan Langlois (https://github.com/DanLanglois) and Wi
 
 QWERTY layout
 -------------------
-![xah-fly-keys qwerty layout](xah_fly_keys_qwerty_layout_2024-06-16.png)
+![xah-fly-keys qwerty layout](xah_fly_keys_qwerty_layout_2025-07-11_084953.png)
 
 Manual Install
 -------------------
@@ -64,6 +64,6 @@ http://xahlee.info/emacs/misc/xah-fly-keys.html
 
 Been working on this since 2013, and since 2007 on ergoemacs-mode.
 
-give me 5 bucks https://paypal.com pay to Xah@XahLee.org
+Professional coders, send me 100 USD https://paypal.com pay to Xah@XahLee.org
 
 Thanks.
