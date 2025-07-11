@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 27.3.20250711064044
+;; Version: 27.4.20250711122556
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -3261,10 +3261,10 @@ Version: 2022-10-22")
 (if xah-fly-key-current-layout nil (setq xah-fly-key-current-layout "qwerty"))
 
 (defvar xah-fly--key-convert-table nil
-  "A alist that's the conversion table from dvorak to current layout.
+  "A hashtable that's the conversion table from dvorak to current layout.
 Value is a hashtable.
 Created: 2019-02-12
-Version: 2024-04-22" )
+Version: 2025-07-11" )
 
 (setq
  xah-fly--key-convert-table
@@ -3401,7 +3401,7 @@ Version: 2024-04-22"
        ;; `
 
        ("a" . mark-whole-buffer)
-       ("b" . end-of-buffer)
+       ("b" . save-buffer)
 
        ("c ," . xah-open-in-external-app)
        ("c ." . find-file)
@@ -3645,7 +3645,7 @@ Version: 2024-04-22"
        ("r y" . delete-whitespace-rectangle)
        ("r z" . nil)
 
-       ("s" . save-buffer)
+       ("s" . end-of-buffer)
 
        ;; most frequently used
        ("t <up>"  . xah-move-block-up)
