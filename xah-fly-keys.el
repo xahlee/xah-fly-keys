@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 27.2.20250710142243
+;; Version: 27.3.20250711064044
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -169,7 +169,7 @@
 (defvar xah-fly-insert-mode-indicator "i"
   "Character in mode line indicating insert mode is active.")
 
-(defcustom xah-fly-use-control-key nil
+(defcustom xah-fly-use-control-key t
   "If true, change many emacs keybinding involving control key.
 Keys changed:
 Standard shortcut for open, close, copy, paste etc.
@@ -3748,8 +3748,6 @@ Version: 2024-04-22"
 
        ("Y" . xah-pop-local-mark-ring)
 
-       ("B" . isearch-backward)
-
        ("a" . execute-extended-command)
        ("b" . isearch-forward)
        ("c" . previous-line)
@@ -3863,7 +3861,6 @@ Version: 2024-04-22"
   (global-set-key (kbd "C-<prior>") #'xah-previous-user-buffer)
   (global-set-key (kbd "C-<next>") #'xah-next-user-buffer)
 
-  ;; (global-set-key (kbd "C-1") nil)
   (global-set-key (kbd "C-2") #'pop-global-mark)
   (global-set-key (kbd "C-3") #'previous-error)
   (global-set-key (kbd "C-4") #'next-error)
@@ -3883,33 +3880,16 @@ Version: 2024-04-22"
   (global-set-key (kbd "C-S-s") #'write-file)
   (global-set-key (kbd "C-S-t") #'xah-open-last-closed)
 
-  ;; (global-set-key (kbd "C-@") nil)
-
   (global-set-key (kbd "C-a") #'mark-whole-buffer)
-  (global-set-key (kbd "C-b") nil)
-  ;; (global-set-key (kbd "C-c") nil)
-  (global-set-key (kbd "C-d") nil)
-  (global-set-key (kbd "C-e") nil)
-  (global-set-key (kbd "C-f") nil)
-  ;; (global-set-key (kbd "C-g") nil) ; cancel
-  ;; (global-set-key (kbd "C-h") nil) ; help
-  ;; (global-set-key (kbd "C-i") nil) ; tab
-  ;; (global-set-key (kbd "C-j") nil) ; newline
-  (global-set-key (kbd "C-k") nil)
-  (global-set-key (kbd "C-l") nil)
-  ;; (global-set-key (kbd "C-m") nil) ; newline
+
   (global-set-key (kbd "C-n") #'xah-new-empty-buffer)
   (global-set-key (kbd "C-o") #'find-file)
-  (global-set-key (kbd "C-p") nil)
-  ;; (global-set-key (kbd "C-q") nil) ; quoted-insert
-  ;; (global-set-key (kbd "C-r") nil)
+
   (global-set-key (kbd "C-s") #'save-buffer)
   (global-set-key (kbd "C-t") #'hippie-expand)
-  ;; (global-set-key (kbd "C-u") nil) ; universal-argument
   (global-set-key (kbd "C-v") #'yank)
   (global-set-key (kbd "C-w") #'xah-close-current-buffer)
-  (global-set-key (kbd "C-x") nil) ; c-x map
-  (global-set-key (kbd "C-y") #'undo-redo) ; emacs 28
+  (global-set-key (kbd "C-y") #'undo-redo)
   (global-set-key (kbd "C-z") #'undo)
   ;;
   )
