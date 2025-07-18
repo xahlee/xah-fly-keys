@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 27.4.20250711122556
+;; Version: 27.4.20250718102933
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -202,7 +202,7 @@ Version: 2025-07-07"
   (set-mark-command t)
   (set-transient-map
    (let ((xkmap (make-sparse-keymap)))
-     (define-key xkmap (kbd (if (boundp 'xah-repeat-key) xah-repeat-key "SPC")) real-this-command)
+     (define-key xkmap (kbd (if (boundp 'xah-repeat-key) xah-repeat-key "RET")) real-this-command)
      xkmap)))
 
 (defun xah-beginning-of-line-or-block ()
@@ -338,13 +338,12 @@ Punctuations is defined by `xah-punctuation-regex'
 
 URL `http://xahlee.info/emacs/emacs/emacs_jump_to_punctuations.html'
 Created: 2017-06-26
-Version: 2025-03-21"
+Version: 2025-07-18"
   (interactive)
   (set-transient-map
    (let ((xkmap (make-sparse-keymap)))
      (define-key xkmap (kbd "<left>") #'xah-backward-punct)
      (define-key xkmap (kbd "<right>") #'xah-forward-punct)
-     (define-key xkmap (kbd (if (boundp 'xah-repeat-key) xah-repeat-key "SPC")) real-this-command)
      xkmap))
   (re-search-forward xah-punctuation-regex nil t))
 
@@ -354,13 +353,12 @@ See `xah-forward-punct'
 
 URL `http://xahlee.info/emacs/emacs/emacs_jump_to_punctuations.html'
 Created: 2017-06-26
-Version: 2025-03-21"
+Version: 2025-07-18"
   (interactive)
   (set-transient-map
    (let ((xkmap (make-sparse-keymap)))
      (define-key xkmap (kbd "<left>") #'xah-backward-punct)
      (define-key xkmap (kbd "<right>") #'xah-forward-punct)
-     (define-key xkmap (kbd (if (boundp 'xah-repeat-key) xah-repeat-key "SPC")) real-this-command)
      xkmap))
   (re-search-backward xah-punctuation-regex nil t))
 
@@ -1230,8 +1228,7 @@ Version: 2025-05-21"
       (goto-char (point-max))
       (while (eq (char-before) 32) (delete-char -1))))
   (re-search-forward "\n+" nil 1)
-  (set-transient-map (let ((xkmap (make-sparse-keymap))) (define-key xkmap (kbd (if (boundp 'xah-repeat-key) xah-repeat-key "SPC")) this-command) xkmap))
-  (set-transient-map (let ((xkmap (make-sparse-keymap))) (define-key xkmap (kbd "DEL") this-command) xkmap)))
+  (set-transient-map (let ((xkmap (make-sparse-keymap))) (define-key xkmap (kbd (if (boundp 'xah-repeat-key) xah-repeat-key "RET")) this-command) xkmap)))
 
 (defun xah-space-to-newline ()
   "Replace space sequence to a newline char in current block or selection.
@@ -1543,7 +1540,7 @@ Version: 2025-01-24"
       (push-mark xbeg)
       (setq deactivate-mark nil))
     (put 'xah-cycle-hyphen-lowline-space 'state (% (+ xnowState 1) xlen)))
-  (set-transient-map (let ((xkmap (make-sparse-keymap))) (define-key xkmap (kbd (if (boundp 'xah-repeat-key) xah-repeat-key "SPC")) this-command) xkmap)))
+  (set-transient-map (let ((xkmap (make-sparse-keymap))) (define-key xkmap (kbd (if (boundp 'xah-repeat-key) xah-repeat-key "RET")) this-command) xkmap)))
 
 (defun xah-copy-file-path (&optional DirPathOnlyQ)
   "Copy current buffer file path or dired path.
@@ -3516,8 +3513,8 @@ Version: 2024-04-22"
        ("k n" . balance-windows)
        ("k c" . enlarge-window)
 
-       ("k x" . xah-upcase-sentence)
        ("k s" . ispell-word)
+       ("k x" . xah-upcase-sentence)
 
        ("l" . recenter-top-bottom)
        ("m" . dired-jump)
