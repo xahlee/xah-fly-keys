@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 27.4.20250718102933
+;; Version: 27.5.20250719153805
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -3695,7 +3695,10 @@ Version: 2024-04-22"
        ("w j" . xah-run-current-file)
 
        ("x" . xah-toggle-previous-letter-case)
-       ("y" . xah-show-kill-ring)
+
+       ("y y" . xah-pop-local-mark-ring)
+       ("y j" . xah-show-kill-ring)
+
        ;; vc command keys subject to change. need a frequency stat of the commands.
 
        ("z b" . vc-root-diff)      ; D
@@ -3742,8 +3745,6 @@ Version: 2024-04-22"
 
        ("U" . delete-char)
        ("E" . delete-backward-char)
-
-       ("Y" . xah-pop-local-mark-ring)
 
        ("a" . execute-extended-command)
        ("b" . isearch-forward)
