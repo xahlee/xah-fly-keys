@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 27.6.20250719194527
+;; Version: 27.7.20250720091147
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -4087,8 +4087,7 @@ Version: 2017-07-07"
 
 ;;;###autoload
 (define-minor-mode xah-fly-keys
-  "A modal keybinding set, like vim, but based on ergonomic
-  principles, like Dvorak layout.
+  "A modal keybinding set, like vim, but based on ergonomic principles, like Dvorak layout.
 
 URL `http://xahlee.info/emacs/misc/xah-fly-keys.html'"
   :global t
@@ -4096,24 +4095,20 @@ URL `http://xahlee.info/emacs/misc/xah-fly-keys.html'"
   :keymap xah-fly-insert-map
   (delete-selection-mode 1)
   (setq shift-select-mode nil)
-
   (if xah-fly-keys
-      ;; Construction:
       (progn
+        (when (fboundp 'which-key-mode) (which-key-mode 1))
         (add-hook 'minibuffer-setup-hook 'xah-fly-insert-mode-activate)
         (add-hook 'minibuffer-exit-hook 'xah-fly-command-mode-activate)
         (add-hook 'isearch-mode-end-hook 'xah-fly-command-mode-activate)
         (xah-fly-command-mode-activate))
     (progn
-      ;; Teardown:
+      (when (fboundp 'which-key-mode) (which-key-mode 0))
       (remove-hook 'minibuffer-setup-hook 'xah-fly-insert-mode-activate)
       (remove-hook 'minibuffer-exit-hook 'xah-fly-command-mode-activate)
       (remove-hook 'isearch-mode-end-hook 'xah-fly-command-mode-activate)
       (xah-fly-insert-mode-init :no-indication)
-      (setq mode-line-front-space '(:eval (if (display-graphic-p) " " "-")))
-
-      ;;
-      )))
+      (setq mode-line-front-space '(:eval (if (display-graphic-p) " " "-"))))))
 
 (provide 'xah-fly-keys)
 
