@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 27.5.20250719153805
+;; Version: 27.6.20250719194527
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -185,6 +185,11 @@ Must be set before loading xah-fly-keys."
 
 (defcustom xah-fly-use-isearch-arrows t
  "If true, set arrow keys for moving between occurrences, and C-v is paste, in isearch (`isearch-forward').
+Must be set before loading xah-fly-keys."
+ :type 'boolean)
+
+(defcustom xah-fly-command-mode-hl-line t
+ "If true, highlight current line when in command mode.
 Must be set before loading xah-fly-keys."
  :type 'boolean)
 
@@ -4055,6 +4060,7 @@ Version: 2022-07-06"
 Version: 2017-07-07"
   (interactive)
   (xah-fly-command-mode-init)
+  (when xah-fly-command-mode-hl-line (progn (global-hl-line-mode 1)))
   (run-hooks 'xah-fly-command-mode-activate-hook))
 
 (defun xah-fly-command-mode-activate-no-hook ()
@@ -4068,6 +4074,7 @@ Version: 2017-07-07"
 Version: 2017-07-07"
   (interactive)
   (xah-fly-insert-mode-init)
+  (when xah-fly-command-mode-hl-line (progn (global-hl-line-mode 0)))
   (run-hooks 'xah-fly-insert-mode-activate-hook))
 
 (defun xah-fly-insert-mode-activate-newline ()
