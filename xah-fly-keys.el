@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 27.7.20250720182709
+;; Version: 27.8.20250721075420
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -3401,7 +3401,7 @@ Version: 2024-04-22"
        ;; `
 
        ("a" . mark-whole-buffer)
-       ("b" . save-buffer)
+       ("b" . end-of-buffer)
 
        ("c ," . xah-open-in-external-app)
        ("c ." . find-file)
@@ -3648,7 +3648,7 @@ Version: 2024-04-22"
        ("r y" . delete-whitespace-rectangle)
        ("r z" . nil)
 
-       ("s" . end-of-buffer)
+       ("s" . save-buffer)
 
        ;; most frequently used
        ("t <up>"  . xah-move-block-up)
