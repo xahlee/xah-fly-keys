@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 27.7.20250720091147
+;; Version: 27.7.20250720182709
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -26,7 +26,9 @@
 ;; Important command/insert mode switch keys:
 
 ;; M-x `xah-fly-command-mode-activate'
-;; or press F8 or Alt+Space or Ctrl+Space or <escape>.
+;; or press <escape>
+;; or Alt+Space
+;; or Ctrl+Space.
 ;; Note: if using emacs 28 or before, escape key only works when in emacs is running in graphical user interface mode.
 
 ;; M-x `xah-fly-insert-mode-activate'
@@ -3343,16 +3345,12 @@ Version: 2024-04-22"
 
     (xah-fly--define-keys
      xah-fly-command-map
-     '(("<escape>" . xah-fly-command-mode-activate)
-       ("<home>" . xah-fly-command-mode-activate)
-       ("<f8>" . xah-fly-command-mode-activate))
+     '(("<escape>" . xah-fly-command-mode-activate))
      :direct)
 
     (xah-fly--define-keys
      xah-fly-insert-map
-     '(("<escape>" . xah-fly-command-mode-activate)
-       ("<home>" . xah-fly-command-mode-activate)
-       ("<f8>" . xah-fly-command-mode-activate))
+     '(("<escape>" . xah-fly-command-mode-activate))
      :direct)
 
     (when xah-fly-use-isearch-arrows
@@ -3618,28 +3616,31 @@ Version: 2024-04-22"
        ("r s u" . xah-backslash-to-slash)
 
        ;; kmacro-end-and-call-macro
-       ("r t RET" . #'kmacro-edit-macro)
-       ("r t SPC" . #'kmacro-step-edit-macro)
-       ("r t TAB" . #'kmacro-insert-counter)
-       ("r t a" . #'kmacro-add-counter)
-       ("r t b" . #'kmacro-bind-to-key)
-       ("r t c" . #'kmacro-set-counter)
-       ("r t d" . #'kmacro-redisplay)
-       ("r t e" . #'edit-kbd-macro)
-       ("r t f" . #'kmacro-set-format)
-       ("r t g" . #'kmacro-delete-ring-head)
-       ("r t h" . #'kmacro-edit-macro-repeat)
-       ("r t i" . #'kmacro-call-ring-2nd-repeat)
-       ("r t j" . #'kmacro-cycle-ring-next)
-       ("r t k" . #'kmacro-end-or-call-macro-repeat)
-       ("r t l" . #'kmacro-edit-lossage)
+       ("r t RET" . kmacro-edit-macro)
+       ("r t SPC" . kmacro-step-edit-macro)
+       ("r t TAB" . kmacro-insert-counter)
 
-       ("r t n" . #'kmacro-name-last-macro)
-       ("r t p" . #'kmacro-cycle-ring-previous)
-       ("r t q" . #'kbd-macro-query)
-       ("r t t" . #'kmacro-swap-ring)
-       ("r t v" . #'kmacro-view-macro-repeat)
-       ("r t x" . #'kmacro-to-register)
+       ("r t a" . kmacro-add-counter)
+       ("r t b" . kmacro-bind-to-key)
+       ("r t c" . kmacro-set-counter)
+       ("r t d" . kmacro-redisplay)
+       ("r t e" . edit-kbd-macro)
+       ("r t f" . kmacro-set-format)
+       ("r t g" . kmacro-delete-ring-head)
+       ("r t h" . kmacro-edit-macro-repeat)
+       ("r t i" . kmacro-call-ring-2nd-repeat)
+       ("r t j" . kmacro-cycle-ring-next)
+       ("r t k" . kmacro-end-or-call-macro-repeat)
+       ("r t l" . kmacro-edit-lossage)
+
+       ("r t n" . kmacro-name-last-macro)
+       ("r t p" . kmacro-cycle-ring-previous)
+       ("r t q" . kbd-macro-query)
+       ("r t t" . kmacro-swap-ring)
+       ("r t u" . nil)
+
+       ("r t v" . kmacro-view-macro-repeat)
+       ("r t x" . kmacro-to-register)
        ("r u" . xah-quote-lines)
        ("r v" . nil)
        ("r w" . nil)
@@ -3745,7 +3746,6 @@ Version: 2024-04-22"
 
        ("H" . xah-extend-selection)
        ("T" . xah-select-text-in-quote)
-       ("S" . xah-select-line)
        ("D" . xah-select-block)
 
        ("U" . delete-char)
