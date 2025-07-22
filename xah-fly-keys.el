@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 27.8.20250721075420
+;; Version: 27.8.20250722155928
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -2622,15 +2622,13 @@ If the current buffer is not associated with a file, do nothing.
 
 URL `http://xahlee.info/emacs/emacs/elisp_make-backup.html'
 Created: 2018-06-06
-Version: 2024-10-21"
+Version: 2025-07-22"
   (interactive)
-  (let ((xfname buffer-file-name)
-        (xtimestamp (format-time-string "%Y%m%d%H%M%S")))
-    (if xfname
-        (let ((xbackupName
-               (concat xfname "." xtimestamp "~")))
-          (copy-file xfname xbackupName t)
-          (message (concat "\nBackup saved at: " xbackupName)))
+  (let ((xtimestamp (format-time-string "%Y%m%d%H%M%S")))
+    (if buffer-file-name
+        (let ((xbackupName (concat buffer-file-name "." xtimestamp "~")))
+          (copy-file buffer-file-name xbackupName t)
+          (message "\nBackup saved at: %s" xbackupName))
       (if (eq major-mode 'dired-mode)
           (progn
             (mapc (lambda (xx)
@@ -2639,7 +2637,7 @@ Version: 2024-10-21"
                       (copy-file xx xbackupName t)))
                   (dired-get-marked-files))
             (revert-buffer))
-        (user-error "%s: buffer not file nor dired" real-this-command)))))
+        (user-error "xah-make-backup: buffer not file nor dired")))))
 
 (defun xah-make-backup-and-save ()
   "Backup of current file and save, or backup dired marked files.
@@ -2647,6 +2645,7 @@ For detail, see `xah-make-backup'.
 If the current buffer is not associated with a file nor dired, nothing's done.
 
 URL `http://xahlee.info/emacs/emacs/elisp_make-backup.html'
+Created: 2015-10-14
 Version: 2015-10-14"
   (interactive)
   (if buffer-file-name
