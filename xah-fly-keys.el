@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 27.8.20250722155928
+;; Version: 27.8.20250723162832
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -165,11 +165,6 @@
 
 (defvar xah-fly-command-mode-activate-hook nil "Hook for `xah-fly-command-mode-activate'")
 (defvar xah-fly-insert-mode-activate-hook nil "Hook for `xah-fly-insert-mode-activate'")
-
-(defvar xah-fly-command-mode-indicator "c"
-  "Character in mode line indicating command mode is active.")
-(defvar xah-fly-insert-mode-indicator "i"
-  "Character in mode line indicating insert mode is active.")
 
 (defcustom xah-fly-use-control-key t
   "If true, change many emacs keybinding involving control key.
@@ -4025,8 +4020,7 @@ Version: 2022-07-06"
   (setq xah-fly--deactivate-command-mode-func
         (set-transient-map xah-fly-command-map (lambda () t)))
   (modify-all-frames-parameters (list (cons 'cursor-type 'box)))
-  ;; (set-face-background 'cursor "red")
-  (setq mode-line-front-space xah-fly-command-mode-indicator)
+  (set-face-background 'cursor "red")
   (force-mode-line-update))
 
 (defun xah-fly-insert-mode-init (&optional no-indication)
@@ -4037,8 +4031,7 @@ Version: 2022-07-06"
   (funcall xah-fly--deactivate-command-mode-func)
   (unless no-indication
     (modify-all-frames-parameters '((cursor-type . bar)))
-    ;; (set-face-background 'cursor "black")
-    (setq mode-line-front-space xah-fly-insert-mode-indicator))
+    (set-face-background 'cursor "black"))
   (force-mode-line-update))
 
 (defun xah-fly-mode-toggle ()
@@ -4106,8 +4099,7 @@ URL `http://xahlee.info/emacs/misc/xah-fly-keys.html'"
       (remove-hook 'minibuffer-setup-hook 'xah-fly-insert-mode-activate)
       (remove-hook 'minibuffer-exit-hook 'xah-fly-command-mode-activate)
       (remove-hook 'isearch-mode-end-hook 'xah-fly-command-mode-activate)
-      (xah-fly-insert-mode-init :no-indication)
-      (setq mode-line-front-space '(:eval (if (display-graphic-p) " " "-"))))))
+      (xah-fly-insert-mode-init :no-indication))))
 
 (provide 'xah-fly-keys)
 
