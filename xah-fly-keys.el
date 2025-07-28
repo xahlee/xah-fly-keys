@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 27.8.20250723162832
+;; Version: 27.9.20250728112233
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -197,9 +197,11 @@ Must be set before loading xah-fly-keys."
   "Move cursor to last mark position of current buffer.
 Repeat call cycles all positions in `mark-ring'.
 
+After this command is called, press `xah-repeat-key' to repeat it.
+
 URL `http://xahlee.info/emacs/emacs/emacs_cycle_local_mark_ring.html'
 Created: 2016-04-04
-Version: 2025-07-07"
+Version: 2025-07-28"
   (interactive)
   (set-mark-command t)
   (set-transient-map
@@ -1994,9 +1996,11 @@ when there is no selection,
 
 when there is a selection, the selection extension behavior is still experimental. But when cursor is on a any type of bracket (parenthesis, quote), it extends selection to outer bracket.
 
+After this command is called, press `xah-repeat-key' to repeat it.
+
 URL `http://xahlee.info/emacs/emacs/emacs_extend_selection.html'
 Created: 2020-02-04
-Version: 2023-11-14"
+Version: 2025-07-28"
   (interactive)
 
   (cond
@@ -2087,13 +2091,18 @@ Version: 2023-11-14"
          (eq (char-before) 10))
     ;; (message "debug: left and right both newline")
     (skip-chars-forward "\n")
-    (push-mark (point)  t t)
+    (push-mark (point) t t)
     (re-search-forward "\n[ \t]*\n"))
 
    (t
     ;; (message "debug: just mark sexp" )
     (mark-sexp)
-    (exchange-point-and-mark))))
+    (exchange-point-and-mark)))
+
+  (set-transient-map
+   (let ((xkmap (make-sparse-keymap)))
+     (define-key xkmap (kbd (if (boundp 'xah-repeat-key) xah-repeat-key "RET")) real-this-command)
+     xkmap)))
 
 (defun xah-select-text-in-quote ()
   "Select text between the nearest left and right delimiters.
@@ -3699,6 +3708,10 @@ Version: 2024-04-22"
        ("y y" . xah-pop-local-mark-ring)
        ("y j" . xah-show-kill-ring)
 
+       ("y h" . xah-extend-selection)
+       ("y t" . xah-select-text-in-quote)
+       ("y i" . xah-select-block)
+
        ;; vc command keys subject to change. need a frequency stat of the commands.
 
        ("z b" . vc-root-diff)      ; D
@@ -3737,13 +3750,6 @@ Version: 2024-04-22"
        ("\\" . xah-cycle-hyphen-lowline-space)
        ("]" . split-window-right)
        ("`" . other-frame)
-
-       ("H" . xah-extend-selection)
-       ("T" . xah-select-text-in-quote)
-       ("D" . xah-select-block)
-
-       ("U" . delete-char)
-       ("E" . delete-backward-char)
 
        ("a" . execute-extended-command)
        ("b" . isearch-forward)
