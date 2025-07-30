@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 27.10.20250730105513
+;; Version: 28.0.20250730123024
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -3509,7 +3509,16 @@ Version: 2024-04-22"
 
        ("h z" . describe-coding-system)
 
-       ("i" . kill-line)
+       ("i i" . exchange-point-and-mark)
+       ("i m" . xah-pop-local-mark-ring)
+
+       ("i j" . xah-show-kill-ring)
+
+       ("i d" . xah-select-block)
+       ("i h" . xah-extend-selection)
+       ("i t" . xah-select-text-in-quote)
+       ("i s" . xah-select-line)
+
        ("j" . xah-copy-all-or-region)
 
        ("k h" . delete-other-windows)
@@ -3576,7 +3585,7 @@ Version: 2024-04-22"
        ("n y" . nil)
        ("n z" . abort-recursive-edit)
 
-       ("o" . exchange-point-and-mark)
+       ("o" . nil)
        ("p" . query-replace)
        ("q" . xah-cut-all-or-region)
 
@@ -3705,12 +3714,7 @@ Version: 2024-04-22"
 
        ("x" . xah-toggle-previous-letter-case)
 
-       ("y y" . xah-pop-local-mark-ring)
-       ("y j" . xah-show-kill-ring)
-
-       ("y h" . xah-extend-selection)
-       ("y t" . xah-select-text-in-quote)
-       ("y d" . xah-select-block)
+       ("y" . nil)
 
        ;; vc command keys subject to change. need a frequency stat of the commands.
 
@@ -3759,7 +3763,7 @@ Version: 2024-04-22"
        ("f" . undo)
        ("g" . backward-word)
        ("h" . backward-char)
-       ("i" . xah-delete-current-text-block)
+       ("i" . xah-extend-selection)
 
        ("j" . xah-copy-line-or-region)
        ("k" . xah-paste-or-paste-previous)
@@ -3776,7 +3780,7 @@ Version: 2024-04-22"
        ("v" . xah-forward-right-bracket)
        ("w" . xah-next-window-or-frame)
        ("x" . xah-toggle-letter-case)
-       ("y" . set-mark-command)
+       ("y" . kill-line)
        ("z" . xah-goto-matching-bracket)))
 
     ;;
