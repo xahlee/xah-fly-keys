@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 27.9.20250728112233
+;; Version: 27.10.20250730105513
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -3520,7 +3520,7 @@ Version: 2024-04-22"
        ("k c" . enlarge-window)
 
        ("k s" . ispell-word)
-       ("k x" . xah-upcase-sentence)
+       ("k b" . xah-upcase-sentence)
 
        ("l" . recenter-top-bottom)
        ("m" . dired-jump)
@@ -3710,7 +3710,7 @@ Version: 2024-04-22"
 
        ("y h" . xah-extend-selection)
        ("y t" . xah-select-text-in-quote)
-       ("y i" . xah-select-block)
+       ("y d" . xah-select-block)
 
        ;; vc command keys subject to change. need a frequency stat of the commands.
 
