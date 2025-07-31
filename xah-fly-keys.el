@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 28.0.20250730123024
+;; Version: 28.0.20250730222058
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -716,14 +716,15 @@ If `universal-argument' is called first, do not delete bracket's innertext.
 In elisp code, arg BracketOnly if true, do not delete innertext. SkipDispatch if true, skip checking `xah-smart-delete-dispatch'.
 
 Created: 2023-07-22
-Version: 2025-02-05"
+Version: 2025-07-30"
   (interactive (list current-prefix-arg nil))
   (let (xfun)
     (cond
      ((and (not SkipDispatch) (setq xfun (assq major-mode xah-smart-delete-dispatch)))
       (message "calling cdr of %s" xfun)
       (funcall (cdr xfun)))
-     ((region-active-p) (delete-region (region-beginning) (region-end)))
+     ((region-active-p)
+      (kill-region (region-beginning) (region-end)))
      ((or
        ;; 32 is space, 9 is tab, 10 is newline
        (eq (char-before) 32)
@@ -3509,13 +3510,12 @@ Version: 2024-04-22"
 
        ("h z" . describe-coding-system)
 
+       ("i c" . set-mark-command)
        ("i i" . exchange-point-and-mark)
        ("i m" . xah-pop-local-mark-ring)
-
        ("i j" . xah-show-kill-ring)
-
-       ("i d" . xah-select-block)
-       ("i h" . xah-extend-selection)
+       ("i d" . xah-delete-current-text-block)
+       ("i h" . xah-select-block)
        ("i t" . xah-select-text-in-quote)
        ("i s" . xah-select-line)
 
@@ -4041,7 +4041,7 @@ Version: 2022-07-06"
   (funcall xah-fly--deactivate-command-mode-func)
   (unless no-indication
     (modify-all-frames-parameters '((cursor-type . bar)))
-    (set-face-background 'cursor "black"))
+    (set-face-background 'cursor "gray"))
   (force-mode-line-update))
 
 (defun xah-fly-mode-toggle ()
