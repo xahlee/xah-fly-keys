@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 28.0.20250730222058
+;; Version: 28.1.20250731092448
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -2001,7 +2001,7 @@ After this command is called, press `xah-repeat-key' to repeat it.
 
 URL `http://xahlee.info/emacs/emacs/emacs_extend_selection.html'
 Created: 2020-02-04
-Version: 2025-07-28"
+Version: 2025-07-31"
   (interactive)
 
   (cond
@@ -2012,11 +2012,11 @@ Version: 2025-07-28"
        ((looking-at "\\s(")
         (if (eq (nth 0 (syntax-ppss)) 0)
             (progn
-              ;; (message "debug: left bracket, depth 0.")
+              (message "xah-extend-selection debug: left bracket, depth 0.")
               (end-of-line) ; select current line
               (push-mark (line-beginning-position) t t))
           (progn
-            ;; (message "debug: left bracket, depth not 0")
+            (message "xah-extend-selection debug: left bracket, depth not 0")
             (up-list -1 t t)
             (mark-sexp))))
        ((eq xbeg (line-beginning-position))
@@ -2026,57 +2026,57 @@ Version: 2025-07-28"
             (cond
              ((eq xend xfirstLineEndPos)
               (progn
-                ;; (message "debug: exactly 1 line. extend to next whole line." )
+                (message "xah-extend-selection debug: exactly 1 line. extend to next whole line.")
                 (forward-line 1)
                 (end-of-line)))
              ((< xend xfirstLineEndPos)
               (progn
-                ;; (message "debug: less than 1 line. complete the line." )
+                (message "xah-extend-selection debug: less than 1 line. complete the line.")
                 (end-of-line)))
              ((> xend xfirstLineEndPos)
               (progn
-                ;; (message "debug: beginning of line, but end is greater than 1st end of line" )
+                (message "xah-extend-selection debug: beginning of line, but end is greater than 1st end of line")
                 (goto-char xend)
                 (if (eq (point) (line-end-position))
                     (progn
-                      ;; (message "debug: exactly multiple lines" )
+                      (message "xah-extend-selection debug: exactly multiple lines")
                       (forward-line 1)
                       (end-of-line))
                   (progn
-                    ;; (message "debug: multiple lines but end is not eol. make it so" )
+                    (message "xah-extend-selection debug: multiple lines but end is not eol. make it so")
                     (goto-char xend)
                     (end-of-line)))))
              (t (error "%s: logic error 42946" real-this-command))))))
        ((and (> (point) (line-beginning-position)) (<= (point) (line-end-position)))
         (progn
-          ;; (message "debug: less than 1 line" )
+          (message "xah-extend-selection debug: less than 1 line")
           (end-of-line) ; select current line
           (push-mark (line-beginning-position) t t)))
        (t
-        ;; (message "debug: last resort" )
+        (message "xah-extend-selection debug: last resort")
         nil))))
 
    ((looking-at "\\s(")
-    ;; (message "debug: left bracket")
+    (message "xah-extend-selection debug: left bracket")
     (mark-sexp))
 
    ((looking-at "\\s)")
-    ;; (message "debug: right bracket")
+    (message "xah-extend-selection debug: right bracket")
     (backward-up-list) (mark-sexp))
 
    ((looking-at "\\s\"")
-    ;; (message "debug: string quote")
+    (message "xah-extend-selection debug: string quote")
     (mark-sexp))
 
    ((looking-at "[ \t\n]")
-    ;; (message "debug: is white space")
+    (message "xah-extend-selection debug: is white space")
     (skip-chars-backward " \t\n")
     (push-mark)
     (skip-chars-forward " \t\n")
     (setq mark-active t))
 
    ((looking-at "[-_a-zA-Z0-9]")
-    ;; (message "debug: left is word or symbol")
+    (message "xah-extend-selection debug: left is word or symbol")
     (skip-chars-backward "-_a-zA-Z0-9")
     (push-mark)
     (skip-chars-forward "-_a-zA-Z0-9")
@@ -2084,21 +2084,21 @@ Version: 2025-07-28"
 
    ;; ((and (looking-at "[[:blank:]]")
    ;;       (prog2 (backward-char) (looking-at "[[:blank:]]") (forward-char)))
-   ;;  ;; (message "debug: left and right both space" )
+   ;;  ;; (message "xah-extend-selection debug: left and right both space" )
    ;;  (skip-chars-backward "[[:blank:]]") (push-mark (point) t t)
    ;;  (skip-chars-forward "[[:blank:]]"))
 
    ((and (looking-at "\n")
          (eq (char-before) 10))
-    ;; (message "debug: left and right both newline")
+    (message "xah-extend-selection debug: left and right both newline")
     (skip-chars-forward "\n")
     (push-mark (point) t t)
     (re-search-forward "\n[ \t]*\n"))
 
    (t
-    ;; (message "debug: just mark sexp" )
-    (mark-sexp)
-    (exchange-point-and-mark)))
+    (message "xah-extend-selection debug: just select 1 char")
+    (push-mark (point) t t)
+    (forward-char)))
 
   (set-transient-map
    (let ((xkmap (make-sparse-keymap)))
@@ -3511,6 +3511,8 @@ Version: 2024-04-22"
        ("h z" . describe-coding-system)
 
        ("i c" . set-mark-command)
+       ("i w" . kill-line)
+
        ("i i" . exchange-point-and-mark)
        ("i m" . xah-pop-local-mark-ring)
        ("i j" . xah-show-kill-ring)
@@ -3780,7 +3782,7 @@ Version: 2024-04-22"
        ("v" . xah-forward-right-bracket)
        ("w" . xah-next-window-or-frame)
        ("x" . xah-toggle-letter-case)
-       ("y" . kill-line)
+       ("y" . minibuffer-keyboard-quit)
        ("z" . xah-goto-matching-bracket)))
 
     ;;
@@ -4093,7 +4095,7 @@ Version: 2017-07-07"
 
 URL `http://xahlee.info/emacs/misc/xah-fly-keys.html'"
   :global t
-  :lighter "xahflykeys"
+  :lighter "XFK"
   :keymap xah-fly-insert-map
   (delete-selection-mode 1)
   (setq shift-select-mode nil)
