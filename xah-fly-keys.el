@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 28.1.20250731092448
+;; Version: 28.1.20250731115547
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -2012,11 +2012,11 @@ Version: 2025-07-31"
        ((looking-at "\\s(")
         (if (eq (nth 0 (syntax-ppss)) 0)
             (progn
-              (message "xah-extend-selection debug: left bracket, depth 0.")
+              (message "%s debug: left bracket, depth 0." real-this-command)
               (end-of-line) ; select current line
               (push-mark (line-beginning-position) t t))
           (progn
-            (message "xah-extend-selection debug: left bracket, depth not 0")
+            (message "%s debug: left bracket, depth not 0" real-this-command)
             (up-list -1 t t)
             (mark-sexp))))
        ((eq xbeg (line-beginning-position))
@@ -2026,57 +2026,57 @@ Version: 2025-07-31"
             (cond
              ((eq xend xfirstLineEndPos)
               (progn
-                (message "xah-extend-selection debug: exactly 1 line. extend to next whole line.")
+                (message "%s debug: exactly 1 line. extend to next whole line." real-this-command)
                 (forward-line 1)
                 (end-of-line)))
              ((< xend xfirstLineEndPos)
               (progn
-                (message "xah-extend-selection debug: less than 1 line. complete the line.")
+                (message "%s debug: less than 1 line. complete the line." real-this-command)
                 (end-of-line)))
              ((> xend xfirstLineEndPos)
               (progn
-                (message "xah-extend-selection debug: beginning of line, but end is greater than 1st end of line")
+                (message "%s debug: beginning of line, but end is greater than 1st end of line" real-this-command)
                 (goto-char xend)
                 (if (eq (point) (line-end-position))
                     (progn
-                      (message "xah-extend-selection debug: exactly multiple lines")
+                      (message "%s debug: exactly multiple lines" real-this-command)
                       (forward-line 1)
                       (end-of-line))
                   (progn
-                    (message "xah-extend-selection debug: multiple lines but end is not eol. make it so")
+                    (message "%s debug: multiple lines but end is not eol. make it so" real-this-command)
                     (goto-char xend)
                     (end-of-line)))))
              (t (error "%s: logic error 42946" real-this-command))))))
        ((and (> (point) (line-beginning-position)) (<= (point) (line-end-position)))
         (progn
-          (message "xah-extend-selection debug: less than 1 line")
+          (message "%s debug: less than 1 line" real-this-command)
           (end-of-line) ; select current line
           (push-mark (line-beginning-position) t t)))
        (t
-        (message "xah-extend-selection debug: last resort")
+        (message "%s debug: last resort" real-this-command)
         nil))))
 
    ((looking-at "\\s(")
-    (message "xah-extend-selection debug: left bracket")
+    (message "%s debug: left bracket" real-this-command)
     (mark-sexp))
 
    ((looking-at "\\s)")
-    (message "xah-extend-selection debug: right bracket")
+    (message "%s debug: right bracket" real-this-command)
     (backward-up-list) (mark-sexp))
 
    ((looking-at "\\s\"")
-    (message "xah-extend-selection debug: string quote")
+    (message "%s debug: string quote" real-this-command)
     (mark-sexp))
 
    ((looking-at "[ \t\n]")
-    (message "xah-extend-selection debug: is white space")
+    (message "%s debug: is white space" real-this-command)
     (skip-chars-backward " \t\n")
     (push-mark)
     (skip-chars-forward " \t\n")
     (setq mark-active t))
 
    ((looking-at "[-_a-zA-Z0-9]")
-    (message "xah-extend-selection debug: left is word or symbol")
+    (message "%s debug: left is word or symbol" real-this-command)
     (skip-chars-backward "-_a-zA-Z0-9")
     (push-mark)
     (skip-chars-forward "-_a-zA-Z0-9")
@@ -2084,19 +2084,19 @@ Version: 2025-07-31"
 
    ;; ((and (looking-at "[[:blank:]]")
    ;;       (prog2 (backward-char) (looking-at "[[:blank:]]") (forward-char)))
-   ;;  ;; (message "xah-extend-selection debug: left and right both space" )
+   ;;  ;; (message "%s debug: left and right both space" real-this-command)
    ;;  (skip-chars-backward "[[:blank:]]") (push-mark (point) t t)
    ;;  (skip-chars-forward "[[:blank:]]"))
 
    ((and (looking-at "\n")
          (eq (char-before) 10))
-    (message "xah-extend-selection debug: left and right both newline")
+    (message "%s debug: left and right both newline" real-this-command)
     (skip-chars-forward "\n")
     (push-mark (point) t t)
     (re-search-forward "\n[ \t]*\n"))
 
    (t
-    (message "xah-extend-selection debug: just select 1 char")
+    (message "%s debug: just select 1 char" real-this-command)
     (push-mark (point) t t)
     (forward-char)))
 
@@ -3510,10 +3510,9 @@ Version: 2024-04-22"
 
        ("h z" . describe-coding-system)
 
-       ("i c" . set-mark-command)
-       ("i w" . kill-line)
-
-       ("i i" . exchange-point-and-mark)
+       ("i SPC" . set-mark-command)
+       ("i w" . exchange-point-and-mark)
+       ("i i" . kill-line)
        ("i m" . xah-pop-local-mark-ring)
        ("i j" . xah-show-kill-ring)
        ("i d" . xah-delete-current-text-block)
