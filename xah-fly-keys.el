@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 28.1.20250731115547
+;; Version: 28.1.20250801123856
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -2726,6 +2726,17 @@ Version: 2025-02-21"
     (isearch-mode t)
     (isearch-yank-string (buffer-substring-no-properties xbeg xend))))
 
+(defun xah-fly-cancel ()
+  "Cancle selection or call `minibuffer-keyboard-quit' and `keyboard-quit'.
+Created: 2025-08-01
+Version: 2025-08-01"
+  (interactive)
+  (if (minibufferp (current-buffer))
+      (progn (minibuffer-keyboard-quit))
+    (if (region-active-p)
+        (progn (deactivate-mark))
+      (progn (keyboard-quit)))))
+
 (declare-function w32-shell-execute "w32fns.c" (operation document &optional parameters show-flag)) ; (w32-shell-execute "open" default-directory)
 
 (defun xah-show-in-desktop ()
@@ -3781,7 +3792,7 @@ Version: 2024-04-22"
        ("v" . xah-forward-right-bracket)
        ("w" . xah-next-window-or-frame)
        ("x" . xah-toggle-letter-case)
-       ("y" . minibuffer-keyboard-quit)
+       ("y" . xah-fly-cancel)
        ("z" . xah-goto-matching-bracket)))
 
     ;;
