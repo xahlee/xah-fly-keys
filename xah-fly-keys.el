@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 28.2.20250803094725
+;; Version: 28.2.20250803101533
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -191,16 +191,18 @@ Must be set before loading xah-fly-keys."
  :type 'boolean)
 
 (defcustom xah-fly-command-mode-cursor-color "red"
-  "Cursor color when in command mode. Default is red.
-If set to non-nil, cursor will be in set color.
-If set to nil, cursor will be in color defined in current theme.
+  "Cursor color when in command mode.
+Value should be a string of color name. See `list-colors-display'.
+Default is red.
+If set to nil, use the color of current theme.
 Must be set before loading xah-fly-keys."
  :type '(string))
 
 (defcustom xah-fly-insert-mode-cursor-color "gray"
-  "Cursor color when in insert mode. Default is gray.
-If set to non-nil, cursor will be in set color.
-If set to nil, cursor will be in color defined in current theme.
+  "Cursor color when in insert mode.
+Value should be a string of color name. See `list-colors-display'.
+Default is gray.
+If set to nil, use the color of current theme.
 Must be set before loading xah-fly-keys."
  :type '(string))
 
@@ -2742,8 +2744,10 @@ Version: 2025-02-21"
 
 (defun xah-fly-cancel ()
   "Cancle selection or call `minibuffer-keyboard-quit' and `keyboard-quit'.
+This command is intended to replace key C-g , but not always work. Sometimes you still need to press C-g to cancel or abort or exit some commands.
+
 Created: 2025-08-01
-Version: 2025-08-01"
+Version: 2025-08-03"
   (interactive)
   (if (minibufferp (current-buffer))
       (progn (minibuffer-keyboard-quit))
