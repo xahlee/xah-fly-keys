@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 28.2.20250803101533
+;; Version: 28.3.20250803102638
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -2034,7 +2034,7 @@ Version: 2025-07-31"
           (progn
             (message "%s debug: left bracket, depth not 0" real-this-command)
             (up-list -1 t t)
-            (mark-sexp))))
+            (mark-sexp) (exchange-point-and-mark))))
        ((eq xbeg (line-beginning-position))
         (progn
           (goto-char xbeg)
@@ -2074,15 +2074,15 @@ Version: 2025-07-31"
 
    ((looking-at "\\s(")
     (message "%s debug: left bracket" real-this-command)
-    (mark-sexp))
+    (mark-sexp) (exchange-point-and-mark))
 
    ((looking-at "\\s)")
     (message "%s debug: right bracket" real-this-command)
-    (backward-up-list) (mark-sexp))
+    (backward-up-list) (mark-sexp) (exchange-point-and-mark))
 
    ((looking-at "\\s\"")
     (message "%s debug: string quote" real-this-command)
-    (mark-sexp))
+    (mark-sexp) (exchange-point-and-mark))
 
    ((looking-at "[ \t\n]")
     (message "%s debug: is white space" real-this-command)
@@ -2092,7 +2092,7 @@ Version: 2025-07-31"
     (setq mark-active t))
 
    ((looking-at "[-_a-zA-Z0-9]")
-    (message "%s debug: left is word or symbol" real-this-command)
+    (message "%s debug: right is word or symbol" real-this-command)
     (skip-chars-backward "-_a-zA-Z0-9")
     (push-mark)
     (skip-chars-forward "-_a-zA-Z0-9")
@@ -2112,7 +2112,7 @@ Version: 2025-07-31"
     (re-search-forward "\n[ \t]*\n"))
 
    (t
-    (message "%s debug: just select 1 char" real-this-command)
+    (message "%s debug: no condition met. just select 1 char" real-this-command)
     (push-mark (point) t t)
     (forward-char)))
 
