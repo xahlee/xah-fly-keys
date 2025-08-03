@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 28.1.20250803094018
+;; Version: 28.2.20250803094725
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -3054,7 +3054,7 @@ A S T F G H J E L : \"
 Z X C V B N M < > ?
 " xah-fly-layout-diagrams)
 
-  (puthash "neo2" "
+(puthash "neo2" "
 ˇ ° § ℓ » « $ € „ “ ” — ¸
 ^ 1 2 3 4 5 6 7 8 9 0 - `
 
