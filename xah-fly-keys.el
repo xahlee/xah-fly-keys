@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 28.3.20250803102638
+;; Version: 28.3.20250806094130
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -174,7 +174,7 @@ Remove many redundant emacs default keys
 Must be set before loading xah-fly-keys."
   :type 'boolean)
 
-(defcustom xah-fly-use-meta-key t
+(defcustom xah-fly-use-meta-key nil
   "If true, change some emacs keybinding involving meta key.
 Remove many redundant emacs default keys.
 Must be set before loading xah-fly-keys."
@@ -477,7 +477,8 @@ Version: 2015-08-22"
 Respects `narrow-to-region'.
 
 URL `http://xahlee.info/emacs/emacs/emacs_copy_cut_all_or_region.html'
-Version: 2015-08-22"
+Created: 2015-08-22
+Version: 2025-08-06"
   (interactive)
   (if (region-active-p)
       (progn
@@ -485,11 +486,13 @@ Version: 2015-08-22"
         (delete-region (region-beginning) (region-end)))
     (progn
       (kill-new (buffer-string))
-      (delete-region (point-min) (point-max)))))
+      (delete-region (point-min) (point-max))
+      (message "buffer text cut"))))
 
 (defun xah-copy-all ()
   "Put the whole buffer content into the `kill-ring'.
 (respects `narrow-to-region')
+Created: 2016-10-06
 Version: 2016-10-06"
   (interactive)
   (kill-new (buffer-string))
@@ -498,6 +501,7 @@ Version: 2016-10-06"
 (defun xah-cut-all ()
   "Cut the whole buffer content into the `kill-ring'.
 Respects `narrow-to-region'.
+Created: 2017-01-03
 Version: 2017-01-03"
   (interactive)
   (kill-new (buffer-string))
@@ -3871,7 +3875,7 @@ Version: 2024-04-22"
   (global-set-key (kbd "M-o") nil) ; facemenu-keymap
   (global-set-key (kbd "M-q") nil) ; fill-paragraph
   (global-set-key (kbd "M-r") nil) ; move-to-window-line-top-bottom
-  (global-set-key (kbd "M-s") nil) ; Prefix Command
+  ;; (global-set-key (kbd "M-s") nil) ; Prefix Command
   (global-set-key (kbd "M-t") nil) ; transpose-words
   (global-set-key (kbd "M-u") nil) ; upcase-word
   (global-set-key (kbd "M-v") nil) ; scroll-down-command
