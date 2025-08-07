@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 28.3.20250806094130
+;; Version: 28.3.20250807101931
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -2474,60 +2474,6 @@ Version: 2024-09-25"
 
 ;; HHHH------------------------------
 
-(defvar xah-run-current-file-dispatch nil
-"A dispatch table used by `xah-run-current-file' to call dedicated function to run code.
-Value is a association list.
-Each item is (EXT . FUNCTION).
-EXT is filename extension (sans the dot), type string.
-FUNCTION is a elisp function name to call, type symbol.
-If file extension match, and FUNCTION is defined, call it, pass current buffer's filepath as arg.
-Else, `xah-run-current-file-map' is looked up." )
-
-(setq xah-run-current-file-dispatch
-      '(("el" . load)
-        ("elc" . load)
-        ("java" . xah-java-compile-and-run)))
-
-(defvar xah-run-current-file-map
-  "A association list that maps file extension to a command for running the file, used by `xah-run-current-file'.
-Each item is (EXT . PROGRAM).
-EXT is filename extension (sans the dot), type string.
-PROGRAM is program name or path, with command options to run a file, type string.
-A filename is appended after the PROGRAM string as external command to call.")
-
-(setq xah-run-current-file-map
-      '(
-        ;; following are tested as of 2024-12-20
-
-        ("fs" . "dotnet fsi")
-        ("fsx" . "dotnet fsi")
-        ("go" . "go run")
-        ("js" . "deno run")
-        ("php" . "php")
-        ("pl" . "perl")
-        ("ps1" . "pwsh")
-        ("py" . "python")
-        ("py2" . "python2")
-        ("py3" . "python3")
-        ("rb" . "ruby")
-        ("ts" . "deno run")
-        ("m" . "wolframscript -print all -file")
-        ("wl" . "wolframscript -print all -file")
-        ("wls" . "wolframscript -print all -file")
-
-        ;; following may be outdated
-
-        ("clj" . "clj")
-        ("hs" . "runhaskell")
-        ("latex" . "pdflatex")
-        ("ml" . "ocaml")
-        ("rkt" . "racket")
-        ("sh" . "bash")
-        ("tex" . "pdflatex")
-        ("tsx" . "tsc")
-        ("vbs" . "cscript")
-        ("pov" . "povray +R2 +A0.1 +J1.2 +Am2 +Q9 +H480 +W640")))
-
 (defun xah-java-compile-and-run (Filename)
   "Compile and run java of current buffer.
 Buffer is saved first if modified.
@@ -2537,6 +2483,7 @@ requires the commands 「javac」 and 「java」.
 
 If compile fails, the error is displayed in a buffer.
 
+URL `http://xahlee.info/emacs/emacs/elisp_run_current_file.html'
 Created: 2024-12-20
 Version: 2024-12-20"
   (interactive (if buffer-file-name (progn (when (buffer-modified-p) (save-buffer)) (list buffer-file-name)) (user-error "Buffer is not file. Save it first.")))
@@ -2551,6 +2498,59 @@ Version: 2024-12-20"
           (display-buffer xoutbuf))
       (display-buffer xjavac-buf))))
 
+(defvar xah-run-current-file-dispatch
+  (list (cons "el" 'load)
+        (cons "elc" 'load)
+        (cons "java" 'xah-java-compile-and-run))
+  "A dispatch table used by `xah-run-current-file' to call dedicated function to run code.
+Value is a association list.
+Each item is (EXT . FUNCTION).
+EXT is filename extension (sans the dot), of type string.
+FUNCTION is a elisp function name to call, of type symbol.
+If file extension match, and FUNCTION is defined, call it, pass current buffer's filepath as arg.
+Else, `xah-run-current-file-map' is looked up.
+URL `http://xahlee.info/emacs/emacs/elisp_run_current_file.html'
+")
+
+(defvar xah-run-current-file-map
+  '(
+    ;; following are tested as of 2024-12-20
+    ("fs" . "dotnet fsi")
+    ("fsx" . "dotnet fsi")
+    ("go" . "go run")
+    ("js" . "deno run")
+    ("php" . "php")
+    ("pl" . "perl")
+    ("ps1" . "pwsh")
+    ("py" . "python")
+    ("py2" . "python2")
+    ("py3" . "python3")
+    ("rb" . "ruby")
+    ("ts" . "deno run")
+    ("m" . "wolframscript -print all -file")
+    ("wl" . "wolframscript -print all -file")
+    ("wls" . "wolframscript -print all -file")
+
+    ;; following may be outdated
+
+    ("clj" . "clj")
+    ("hs" . "runhaskell")
+    ("latex" . "pdflatex")
+    ("ml" . "ocaml")
+    ("rkt" . "racket")
+    ("sh" . "bash")
+    ("tex" . "pdflatex")
+    ("tsx" . "tsc")
+    ("vbs" . "cscript")
+    ("pov" . "povray +R2 +A0.1 +J1.2 +Am2 +Q9 +H480 +W640"))
+  "A association list that maps file extension to a command for running the file, used by `xah-run-current-file'.
+Each item is (EXT . PROGRAM).
+EXT is filename extension (sans the dot), type string.
+PROGRAM is program name or path, with command options to run a file, type string.
+A filename is appended after the PROGRAM string as external command to call.
+URL `http://xahlee.info/emacs/emacs/elisp_run_current_file.html'
+")
+
 (defun xah-run-current-file (Filename)
   "Execute the current file.
 Output is printed to buffer *xah-run output*.
@@ -2563,7 +2563,7 @@ The variable `xah-run-current-file-dispatch' allows you to customize this comman
 
 URL `http://xahlee.info/emacs/emacs/elisp_run_current_file.html'
 Created: 2020-09-24
-Version: 2024-12-25"
+Version: 2025-08-07"
   (interactive (if buffer-file-name (progn (when (buffer-modified-p) (save-buffer)) (list buffer-file-name)) (user-error "Buffer is not file. Save it first.")))
   (let ((xoutbuf (get-buffer-create "*xah-run output*" t))
         (xext (file-name-extension Filename))
@@ -2572,7 +2572,7 @@ Version: 2024-12-25"
     (if xdispatch
         (if (fboundp (cdr xdispatch))
             (progn
-              (message "calling %s" (cdr xdispatch))
+              (message "%s dispatch call %s" real-this-command xdispatch)
               (funcall (cdr xdispatch) Filename))
           (warn "`xah-run-current-file' found function %s in xah-run-current-file-dispatch but it is unbound. Normal run continues using `xah-run-current-file-map'." xdispatch))
       (let ((xappCmdStr (cdr (assoc xext xah-run-current-file-map))))
