@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 28.3.20250807101931
+;; Version: 28.4.20250825201039
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -1905,6 +1905,7 @@ xString can be multiple chars or any string.
    ("thumb up 👍" . "👍")
    ("thumb down 👎" . "👎")
    ("tv 📺" . "📺")
+   ("lotus 🪷" . "🪷")
    ("checkmark ✅" . "✅")
    ("new 🆕" . "🆕")
    ("glowing star 🌟" . "🌟")
@@ -3423,9 +3424,9 @@ Version: 2024-04-22"
        (". c" . highlight-lines-matching-regexp)
        (". h" . highlight-regexp)
        (". t" . highlight-phrase)
-       (". e" . isearch-forward-symbol-at-point)
+       (". p" . isearch-forward-symbol-at-point)
        (". u" . isearch-forward-symbol)
-       (". p" . isearch-forward-word)
+       (". e" . isearch-forward-word)
 
        ("'" . xah-fill-or-unfill)
 
@@ -3543,8 +3544,8 @@ Version: 2024-04-22"
        ("h z" . describe-coding-system)
 
        ("i SPC" . set-mark-command)
-       ("i w" . exchange-point-and-mark)
-       ("i i" . kill-line)
+       ;; ("i w" . kill-line)
+       ("i i" . exchange-point-and-mark)
        ("i m" . xah-pop-local-mark-ring)
        ("i j" . xah-show-kill-ring)
        ("i d" . xah-delete-current-text-block)
@@ -3578,7 +3579,6 @@ Version: 2024-04-22"
        ("n SPC d" . display-line-numbers-mode)
 
        ("n SPC ," . global-hl-line-mode)
-       ("n SPC p" . global-display-line-numbers-mode)
 
        ("n ," . abbrev-mode)
        ("n ." . toggle-frame-maximized) ; xxwindow
@@ -3591,7 +3591,7 @@ Version: 2024-04-22"
        ("n <up>" . xah-page-up)
        ("n <down>" . xah-page-down)
 
-       ("n a" . text-scale-adjust)
+       ("n a" . global-text-scale-adjust)
        ("n b" . toggle-debug-on-error)
        ("n c" . toggle-case-fold-search)
        ("n d" . nil)
@@ -3833,12 +3833,13 @@ Version: 2024-04-22"
   (global-set-key (kbd "<help>") nil)
   (global-set-key (kbd "<f1>") nil))
 
+  (global-set-key (kbd "M-SPC") #'xah-fly-command-mode-activate)
+
 (when xah-fly-use-meta-key
 
   (global-set-key (kbd "M-<home>") nil) ; beginning-of-buffer-other-window
   (global-set-key (kbd "M-<end>") nil) ; end-of-buffer-other-window
 
-  (global-set-key (kbd "M-SPC") #'xah-fly-command-mode-activate)
   (global-set-key (kbd "M-\\") nil) ; delete-horizontal-space
   (global-set-key (kbd "M-!") nil)  ; shell-command
   (global-set-key (kbd "M-$") nil)  ; ispell-word
@@ -3888,6 +3889,8 @@ Version: 2024-04-22"
   (global-set-key (kbd "M-}") nil)   ; forward-paragraph
   (global-set-key (kbd "M-~") nil)   ; not-modified
   (global-set-key (kbd "M-DEL") nil) ; backward-kill-word
+
+  ;; 
   )
 
 (when xah-fly-use-control-key
