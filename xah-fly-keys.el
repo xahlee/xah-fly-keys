@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 28.4.20250825201039
+;; Version: 28.4.20250829124616
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -1105,117 +1105,57 @@ Version: 2025-03-25"
 First call will break into multiple short lines. Repeated call toggles between short and long lines.
 This commands calls `fill-region' to do its work. Set `fill-column' for short line length.
 
-URL `http://xahlee.info/emacs/emacs/modernization_fill-paragraph.html'
+URL `http://xahlee.info/emacs/emacs/emacs_unfill-paragraph.html'
 Created: 2020-11-22
-Version: 2025-03-25"
+Version: 2025-08-29"
   (interactive)
   ;; This command symbol has a property “'longline-p”, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
-  (let ( (xisLongline (if (eq last-command this-command) (get this-command 'longline-p) t))
-         (deactivate-mark nil)
-         xbeg xend )
+  (let ((xisLongline (if (eq last-command this-command) (get this-command 'longline-p) t))
+        (deactivate-mark nil)
+        xbeg xend)
     (seq-setq (xbeg xend) (if (region-active-p) (list (region-beginning) (region-end)) (list (save-excursion (if (re-search-backward "\n[ \t]*\n" nil 1) (match-end 0) (point))) (save-excursion (if (re-search-forward "\n[ \t]*\n" nil 1) (match-beginning 0) (point))))))
     (if xisLongline
         (fill-region xbeg xend)
-      (let ((fill-column 99999 ))
+      (let ((fill-column 99999))
         (fill-region xbeg xend)))
     (put this-command 'longline-p (not xisLongline))))
-
-(defun xah-unfill-paragraph ()
-  "Replace newline chars in current paragraph by single spaces.
-This command does the inverse of `fill-paragraph'.
-
-URL `http://xahlee.info/emacs/emacs/emacs_unfill-paragraph.html'
-Created: 2010-05-12
-Version: 2022-05-20"
-  (interactive)
-  (let ((fill-column 90002000))
-    (fill-paragraph)))
-
-(defun xah-unfill-region (Begin End)
-  "Replace newline chars in region by single spaces.
-This command does the inverse of `fill-region'.
-
-URL `http://xahlee.info/emacs/emacs/emacs_unfill-paragraph.html'
-Created: 2010-05-12
-Version: 2022-05-20"
-  (interactive "r")
-  (let ((fill-column 90002000))
-    (fill-region Begin End)))
-
-(defun xah-change-newline-chars-to-one (Begin End)
-  "Replace newline char sequence by just one.
-
-URL `http://xahlee.info/emacs/emacs/emacs_reformat_lines.html'
-Version: 2021-07-06"
-  (interactive "r")
-  (save-excursion
-    (save-restriction
-      (narrow-to-region Begin End)
-      (goto-char (point-min))
-      (while (re-search-forward "\n\n+" nil 1) (replace-match "\n")))))
-
-(defun xah-reformat-whitespaces-to-one-space (Begin End)
-  "Replace whitespaces by one space.
-
-URL `http://xahlee.info/emacs/emacs/emacs_reformat_lines.html'
-Created: 2017-01-11
-Version: 2022-01-08"
-  (interactive "r")
-  (save-restriction
-      (narrow-to-region Begin End)
-      (goto-char (point-min))
-      (while (search-forward "\n" nil 1) (replace-match " "))
-      (goto-char (point-min))
-      (while (search-forward "\t" nil 1) (replace-match " "))
-      (goto-char (point-min))
-      (while (re-search-forward " +" nil 1) (replace-match " "))
-      (goto-char (point-max))))
-
-(defun xah-reformat-to-multi-lines (&optional Begin End MinLength)
-  "Replace spaces by a newline at ~70 chars, on current block or selection.
-If `universal-argument' is called first, ask user for max width.
-
-URL `http://xahlee.info/emacs/emacs/emacs_reformat_lines.html'
-Created: 2018-12-16
-Version: 2025-04-08"
-  (interactive)
-  (let (xbeg xend)
-    (seq-setq
-     (xbeg xend)
-     (if (and Begin End)
-         (list  Begin  End)
-       (if (region-active-p) (list (region-beginning) (region-end)) (list (save-excursion (if (re-search-backward "\n[ \t]*\n" nil 1) (match-end 0) (point))) (save-excursion (if (re-search-forward "\n[ \t]*\n" nil 1) (match-beginning 0) (point)))))))
-    (save-excursion
-      (save-restriction
-        (narrow-to-region xbeg xend)
-        (goto-char (point-min))
-        (while (re-search-forward " +" nil 1)
-          (when (> (- (point) (line-beginning-position)) (if MinLength MinLength (if current-prefix-arg (prefix-numeric-value current-prefix-arg) fill-column)))
-            (replace-match "\n")))))))
 
 (defun xah-reformat-lines (&optional Width)
   "Reformat current block or selection into short lines or 1 long line.
 When called for the first time, change to one line. Second call change it to multi-lines. Repeated call toggles.
-If `universal-argument' is called first, ask user to type max length of line. By default, it is 66.
+If `universal-argument' is called first, ask user to type max length of line. By default, it is 80.
 
 Note: this command is different from emacs `fill-region' or `fill-paragraph'.
 This command never adds or delete non-whitespace chars. It only exchange whitespace sequence.
 
 URL `http://xahlee.info/emacs/emacs/emacs_reformat_lines.html'
 Created: 2016
-Version: 2025-03-25"
-  (interactive)
-  ;; This symbol has a property 'is-long-p, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
-  (let (xisLong xwidth xbeg xend)
-    (setq xwidth (if Width Width (if current-prefix-arg (prefix-numeric-value current-prefix-arg) 66)))
-    (setq xisLong (if (eq last-command this-command) (get this-command 'is-long-p) nil))
-    (seq-setq (xbeg xend) (if (region-active-p) (list (region-beginning) (region-end)) (list (save-excursion (if (re-search-backward "\n[ \t]*\n" nil 1) (match-end 0) (point))) (save-excursion (if (re-search-forward "\n[ \t]*\n" nil 1) (match-beginning 0) (point))))))
+Version: 2025-08-29"
+  (interactive
+   (list
     (if current-prefix-arg
-        (xah-reformat-to-multi-lines xbeg xend xwidth)
-      (if xisLong
-          (xah-reformat-to-multi-lines xbeg xend xwidth)
-        (progn
-          (xah-reformat-whitespaces-to-one-space xbeg xend))))
+        (cond
+         ((not (numberp current-prefix-arg)) 80)
+         (t (prefix-numeric-value current-prefix-arg)))
+      80)))
+  ;; This symbol has a property 'is-long-p, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
+  (let ((xisLong (if (eq last-command this-command) (get this-command 'is-long-p) nil))
+        (xwidth (if Width Width 80))
+        xbeg xend)
+    (seq-setq (xbeg xend) (if (region-active-p) (list (region-beginning) (region-end)) (list (save-excursion (if (re-search-backward "\n[ \t]*\n" nil 1) (match-end 0) (point))) (save-excursion (if (re-search-forward "\n[ \t]*\n" nil 1) (match-beginning 0) (point))))))
+    (if xisLong
+        (save-excursion
+          (save-restriction
+            (narrow-to-region xbeg xend)
+            (goto-char (point-min))
+            (while (re-search-forward " +" nil 1)
+              (when (> (- (point) (line-beginning-position)) xwidth)
+                (replace-match "\n")))))
+      (save-excursion
+        (save-restriction
+          (narrow-to-region xbeg xend)
+          (goto-char (point-min))
+          (while (re-search-forward "[ \n\t]+" xend :move) (replace-match " ")))))
     (put this-command 'is-long-p (not xisLong))))
 
 (defun xah-reformat-to-sentence-lines ()
