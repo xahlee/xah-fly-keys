@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 28.4.20250829124616
+;; Version: 2025.09.04
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -1650,13 +1650,14 @@ If there is selection, delete it first.
 
 URL `http://xahlee.info/emacs/emacs/elisp_insert-date-time.html'
 Created: 2013-05-10
-Version: 2025-04-12"
+Version: 2025-09-04"
   (interactive)
   (let (xmenu xstyle)
     (setq
      xmenu
      (list
       (concat "ISO date⚫" (format-time-string "%Y-%m-%d"))
+      (concat "dotted version⚫" (format-time-string "%Y.%m.%d"))
       (concat "coder⚫" (format-time-string "%Y-%m-%d_%H%M%S"))
       (concat "all digits⚫" (format-time-string "%Y%m%d%H%M%S"))
 
@@ -1962,7 +1963,7 @@ After this command is called, press `xah-repeat-key' to repeat it.
 
 URL `http://xahlee.info/emacs/emacs/emacs_extend_selection.html'
 Created: 2020-02-04
-Version: 2025-07-31"
+Version: 2025-09-04"
   (interactive)
 
   (cond
@@ -2031,7 +2032,7 @@ Version: 2025-07-31"
 
    ((looking-at "[ \t\n]")
     (message "%s debug: is white space" real-this-command)
-    (skip-chars-backward " \t\n")
+    ;; (skip-chars-backward " \t\n")
     (push-mark)
     (skip-chars-forward " \t\n")
     (setq mark-active t))
@@ -2110,9 +2111,9 @@ Version: 2024-09-23"
   (interactive)
   (cond
    ((string-match "^\*" (buffer-name)) nil)
-   ((eq major-mode 'dired-mode) nil)
-   ((eq major-mode 'eww-mode) nil)
-   ((eq major-mode 'help-mode) nil)
+   ;; ((eq major-mode 'dired-mode) nil)
+   ;; ((eq major-mode 'eww-mode) nil)
+   ;; ((eq major-mode 'help-mode) nil)
    (t t)))
 
 (defun xah-next-user-buffer ()
