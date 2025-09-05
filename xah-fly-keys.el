@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 2025.09.04
+;; Version: 2025.09.05
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -2106,6 +2106,7 @@ Version: 2024-10-02"
 A user buffer has buffer name NOT starts with * or space, and is not dired mode, help mode, etc.
 This function is used by buffer switching command and close buffer command, so that next buffer shown is a user buffer.
 You can override this function to get your idea of “user buffer”.
+URL `http://xahlee.info/emacs/emacs/elisp_next_prev_user_buffer.html'
 Created: 2016-06-18
 Version: 2024-09-23"
   (interactive)
@@ -2119,14 +2120,9 @@ Version: 2024-09-23"
 (defun xah-next-user-buffer ()
   "Switch to the next user buffer.
 User Buffer here is determined by `xah-user-buffer-p'.
-
-Press left or right arrow key to switch to prev next user.
-Press up or down arrow to switch to prev next emacs buffer.
-Any other key to exit.
-
 URL `http://xahlee.info/emacs/emacs/elisp_next_prev_user_buffer.html'
 Created: 2016-06-19
-Version: 2025-04-22"
+Version: 2025-09-05"
   (interactive)
   (next-buffer)
   (let ((i 0))
@@ -2139,18 +2135,13 @@ Version: 2025-04-22"
 (defun xah-previous-user-buffer ()
   "Switch to the previous user buffer.
 User Buffer here is determined by `xah-user-buffer-p'.
-
-Press left or right arrow key to switch to prev next user.
-Press up or down arrow to switch to prev next emacs buffer.
-Any other key to exit.
-
 URL `http://xahlee.info/emacs/emacs/elisp_next_prev_user_buffer.html'
 Created: 2016-06-19
-Version: 2025-04-22"
+Version: 2025-09-05"
   (interactive)
   (previous-buffer)
   (let ((i 0))
-    (while (< i 29)
+    (while (< i 30)
       (if (not (xah-user-buffer-p))
           (progn (previous-buffer)
                  (setq i (1+ i)))
@@ -2159,11 +2150,6 @@ Version: 2025-04-22"
 (defun xah-next-emacs-buffer ()
   "Switch to the next emacs buffer.
 Emacs buffer here means `xah-user-buffer-p' return nil.
-
-Press left or right arrow key to switch to prev next user.
-Press up or down arrow to switch to prev next emacs buffer.
-Any other key to exit.
-
 URL `http://xahlee.info/emacs/emacs/elisp_next_prev_user_buffer.html'
 Created: 2013-05-22
 Version: 2025-04-22"
@@ -2176,11 +2162,6 @@ Version: 2025-04-22"
 (defun xah-previous-emacs-buffer ()
   "Switch to the previous emacs buffer.
 Emacs buffer here means `xah-user-buffer-p' return nil.
-
-Press left or right arrow key to switch to prev next user.
-Press up or down arrow to switch to prev next emacs buffer.
-Any other key to exit.
-
 URL `http://xahlee.info/emacs/emacs/elisp_next_prev_user_buffer.html'
 Created: 2013-05-22
 Version: 2025-04-22"
