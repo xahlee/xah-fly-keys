@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 2025.09.05
+;; Version: 28.5.20250907105127
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -705,19 +705,15 @@ Version: 2024-06-06"
           (kill-region xbeg xend))))))
 
 (defvar xah-smart-delete-dispatch
-  nil
+  '((xah-wolfram-mode . xah-wolfram-smart-delete-backward)
+    (xah-html-mode . xah-html-smart-delete-backward))
   "Used by `xah-smart-delete'.
 This makes that function behavior dependent on current major-mode.
 Value is Alist of pairs, each is of the form
 (‹major-mode-name› . ‹function-name›)
 If ‹major-mode-name› match current var `major-mode', the paired function is called.
 If no major mode matches, `xah-smart-delete' default behavior is used.
-
 Version: 2024-06-05")
-
-(setq xah-smart-delete-dispatch
-      '((xah-wolfram-mode . xah-wolfram-smart-delete-backward)
-        (xah-html-mode . xah-html-smart-delete-backward)))
 
 (defun xah-smart-delete (&optional BracketOnly SkipDispatch)
   "Smart backward delete.
@@ -1123,24 +1119,24 @@ Version: 2025-08-29"
 (defun xah-reformat-lines (&optional Width)
   "Reformat current block or selection into short lines or 1 long line.
 When called for the first time, change to one line. Second call change it to multi-lines. Repeated call toggles.
-If `universal-argument' is called first, ask user to type max length of line. By default, it is 80.
+If `universal-argument' is called first, ask user to type max length of line. By default, it is 70.
 
 Note: this command is different from emacs `fill-region' or `fill-paragraph'.
 This command never adds or delete non-whitespace chars. It only exchange whitespace sequence.
 
 URL `http://xahlee.info/emacs/emacs/emacs_reformat_lines.html'
 Created: 2016
-Version: 2025-08-29"
+Version: 2025-09-07"
   (interactive
    (list
     (if current-prefix-arg
         (cond
-         ((not (numberp current-prefix-arg)) 80)
+         ((not (numberp current-prefix-arg)) 70)
          (t (prefix-numeric-value current-prefix-arg)))
       80)))
   ;; This symbol has a property 'is-long-p, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
   (let ((xisLong (if (eq last-command this-command) (get this-command 'is-long-p) nil))
-        (xwidth (if Width Width 80))
+        (xwidth (if Width Width 70))
         xbeg xend)
     (seq-setq (xbeg xend) (if (region-active-p) (list (region-beginning) (region-end)) (list (save-excursion (if (re-search-backward "\n[ \t]*\n" nil 1) (match-end 0) (point))) (save-excursion (if (re-search-forward "\n[ \t]*\n" nil 1) (match-beginning 0) (point))))))
     (if xisLong
