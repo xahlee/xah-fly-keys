@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 28.5.20250907105127
+;; Version: 28.6.20250909094330
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -171,6 +171,11 @@
 Keys changed:
 Standard shortcut for open, close, copy, paste etc.
 Remove many redundant emacs default keys
+Must be set before loading xah-fly-keys."
+  :type 'boolean)
+
+(defcustom xah-fly-remove-control-x-keys nil
+  "If true, remove the whole C-x prefix keybinding.
 Must be set before loading xah-fly-keys."
   :type 'boolean)
 
@@ -2118,54 +2123,26 @@ Version: 2024-09-23"
 User Buffer here is determined by `xah-user-buffer-p'.
 URL `http://xahlee.info/emacs/emacs/elisp_next_prev_user_buffer.html'
 Created: 2016-06-19
-Version: 2025-09-05"
+Version: 2025-09-08"
   (interactive)
-  (next-buffer)
-  (let ((i 0))
-    (while (< i 30)
-      (if (not (xah-user-buffer-p))
-          (progn (next-buffer)
-                 (setq i (1+ i)))
-        (progn (setq i 100))))))
+  (seq-some
+   (lambda (_)
+     (next-buffer)
+     (xah-user-buffer-p))
+   (make-list 50 0)))
 
 (defun xah-previous-user-buffer ()
   "Switch to the previous user buffer.
 User Buffer here is determined by `xah-user-buffer-p'.
 URL `http://xahlee.info/emacs/emacs/elisp_next_prev_user_buffer.html'
 Created: 2016-06-19
-Version: 2025-09-05"
+Version: 2025-09-08"
   (interactive)
-  (previous-buffer)
-  (let ((i 0))
-    (while (< i 30)
-      (if (not (xah-user-buffer-p))
-          (progn (previous-buffer)
-                 (setq i (1+ i)))
-        (progn (setq i 100))))))
-
-(defun xah-next-emacs-buffer ()
-  "Switch to the next emacs buffer.
-Emacs buffer here means `xah-user-buffer-p' return nil.
-URL `http://xahlee.info/emacs/emacs/elisp_next_prev_user_buffer.html'
-Created: 2013-05-22
-Version: 2025-04-22"
-  (interactive)
-  (next-buffer)
-  (let ((i 0))
-    (while (and (xah-user-buffer-p) (< i 20))
-      (setq i (1+ i)) (next-buffer))))
-
-(defun xah-previous-emacs-buffer ()
-  "Switch to the previous emacs buffer.
-Emacs buffer here means `xah-user-buffer-p' return nil.
-URL `http://xahlee.info/emacs/emacs/elisp_next_prev_user_buffer.html'
-Created: 2013-05-22
-Version: 2025-04-22"
-  (interactive)
-  (previous-buffer)
-  (let ((i 0))
-    (while (and (xah-user-buffer-p) (< i 20))
-      (setq i (1+ i)) (previous-buffer))))
+  (seq-some
+   (lambda (_)
+     (previous-buffer)
+     (xah-user-buffer-p))
+   (make-list 50 0)))
 
 (defun xah-new-empty-buffer ()
   "Create a new empty buffer.
@@ -2227,7 +2204,7 @@ If the buffer is a file, add the path to the list `xah-recently-closed-buffers'.
 
 URL `http://xahlee.info/emacs/emacs/elisp_close_buffer_open_last_closed.html'
 Created: 2016-06-19
-Version: 2025-04-13"
+Version: 2025-09-08"
   (interactive)
   (widen)
   (cond
@@ -3808,16 +3785,15 @@ Version: 2024-04-22"
   (global-set-key (kbd "M-~") nil)   ; not-modified
   (global-set-key (kbd "M-DEL") nil) ; backward-kill-word
 
-  ;; 
+  ;;
   )
+
+(when xah-fly-remove-control-x-keys (global-set-key (kbd "C-x") nil))
 
 (when xah-fly-use-control-key
 
   (global-set-key (kbd "C-<tab>") #'xah-next-user-buffer)
   (global-set-key (kbd "C-S-<tab>") #'xah-previous-user-buffer)
-
-  (global-set-key (kbd "C-S-<prior>") #'xah-previous-emacs-buffer)
-  (global-set-key (kbd "C-S-<next>") #'xah-next-emacs-buffer)
 
   (global-set-key (kbd "C-<prior>") #'xah-previous-user-buffer)
   (global-set-key (kbd "C-<next>") #'xah-next-user-buffer)
@@ -3825,8 +3801,7 @@ Version: 2024-04-22"
   (global-set-key (kbd "C-2") #'pop-global-mark)
   (global-set-key (kbd "C-3") #'previous-error)
   (global-set-key (kbd "C-4") #'next-error)
-  (global-set-key (kbd "C-5") #'xah-previous-emacs-buffer)
-  (global-set-key (kbd "C-6") #'xah-next-emacs-buffer)
+
   (global-set-key (kbd "C-7") #'xah-previous-user-buffer)
   (global-set-key (kbd "C-8") #'xah-next-user-buffer)
   (global-set-key (kbd "C-9") #'xah-page-up)
