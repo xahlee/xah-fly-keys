@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 28.6.20250909094330
+;; Version: 28.7.20250917123258
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -186,7 +186,10 @@ Must be set before loading xah-fly-keys."
   :type 'boolean)
 
 (defcustom xah-fly-use-isearch-arrows t
- "If true, set arrow keys for moving between occurrences, and C-v is paste, in isearch (`isearch-forward').
+ "If true, set keys in variable `isearch-mode-map' to use
+ left/right arrow for backward/forward occurrences.
+up/down for search history.
+and C-v is paste.
 Must be set before loading xah-fly-keys."
  :type 'boolean)
 
@@ -227,7 +230,7 @@ Version: 2025-07-28"
   (set-mark-command t)
   (set-transient-map
    (let ((xkmap (make-sparse-keymap)))
-     (define-key xkmap (kbd (if (boundp 'xah-repeat-key) xah-repeat-key "RET")) real-this-command)
+     (define-key xkmap (kbd (if (boundp 'xah-repeat-key) xah-repeat-key ".")) real-this-command)
      xkmap)))
 
 (defun xah-beginning-of-line-or-block ()
@@ -467,6 +470,7 @@ Version: 2015-06-10"
 Respects `narrow-to-region'.
 
 URL `http://xahlee.info/emacs/emacs/emacs_copy_cut_all_or_region.html'
+Created: 2015-08-22
 Version: 2015-08-22"
   (interactive)
   (if (region-active-p)
@@ -493,24 +497,6 @@ Version: 2025-08-06"
       (kill-new (buffer-string))
       (delete-region (point-min) (point-max))
       (message "buffer text cut"))))
-
-(defun xah-copy-all ()
-  "Put the whole buffer content into the `kill-ring'.
-(respects `narrow-to-region')
-Created: 2016-10-06
-Version: 2016-10-06"
-  (interactive)
-  (kill-new (buffer-string))
-  (message "Buffer content copied."))
-
-(defun xah-cut-all ()
-  "Cut the whole buffer content into the `kill-ring'.
-Respects `narrow-to-region'.
-Created: 2017-01-03
-Version: 2017-01-03"
-  (interactive)
-  (kill-new (buffer-string))
-  (delete-region (point-min) (point-max)))
 
 (defun xah-paste-or-paste-previous ()
   "Paste. When called repeatedly, paste previous.
@@ -1194,7 +1180,7 @@ Version: 2025-05-21"
       (goto-char (point-max))
       (while (eq (char-before) 32) (delete-char -1))))
   (re-search-forward "\n+" nil 1)
-  (set-transient-map (let ((xkmap (make-sparse-keymap))) (define-key xkmap (kbd (if (boundp 'xah-repeat-key) xah-repeat-key "RET")) this-command) xkmap)))
+  (set-transient-map (let ((xkmap (make-sparse-keymap))) (define-key xkmap (kbd (if (boundp 'xah-repeat-key) xah-repeat-key ".")) this-command) xkmap)))
 
 (defun xah-space-to-newline ()
   "Replace space sequence to a newline char in current block or selection.
@@ -1506,7 +1492,7 @@ Version: 2025-01-24"
       (push-mark xbeg)
       (setq deactivate-mark nil))
     (put 'xah-cycle-hyphen-lowline-space 'state (% (+ xnowState 1) xlen)))
-  (set-transient-map (let ((xkmap (make-sparse-keymap))) (define-key xkmap (kbd (if (boundp 'xah-repeat-key) xah-repeat-key "RET")) this-command) xkmap)))
+  (set-transient-map (let ((xkmap (make-sparse-keymap))) (define-key xkmap (kbd (if (boundp 'xah-repeat-key) xah-repeat-key ".")) this-command) xkmap)))
 
 (defun xah-copy-file-path (&optional DirPathOnlyQ)
   "Copy current buffer file path or dired path.
@@ -2065,7 +2051,7 @@ Version: 2025-09-04"
 
   (set-transient-map
    (let ((xkmap (make-sparse-keymap)))
-     (define-key xkmap (kbd (if (boundp 'xah-repeat-key) xah-repeat-key "RET")) real-this-command)
+     (define-key xkmap (kbd (if (boundp 'xah-repeat-key) xah-repeat-key ".")) real-this-command)
      xkmap)))
 
 (defun xah-select-text-in-quote ()
@@ -2189,7 +2175,6 @@ Version: 2025-06-05"
 (defvar xah-temp-dir-path nil "Path to temp dir used by xah commands.
 by default, the value is dir named temp at `user-emacs-directory'.
 Version: 2023-03-21")
-
 (setq xah-temp-dir-path (concat user-emacs-directory "temp/"))
 
 (defun xah-close-current-buffer ()
@@ -2624,9 +2609,9 @@ Call `xah-open-last-closed' to open." xbackupPath)
   "Call `isearch' on current word or selection.
 “word” here is A to Z, a to z, and hyphen [-] and lowline [_], independent of syntax table.
 
-URL `http://xahlee.info/emacs/emacs/modernization_isearch.html'
+URL `http://xahlee.info/emacs/emacs/emacs_search_current_word.html'
 Created: 2010-05-29
-Version: 2025-02-21"
+Version: 2025-09-15"
   (interactive)
   (let (xbeg xend)
     (if (region-active-p)
