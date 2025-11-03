@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 28.7.20250917123258
+;; Version: 28.8.20251103082231
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -826,7 +826,7 @@ followed by 2 spaces.
 
 URL `http://xahlee.info/emacs/emacs/elisp_change_brackets.html'
 Created: 2020-11-01
-Version: 2025-03-25"
+Version: 2025-10-13"
   (interactive
    (let ((xbrackets
           '(
@@ -872,8 +872,8 @@ Version: 2025-03-25"
             "medium pointing angle ornament ❬ ❭"
             "heavy pointing angle quotation mark ornament ❮ ❯"
             "heavy pointing angle ornament ❰ ❱"
-            "none  "
-            )))
+            "square bracket with underbar ⦋ ⦌"
+            "none  ")))
      (let ((completion-ignore-case t))
        (list
         (completing-read "Replace this:" xbrackets nil t nil nil (car xbrackets))
@@ -890,7 +890,7 @@ Version: 2025-03-25"
       ;;   (message "replace blacket is empty string")
       ;;   (setq xsTo (list "" "" "")))
 
-      (setq xleft (car xsFrom)  xright (car (cdr xsFrom))
+      (setq xleft (car xsFrom) xright (car (cdr xsFrom))
             xtoL (car xsTo) xtoR (car (cdr xsTo)))
 
       (save-excursion
@@ -1848,6 +1848,11 @@ xString can be multiple chars or any string.
    ("red triangle 🔺" . "🔺")
    ("diamond 💠" . "💠")
    ("square ⬛" . "⬛")
+   ("SMALL ORANGE DIAMOND 🔸" . "🔸")
+   ("BLACK RIGHT-POINTING TRIANGLE ▶" . "▶")
+   ("BLACK DIAMOND ◆" . "◆")
+   ("LONG RIGHTWARDS ARROW ⟶" . "⟶")
+
    ("script 📜" . "📜")
    ("package 📦" . "📦")
    ("cursor ▮" . "▮")
@@ -1865,7 +1870,7 @@ xString can be multiple chars or any string.
    ("double angle quote" . "«»")
 
    ("bullet •" . "•")
-   ("diamond ◆" . "◆")
+
    ("...ellipsis …" . "…")
    ("nbsp non breaking space" . " ")
    ("chinese comma 、" . "、")
@@ -2552,11 +2557,14 @@ If the current buffer is not associated with a file nor dired, nothing's done.
 
 URL `http://xahlee.info/emacs/emacs/elisp_make-backup.html'
 Created: 2015-10-14
-Version: 2015-10-14"
+Version: 2025-09-26"
   (interactive)
   (if buffer-file-name
       (progn
-        (xah-make-backup)
+        (let ((xtimestamp (format-time-string "%Y%m%d%H%M%S")))
+          (let ((xbackupName (concat buffer-file-name "." xtimestamp "~")))
+            (copy-file buffer-file-name xbackupName t)
+            (message "\nBackup saved at: %s" xbackupName)))
         (when (buffer-modified-p)
           (save-buffer)))
     (progn
@@ -3215,13 +3223,13 @@ The key is remapped from Dvorak to the current keyboard layout by `xah-fly--conv
 If Direct-p is t, do not remap key to current keyboard layout.
 Example usage:
  (xah-fly--define-keys
-  (define-prefix-command \\='xyz-map)
-  \\='(
+  (define-prefix-command 'xyz-map)
+  '(
     (\"h\" . highlight-symbol-at-point)
     (\".\" . isearch-forward-symbol-at-point)
     (\"w\" . isearch-forward-word)))
 Created: 2020-04-18
-Version: 2023-08-21"
+Version: 2025-10-07"
   (mapcar
    (lambda (x)
      (define-key
@@ -3424,7 +3432,7 @@ Version: 2024-04-22"
        ("h z" . describe-coding-system)
 
        ("i SPC" . set-mark-command)
-       ;; ("i w" . kill-line)
+       ("i w" . kill-line)
        ("i i" . exchange-point-and-mark)
        ("i m" . xah-pop-local-mark-ring)
        ("i j" . xah-show-kill-ring)
@@ -3435,15 +3443,14 @@ Version: 2024-04-22"
 
        ("j" . xah-copy-all-or-region)
 
-       ("k h" . delete-other-windows)
-       ("k t" . delete-window)
-       ("k m" . split-window-below)
-       ("k w" . split-window-right)
-       ("k n" . balance-windows)
-       ("k c" . enlarge-window)
-
-       ("k s" . ispell-word)
        ("k b" . xah-upcase-sentence)
+       ("k c" . enlarge-window)
+       ("k h" . delete-other-windows)
+       ("k m" . split-window-below)
+       ("k n" . balance-windows)
+       ("k s" . ispell-word)
+       ("k t" . delete-window)
+       ("k w" . split-window-right)
 
        ("l" . recenter-top-bottom)
        ("m" . dired-jump)
@@ -3498,8 +3505,9 @@ Version: 2024-04-22"
        ("n y" . nil)
        ("n z" . abort-recursive-edit)
 
-       ("o" . nil)
+       ("o" . query-replace)
        ("p" . query-replace)
+
        ("q" . xah-cut-all-or-region)
 
        ;; roughly text replacement related
@@ -3596,7 +3604,7 @@ Version: 2024-04-22"
        ("t i" . delete-non-matching-lines)
        ("t j" . copy-to-register)
        ("t k" . insert-register)
-       ("t l" . nil)
+       ("t l" . xah-cycle-hyphen-lowline-space)
        ("t m" . xah-make-backup-and-save)
        ("t n" . goto-char)
        ("t o" . xah-clean-whitespace)
