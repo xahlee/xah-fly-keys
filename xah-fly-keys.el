@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 28.8.20251103082231
+;; Version: 28.9.20251105102511
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -1550,7 +1550,7 @@ Version: 2024-10-07"
     (kill-region xbeg xend)))
 
 (defun xah-copy-to-register-1 ()
-  "Copy current line or selection to register 1.
+  "Copy selection or text block to register 1.
 
 See also:
 `xah-copy-to-register-1'
@@ -1560,18 +1560,16 @@ See also:
 
 URL `http://xahlee.info/emacs/emacs/elisp_copy-paste_register_1.html'
 Created: 2012-07-17
-Version: 2023-08-05"
+Version: 2025-11-05"
   (interactive)
   (let (xbeg xend)
-    (if (region-active-p)
-         (setq xbeg (region-beginning) xend (region-end))
-      (setq xbeg (line-beginning-position) xend (line-end-position)))
+    (seq-setq (xbeg xend) (if (region-active-p) (list (region-beginning) (region-end)) (list (save-excursion (if (re-search-backward "\n[ \t]*\n" nil 1) (match-end 0) (point))) (save-excursion (if (re-search-forward "\n[ \t]*\n" nil 1) (match-beginning 0) (point))))))
     (copy-to-register ?1 xbeg xend)
     (message "Copied to register 1: [%s]." (buffer-substring xbeg xend))))
 
 (defun xah-append-to-register-1 ()
-  "Append current line or selection to register 1.
-When no selection, append current line, with newline char.
+  "Append selection or text block to register 1,
+with one added newline char at end.
 
 See also:
 `xah-copy-to-register-1'
@@ -1579,14 +1577,12 @@ See also:
 `xah-paste-from-register-1'
 `xah-clear-register-1'
 
-URL `http://xahlee.info/emacs/emacs/emacs_copy_append.html'
+URL `http://xahlee.info/emacs/emacs/elisp_copy-paste_register_1.html'
 Created: 2015-12-08
-Version: 2023-08-05"
+Version: 2025-11-05"
   (interactive)
   (let (xbeg xend)
-    (if (region-active-p)
-         (setq xbeg (region-beginning) xend (region-end))
-      (setq xbeg (line-beginning-position) xend (line-end-position)))
+    (seq-setq (xbeg xend) (if (region-active-p) (list (region-beginning) (region-end)) (list (save-excursion (if (re-search-backward "\n[ \t]*\n" nil 1) (match-end 0) (point))) (save-excursion (if (re-search-forward "\n[ \t]*\n" nil 1) (match-beginning 0) (point))))))
     (append-to-register ?1 xbeg xend)
     (with-temp-buffer (insert "\n")
                       (append-to-register ?1 (point-min) (point-max)))
@@ -3533,7 +3529,11 @@ Version: 2024-04-22"
        ("r k" . yank-rectangle)
        ("r l" . clear-rectangle)
 
-       ("r m" . nil)
+       ("r m e" . xah-clear-register-1)
+       ("r m u" . xah-append-to-register-1)
+       ("r m j" . xah-copy-to-register-1)
+       ("r m k" . xah-paste-from-register-1)
+
        ("r n" . rectangle-number-lines)
        ("r o" . open-rectangle)
        ("r p" . kmacro-end-macro)
@@ -3589,10 +3589,6 @@ Version: 2024-04-22"
 
        ("t ," . sort-numeric-fields)
        ("t ." . xah-sort-lines)
-       ("t 1" . xah-append-to-register-1)
-       ("t 2" . xah-clear-register-1)
-       ("t 3" . xah-copy-to-register-1)
-       ("t 4" . xah-paste-from-register-1)
        ("t a" . nil)
        ("t b" . xah-backward-punct)
        ("t c" . copy-matching-lines)
@@ -3623,7 +3619,7 @@ Version: 2024-04-22"
        ("v" . universal-argument)
 
        ;; dangerous map. run program, delete file, etc
-       ("w DEL" . xah-delete-current-file-make-backup)
+       ("w d" . xah-delete-current-file-make-backup)
        ("w ." . eval-buffer)
        ("w e" . eval-defun)
        ("w m" . eval-last-sexp)
