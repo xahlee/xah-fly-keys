@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 28.9.20251105102511
+;; Version: 28.9.20251105193146
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -1583,10 +1583,9 @@ Version: 2025-11-05"
   (interactive)
   (let (xbeg xend)
     (seq-setq (xbeg xend) (if (region-active-p) (list (region-beginning) (region-end)) (list (save-excursion (if (re-search-backward "\n[ \t]*\n" nil 1) (match-end 0) (point))) (save-excursion (if (re-search-forward "\n[ \t]*\n" nil 1) (match-beginning 0) (point))))))
-    (append-to-register ?1 xbeg xend)
-    (with-temp-buffer (insert "\n")
-                      (append-to-register ?1 (point-min) (point-max)))
-    (message "Appended to register 1: [%s]." (buffer-substring xbeg xend))))
+    (let ((register-separator "\n"))
+      (append-to-register ?1 xbeg xend)
+      (message "Done. Append to register 1."))))
 
 (defun xah-paste-from-register-1 ()
   "Paste text from register 1.
@@ -3529,10 +3528,10 @@ Version: 2024-04-22"
        ("r k" . yank-rectangle)
        ("r l" . clear-rectangle)
 
-       ("r m e" . xah-clear-register-1)
-       ("r m u" . xah-append-to-register-1)
+       ("r m e" . xah-append-to-register-1)
        ("r m j" . xah-copy-to-register-1)
        ("r m k" . xah-paste-from-register-1)
+       ("r m u" . xah-clear-register-1)
 
        ("r n" . rectangle-number-lines)
        ("r o" . open-rectangle)
