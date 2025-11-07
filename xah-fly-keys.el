@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 28.9.20251105193146
+;; Version: 28.9.20251107071018
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -1551,13 +1551,6 @@ Version: 2024-10-07"
 
 (defun xah-copy-to-register-1 ()
   "Copy selection or text block to register 1.
-
-See also:
-`xah-copy-to-register-1'
-`xah-append-to-register-1'
-`xah-paste-from-register-1'
-`xah-clear-register-1'
-
 URL `http://xahlee.info/emacs/emacs/elisp_copy-paste_register_1.html'
 Created: 2012-07-17
 Version: 2025-11-05"
@@ -1565,21 +1558,14 @@ Version: 2025-11-05"
   (let (xbeg xend)
     (seq-setq (xbeg xend) (if (region-active-p) (list (region-beginning) (region-end)) (list (save-excursion (if (re-search-backward "\n[ \t]*\n" nil 1) (match-end 0) (point))) (save-excursion (if (re-search-forward "\n[ \t]*\n" nil 1) (match-beginning 0) (point))))))
     (copy-to-register ?1 xbeg xend)
-    (message "Copied to register 1: [%s]." (buffer-substring xbeg xend))))
+    (message "Copied to register 1: %s." (buffer-substring xbeg xend))))
 
 (defun xah-append-to-register-1 ()
   "Append selection or text block to register 1,
 with one added newline char at end.
-
-See also:
-`xah-copy-to-register-1'
-`xah-append-to-register-1'
-`xah-paste-from-register-1'
-`xah-clear-register-1'
-
 URL `http://xahlee.info/emacs/emacs/elisp_copy-paste_register_1.html'
 Created: 2015-12-08
-Version: 2025-11-05"
+Version: 2025-11-07"
   (interactive)
   (let (xbeg xend)
     (seq-setq (xbeg xend) (if (region-active-p) (list (region-beginning) (region-end)) (list (save-excursion (if (re-search-backward "\n[ \t]*\n" nil 1) (match-end 0) (point))) (save-excursion (if (re-search-forward "\n[ \t]*\n" nil 1) (match-beginning 0) (point))))))
@@ -1589,16 +1575,9 @@ Version: 2025-11-05"
 
 (defun xah-paste-from-register-1 ()
   "Paste text from register 1.
-
-See also:
-`xah-copy-to-register-1'
-`xah-append-to-register-1'
-`xah-paste-from-register-1'
-`xah-clear-register-1'
-
 URL `http://xahlee.info/emacs/emacs/elisp_copy-paste_register_1.html'
 Created: 2015-12-08
-Version: 2023-04-07"
+Version: 2025-11-07"
   (interactive)
   (when (region-active-p)
     (delete-region (region-beginning) (region-end)))
@@ -1606,16 +1585,9 @@ Version: 2023-04-07"
 
 (defun xah-clear-register-1 ()
   "Clear register 1.
-
-See also:
-`xah-copy-to-register-1'
-`xah-append-to-register-1'
-`xah-paste-from-register-1'
-`xah-clear-register-1'
-
 URL `http://xahlee.info/emacs/emacs/elisp_copy-paste_register_1.html'
 Created: 2015-12-08
-Version: 2023-04-07"
+Version: 2025-11-07"
   (interactive)
   (progn
     (copy-to-register ?1 (point-min) (point-min))
@@ -1952,102 +1924,100 @@ URL `http://xahlee.info/emacs/emacs/emacs_extend_selection.html'
 Created: 2020-02-04
 Version: 2025-09-04"
   (interactive)
-
-  (cond
-   ((region-active-p)
-    (let ((xbeg (region-beginning)) (xend (region-end)))
-      (goto-char xbeg)
-      (cond
-       ((looking-at "\\s(")
-        (if (eq (nth 0 (syntax-ppss)) 0)
+  (if (region-active-p)
+      (let ((xbeg (region-beginning)) (xend (region-end)))
+        (goto-char xbeg)
+        (cond
+         ((looking-at "\\s(")
+          (if (eq (nth 0 (syntax-ppss)) 0)
+              (progn
+                (message "%s debug: left bracket, depth 0." real-this-command)
+                (end-of-line) ; select current line
+                (push-mark (line-beginning-position) t t))
             (progn
-              (message "%s debug: left bracket, depth 0." real-this-command)
-              (end-of-line) ; select current line
-              (push-mark (line-beginning-position) t t))
+              (message "%s debug: left bracket, depth not 0" real-this-command)
+              (up-list -1 t t)
+              (mark-sexp) (exchange-point-and-mark))))
+         ((eq xbeg (line-beginning-position))
           (progn
-            (message "%s debug: left bracket, depth not 0" real-this-command)
-            (up-list -1 t t)
-            (mark-sexp) (exchange-point-and-mark))))
-       ((eq xbeg (line-beginning-position))
-        (progn
-          (goto-char xbeg)
-          (let ((xfirstLineEndPos (line-end-position)))
-            (cond
-             ((eq xend xfirstLineEndPos)
-              (progn
-                (message "%s debug: exactly 1 line. extend to next whole line." real-this-command)
-                (forward-line 1)
-                (end-of-line)))
-             ((< xend xfirstLineEndPos)
-              (progn
-                (message "%s debug: less than 1 line. complete the line." real-this-command)
-                (end-of-line)))
-             ((> xend xfirstLineEndPos)
-              (progn
-                (message "%s debug: beginning of line, but end is greater than 1st end of line" real-this-command)
-                (goto-char xend)
-                (if (eq (point) (line-end-position))
+            (goto-char xbeg)
+            (let ((xfirstLineEndPos (line-end-position)))
+              (cond
+               ((eq xend xfirstLineEndPos)
+                (progn
+                  (message "%s debug: exactly 1 line. extend to next whole line." real-this-command)
+                  (forward-line 1)
+                  (end-of-line)))
+               ((< xend xfirstLineEndPos)
+                (progn
+                  (message "%s debug: less than 1 line. complete the line." real-this-command)
+                  (end-of-line)))
+               ((> xend xfirstLineEndPos)
+                (progn
+                  (message "%s debug: beginning of line, but end is greater than 1st end of line" real-this-command)
+                  (goto-char xend)
+                  (if (eq (point) (line-end-position))
+                      (progn
+                        (message "%s debug: exactly multiple lines" real-this-command)
+                        (forward-line 1)
+                        (end-of-line))
                     (progn
-                      (message "%s debug: exactly multiple lines" real-this-command)
-                      (forward-line 1)
-                      (end-of-line))
-                  (progn
-                    (message "%s debug: multiple lines but end is not eol. make it so" real-this-command)
-                    (goto-char xend)
-                    (end-of-line)))))
-             (t (error "%s: logic error 42946" real-this-command))))))
-       ((and (> (point) (line-beginning-position)) (<= (point) (line-end-position)))
-        (progn
-          (message "%s debug: less than 1 line" real-this-command)
-          (end-of-line) ; select current line
-          (push-mark (line-beginning-position) t t)))
-       (t
-        (message "%s debug: last resort" real-this-command)
-        nil))))
+                      (message "%s debug: multiple lines but end is not eol. make it so" real-this-command)
+                      (goto-char xend)
+                      (end-of-line)))))
+               (t (error "%s: logic error 42946" real-this-command))))))
+         ((and (> (point) (line-beginning-position)) (<= (point) (line-end-position)))
+          (progn
+            (message "%s debug: less than 1 line" real-this-command)
+            (end-of-line) ; select current line
+            (push-mark (line-beginning-position) t t)))
+         (t
+          (message "%s debug: last resort" real-this-command)
+          nil)))
+    (cond
+     ((looking-at "\\s(")
+      (message "%s debug: left bracket" real-this-command)
+      (mark-sexp) (exchange-point-and-mark))
 
-   ((looking-at "\\s(")
-    (message "%s debug: left bracket" real-this-command)
-    (mark-sexp) (exchange-point-and-mark))
+     ((looking-at "\\s)")
+      (message "%s debug: right bracket" real-this-command)
+      (backward-up-list) (mark-sexp) (exchange-point-and-mark))
 
-   ((looking-at "\\s)")
-    (message "%s debug: right bracket" real-this-command)
-    (backward-up-list) (mark-sexp) (exchange-point-and-mark))
+     ((looking-at "\\s\"")
+      (message "%s debug: string quote" real-this-command)
+      (mark-sexp) (exchange-point-and-mark))
 
-   ((looking-at "\\s\"")
-    (message "%s debug: string quote" real-this-command)
-    (mark-sexp) (exchange-point-and-mark))
+     ((looking-at "[ \t\n]")
+      (message "%s debug: is white space" real-this-command)
+      ;; (skip-chars-backward " \t\n")
+      (push-mark)
+      (skip-chars-forward " \t\n")
+      (setq mark-active t))
 
-   ((looking-at "[ \t\n]")
-    (message "%s debug: is white space" real-this-command)
-    ;; (skip-chars-backward " \t\n")
-    (push-mark)
-    (skip-chars-forward " \t\n")
-    (setq mark-active t))
+     ((looking-at "[-_a-zA-Z0-9]")
+      (message "%s debug: right is word or symbol" real-this-command)
+      (skip-chars-backward "-_a-zA-Z0-9")
+      (push-mark)
+      (skip-chars-forward "-_a-zA-Z0-9")
+      (setq mark-active t))
 
-   ((looking-at "[-_a-zA-Z0-9]")
-    (message "%s debug: right is word or symbol" real-this-command)
-    (skip-chars-backward "-_a-zA-Z0-9")
-    (push-mark)
-    (skip-chars-forward "-_a-zA-Z0-9")
-    (setq mark-active t))
+     ;; ((and (looking-at "[[:blank:]]")
+     ;;       (prog2 (backward-char) (looking-at "[[:blank:]]") (forward-char)))
+     ;;  ;; (message "%s debug: left and right both space" real-this-command)
+     ;;  (skip-chars-backward "[[:blank:]]") (push-mark (point) t t)
+     ;;  (skip-chars-forward "[[:blank:]]"))
 
-   ;; ((and (looking-at "[[:blank:]]")
-   ;;       (prog2 (backward-char) (looking-at "[[:blank:]]") (forward-char)))
-   ;;  ;; (message "%s debug: left and right both space" real-this-command)
-   ;;  (skip-chars-backward "[[:blank:]]") (push-mark (point) t t)
-   ;;  (skip-chars-forward "[[:blank:]]"))
+     ((and (looking-at "\n")
+           (eq (char-before) 10))
+      (message "%s debug: left and right both newline" real-this-command)
+      (skip-chars-forward "\n")
+      (push-mark (point) t t)
+      (re-search-forward "\n[ \t]*\n"))
 
-   ((and (looking-at "\n")
-         (eq (char-before) 10))
-    (message "%s debug: left and right both newline" real-this-command)
-    (skip-chars-forward "\n")
-    (push-mark (point) t t)
-    (re-search-forward "\n[ \t]*\n"))
-
-   (t
-    (message "%s debug: no condition met. just select 1 char" real-this-command)
-    (push-mark (point) t t)
-    (forward-char)))
+     (t
+      (message "%s debug: no condition met. just select 1 char" real-this-command)
+      (push-mark (point) t t)
+      (forward-char))))
 
   (set-transient-map
    (let ((xkmap (make-sparse-keymap)))
