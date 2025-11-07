@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 28.9.20251107071018
+;; Version: 28.10.20251107093856
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -300,6 +300,76 @@ Version: 2024-10-09"
        (define-key xkmap (kbd "<up>") #'xah-page-up)
        (define-key xkmap (kbd "<down>") #'xah-page-down)
        xkmap))))
+
+(defun xah-goto-char (&optional zposition)
+  "Move cursor to a position in current buffer or next buffer, at a number value under cursor.
+
+If `universal-argument' is called first, goto the specified position.
+If `universal-argument' value is 1, ask for a position.
+Else use the number under cursor.
+If no number is under cursor, ask for a position.
+
+If there is more than one pane (aka emacs window), goto position in that pane.
+
+URL `http://xahlee.info/talk_show/xah_talk_show_2025-04-10.html'
+Created: 2025-04-10
+Version: 2025-11-07"
+  (interactive
+   (if current-prefix-arg
+       (if (eq 1 (prefix-numeric-value current-prefix-arg))
+           (list (read-number "goto position:"))
+         (list (prefix-numeric-value current-prefix-arg)))
+     nil))
+  (setq zposition
+        (if zposition
+            zposition
+          (let (xbeg xend)
+            (skip-chars-backward "0-9")
+            (setq xbeg (point))
+            (skip-chars-forward "0-9")
+            (setq xend (point))
+            (if (eq xbeg xend)
+                (progn (read-number "No number under cursor. goto position:"))
+              (string-to-number (buffer-substring-no-properties xbeg xend))))))
+  (if (one-window-p)
+      nil
+    (other-window 1))
+  (goto-char zposition))
+
+(defun xah-goto-line (&optional zline-num)
+  "Move cursor to a line in current buffer or next buffer, at a number value under cursor.
+
+If `universal-argument' is called first, goto the specified line number.
+If `universal-argument' value is 1, ask for a line number.
+Else use the number under cursor.
+If no number is under cursor, ask for a line number.
+
+If there is more than one pane (aka emacs window), goto the line number in that pane.
+
+URL `http://xahlee.info/talk_show/xah_talk_show_2025-04-10.html'
+Created: 2025-04-10
+Version: 2025-11-07"
+  (interactive
+   (if current-prefix-arg
+       (if (eq 1 (prefix-numeric-value current-prefix-arg))
+           (list (read-number "goto line number:"))
+         (list (prefix-numeric-value current-prefix-arg)))
+     nil))
+  (setq zline-num
+        (if zline-num
+            zline-num
+          (let (xbeg xend)
+            (skip-chars-backward "0-9")
+            (setq xbeg (point))
+            (skip-chars-forward "0-9")
+            (setq xend (point))
+            (if (eq xbeg xend)
+                (progn (read-number "No number under cursor. goto position:"))
+              (string-to-number (buffer-substring-no-properties xbeg xend))))))
+  (if (one-window-p)
+      nil
+    (other-window 1))
+  (goto-char zline-num))
 
 (defvar xah-brackets '( "“”" "()" "[]" "{}" "<>" "＜＞" "（）" "［］" "｛｝" "⦅⦆" "〚〛" "⦃⦄" "‹›" "«»" "「」" "〈〉" "《》" "【】" "〔〕" "⦗⦘" "『』" "〖〗" "〘〙" "｢｣" "⟦⟧" "⟨⟩" "⟪⟫" "⟮⟯" "⟬⟭" "⌈⌉" "⌊⌋" "⦇⦈" "⦉⦊" "❛❜" "❝❞" "❨❩" "❪❫" "❴❵" "❬❭" "❮❯" "❰❱" "❲❳" "〈〉" "⦑⦒" "⧼⧽" "﹙﹚" "﹛﹜" "﹝﹞" "⁽⁾" "₍₎" "⦋⦌" "⦍⦎" "⦏⦐" "⁅⁆" "⸢⸣" "⸤⸥" "⟅⟆" "⦓⦔" "⦕⦖" "⸦⸧" "⸨⸩" "｟｠")
  "A list of strings, each element is a string of 2 chars, the left bracket and a matching right bracket.
@@ -3564,14 +3634,14 @@ Version: 2024-04-22"
        ("t d" . mark-defun)
        ("t e" . list-matching-lines)
        ("t f" . move-to-column)
-       ("t g" . goto-line)
+       ("t g" . xah-goto-line)
        ("t h" . repeat-complex-command)
        ("t i" . delete-non-matching-lines)
        ("t j" . copy-to-register)
        ("t k" . insert-register)
        ("t l" . xah-cycle-hyphen-lowline-space)
        ("t m" . xah-make-backup-and-save)
-       ("t n" . goto-char)
+       ("t n" . xah-goto-char)
        ("t o" . xah-clean-whitespace)
        ("t p" . query-replace-regexp)
        ("t q" . xah-cut-text-in-quote)
