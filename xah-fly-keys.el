@@ -311,30 +311,30 @@ If no number is under cursor, ask for a position.
 
 If there is more than one pane (aka emacs window), goto position in that pane.
 
-URL `http://xahlee.info/talk_show/xah_talk_show_2025-04-10.html'
+URL `http://xahlee.info/emacs/emacs/emacs_goto_line_other_buffer.html'
 Created: 2025-04-10
-Version: 2025-11-07"
+Version: 2025-11-13"
   (interactive
    (if current-prefix-arg
        (if (eq 1 (prefix-numeric-value current-prefix-arg))
            (list (read-number "goto position:"))
          (list (prefix-numeric-value current-prefix-arg)))
      nil))
-  (setq zposition
-        (if zposition
-            zposition
-          (let (xbeg xend)
-            (skip-chars-backward "0-9")
-            (setq xbeg (point))
-            (skip-chars-forward "0-9")
-            (setq xend (point))
-            (if (eq xbeg xend)
-                (progn (read-number "No number under cursor. goto position:"))
-              (string-to-number (buffer-substring-no-properties xbeg xend))))))
-  (if (one-window-p)
-      nil
-    (other-window 1))
-  (goto-char zposition))
+  (let ((xpos
+         (if zposition
+             zposition
+           (let (xbeg xend)
+             (skip-chars-backward "0-9")
+             (setq xbeg (point))
+             (skip-chars-forward "0-9")
+             (setq xend (point))
+             (if (eq xbeg xend)
+                 (progn (read-number "No number under cursor. goto position:"))
+               (string-to-number (buffer-substring-no-properties xbeg xend)))))))
+    (if (one-window-p)
+        nil
+      (other-window 1))
+    (goto-char xpos)))
 
 (defun xah-goto-line (&optional zline-num)
   "Move cursor to a line in current buffer or next buffer, at a number value under cursor.
@@ -346,30 +346,31 @@ If no number is under cursor, ask for a line number.
 
 If there is more than one pane (aka emacs window), goto the line number in that pane.
 
-URL `http://xahlee.info/talk_show/xah_talk_show_2025-04-10.html'
+URL `http://xahlee.info/emacs/emacs/emacs_goto_line_other_buffer.html'
 Created: 2025-04-10
-Version: 2025-11-07"
+Version: 2025-11-13"
   (interactive
    (if current-prefix-arg
        (if (eq 1 (prefix-numeric-value current-prefix-arg))
            (list (read-number "goto line number:"))
          (list (prefix-numeric-value current-prefix-arg)))
      nil))
-  (setq zline-num
-        (if zline-num
-            zline-num
-          (let (xbeg xend)
-            (skip-chars-backward "0-9")
-            (setq xbeg (point))
-            (skip-chars-forward "0-9")
-            (setq xend (point))
-            (if (eq xbeg xend)
-                (progn (read-number "No number under cursor. goto position:"))
-              (string-to-number (buffer-substring-no-properties xbeg xend))))))
-  (if (one-window-p)
-      nil
-    (other-window 1))
-  (goto-line zline-num))
+  (let ((xline-num
+         (if zline-num
+             zline-num
+           (let (xbeg xend)
+             (skip-chars-backward "0-9")
+             (setq xbeg (point))
+             (skip-chars-forward "0-9")
+             (setq xend (point))
+             (if (eq xbeg xend)
+                 (progn (read-number "No number under cursor. goto line number:"))
+               (string-to-number (buffer-substring-no-properties xbeg xend)))))))
+    (if (one-window-p)
+        nil
+      (other-window 1))
+    (goto-char (point-min))
+    (forward-line xline-num)))
 
 (defvar xah-brackets '( "“”" "()" "[]" "{}" "<>" "＜＞" "（）" "［］" "｛｝" "⦅⦆" "〚〛" "⦃⦄" "‹›" "«»" "「」" "〈〉" "《》" "【】" "〔〕" "⦗⦘" "『』" "〖〗" "〘〙" "｢｣" "⟦⟧" "⟨⟩" "⟪⟫" "⟮⟯" "⟬⟭" "⌈⌉" "⌊⌋" "⦇⦈" "⦉⦊" "❛❜" "❝❞" "❨❩" "❪❫" "❴❵" "❬❭" "❮❯" "❰❱" "❲❳" "〈〉" "⦑⦒" "⧼⧽" "﹙﹚" "﹛﹜" "﹝﹞" "⁽⁾" "₍₎" "⦋⦌" "⦍⦎" "⦏⦐" "⁅⁆" "⸢⸣" "⸤⸥" "⟅⟆" "⦓⦔" "⦕⦖" "⸦⸧" "⸨⸩" "｟｠")
  "A list of strings, each element is a string of 2 chars, the left bracket and a matching right bracket.
@@ -1212,7 +1213,7 @@ Version: 2025-09-07"
         (save-restriction
           (narrow-to-region xbeg xend)
           (goto-char (point-min))
-          (while (re-search-forward "[ \n\t]+" xend :move) (replace-match " ")))))
+          (while (re-search-forward "[ \n\t]+" xend 1) (replace-match " ")))))
     (put this-command 'is-long-p (not xisLong))))
 
 (defun xah-reformat-to-sentence-lines ()
@@ -1838,13 +1839,14 @@ Version: 2025-03-25"
   (left-char))
 
 (defun xah-insert-seperator ()
-  "Insert a visual seperator line."
+  "Insert a visual seperator line.
+Version: 2025-11-13"
   (interactive)
   (cond
    ((and buffer-file-name (string-equal "html" (file-name-extension buffer-file-name))) (insert "<hr />\n"))
    ((not comment-start)
-    (insert "\nHHHH------------------------------\n"))
-   (t (insert "\nHHHH------------------------------\n")
+    (insert "\ns------------------------------\n"))
+   (t (insert "\ns------------------------------\n")
       (backward-char)
       (comment-line 1))))
 
