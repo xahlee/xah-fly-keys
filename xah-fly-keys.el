@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 28.10.20251107130929
+;; Version: 28.11.20251123201632
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -150,14 +150,14 @@
 
 ;; supported layouts are stored in the variable xah-fly-layout-diagrams
 
-;; HHHH------------------------------
+;; s------------------------------
 ;;; Code:
 
 (require 'dired)
 (require 'dired-x)
 (require 'seq)
 
-;; HHHH------------------------------
+;; s------------------------------
 
 (defgroup xah-fly-keys nil
   "Ergonomic modal keybinding minor mode."
@@ -214,7 +214,7 @@ If set to nil, use the color of current theme.
 Must be set before loading xah-fly-keys."
  :type '(string))
 
-;; HHHH------------------------------
+;; s------------------------------
 ;; cursor movement
 
 (defun xah-pop-local-mark-ring ()
@@ -409,10 +409,10 @@ The list of brackets to jump to is defined by `xah-left-brackets' and `xah-right
 
 URL `http://xahlee.info/emacs/emacs/emacs_navigating_keys_for_brackets.html'
 Created: 2016-11-22
-Version: 2024-06-15"
+Version: 2025-11-18"
   (interactive)
   (if (nth 3 (syntax-ppss))
-      (backward-up-list 1 'ESCAPE-STRINGS 'NO-SYNTAX-CROSSING)
+      (backward-up-list 1 t t)
     (cond
      ((eq (char-after) ?\") (forward-sexp))
      ((eq (char-before) ?\") (backward-sexp))
@@ -426,7 +426,7 @@ Version: 2024-06-15"
           (forward-char)))
       (backward-sexp)
       (while (looking-at "\\s'") (forward-char)))
-     (t (backward-up-list 1 'ESCAPE-STRINGS 'NO-SYNTAX-CROSSING)))))
+     (t (backward-up-list 1 t t)))))
 
 (defvar xah-punctuation-regex nil "A regex string for the purpose of moving cursor to a punctuation.")
 (setq xah-punctuation-regex "\"")
@@ -479,7 +479,7 @@ Version: 2025-03-25"
     (seq-setq (xbeg xend) (if (region-active-p) (list (region-beginning) (region-end)) (list (save-excursion (if (re-search-backward "\n[ \t]*\n" nil 1) (match-end 0) (point))) (save-excursion (if (re-search-forward "\n[ \t]*\n" nil 1) (match-beginning 0) (point))))))
     (narrow-to-region xbeg xend)))
 
-;; HHHH------------------------------
+;; s------------------------------
 ;; editing commands
 
 (defun xah-copy-line-or-region ()
@@ -1486,22 +1486,23 @@ Version: 2025-03-25"
 Double quote is codepoint 34.
 See also: `xah-unescape-quotes'
 URL `http://xahlee.info/emacs/emacs/elisp_escape_quotes.html'
-Version: 2017-01-11"
+Created: 2010-08-16
+Version: 2025-11-23"
   (interactive
    (if (region-active-p)
        (list (region-beginning) (region-end))
      (list (line-beginning-position) (line-end-position))))
   (save-excursion
-      (save-restriction
-        (narrow-to-region Begin End)
-        (goto-char (point-min))
-        (while (search-forward "\"" nil t)
-          (replace-match "\\\"" t t)))))
+    (save-restriction
+      (narrow-to-region Begin End)
+      (goto-char (point-min))
+      (while (search-forward "\"" nil t)
+        (replace-match "\\\"" t t))))
+  (message "done. %s" real-this-command))
 
 (defun xah-unescape-quotes (&optional Begin End)
-  "Replace  「\\\"」 by 「\"」 in current line or selection.
+  "Replace 「\\\"」 by 「\"」 in current line or selection.
 See also: `xah-escape-quotes'
-
 URL `http://xahlee.info/emacs/emacs/elisp_escape_quotes.html'
 Created: 2017-01-11
 Version: 2023-11-02"
@@ -1517,7 +1518,8 @@ Version: 2023-11-02"
         (narrow-to-region xbeg xend)
         (goto-char (point-min))
         (while (search-forward "\\\"" nil t)
-          (replace-match "\"" t t))))))
+          (replace-match "\"" t t)))))
+  (message "done. %s" real-this-command))
 
 (defun xah-cycle-hyphen-lowline-space (&optional Begin End)
   "Cycle {hyphen lowline space} chars.
@@ -1664,7 +1666,7 @@ Version: 2025-11-07"
     (copy-to-register ?1 (point-min) (point-min))
     (message "Cleared register 1.")))
 
-;; HHHH------------------------------
+;; s------------------------------
 ;; insertion commands
 
 (defun xah-insert-date ()
@@ -1936,7 +1938,7 @@ Version: 2023-09-19"
            (completing-read "Insert:" xah-unicode-list nil t))))
     (insert (cdr (assoc xkey xah-unicode-list)))))
 
-;; HHHH------------------------------
+;; s------------------------------
 ;; text selection
 
 (defun xah-select-block ()
@@ -1994,7 +1996,7 @@ After this command is called, press `xah-repeat-key' to repeat it.
 
 URL `http://xahlee.info/emacs/emacs/emacs_extend_selection.html'
 Created: 2020-02-04
-Version: 2025-09-04"
+Version: 2025-11-18"
   (interactive)
   (if (region-active-p)
       (let ((xbeg (region-beginning)) (xend (region-end)))
@@ -2051,13 +2053,22 @@ Version: 2025-09-04"
       (message "%s debug: left bracket" real-this-command)
       (mark-sexp) (exchange-point-and-mark))
 
-     ((looking-at "\\s)")
-      (message "%s debug: right bracket" real-this-command)
-      (backward-up-list) (mark-sexp) (exchange-point-and-mark))
+     ;; ((looking-at "\\s)")
+     ;; (message "%s debug: right bracket" real-this-command)
+     ;; (backward-up-list) (mark-sexp) (exchange-point-and-mark))
 
      ((looking-at "\\s\"")
       (message "%s debug: string quote" real-this-command)
-      (mark-sexp) (exchange-point-and-mark))
+
+      (if (nth 3 (syntax-ppss))
+          (progn
+            (forward-char)
+            (backward-sexp)
+            (mark-sexp)
+            (exchange-point-and-mark))
+        (progn
+          (mark-sexp)
+          (exchange-point-and-mark))))
 
      ((looking-at "[ \t\n]")
       (message "%s debug: is white space" real-this-command)
@@ -2127,7 +2138,7 @@ Version: 2024-10-02"
     (setq xend (point))
     (kill-region xbeg xend)))
 
-;; HHHH------------------------------
+;; s------------------------------
 ;; misc
 
 (defun xah-user-buffer-p ()
@@ -2395,7 +2406,7 @@ Version: 2024-09-25"
               (message "File does not exist. Created at\n%s" xpathNoQ)
               (find-file xpathNoQ))))))))
 
-;; HHHH------------------------------
+;; s------------------------------
 
 (defun xah-java-compile-and-run (Filename)
   "Compile and run java of current buffer.
@@ -2648,7 +2659,7 @@ Call `xah-open-last-closed' to open." xbackupPath)
         (message "non-file buffer killed. buffer text copied to `kill-ring'."))))
   (when (eq major-mode 'dired-mode) (revert-buffer)))
 
-;; HHHH------------------------------
+;; s------------------------------
 
 (defun xah-search-current-word ()
   "Call `isearch' on current word or selection.
@@ -2828,7 +2839,7 @@ Version: 2017-01-29"
       (other-frame 1)
     (delete-other-windows)))
 
-;; HHHH------------------------------
+;; s------------------------------
 ;; layout lookup tables for key conversion
 
 (defvar xah-fly-layout-diagrams (make-hash-table :test 'equal)
@@ -3275,7 +3286,7 @@ Version: 2025-10-07"
       (cdr x)))
    KeyCmdAlist))
 
-;; HHHH------------------------------
+;; s------------------------------
 ;; keymaps
 
 (defvar xah-fly-key-map (make-sparse-keymap)
@@ -3289,7 +3300,7 @@ Version: 2025-10-07"
 
 (defvar xah-fly--deactivate-command-mode-func nil)
 
-;; HHHH------------------------------
+;; s------------------------------
 ;; setting keys
 
 (defun xah-fly-define-keys ()
@@ -3718,6 +3729,7 @@ Version: 2024-04-22"
        ("c" . previous-line)
        ("d" . xah-beginning-of-line-or-block)
        ("e" . xah-smart-delete)
+       ("E" . delete-backward-char)
        ("f" . undo)
        ("g" . backward-word)
        ("h" . backward-char)
@@ -3746,7 +3758,7 @@ Version: 2024-04-22"
 
 (xah-fly-define-keys)
 
-;; HHHH------------------------------
+;; s------------------------------
 ;; set control meta, etc keys
 
 (defcustom xah-fly-unset-useless-key t
@@ -3862,12 +3874,12 @@ Version: 2024-04-22"
 
   (global-set-key (kbd "<f7>") 'xah-fly-leader-key-map)
 
-;; HHHH------------------------------
+;; s------------------------------
 
 (when (< emacs-major-version 28)
   (defalias 'execute-extended-command-for-buffer #'execute-extended-command))
 
-;; HHHH------------------------------
+;; s------------------------------
 ;;;; misc
 
 ;; the following have keys in gnu emacs, but i decided not to give them a key, because either they are rarely used (say, 95% of emacs users use them less than once a month ), or there is a more efficient command/workflow with key in xah-fly-keys
@@ -3935,7 +3947,7 @@ Version: 2024-04-22"
 ;; C-x {   →   shrink-window-horizontally
 ;; C-x }   →   enlarge-window-horizontally
 
-;; HHHH------------------------------
+;; s------------------------------
 
 (defvar xah-fly-insert-state-p t "non-nil means insertion mode is on.")
 
@@ -4046,7 +4058,7 @@ Version: 2017-07-07"
   (xah-fly-insert-mode-activate)
   (open-line 1))
 
-;; HHHH------------------------------
+;; s------------------------------
 
 ;;;###autoload
 (define-minor-mode xah-fly-keys
