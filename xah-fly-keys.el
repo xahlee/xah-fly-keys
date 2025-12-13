@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 28.11.20251125073911
+;; Version: 28.11.20251212190757
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -221,7 +221,7 @@ Must be set before loading xah-fly-keys."
   "Move cursor to last mark position of current buffer.
 Repeat call cycles all positions in `mark-ring'.
 
-After this command is called, press `xah-repeat-key' to repeat it.
+After this command is called, press variable `xah-repeat-key' to repeat it.
 
 URL `http://xahlee.info/emacs/emacs/emacs_cycle_local_mark_ring.html'
 Created: 2016-04-04
@@ -1219,7 +1219,7 @@ Version: 2025-09-07"
 (defun xah-reformat-to-sentence-lines ()
   "Reformat current block or selection into multiple lines by ending period.
 Move cursor to the beginning of next text block.
-After this command is called, press `xah-repeat-key' to repeat it.
+After this command is called, press variable `xah-repeat-key' to repeat it.
 
 URL `http://xahlee.info/emacs/emacs/elisp_reformat_to_sentence_lines.html'
 Created: 2020-12-02
@@ -1471,14 +1471,14 @@ Version: 2025-03-25"
       (save-restriction
         (narrow-to-region xbeg xend)
         (goto-char (point-min))
-        (catch 'EndReached
+        (catch 1111
           (while t
             (skip-chars-forward "\t ")
             (insert xquoteL)
             (end-of-line)
             (insert xquoteR xsep)
             (if (eq (point) (point-max))
-                (throw 'EndReached t)
+                (throw 1111 t)
               (forward-char))))))))
 
 (defun xah-escape-quotes (Begin End)
@@ -1529,7 +1529,7 @@ The region to work on is by this order:
  2. If cursor is in a string quote or any type of bracket, and is within current line, work on that region.
  3. else, work on current line.
 
-After this command is called, press `xah-repeat-key' to repeat it.
+After this command is called, press variable `xah-repeat-key' to repeat it.
 
 URL `http://xahlee.info/emacs/emacs/elisp_change_space-hyphen_underscore.html'
 Created: 2019-02-12
@@ -1992,7 +1992,7 @@ when there is no selection,
 
 when there is a selection, the selection extension behavior is still experimental. But when cursor is on a any type of bracket (parenthesis, quote), it extends selection to outer bracket.
 
-After this command is called, press `xah-repeat-key' to repeat it.
+After this command is called, press variable `xah-repeat-key' to repeat it.
 
 URL `http://xahlee.info/emacs/emacs/emacs_extend_selection.html'
 Created: 2020-02-04
