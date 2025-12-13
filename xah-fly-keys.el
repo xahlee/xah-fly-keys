@@ -2077,11 +2077,11 @@ Version: 2025-11-18"
       (skip-chars-forward " \t\n")
       (setq mark-active t))
 
-     ((looking-at "[-_a-zA-Z0-9]")
+     ((looking-at "[-_[:word:]]")
       (message "%s debug: right is word or symbol" real-this-command)
-      (skip-chars-backward "-_a-zA-Z0-9")
+      (skip-chars-backward "-_[:word:]")
       (push-mark)
-      (skip-chars-forward "-_a-zA-Z0-9")
+      (skip-chars-forward "-_[:word:]")
       (setq mark-active t))
 
      ;; ((and (looking-at "[[:blank:]]")
