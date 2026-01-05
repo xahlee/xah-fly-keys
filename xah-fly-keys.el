@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 28.11.20251212190757
+;; Version: 28.11.20260105074113
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -589,6 +589,8 @@ Version: 2020-09-08"
       (if (eq real-last-command this-command)
           (yank-pop 1)
         (yank)))))
+
+(defalias 'xah-show-copy-history 'xah-show-kill-ring)
 
 (defun xah-show-kill-ring ()
   "Insert all `kill-ring' content in a new buffer named *copy history*.
