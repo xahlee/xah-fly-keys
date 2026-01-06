@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 28.11.20260105074113
+;; Version: 28.11.20260106081151
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -1030,14 +1030,14 @@ Version: 2024-06-17"
 
 URL `http://xahlee.info/emacs/emacs/emacs_toggle_letter_case.html'
 Created: 2015-12-22
-Version: 2023-11-14"
+Version: 2026-01-06"
   (interactive)
   (let ((case-fold-search nil))
-    (left-char 1)
+    (backward-char)
     (cond
      ((looking-at "[[:lower:]]") (upcase-region (point) (1+ (point))))
      ((looking-at "[[:upper:]]") (downcase-region (point) (1+ (point)))))
-    (right-char)))
+    (forward-char)))
 
 (defun xah-upcase-sentence ()
   "Upcase first letters of sentences of current block or selection.
@@ -1815,32 +1815,10 @@ Version: 2025-03-25"
 (defun xah-insert-deco-angle-bracket❮❯ () (interactive) (xah-insert-bracket-pair "❮" "❯"))
 (defun xah-insert-deco-angle-fat-bracket❰❱ () (interactive) (xah-insert-bracket-pair "❰" "❱"))
 
-(defun xah-insert-hyphen ()
-  "Insert a HYPHEN-MINUS character."
-  (interactive)
-  (insert "-"))
-
-(defun xah-insert-low-line ()
-  "Insert a LOW LINE character."
-  (interactive)
-  (insert "_"))
-
-(defun xah-insert-string-assignment ()
-  "Insert =\"\""
-  (interactive)
-  (progn (insert "=\"\"")
-         (left-char)))
-
 (defun xah-insert-space-before ()
   "Insert space before cursor."
   (interactive)
   (insert " "))
-
-(defun xah-insert-space-after ()
-  "Insert space after cursor"
-  (interactive)
-  (insert " ")
-  (left-char))
 
 (defun xah-insert-seperator ()
   "Insert a visual seperator line.
@@ -2669,7 +2647,7 @@ Call `xah-open-last-closed' to open." xbackupPath)
 
 URL `http://xahlee.info/emacs/emacs/emacs_search_current_word.html'
 Created: 2010-05-29
-Version: 2025-09-15"
+Version: 2026-01-06"
   (interactive)
   (let (xbeg xend)
     (if (region-active-p)
@@ -2677,7 +2655,7 @@ Version: 2025-09-15"
       (save-excursion
         (skip-chars-backward "-_A-Za-z0-9")
         (setq xbeg (point))
-        (right-char)
+        (forward-char)
         (skip-chars-forward "-_A-Za-z0-9")
         (setq xend (point))))
     (deactivate-mark)
