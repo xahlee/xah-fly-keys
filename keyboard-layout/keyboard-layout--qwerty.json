@@ -1,0 +1,141 @@
+[
+  [
+    {
+      "f": 1
+    },
+    "§\n\n±",
+    "1\n<i>1 Win Lay\n!",
+    "2\n<i>2 Win Lay\n@",
+    "3\n<i>3 Win Lay\n#",
+    "4\n<i>4 Win Lay\n$",
+    "5\n\n%",
+    "6\n\n^",
+    "7\n\n&",
+    "8\n\n*",
+    "9\n\n(",
+    "0\n<i>Del Win Current\n)",
+    "-\n<i>Split Below\n_",
+    "=\n<i>Split Right\n+",
+    {
+      "a": 6,
+      "w": 2
+    },
+    "\n\nBACKSPACE"
+  ],
+  [
+    {
+      "w": 1.5
+    },
+    "TAB",
+    {
+      "a": 4
+    },
+    "Q\n<i>Format",
+    "W\n<i>␣⌫",
+    "E\n<i>W⌫",
+    "R\n<i>⌦W",
+    "<i>T</i>\n<i>Cancel",
+    "Y\n<i>Undo",
+    "U\nW ⬅",
+    "I\n\n\n\n\n\n\n\n\n\n⬆",
+    "O\n\n\n⮕ W",
+    "P\n\n\n\n\n\n\n\n\n\n␣",
+    "[\n<i>Prev. Window\n{",
+    "]\n<i>Next Window\n}",
+    {
+      "x": 0.25,
+      "a": 6,
+      "w": 1.25,
+      "h": 2,
+      "w2": 1.5,
+      "h2": 1,
+      "x2": -0.25
+    },
+    "\n\nSHIFT"
+  ],
+  [
+    {
+      "w": 1.75
+    },
+    "SHIFT",
+    {
+      "a": 4
+    },
+    "A\n<i>M-x",
+    "S\n↵",
+    "D\n()⌫",
+    "F\n<i>Insert Mode",
+    "G\n<i>Mark",
+    "H\n⬅ ⬅",
+    "J\n⬅",
+    "K\n\n\n\n\n\n\n\n\n\n⬇",
+    "L\n\n\n⮕",
+    ";\n\n:\n⮕ ⮕",
+    "'\n<i>Kebab Snake Space\n\"",
+    "\\\n<i>Next Frame\n|"
+  ],
+  [
+    {
+      "a": 6,
+      "w": 1.25
+    },
+    "SHIFT",
+    {
+      "a": 4,
+      "f": 3
+    },
+    "~\n`",
+    {
+      "f": 1
+    },
+    "Z\n<i>Comment",
+    "X\n<i>Cut",
+    "C\n<i>Copy",
+    "V\n<I>Paste",
+    "B\n<i>Case",
+    "N\n<i>Search",
+    "M\n( ⬅",
+    ",\n\n<\n\n\n\n\n\n\n<b>XXX",
+    ".\n\n>\n⮕ )",
+    "/\n\n?\n\n\n\n\n\n\n<b>XXX",
+    {
+      "a": 6,
+      "w": 2.75
+    },
+    "\n\nRETURN"
+  ],
+  [
+    {
+      "a": 7
+    },
+    "",
+    "",
+    "<b>META",
+    {
+      "w": 1.25
+    },
+    "<b>CTRL",
+    {
+      "w": 5
+    },
+    "<b>LEADER",
+    {
+      "w": 1.25
+    },
+    "<b>CTRL",
+    "<b>META",
+    {
+      "f": 3,
+      "w": 1.15
+    },
+    "",
+    {
+      "w": 1.15
+    },
+    "",
+    {
+      "w": 1.2
+    },
+    ""
+  ]
+]
