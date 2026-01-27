@@ -1,4 +1,4 @@
-;;; xah-fly-keys.el --- ergonomic modal keybinding minor mode. -*- coding: utf-8; lexical-binding: t; -*-
+;;; xah-fly-keys.el --- A modal keybinding minor mode. -*- coding: utf-8; lexical-binding: t; -*-
 
 ;; Copyright © 2013, 2025 by Xah Lee
 
@@ -15,143 +15,124 @@
 
 ;;; Commentary:
 
-;; xah-fly-keys is a efficient keybinding for emacs. It is modal like
-;; vi, but key choices are based on statistics of command call
-;; frequency.
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;;    INSTALLATION
+;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Usage:
-
-;; M-x xah-fly-keys to toggle the mode on/off.
-
-;; Important command/insert mode switch keys:
-
-;; M-x `xah-fly-command-mode-activate'
-;; or press <escape>
-;; or Alt+Space
-;; or Ctrl+Space.
-;; Note: if using emacs 28 or before, escape key only works when in emacs is running in graphical user interface mode.
-
-;; M-x `xah-fly-insert-mode-activate'
-;; when in command mode, press qwerty letter key f.
-
-;; When in command mode:
-
-;; "f" calls `xah-fly-insert-mode-activate'.
-
-;; Space is a leader key. For example, "SPC r" calls `query-replace'.
-;; Press "SPC C-h" to see the full list.
-
-;; "SPC SPC" also activates insertion mode.
-
-;; "SPC RET" calls `execute-extended-command'.
-
-;; "a" calls `execute-extended-command'.
-
-;; The leader key sequence basically supplant ALL emacs commands that
-;; starts with C-x key.
-
-;; When using xah-fly-keys, you don't need to press Control or Meta,
-;; with the following exceptions:
-
-;; "C-c" for major mode commands.
-;; "C-g" for cancel.
-;; "C-q" for quoted-insert.
-;; "C-h" for getting a list of keys following a prefix/leader key.
-
-;; Leader key
-
-;; You NEVER need to press "C-x"
-
-;; Any emacs command that has a keybinding starting with C-x, has also
-;; a key sequence binding in xah-fly-keys. For example,
-
-;; "C-x b" for `switch-to-buffer' is "SPC f"
-;; "C-x C-f" for `find-file' is "SPC i e"
-;; "C-x n n" for `narrow-to-region' is "SPC l l"
-
-;; The first key we call it leader key. In the above examples, the SPC
-;; is the leader key.
-
-;; When in command mode, the "SPC" is a leader key.
-
-;; if you want the following standard keys with Control
-;; "C-TAB" `xah-next-user-buffer'
-;; "C-S-TAB" `xah-previous-user-buffer'
-;; "C-v" paste
-;; "C-w" close
-;; "C-z" undo
-;; "C-n" new
-;; "C-o" open
-;; "C-s" save
-;; "C-S-s" save as
-;; "C-S-t" open last closed
-;; "C-+" `text-scale-increase'
-;; "C--" `text-scale-decrease'
-
-;; add
-;; (setq xah-fly-use-control-key t)
-
-;; To disable any change to Control keybinding
-;; add this to emacs init
-;; (setq xah-fly-use-control-key nil)
-;; before loading xah-fly-keys
-
-;; To disable any change to meta keybinding
-;; add this to emacs init
-;; (setq xah-fly-use-meta-key nil)
-;; before loading xah-fly-keys
-
-;; If you have a bug, post on github.
-
-;; For detail about design and other info, see home page at
-;; http://xahlee.info/emacs/misc/xah-fly-keys.html
-
-;; If you like this project, paypal me $30 to Xah@XahLee.org
-
-;;; Installation:
-;; here's how to manual install
+;; 1. Create the directory ~/.emacs.d/lisp/ if it doesn't exist.
+;; 2. Place 'xah-fly-keys.el' (this file) in that directory.
+;; 3. Add the following to your Emacs init file:
 ;;
-;; put the file xah-fly-keys.el in ~/.emacs.d/lisp/
-;; create the dir if doesn't exist.
-;;
-;; put the following in your emacs init file:
 ;; (add-to-list 'load-path "~/.emacs.d/lisp/")
 ;; (require 'xah-fly-keys)
-;; (xah-fly-keys-set-layout "qwerty") ; optional
+;; (xah-fly-keys-set-layout "qwerty") ; Optional
 ;; (xah-fly-keys 1)
 ;;
-;; possible layout values:
+;; Available layouts:
+;; - "qwerty"
+;; - "ukrainian"
+;;
+;; Available layouts are defined in the `xah-fly-layout-diagrams' variable.
 
-;; adnw (German)
-;; azerty
-;; azerty-be
-;; bepo (French)
-;; colemak
-;; colemak-dh
-;; dvorak
-;; engrammer
-;; halmak
-;; koy (German)
-;; minimak
-;; neo2 (German)
-;; norman
-;; programer-dvorak
-;; pt-nativo (Brazil)
-;; qfmlwy
-;; qgmlwb
-;; qwerty
-;; qwerty-abnt (Brazil)
-;; qwerty-no (Norwegian)
-;; qwerty-se (Swedish)
-;; qwertz
-;; qwpr
-;; russian
-;; workman
 
-;; supported layouts are stored in the variable xah-fly-layout-diagrams
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;;    USAGE
+;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Toggle xah-fly-keys mode on/off:
+;; M-x `xah-fly-keys'
+
+;; Activate COMMAND-mode:
+;; M-x `xah-fly-command-mode-activate'
+;; or press ESC when in INSERT-mode
+;; or press M-SPC when in INSERT-mode
+
+;; Activate INSERT-mode:
+;; M-x `xah-fly-insert-mode-activate'
+;; or press "f" when in COMMAND-mode
+;; or press "SPC SPC" when in COMMAND-mode
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;;    LEADER KEY
+;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; In COMMAND-mode, the Space key ("SPC") acts as the leader key.
+;; Press "SPC C-h" to view the full list of available commands.
+
+;; Most Emacs commands that traditionally start with "C-x" have an
+;; equivalent key sequence in xah-fly-keys. For example:
+;; "C-x b"   (switch-to-buffer)   becomes  "SPC f"
+;; "C-x C-f" (find-file)          becomes  "SPC i e"
+;; "C-x n n" (narrow-to-region)   becomes  "SPC l l"
+
+;; This leader key system effectively replaces the majority of 
+;; standard Emacs "C-x" combinations.
+
+;; You will rarely need the Control (C-) modifier, with a few exceptions:
+;; "C-c" for major-mode-specific commands.
+;; "C-g" to quit or cancel a command.
+;; "C-q" for quoted-insert.
+;; "C-h" to list keys following a prefix or leader key.
+
+;; To enable standard OS-style shortcuts (e.g., C-v for paste, C-s for save):
+;; "C-TAB"   (xah-next-user-buffer)
+;; "C-S-TAB" (xah-previous-user-buffer)
+;; "C-v" (paste), "C-w" (close), "C-z" (undo), "C-n" (new), "C-o" (open)
+;; "C-s" (save), "C-S-s" (save as), "C-S-t" (restore closed tab)
+;; "C-+" (increase text scale), "C--" (decrease text scale)
+;; Add this to your init:
+;; (setq xah-fly-use-control-key t)
+
+;; To prevent any modifications to Control keybindings, add:
+;; (setq xah-fly-use-control-key nil)
+;; (Note: This must be placed before loading xah-fly-keys)
+
+;; To prevent any modifications to Meta keybindings, add:
+;; (setq xah-fly-use-meta-key nil)
+;; (Note: This must be placed before loading xah-fly-keys)
+
+;; For detailed design documentation and more info, visit:
+;; http://xahlee.info/emacs/misc/xah-fly-keys.html
 
 ;; s------------------------------
+
 ;;; Code:
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;;    [MY] VANILLA SETTINGS
+;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(use-package emacs
+  :ensure nil
+  :bind
+  (;; Disable bindings that conflict with my setup
+   ("C-x ^"   . nil)  ;; enlarge-window
+   ("C-x }"   . nil)  ;; enlarge-window-horizontally
+   ("C-x {"   . nil)  ;; shrink-window-horizontally
+   ("C-z"     . nil)  ;; suspend-frame
+   ("C-x C-z" . nil))
+  :init
+  (with-current-buffer (get-buffer-create "*scratch*")
+    (insert ";;
+;; Hi there!
+;;
+")))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;;    [XAH] PACKAGE
+;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (require 'dired)
 (require 'dired-x)
@@ -167,10 +148,10 @@
 (defvar xah-fly-insert-mode-activate-hook nil "Hook for `xah-fly-insert-mode-activate'")
 
 (defcustom xah-fly-use-control-key t
-  "If true, change many emacs keybinding involving control key.
+  "If true, change many Emacs keybinding involving Control key.
 Keys changed:
 Standard shortcut for open, close, copy, paste etc.
-Remove many redundant emacs default keys
+Remove many redundant Emacs default keys
 Must be set before loading xah-fly-keys."
   :type 'boolean)
 
@@ -180,8 +161,8 @@ Must be set before loading xah-fly-keys."
   :type 'boolean)
 
 (defcustom xah-fly-use-meta-key nil
-  "If true, change some emacs keybinding involving meta key.
-Remove many redundant emacs default keys.
+  "If true, change some Emacs keybinding involving Meta key.
+Remove many redundant Emacs default keys.
 Must be set before loading xah-fly-keys."
   :type 'boolean)
 
@@ -194,12 +175,12 @@ Must be set before loading xah-fly-keys."
  :type 'boolean)
 
 (defcustom xah-fly-command-mode-hl-line t
- "If true, highlight current line when in command mode.
+ "If true, highlight current line when in COMMAND-mode.
 Must be set before loading xah-fly-keys."
  :type 'boolean)
 
 (defcustom xah-fly-command-mode-cursor-color "red"
-  "Cursor color when in command mode.
+  "Cursor color when in COMMAND-mode.
 Value should be a string of color name. See `list-colors-display'.
 Default is red.
 If set to nil, use the color of current theme.
@@ -207,15 +188,16 @@ Must be set before loading xah-fly-keys."
  :type '(string))
 
 (defcustom xah-fly-insert-mode-cursor-color "gray"
-  "Cursor color when in insert mode.
+  "Cursor color when in INSERT-mode.
 Value should be a string of color name. See `list-colors-display'.
 Default is gray.
 If set to nil, use the color of current theme.
 Must be set before loading xah-fly-keys."
  :type '(string))
 
-;; s------------------------------
-;; cursor movement
+;;; =============================================================================================
+;;;    Cursor movement
+;;; =============================================================================================
 
 (defun xah-pop-local-mark-ring ()
   "Move cursor to last mark position of current buffer.
@@ -309,7 +291,7 @@ If `universal-argument' value is 1, ask for a position.
 Else use the number under cursor.
 If no number is under cursor, ask for a position.
 
-If there is more than one pane (aka emacs window), goto position in that pane.
+If there is more than one pane (aka Emacs window), goto position in that pane.
 
 URL `http://xahlee.info/emacs/emacs/emacs_goto_line_other_buffer.html'
 Created: 2025-04-10
@@ -344,7 +326,7 @@ If `universal-argument' value is 1, ask for a line number.
 Else use the number under cursor.
 If no number is under cursor, ask for a line number.
 
-If there is more than one pane (aka emacs window), goto the line number in that pane.
+If there is more than one pane (aka Emacs window), goto the line number in that pane.
 
 URL `http://xahlee.info/emacs/emacs/emacs_goto_line_other_buffer.html'
 Created: 2025-04-10
@@ -479,8 +461,9 @@ Version: 2025-03-25"
     (setq xbeg (if (region-active-p) (region-beginning) (save-excursion (if (re-search-backward "\n[ \t]*\n" nil 1) (match-end 0) (point)))) xend (if (region-active-p) (region-end) (save-excursion (if (re-search-forward "\n[ \t]*\n" nil 1) (match-beginning 0) (point)))))
     (narrow-to-region xbeg xend)))
 
-;; s------------------------------
-;; editing commands
+;;; =============================================================================================
+;;;    Editing commands
+;;; =============================================================================================
 
 (defun xah-copy-line-or-region ()
   "Copy current line or selection.
@@ -1185,7 +1168,7 @@ Version: 2025-08-29"
 When called for the first time, change to one line. Second call change it to multi-lines. Repeated call toggles.
 If `universal-argument' is called first, ask user to type max length of line. By default, it is 70.
 
-Note: this command is different from emacs `fill-region' or `fill-paragraph'.
+Note: this command is different from Emacs `fill-region' or `fill-paragraph'.
 This command never adds or delete non-whitespace chars. It only exchange whitespace sequence.
 
 URL `http://xahlee.info/emacs/emacs/emacs_reformat_lines.html'
@@ -1523,7 +1506,7 @@ Version: 2023-11-02"
           (replace-match "\"" t t)))))
   (message "done. %s" real-this-command))
 
-(defun xah-cycle-hyphen-lowline-space (&optional Begin End)
+(defun xah-cycle-kebab-snake-case-or-space (&optional Begin End)
   "Cycle {hyphen lowline space} chars.
 
 The region to work on is by this order:
@@ -1541,7 +1524,7 @@ Version: 2025-01-24"
   (let (xbeg xend xlen
             (xcharArray ["-" "_" " "])
             (xregionWasActive-p (region-active-p))
-            (xnowState (if (eq last-command this-command) (get 'xah-cycle-hyphen-lowline-space 'state) 0))
+            (xnowState (if (eq last-command this-command) (get 'xah-cycle-kebab-snake-case-or-space 'state) 0))
             xchangeTo)
     (setq
      xlen (length xcharArray)
@@ -1566,7 +1549,7 @@ Version: 2025-01-24"
       (goto-char xend)
       (push-mark xbeg)
       (setq deactivate-mark nil))
-    (put 'xah-cycle-hyphen-lowline-space 'state (% (+ xnowState 1) xlen)))
+    (put 'xah-cycle-kebab-snake-case-or-space 'state (% (+ xnowState 1) xlen)))
   (set-transient-map (let ((xkmap (make-sparse-keymap))) (define-key xkmap (kbd (if (boundp 'xah-repeat-key) xah-repeat-key ".")) this-command) xkmap)))
 
 (defun xah-copy-file-path (&optional DirPathOnlyQ)
@@ -1668,8 +1651,9 @@ Version: 2025-11-07"
     (copy-to-register ?1 (point-min) (point-min))
     (message "Cleared register 1.")))
 
-;; s------------------------------
-;; insertion commands
+;;; =============================================================================================
+;;;    Insertion commands
+;;; =============================================================================================
 
 (defun xah-insert-date ()
   "Insert current date time.
@@ -1832,94 +1816,10 @@ Version: 2025-11-13"
       (backward-char)
       (comment-line 1))))
 
-(defvar xah-unicode-list nil
- "A alist.
-Each item is (prompStr . xString). Used by `xah-insert-unicode'.
-prompStr is used for prompt.
-xString is is the char to insert.
-xString can be multiple chars or any string.
-")
 
-(setq
- xah-unicode-list
- '(
-   ;;
-   ("smile beaming 😊" . "😊")
-   ("tears of joy" . "😂")
-   ("hug 🤗" . "🤗")
-   ("heart eyes 😍" . "😍")
-   ("heart face 🥰" . "🥰")
-   ("angry 😠" . "😠")
-   ("vomit 🤮" . "🤮")
-   ("thumb up 👍" . "👍")
-   ("thumb down 👎" . "👎")
-   ("tv 📺" . "📺")
-   ("lotus 🪷" . "🪷")
-   ("checkmark ✅" . "✅")
-   ("new 🆕" . "🆕")
-   ("glowing star 🌟" . "🌟")
-   ("star ⭐" . "⭐")
-   ("sparkles ✨" . "✨")
-   ("rocket 🚀" . "🚀")
-   ("sun 🌞" . "🌞")
-   ("heart 🧡" . "🧡")
-   ("clown 🤡" . "🤡")
-   ("large circle" . "⭕")
-   ("cross ❌" . "❌")
-   ("red triangle 🔺" . "🔺")
-   ("diamond 💠" . "💠")
-   ("square ⬛" . "⬛")
-   ("SMALL ORANGE DIAMOND 🔸" . "🔸")
-   ("BLACK RIGHT-POINTING TRIANGLE ▶" . "▶")
-   ("BLACK DIAMOND ◆" . "◆")
-   ("LONG RIGHTWARDS ARROW ⟶" . "⟶")
-
-   ("script 📜" . "📜")
-   ("package 📦" . "📦")
-   ("cursor ▮" . "▮")
-   ("music 🎵" . "🎵")
-   ("ok 🆗" . "🆗")
-
-   ("dagger †" . "†")
-   ("double dagger ‡" . "‡")
-
-   ("double angle bracket" . "《》")
-   ("black lenticular bracket" . "【】")
-   ("corner-bracket" . "「」")
-   ("tortoise shell bracket" . "〔〕")
-   ("angle bracket" . "〈〉")
-   ("double angle quote" . "«»")
-
-   ("bullet •" . "•")
-
-   ("...ellipsis …" . "…")
-   ("nbsp non breaking space" . " ")
-   ("chinese comma 、" . "、")
-   ("emdash —" . "—")
-   ("fullwidth ampersand ＆" . "＆")
-   ("left arrow ←" . "←")
-   ("right arrow →" . "→")
-   ("up arrow ↑" . "↑")
-   ("down arrow ↓" . "↓")
-   ("f hook ƒ" . "ƒ")
-   ("chinese space" . "　")
-
-   ;;
-   ))
-
-(defun xah-insert-unicode ()
-  "Insert a unicode from a custom list `xah-unicode-list'.
-URL `http://xahlee.info/emacs/emacs/emacs_insert_unicode.html'
-Created: 2021-01-05
-Version: 2023-09-19"
-  (interactive)
-  (let ((xkey
-         (let ((completion-ignore-case t))
-           (completing-read "Insert:" xah-unicode-list nil t))))
-    (insert (cdr (assoc xkey xah-unicode-list)))))
-
-;; s------------------------------
-;; text selection
+;;; =============================================================================================
+;;;    Text selection
+;;; =============================================================================================
 
 (defun xah-select-block ()
   "Select the current/next block.
@@ -2118,8 +2018,9 @@ Version: 2024-10-02"
     (setq xend (point))
     (kill-region xbeg xend)))
 
-;; s------------------------------
-;; misc
+;;; =============================================================================================
+;;;    Misc.
+;;; =============================================================================================
 
 (defun xah-user-buffer-p ()
   "Return t if current buffer is a user buffer, else nil.
@@ -2296,7 +2197,7 @@ This is useful for transforming certain url into file path. e.g. change
 http://xahlee.info/emacs/index.html
 to
 C:/Users/xah/web/xahlee_info/emacs/index.html
-, so instead of opening in browser, it opens in emacs as file.")
+, so instead of opening in browser, it opens in Emacs as file.")
 
 (defun xah-open-file-at-cursor ()
   "Open the file path under cursor.
@@ -2320,7 +2221,7 @@ Version: 2024-09-25"
     (setq xinput (if (region-active-p)
                      (buffer-substring-no-properties (region-beginning) (region-end))
                    (let ((xp0 (point)) xbeg xend
-                         (xpathStops "^  \t\n\"`'‘’“”|()[]{}「」<>〔〕〈〉《》【】〖〗«»‹›❮❯❬❭〘〙·。\\"))
+                         (xpathStops "^  \t\n\"`'‘’“”|()[]{}「」<>〔〕〈〉《》【】〖〗«»‹›❮❯❬❭〘〙·。\\"))
                      (skip-chars-backward xpathStops)
                      (setq xbeg (point))
                      (goto-char xp0)
@@ -2377,7 +2278,7 @@ Version: 2024-09-25"
                        (file-exists-p (concat xfnamecore ".ts")))
                   (progn
                     (find-file (concat xfnamecore ".ts"))
-                    (warn "Typescript file .ts exist, opening it"))
+                    (warn "TypeScript file .ts exist, opening it"))
 
                 (find-file xpathNoQ)))))
          ((file-exists-p (concat xpathNoQ ".el"))
@@ -2710,7 +2611,7 @@ Version: 2023-09-09"
                     (format "%s %s"
                             "xdg-open"
                             (file-name-directory xpath)))
-      ;; (shell-command "xdg-open .") ;; 2013-02-10 this sometimes froze emacs till the folder is closed. eg with nautilus
+      ;; (shell-command "xdg-open .") ;; 2013-02-10 this sometimes froze Emacs till the folder is closed. eg with nautilus
       ))))
 
 (defun xah-open-in-vscode ()
@@ -2732,7 +2633,7 @@ Version: 2024-12-15"
 
 (defun xah-open-in-external-app (&optional Fname)
   "Open the current file or dired marked files in external app.
-When called in emacs lisp, if Fname is given, open that.
+When called in Emacs lisp, if Fname is given, open that.
 
 URL `http://xahlee.info/emacs/emacs/emacs_dired_open_file_in_ext_apps.html'
 Created: 2019-11-04
@@ -2799,28 +2700,26 @@ Version: 2023-06-26"
    ((eq system-type 'berkeley-unix)
     (let ((process-connection-type nil)) (start-process "" nil "x-terminal-emulator" (concat "--working-directory=" default-directory))))))
 
-(defun xah-next-window-or-frame ()
-  "Switch to next window or frame.
-If current frame has only one window, switch to next frame.
-If `universal-argument' is called first, do switch frame.
-Version: 2017-01-27"
-  (interactive)
-  (if current-prefix-arg
-      (other-frame 1)
-    (if (one-window-p)
-        (other-frame 1)
-      (other-window 1))))
-
-(defun xah-unsplit-window-or-next-frame ()
-  "Unsplit window. If current frame has only one window, switch to next frame.
-Version: 2017-01-29"
+(defun xah-delete-other-windows ()
+  "Delete other windows in the current frame.
+If there is only one window, switch to the next frame."
   (interactive)
   (if (one-window-p)
       (other-frame 1)
     (delete-other-windows)))
 
-;; s------------------------------
-;; layout lookup tables for key conversion
+(defun xah-delete-window-smart ()
+  "Delete the current window (like C-x 0), but do nothing if it is the only window.
+If the frame has multiple windows, the current window is closed and 
+focus shifts to the previous window."
+  (interactive)
+  (if (one-window-p)
+      (message "Only one window. No other window to delete.")
+    (delete-window)))
+
+;;; =============================================================================================
+;;;    Layout lookup tables for key conversion
+;;; =============================================================================================
 
 (defvar xah-fly-layout-diagrams (make-hash-table :test 'equal)
   "A hashtable.
@@ -2834,332 +2733,35 @@ It is used to generate key conversion table of a key from layout to layout.
 
 (progn
 
-  (puthash "adnw" "
-~ ! @ # $ % ^ & * ( ) { }
-` 1 2 3 4 5 6 7 8 9 0 [ ]
-
-k u ü . ä v g c l j f = \\
-h i e a o d t r n s ß
-x y ö , q b p w m z
-
-K U Ü > Ä V G C L J F + |
-H I E A O D T R N S ẞ
-X Y Ö < Q B P W M Z
-" xah-fly-layout-diagrams)
-
-  (puthash "azerty"
-           "
-~ ! @ # $ % ^ & * ( ) { }
-² & é \" ' ( - è _ ç à ) =
-
-a z e r t y u i o p ^ $ *
-q s d f g h j k l m ù
-w x c v b n , ; : !
-
-A Z E R T Y U I O P ? + |
-Q S D F G H J K L M Ù
-W X C V B N ? . / §
-" xah-fly-layout-diagrams)
-
-  (puthash "azerty-be"
-           "
-~ ! @ # $ % ^ & * ( ) { }
-² & é \" ' ( § è ! ç à ) -
-
-a z e r t y u i o p ^ $ µ
-q s d f g h j k l m ù
-w x c v b n , ; : =
-
-A Z E R T Y U I O P ^ $ Μ
-Q S D F G H J K L M Ù
-W X C V B N ? . / +
-" xah-fly-layout-diagrams)
-
-  (puthash "bepo" "
-#  1 2 3 4 5 6 7 8 9 0 ° `
-$ \" « » ( ) @ + - / * = %
-
-b é p o è ^ v d l j z w \\
-a u i e , c t s r n m
-à y x . k ' q g h f
-
-B É P O È ! V D L J Z W |
-A U I E ; C T S R N M
-À Y X : K ? Q G H F
-" xah-fly-layout-diagrams)
-
-  (puthash "colemak" "
-~ ! @ # $ % ^ & * ( ) _ +
-` 1 2 3 4 5 6 7 8 9 0 - =
-
-q w f p g j l u y ; [ ] \\
-a r s t d h n e i o '
-z x c v b k m , . /
-
-Q W F P G J L U Y : { } |
-A R S T D H N E I O \"
-Z X C V B K M < > ?
-" xah-fly-layout-diagrams)
-
-  (puthash "colemak-dh" "
-~ ! @ # $ % ^ & * ( ) _ +
-` 1 2 3 4 5 6 7 8 9 0 - =
-
-q w f p b j l u y ; [ ] \\
-a r s t g m n e i o '
-z x c d v k h , . /
-
-Q W F P B J L U Y : { } |
-A R S T G M N E I O \"
-Z X C D V K H < > ?
-" xah-fly-layout-diagrams)
-
-  (puthash "dvorak" "
-~ ! @ # $ % ^ & * ( ) { }
-` 1 2 3 4 5 6 7 8 9 0 [ ]
-
-' , . p y f g c r l / = \\
-a o e u i d h t n s -
-; q j k x b m w v z
-
-\" < > P Y F G C R L ? + |
-A O E U I D H T N S _
-: Q J K X B M W V Z
-" xah-fly-layout-diagrams)
-
-  (puthash "engrammer" "
-~ ! @ # $ % ^ & * ( ) { }
-` 1 2 3 4 5 6 7 8 9 0 [ ]
-
-b y o u ' ; l d w v z = \\
-c i e a , . h t s n q
-g x j k - / r m f p
-
-B Y O U \" : L D W V Z + |
-C I E A < > H T S N Q
-G X J K _ ? R M F P
-" xah-fly-layout-diagrams)
-
-  (puthash "koy" "
-^ ! @ # $ % ^ & * ( ) _ ~
-˘ 1 2 3 4 5 6 7 8 9 0 - `
-
-k . o , y v g c l ß / = \\
-h a e i u d t r n s f
-x q ä ü ö b p w m j
-
-K > O < Y V G C L ẞ ? + |
-H A E I U D T R N S F
-X Q Ä Ü Ö B P W M J
-" xah-fly-layout-diagrams)
-
-  (puthash "halmak" "
-~ ! @ # $ % ^ & * ( ) _ +
-` 1 2 3 4 5 6 7 8 9 0 - =
-
-w l r b z ; q u d j [ ] \\
-s h n t , . a e o i '
-f m v c / g p x k y
-
-W L R B Z : Q U D J { } |
-S H N T < > A E O I \"
-F M V C ? G P X K Y
-" xah-fly-layout-diagrams)
-
-  (puthash "minimak" "
-~ ! @ # $ % ^ & * ( ) _ +
-` 1 2 3 4 5 6 7 8 9 0 - =
-
-q w d r k y u i o p [ ] \\
-a s t f g h j e l ; '
-z x c v b n m , . /
-
-Q W D R K Y U I O P { } |
-A S T F G H J E L : \"
-Z X C V B N M < > ?
-" xah-fly-layout-diagrams)
-
-(puthash "neo2" "
-ˇ ° § ℓ » « $ € „ “ ” — ¸
-^ 1 2 3 4 5 6 7 8 9 0 - `
-
-x v l c w k h g f q ß ´ \\
-u i a e o s n r t d y
-ü ö ä p z b m , . j
-
-X V L C W K H G F Q ẞ ~ |
-U I A E O S N R T D Y
-Ü Ö Ä P Z B M – • J
-" xah-fly-layout-diagrams)
-
-  (puthash "norman" "
-~ ! @ # $ % ^ & * ( ) _ +
-` 1 2 3 4 5 6 7 8 9 0 - =
-
-q w d f k j u r l ; [ ] \\
-a s e t g y n i o h '
-z x c v b p m , . /
-
-Q W D F K J U R L : { } |
-A S E T G Y N I O H \"
-Z X C V B P M < > ?
-" xah-fly-layout-diagrams)
-
-  (puthash "programer-dvorak" "
-~ % 7 5 3 1 9 0 2 4 6 8 `
-$ & [ { } ( = * ) + ] ! #
-
-; , . p y f g c r l / @ \\
-a o e u i d h t n s -
-' q j k x b m w v z
-
-: < > P Y F G C R L ? ^ |
-A O E U I D H T N S _
-\" Q J K X B M W V Z
-" xah-fly-layout-diagrams)
-
-  (puthash "pt-nativo" "
-* ! \" # $ % & / ( ) = ª >
-+ 1  2 3 4 5 6 7 8 9 0 º <
-
-' , . h x w l t c p ~ - \\
-i e a o u m d s r n ´
-« ç j b k q v g f z
-
-? ; : H X W L T C P ^ _ |
-I E A O U M D S R N `
-Y Ç J B K Q V G F Z
-" xah-fly-layout-diagrams)
-
-  (puthash "qfmlwy" "
-~ ! @ # $ % ^ & * ( ) _ +
-` 1 2 3 4 5 6 7 8 9 0 - =
-
-q f m l w y u o b j [ ] \\
-d s t n r i a e h ; '
-z v g c x p k , . /
-
-Q F M L W Y U O B J { } |
-D S T N R I A E H : \"
-Z V G C X P K < > ?
-" xah-fly-layout-diagrams)
-
-(puthash "qgmlwb" "
-~ ! @ # $ % ^ & * ( ) _ +
-` 1 2 3 4 5 6 7 8 9 0 - =
-
-q g m l w b y u v ; [ ] \\
-d s t n r i a e o h '
-z x c f j k p , . /
-
-Q G M L W B Y U V : { } |
-D S T N R I A E O H \"
-Z X C F J K P < > ?
-" xah-fly-layout-diagrams)
-
+  ;; ISO QWERTY
   (puthash "qwerty" "
-~ ! @ # $ % ^ & * ( ) _ +
-` 1 2 3 4 5 6 7 8 9 0 - =
+± ! @ # $ % ^ & * ( ) _ +
+§ 1 2 3 4 5 6 7 8 9 0 - =
 
-q w e r t y u i o p [ ] \\
-a s d f g h j k l ; '
-z x c v b n m , . /
+q w e r t y u i o p [ ]
+a s d f g h j k l ; ' \\
+` z x c v b n m , . /
 
-Q W E R T Y U I O P { } |
-A S D F G H J K L : \"
-Z X C V B N M < > ?
+Q W E R T Y U I O P { }
+A S D F G H J K L : \" |
+~ Z X C V B N M < > ?
 " xah-fly-layout-diagrams)
 
-  (puthash "qwerty-abnt" "
-\" ! @ # $ % ^ & * ( ) _ +
- ' 1 2 3 4 5 6 7 8 9 0 - =
+  (puthash "ukrainian" "
+/ ! \" № ; % : ? * ( ) _ +
+\ 1  2 3 4 5 6 7 8 9 0 - =
 
-q w e r t y u i o p ´ [ ]
-a s d f g h j k l ç ~
-z x c v b n m , . ;
+й ц у к е н г ш щ з х ї
+ф і в а п р о л д ж є ʼ
+ґ я ч с м и т ь б ю .
 
-Q W E R T Y U I O P ` + |
-A S D F G H J K L Ç ^
-Z X C V B N M < > :
+Й Ц У К Е Н Г Ш Щ З Х Ї
+Ф І В А П Р О Л Д Ж Э ₴
+Ґ Я Ч С М И Т Ь Б Ю ,
 " xah-fly-layout-diagrams)
 
-  (puthash "qwerty-no" "
-§ ! \" # ¤ % & / ( ) = ? `
-| 1  2 3 4 5 6 7 8 9 0 + \\
-
-q w e r t y u i o p å ¨ '
-a s d f g h j k l ø æ
-z x c v b n m , . -
-
-Q W E R T Y U I O P Å ^ *
-A S D F G H J K L Ø Æ
-Z X C V B N M < > _
-" xah-fly-layout-diagrams)
-
-  (puthash "qwerty-se" "
-§ ! \" # ¤ % & / ( ) = ? `
-| 1  2 3 4 5 6 7 8 9 0 + \\
-
-q w e r t y u i o p å ¨ '
-a s d f g h j k l ö ä
-z x c v b n m , . -
-
-Q W E R T Y U I O P Å ^ *
-A S D F G H J K L Ö Ä
-Z X C V B N M < > _
-" xah-fly-layout-diagrams)
-
-  (puthash "qwertz" "
-~ ! @ # $ % ^ & * ( ) _ +
-` 1 2 3 4 5 6 7 8 9 0 - =
-
-q w e r t z u i o p [ ] \\
-a s d f g h j k l ; '
-y x c v b n m , . /
-
-Q W E R T Z U I O P { } |
-A S D F G H J K L : \"
-Y X C V B N M < > ?
-" xah-fly-layout-diagrams)
-
-  (puthash "qwpr" "
-~ ! @ # $ % ^ & * ( ) _ +
-` 1 2 3 4 5 6 7 8 9 0 - =
-
-q w p r f y u k l ; [ ] \\
-a s d t g h n i o e '
-z x c v b j m , . /
-
-Q W P R F Y U K L : { } |
-A S D T G H N I O E \"
-Z X C V B J M < > ?
-" xah-fly-layout-diagrams)
-
-  (puthash "russian" "
-Ё ! \" № ; % : ? * ( ) _ +
-ё 1  2 3 4 5 6 7 8 9 0 - =
-
-й ц у к е н г ш щ з х ъ \\
-ф ы в а п р о л д ж э
-я ч с м и т ь б ю .
-
-Й Ц У К Е Н Г Ш Щ З Х Ъ |
-Ф Ы В А П Р О Л Д Ж Э
-Я Ч С М И Т Ь Б Ю ,
-" xah-fly-layout-diagrams)
-
-  (puthash "workman" "
-~ ! @ # $ % ^ & * ( ) _ +
-` 1 2 3 4 5 6 7 8 9 0 - =
-
-q d r w b j f u p ; [ ] \\
-a s h t g y n e o i '
-z x m c v k l , . /
-
-Q D R W B J F U P : { } |
-A S H T G Y N E O I \"
-Z X M C V K L < > ?
-" xah-fly-layout-diagrams))
+;;
+)
 
 (defun xah-fly-create-key-conv-table (Layout1 Layout2)
   "Takes two text diagrams Layout1 Layout2, return a hashtable.
@@ -3203,22 +2805,18 @@ Version: 2025-06-05"
      xkeys1 xkeys2)
     xtable))
 
-;; (xah-fly-create-key-conv-table
-;;   (gethash "qwerty" xah-fly-layout-diagrams)
-;;   (gethash "dvorak" xah-fly-layout-diagrams))
-
 (defvar xah-fly-key-current-layout nil
  "The current keyboard layout.
 Value is a key in `xah-fly-layout-diagrams'.
 Do not set this variable manually.
 Use `xah-fly-keys-set-layout' to set it.
-Default to qwerty.
+Default to 'qwerty'.
 Version: 2022-10-22")
 
 (if xah-fly-key-current-layout nil (setq xah-fly-key-current-layout "qwerty"))
 
 (defvar xah-fly--key-convert-table nil
-  "A hashtable that's the conversion table from dvorak to current layout.
+  "A hashtable that's the conversion table from 'qwerty' to current layout.
 Value is a hashtable.
 Created: 2019-02-12
 Version: 2025-07-11" )
@@ -3226,7 +2824,7 @@ Version: 2025-07-11" )
 (setq
  xah-fly--key-convert-table
  (xah-fly-create-key-conv-table
-  (gethash "dvorak" xah-fly-layout-diagrams)
+  (gethash "qwerty" xah-fly-layout-diagrams)
   (gethash xah-fly-key-current-layout xah-fly-layout-diagrams)))
 
 (defun xah-fly--convert-key (Keystr)
@@ -3247,7 +2845,7 @@ Version: 2024-04-22"
 
 (defun xah-fly--define-keys (KeymapName KeyCmdAlist &optional Direct-p)
   "Map `define-key' over a alist KeyCmdAlist, with key layout remap.
-The key is remapped from Dvorak to the current keyboard layout by `xah-fly--convert-key'.
+The key is remapped from 'qwerty' to the current keyboard layout by `xah-fly--convert-key'.
 If Direct-p is t, do not remap key to current keyboard layout.
 Example usage:
  (xah-fly--define-keys
@@ -3266,27 +2864,27 @@ Version: 2025-10-07"
       (cdr x)))
    KeyCmdAlist))
 
-;; s------------------------------
-;; keymaps
+;;; =============================================================================================
+;;;    Keymaps
+;;; =============================================================================================
 
 (defvar xah-fly-key-map (make-sparse-keymap)
  "If `xah-fly-insert-state-p' is true, point to `xah-fly-insert-map', else, points to `xah-fly-command-map'.")
 
 (defvar xah-fly-command-map (make-sparse-keymap)
-  "Keymap when in command mode.")
+  "Keymap when in COMMAND-mode.")
 
 (defvar xah-fly-insert-map (make-sparse-keymap)
-  "Keymap when in insert mode.")
+  "Keymap when in INSERT-mode.")
 
 (defvar xah-fly--deactivate-command-mode-func nil)
 
-;; s------------------------------
-;; setting keys
+;;; =============================================================================================
+;;;    Setting keys
+;;; =============================================================================================
 
 (defun xah-fly-define-keys ()
-  "Define the keys for xah-fly-keys.
-Created: 2022-10-31
-Version: 2024-04-22"
+  "Define the keys for xah-fly-keys."
   (interactive)
   (let ()
 
@@ -3323,7 +2921,9 @@ Version: 2024-04-22"
 
     (xah-fly--define-keys
      (define-prefix-command 'xah-fly-leader-key-map)
-     '(("SPC" . xah-fly-insert-mode-activate)
+     '(
+       ("SPC" . xah-fly-insert-mode-activate)
+
        ("RET" . execute-extended-command)
 
        ("TAB" . nil)
@@ -3407,15 +3007,14 @@ Version: 2024-04-22"
        ("e c y" . abbrev-prefix-mark)
 
        ("e d" . xah-insert-double-curly-quote“”)
-       ("e e" . xah-insert-unicode)
+       ("e e" . nil)                                ;; TODO
        ("e f" . xah-insert-emacs-quote)
        ("e g" . xah-insert-ascii-double-quote)
-
        ("e h" . xah-insert-brace)
        ("e i" . xah-insert-curly-single-quote‘’)
        ("e j" . insert-char)
        ("e k" . xah-insert-markdown-quote)
-       ("e l" . xah-insert-seperator)
+       ("e l" . nil)                                ;; TODO
        ("e m" . xah-insert-corner-bracket「」)
        ("e n" . xah-insert-square-bracket)
        ("e o" . xah-insert-ascii-single-quote)
@@ -3455,7 +3054,7 @@ Version: 2024-04-22"
        ("h t" . describe-function)
        ("h u" . elisp-index-search)
        ("h v" . apropos-value)
-       ("h x" . describe-command) ; emacs 28
+       ("h x" . describe-command) ; Emacs 28
 
        ("h z" . describe-coding-system)
 
@@ -3632,7 +3231,7 @@ Version: 2024-04-22"
        ("t i" . delete-non-matching-lines)
        ("t j" . copy-to-register)
        ("t k" . insert-register)
-       ("t l" . xah-cycle-hyphen-lowline-space)
+       ("t l" . xah-cycle-kebab-snake-case-or-space)
        ("t m" . xah-make-backup-and-save)
        ("t n" . xah-goto-char)
        ("t o" . xah-clean-whitespace)
@@ -3643,7 +3242,7 @@ Version: 2024-04-22"
        ("t t" . repeat)
        ("t u" . kill-matching-lines)
        ("t v" . nil)
-       ("t w" . xah-next-window-or-frame)
+       ("t w" . nil)
        ("t x" . xah-title-case-region-or-line)
        ("t y" . delete-duplicate-lines)
        ("t z" . nil)
@@ -3687,59 +3286,86 @@ Version: 2024-04-22"
        ("z 6" . vc-switch-backend)        ; b
        ("z 7" . vc-update-change-log)     ; a
 
-       ;;
-       ))
+      ;;
+
+      )
+    )
 
     (xah-fly--define-keys
      xah-fly-command-map
-     '(("SPC" . xah-fly-leader-key-map)
-       ("'" . xah-reformat-lines)
-       ("," . xah-shrink-whitespaces)
-       ("-" . delete-other-windows)
-       ("." . backward-kill-word)
-       ("/" . hippie-expand)
-       (";" . xah-comment-dwim)
-       ("[" . split-window-below)
-       ("\\" . xah-cycle-hyphen-lowline-space)
-       ("]" . split-window-right)
-       ("`" . other-frame)
+     '(
+       ("SPC" . xah-fly-leader-key-map)                     ;; LEADER
+
+       ("§" . other-frame)                                  ;; FRAME NEXT
+       ("1" . xah-delete-other-windows)                     ;; WIN ONLY CURRENT
+       ("2" . rotate-frame-clockwise)
+       ("3" . rotate-frame-anticlockwise)
+       ("4" . nil)                                          ;; TODO
+       ("5" . nil)
+       ("6" . nil)                                          ;; TODO
+       ("7" . nil)                                          ;; TODO
+       ("8" . nil)                                          ;; TODO
+       ("9" . nil)                                          ;; TODO
+       ("0" . xah-delete-window-smart)                      ;; WIN DELETE CURRENT
+       ("-" . split-window-below)                           ;; WIN SPLIT CURRENT BELOW
+       ("=" . split-window-right)                           ;; WIN SPLIT CURRENT RIGHT
+
+       ("q" . xah-reformat-lines)
+       ("w" . delete-backward-char)
+       ("e" . backward-kill-word)
+       ("r" . kill-word)
+       ("t" . xah-fly-cancel)
+       ("y" . nil)                                          ;; TODO
+       ("u" . nil)                                          ;; TODO
+       ("i" . xah-fly-insert-mode-activate)
+       ("o" . open-line)
+       ("p" . forward-word)
+       ("[" . xah-end-of-line-or-block)
+       ("]" . (lambda () (interactive) (other-window -1)))  ;; WIN PREV
 
        ("a" . execute-extended-command)
-       ("b" . isearch-forward)
-       ("c" . previous-line)
-       ("d" . xah-beginning-of-line-or-block)
-       ("e" . xah-smart-delete)
-       ("E" . delete-backward-char)
-       ("f" . undo)
-       ("g" . backward-word)
-       ("h" . backward-char)
-       ("i" . xah-extend-selection)
+       ("s" . nil)                                          ;; TODO
+       ("d" . xah-smart-delete)
+       ("f" . nil)                                          ;; TODO
+       ("g" . xah-extend-selection)
+       ("h" . nil)                                          ;; TODO
+       ("j" . nil)                                          ;; TODO
+       ("k" . backward-word)
+       ("l" . previous-line)
+       (";" . forward-char)
+       ("'"  . other-window)                                ;; WIN NEXT
+       ("\\" . consult-buffer)
 
-       ("j" . xah-copy-line-or-region)
-       ("k" . xah-paste-or-paste-previous)
-       ("l" . xah-insert-space-before)
-       ("m" . xah-backward-left-bracket)
-       ("n" . forward-char)
-       ("o" . open-line)
-       ("p" . kill-word)
-       ("q" . xah-cut-line-or-region)
-       ("r" . forward-word)
-       ("s" . xah-end-of-line-or-block)
-       ("t" . next-line)
-       ("u" . xah-fly-insert-mode-activate)
-       ("v" . xah-forward-right-bracket)
-       ("w" . xah-next-window-or-frame)
-       ("x" . xah-toggle-letter-case)
-       ("y" . xah-fly-cancel)
-       ("z" . xah-goto-matching-bracket)))
+       ("`" . xah-comment-dwim)
+       ("z" . undo)
+       ("x" . xah-cut-line-or-region)
+       ("c" . xah-copy-line-or-region)
+       ("v" . xah-paste-or-paste-previous)
+       ("b" . xah-toggle-letter-case)
+       ("n" . xah-cycle-kebab-snake-case-or-space)
+       ("m" . xah-beginning-of-line-or-block)
+       ("," . backward-char)
+       ("." . next-line)
+       ("/" . xah-insert-space-before)
 
-    ;;
-    ))
+        ;; hippie-expand
+        ;; xah-forward-right-bracket
+        ;; xah-backward-left-bracket
+        ;; xah-goto-matching-bracket
+        ;; xah-shrink-whitespaces
+
+      ;; s------------------------------
+
+      )
+    )
+  )
+)
 
 (xah-fly-define-keys)
 
-;; s------------------------------
-;; set control meta, etc keys
+;;; =============================================================================================
+;;;    Set Control, Meta keys etc.
+;;; =============================================================================================
 
 (defcustom xah-fly-unset-useless-key t
   "If true, unbind many obsolete or useless or redundant
@@ -3749,8 +3375,6 @@ Version: 2024-04-22"
 (when xah-fly-unset-useless-key
   (global-set-key (kbd "<help>") nil)
   (global-set-key (kbd "<f1>") nil))
-
-  (global-set-key (kbd "M-SPC") #'xah-fly-command-mode-activate)
 
 (when xah-fly-use-meta-key
 
@@ -3832,8 +3456,6 @@ Version: 2024-04-22"
   (global-set-key (kbd "C--") #'text-scale-decrease)
   (global-set-key (kbd "C-=") #'text-scale-increase)
 
-  (global-set-key (kbd "C-SPC") #'xah-fly-command-mode-activate)
-
   (global-set-key (kbd "C-S-n") #'make-frame-command)
   (global-set-key (kbd "C-S-s") #'write-file)
   (global-set-key (kbd "C-S-t") #'xah-open-last-closed)
@@ -3849,20 +3471,24 @@ Version: 2024-04-22"
   (global-set-key (kbd "C-w") #'xah-close-current-buffer)
   (global-set-key (kbd "C-y") #'undo-redo)
   (global-set-key (kbd "C-z") #'undo)
+
   ;;
   )
 
-  (global-set-key (kbd "<f7>") 'xah-fly-leader-key-map)
+(global-set-key (kbd "<f7>") 'xah-fly-leader-key-map)
 
-;; s------------------------------
+(global-set-key (kbd "M-SPC") #'xah-fly-command-mode-activate)
 
-(when (< emacs-major-version 28)
-  (defalias 'execute-extended-command-for-buffer #'execute-extended-command))
 
-;; s------------------------------
-;;;; misc
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;;    Misc.
+;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; the following have keys in gnu emacs, but i decided not to give them a key, because either they are rarely used (say, 95% of emacs users use them less than once a month ), or there is a more efficient command/workflow with key in xah-fly-keys
+;; The following commands have default bindings in GNU Emacs, but are omitted 
+;; here because they are either rarely used (less than once a month for most 
+;; users) or have a more efficient equivalent within the xah-fly-keys workflow.
 
 ;; C-x $   →   set-selective-display
 ;; C-x *   →   calc-dispatch
@@ -3929,7 +3555,7 @@ Version: 2024-04-22"
 
 ;; s------------------------------
 
-(defvar xah-fly-insert-state-p t "non-nil means insertion mode is on.")
+(defvar xah-fly-insert-state-p t "non-nil means INSERT-mode is on.")
 
 (defun xah-fly--update-key-map ()
   (setq xah-fly-key-map (if xah-fly-insert-state-p
@@ -3938,9 +3564,7 @@ Version: 2024-04-22"
 
 (defun xah-fly-keys-set-layout (Layout)
   "Set a keyboard layout.
-Argument must be one of the key name in `xah-fly-layout-diagrams'
-Created: 2021-05-19
-Version: 2024-05-23"
+Argument must be one of the key name in `xah-fly-layout-diagrams'"
   (interactive
    (list
     (completing-read
@@ -3957,22 +3581,20 @@ Version: 2024-05-23"
     (setq
      xah-fly--key-convert-table
      (xah-fly-create-key-conv-table
-      (gethash "dvorak" xah-fly-layout-diagrams)
+      (gethash "qwerty" xah-fly-layout-diagrams)
       xkeydiagram))
     (when (not (equal xold Layout)) (xah-fly-define-keys))))
 
 (defun xah-fly-space-key ()
-  "Switch to command mode if the char before cursor is a space.
-experimental
-Version: 2018-05-07"
+  "Switch to COMMAND-mode if the char before cursor is a space.
+Experimental!"
   (interactive)
   (if (eq (char-before ) 32)
       (xah-fly-command-mode-activate)
     (insert " ")))
 
 (defun xah-fly-command-mode-init ()
-  "Set command mode keys.
-Version: 2022-07-06"
+  "Set COMMAND-mode keys."
   (interactive)
   (setq xah-fly-insert-state-p nil)
   (xah-fly--update-key-map)
@@ -3986,7 +3608,7 @@ Version: 2022-07-06"
   (force-mode-line-update))
 
 (defun xah-fly-insert-mode-init (&optional no-indication)
-  "Enter insertion mode."
+  "Enter INSERT-mode."
   (interactive)
   (setq xah-fly-insert-state-p t)
   (xah-fly--update-key-map)
@@ -3998,7 +3620,7 @@ Version: 2022-07-06"
   (force-mode-line-update))
 
 (defun xah-fly-mode-toggle ()
-  "Switch between {insertion, command} modes."
+  "Switch between {insert, command} modes."
   (interactive)
   (if xah-fly-insert-state-p
       (xah-fly-command-mode-activate)
@@ -4011,39 +3633,39 @@ Version: 2022-07-06"
     (save-buffer)))
 
 (defun xah-fly-command-mode-activate ()
-  "Activate command mode and run `xah-fly-command-mode-activate-hook'
-Version: 2017-07-07"
+  "Activate COMMAND-mode and run `xah-fly-command-mode-activate-hook'"
   (interactive)
   (xah-fly-command-mode-init)
   (when xah-fly-command-mode-hl-line (progn (global-hl-line-mode 1)))
   (run-hooks 'xah-fly-command-mode-activate-hook))
 
 (defun xah-fly-command-mode-activate-no-hook ()
-  "Activate command mode. Does not run `xah-fly-command-mode-activate-hook'
-Version: 2017-07-07"
+  "Activate COMMAND-mode. Does not run `xah-fly-command-mode-activate-hook'"
   (interactive)
   (xah-fly-command-mode-init))
 
 (defun xah-fly-insert-mode-activate ()
-  "Activate insertion mode.
-Version: 2017-07-07"
+  "Activate INSERT-mode."
   (interactive)
   (xah-fly-insert-mode-init)
   (when xah-fly-command-mode-hl-line (progn (global-hl-line-mode 0)))
   (run-hooks 'xah-fly-insert-mode-activate-hook))
 
 (defun xah-fly-insert-mode-activate-newline ()
-  "Activate insertion mode, insert newline below."
+  "Activate INSERT-mode, insert newline below."
   (interactive)
   (xah-fly-insert-mode-activate)
   (open-line 1))
 
-;; s------------------------------
 
-;;;###autoload
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;;    AUTOLOAD
+;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (define-minor-mode xah-fly-keys
-  "A modal keybinding set, like vim, but based on ergonomic principles, like Dvorak layout.
-
+  "A modal keybinding minor mode.
 URL `http://xahlee.info/emacs/misc/xah-fly-keys.html'"
   :global t
   :lighter "XFK"
