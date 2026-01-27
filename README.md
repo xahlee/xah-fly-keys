@@ -1,65 +1,37 @@
 # xah-fly-keys
 
-A modal keybinding for emacs (like vim), but based on command frequency and ergonomics.
+A modal keybinding minor mode for Emacs.
 
-This is the most efficient editing system in the universe.
 
-Xah Fly Keys home page at
-http://xahlee.info/emacs/misc/xah-fly-keys.html
+## Important note
 
-## 2020-04-18 News: Key Engine Rewrite
+This is my fork of [Xah Lee](https://github.com/xahlee)'s [repository](https://github.com/xahlee/xah-fly-keys). I forked it to tune this minor mode for my own use. If you are looking for specific functionality, I suggest that you either contribute to the original repository or create your own fork—either from the original or from this one if you prefer my modifications.
 
-Major key engine rewrite by Dan Langlois (https://github.com/DanLanglois) and Will Dey (https://github.com/wi11dey) .
 
-## Key Diagram (QWERTY)
+## Installation
 
-![xah-fly-keys qwerty layout](i/xah_fly_keys_qwerty_layout_2025-08-02.png)
-
-## Manual Install
-
-put the file xah-fly-keys.el in ~/.emacs.d/lisp/
-create the dir if doesn't exist.
-
-put the following in your emacs init file:
+1. Create the directory `~/.emacs.d/lisp/` if it doesn't exist.
+2. Place `xah-fly-keys.el` in that directory.
+3. Add the following to your Emacs init file:
 
 ```elisp
-
 (add-to-list 'load-path "~/.emacs.d/lisp/")
-
 (require 'xah-fly-keys)
-
-;; specify a layout
-(xah-fly-keys-set-layout "qwerty")
-
-;; other popular values
-;; adnw (German)
-;; azerty
-;; azerty-be
-;; bepo
-;; colemak
-;; colemak-dh
-;; dvorak
-;; neo2 (German)
-;; norman
-;; programer-dvorak
-;; pt-nativo (Brazil)
-;; qwerty-abnt (Brazil)
-;; qwerty-no (Norwegian)
-;; qwerty-se (Swedish)
-;; qwertz
-;; russian
-;; workman
-;; and more
-
+(xah-fly-keys-set-layout "qwerty") ; Optional
 (xah-fly-keys 1)
 ```
 
-## Full Documentation
+Available layouts:
+- `"qwerty"`
+- `"ukrainian"`
 
-http://xahlee.info/emacs/misc/xah-fly-keys.html
+Available layouts are defined in the `xah-fly-layout-diagrams` variable.
 
-Been working on this since 2013, and since 2007 on ergoemacs-mode.
 
-Professional coders, send me 100 USD https://paypal.com pay to Xah@XahLee.org
+## Documentation
+You can find more information about this mode and detailed documentation on the [Xah Fly Keys home page](http://xahlee.info/emacs/misc/xah-fly-keys.html).
 
-Thank you.
+
+## Key diagram for ISO QWERTY keyboard layout
+
+![xah-fly-keys qwerty layout](keyboard-layout/keyboard-layout--qwerty.png)
