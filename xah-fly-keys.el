@@ -21,11 +21,11 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; 1. Create the directory ~/.emacs.d/lisp/ if it doesn't exist.
+;; 1. Create the directory ~/.emacs.d/elisp/ if it doesn't exist.
 ;; 2. Place 'xah-fly-keys.el' (this file) in that directory.
 ;; 3. Add the following to your Emacs init file:
 ;;
-;; (add-to-list 'load-path "~/.emacs.d/lisp/")
+;; (add-to-list 'load-path "~/.emacs.d/elisp/")
 ;; (require 'xah-fly-keys)
 ;; (xah-fly-keys-set-layout "qwerty") ; Optional
 ;; (xah-fly-keys 1)
