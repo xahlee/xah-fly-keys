@@ -1,10 +1,10 @@
 ;;; xah-fly-keys.el --- A modal keybinding minor mode. -*- coding: utf-8; lexical-binding: t; -*-
 
-;; Copyright © 2013, 2026 by Xah Lee
+;; Copyright © 2013, 2025 by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 28.11.20260215192642
+;; Version: 28.11.20260106081151
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -107,30 +107,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
-;;;    [MY] VANILLA SETTINGS
-;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(use-package emacs
-  :ensure nil
-  :bind
-  (;; Disable bindings that conflict with my setup
-   ("C-x ^"   . nil)  ;; enlarge-window
-   ("C-x }"   . nil)  ;; enlarge-window-horizontally
-   ("C-x {"   . nil)  ;; shrink-window-horizontally
-   ("C-z"     . nil)  ;; suspend-frame
-   ("C-x C-z" . nil))
-  :init
-  (with-current-buffer (get-buffer-create "*scratch*")
-    (insert ";;
-;; Hi there!
-;;
-")))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;
-;;;    [XAH] PACKAGE
+;;;    PACKAGE
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1145,7 +1122,7 @@ Version: 2025-03-25"
 
 (defun xah-fill-or-unfill ()
   "Reformat current block or selection to short/long line.
-First call breaks text into multiple lines. Repeated call toggles between multiple and singe line.
+First call will break into multiple short lines. Repeated call toggles between short and long lines.
 This commands calls `fill-region' to do its work. Set `fill-column' for short line length.
 
 URL `http://xahlee.info/emacs/emacs/emacs_unfill-paragraph.html'
@@ -1706,7 +1683,7 @@ Else
 • If WrapMethod is `block', wrap around block.
 Else
 • If cursor is at beginning of line and its not empty line and contain at least 1 space, wrap around the line.
-• If cursor is at end of a word or buffer, one of the following happens:
+• If cursor is at end of a word or buffer, one of the following will happen:
  xyz▮ → xyz(▮)
  xyz▮ → (xyz▮)       if in one of the lisp modes.
 • wrap brackets around word if any. e.g. xy▮z → (xyz▮). Or just (▮)
@@ -2711,13 +2688,11 @@ If there is only one window, switch to the next frame."
       (other-frame 1)
     (delete-other-windows)))
 
-(defun xah-delete-window-smart ()
-  "Delete the current window (like C-x 0), but do nothing if it is the only window.
-If the frame has multiple windows, the current window is closed and 
-focus shifts to the previous window."
+(defun my--delete-window-smart ()
+  "Delete current window. Do nothing if it is the only window."
   (interactive)
   (if (one-window-p)
-      (message "Only one window. No other window to delete.")
+      (message "Only one window. No other windows to delete.")
     (delete-window)))
 
 ;;; =============================================================================================
@@ -3186,7 +3161,6 @@ Version: 2025-10-07"
        ("r t RET" . kmacro-edit-macro)
        ("r t SPC" . kmacro-step-edit-macro)
        ("r t TAB" . kmacro-insert-counter)
-       ;; kmacro-start-macro-or-insert-counter
 
        ("r t a" . kmacro-add-counter)
        ("r t b" . kmacro-bind-to-key)
@@ -3693,4 +3667,3 @@ URL `http://xahlee.info/emacs/misc/xah-fly-keys.html'"
 (provide 'xah-fly-keys)
 
 ;;; xah-fly-keys.el ends here
-
