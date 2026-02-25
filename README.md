@@ -35,3 +35,4 @@ You can find more information about this mode and detailed documentation on the 
 ## Key diagram for ISO QWERTY keyboard layout
 
 ![xah-fly-keys qwerty layout](keyboard-layout/keyboard-layout--qwerty.png)
+
