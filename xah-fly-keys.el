@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 28.11.20260215192642
+;; Version: 28.11.20260414134011
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -1824,10 +1824,9 @@ Version: 2025-03-25"
 
 (defun xah-insert-seperator ()
   "Insert a visual seperator line.
-Version: 2025-11-13"
+Version: 2026-03-20"
   (interactive)
   (cond
-   ((and buffer-file-name (string-equal "html" (file-name-extension buffer-file-name))) (insert "<hr />\n"))
    ((not comment-start)
     (insert "\ns------------------------------\n"))
    (t (insert "\ns------------------------------\n")
@@ -1849,17 +1848,9 @@ xString can be multiple chars or any string.
    ("smile beaming 😊" . "😊")
    ("omg 😂" . "😂")
    ("hug 🤗" . "🤗")
-   ("heart eyes 😍" . "😍")
-   ("heart face 🥰" . "🥰")
    ("angry 😠" . "😠")
-   ("vomit 🤮" . "🤮")
-   ("clown 🤡" . "🤡")
    ("skull 💀" . "💀")
-
-   ("pig 🐷" . "🐷")
-   ("cow 🐮" . "🐮")
-   ("sun 🌞" . "🌞")
-   ("heart 🧡" . "🧡")
+   ("heart 🩷" . "🩷")
 
    ("thumb up 👍" . "👍")
    ("thumb down 👎" . "👎")
@@ -1867,6 +1858,7 @@ xString can be multiple chars or any string.
    ("glowing star 🌟" . "🌟")
    ("star ⭐" . "⭐")
    ("sparkles ✨" . "✨")
+   ("black star ★" . "★")
 
    ("tv 📺" . "📺")
 
@@ -1885,7 +1877,6 @@ xString can be multiple chars or any string.
    ("SMALL ORANGE DIAMOND 🔸" . "🔸")
    ("BLACK RIGHT-POINTING TRIANGLE ▶" . "▶")
    ("BLACK DIAMOND ◆" . "◆")
-   ("LONG RIGHTWARDS ARROW ⟶" . "⟶")
 
    ("script 📜" . "📜")
    ("package 📦" . "📦")
@@ -1904,18 +1895,23 @@ xString can be multiple chars or any string.
    ("double angle quote" . "«»")
 
    ("bullet •" . "•")
-
-   ("...ellipsis …" . "…")
-   ("nbsp non breaking space" . " ")
-   ("chinese comma 、" . "、")
-   ("emdash —" . "—")
    ("fullwidth ampersand ＆" . "＆")
+
+   ("f hook ƒ" . "ƒ")
+
+   ("emdash —" . "—")
+   ("middle dot ·" . "·")
+   ("...ellipsis …" . "…")
+
+   ("nbsp non breaking space" . " ")
+
    ("left arrow ←" . "←")
    ("right arrow →" . "→")
    ("up arrow ↑" . "↑")
    ("down arrow ↓" . "↓")
-   ("f hook ƒ" . "ƒ")
-   ("chinese space" . "　")
+
+   ("LONG RIGHTWARDS ARROW ⟶" . "⟶")
+   ("mapto ↦" . "↦")
 
    ;;
    ))
@@ -2204,38 +2200,38 @@ Version: 2022-04-05"
 Each element is (bufferName . filePath).
 The max number to track is controlled by the variable `xah-recently-closed-buffers-max'.")
 
+(defvar xah-create-buffer-backup t "If true, `xah-close-current-buffer' creates a backup file when closing non-file buffer.
+Version: 2024-11-09")
+
+(defvar xah-temp-dir-path
+  (concat user-emacs-directory "temp/")
+  "Path to temp dir used by xah commands.
+by default, the value is dir named temp at `user-emacs-directory'.")
+
 (defun xah-add-to-recently-closed (&optional BufferName BufferFileName)
   "Add to `xah-recently-closed-buffers'.
+URL `http://xahlee.info/emacs/emacs/elisp_close_buffer_open_last_closed.html'
 Created: 2023-03-02
-Version: 2025-06-05"
+Version: 2026-04-14"
   (let ((bufname (if BufferName BufferName (buffer-name)))
         (fpath (if BufferFileName BufferFileName buffer-file-name)))
     (setq xah-recently-closed-buffers (cons (cons bufname fpath) xah-recently-closed-buffers)))
   (when (length> xah-recently-closed-buffers xah-recently-closed-buffers-max)
     (setq xah-recently-closed-buffers (butlast xah-recently-closed-buffers 1))))
 
-(defvar xah-create-buffer-backup nil "If true, `xah-close-current-buffer' creates a backup file when closing non-file buffer. Version: 2024-11-09")
-
-(setq xah-create-buffer-backup t)
-
-(defvar xah-temp-dir-path nil "Path to temp dir used by xah commands.
-by default, the value is dir named temp at `user-emacs-directory'.
-Version: 2023-03-21")
-(setq xah-temp-dir-path (concat user-emacs-directory "temp/"))
-
 (defun xah-close-current-buffer ()
   "Close the current buffer with possible backup.
 
-• If the buffer is a file and not modified, kill it. If is modified, do nothing. Print a message.
+• If the buffer is a file and modified, save it first.
 • If the buffer is not a file, and variable `xah-create-buffer-backup' is true, then save a backup to `xah-temp-dir-path' named untitled_‹datetime›_‹randomhex›.txt.
 
 If `universal-argument' is called first, call `kill-buffer'. (this is useful to force kill.)
 
-If the buffer is a file, add the path to the list `xah-recently-closed-buffers'.
+If the buffer is a file, add the path to the list `xah-recently-closed-buffers'. so you can reopen it by `xah-open-last-closed'.
 
 URL `http://xahlee.info/emacs/emacs/elisp_close_buffer_open_last_closed.html'
 Created: 2016-06-19
-Version: 2025-09-08"
+Version: 2026-04-14"
   (interactive)
   (widen)
   (cond
@@ -2248,12 +2244,14 @@ Version: 2025-09-08"
     (xah-add-to-recently-closed (buffer-name) default-directory)
     (kill-buffer))
 
-   ((and buffer-file-name (not (buffer-modified-p)))
+   (buffer-file-name
+    (when (buffer-modified-p)
+      (progn
+        (save-buffer)
+        (message "Buffer file modified. Now it saved.\n%s" buffer-file-name)))
     (xah-add-to-recently-closed (buffer-name) buffer-file-name)
     (kill-buffer))
 
-   ((and buffer-file-name (buffer-modified-p))
-    (message "buffer file modified. Save it first.\n%s" buffer-file-name))
    ((and xah-create-buffer-backup (not buffer-file-name) (xah-user-buffer-p) (not (eq (point-max) 1)))
     (let ((xnewName (format "%suntitled_%s_%x.txt"
                             xah-temp-dir-path
@@ -2269,31 +2267,28 @@ Version: 2025-09-08"
   "Open the last closed file.
 URL `http://xahlee.info/emacs/emacs/elisp_close_buffer_open_last_closed.html'
 Created: 2016-06-19
-Version: 2022-03-22"
+Version: 2026-04-14"
   (interactive)
   (if (length> xah-recently-closed-buffers 0)
       (find-file (cdr (pop xah-recently-closed-buffers)))
     (progn (message "No recently close buffer in this session."))))
 
 (defun xah-open-recently-closed ()
-  "Open recently closed file.
-Prompt for a choice.
+  "Open recently closed file. Prompt for a choice.
 
 URL `http://xahlee.info/emacs/emacs/elisp_close_buffer_open_last_closed.html'
 Created: 2016-06-19
-Version: 2023-09-19"
+Version: 2026-04-14"
   (interactive)
   (find-file
    (let ((completion-ignore-case t))
      (completing-read
       "Open:"
       (mapcar (lambda (f) (cdr f)) xah-recently-closed-buffers)
-      nil t
-      ))))
+      nil t))))
 
 (defun xah-list-recently-closed ()
   "List recently closed file.
-
 URL `http://xahlee.info/emacs/emacs/elisp_close_buffer_open_last_closed.html'
 Version: 2016-06-19"
   (interactive)
@@ -2626,7 +2621,7 @@ Call `xah-open-last-closed' to open the backup file.
 
 URL `http://xahlee.info/emacs/emacs/elisp_delete-current-file.html'
 Created: 2018-05-15
-Version: 2024-10-21"
+Version: 2026-02-22"
   (interactive)
   (when (eq major-mode 'dired-mode)
     (user-error "%s: In dired. Nothing is done." real-this-command))
@@ -2640,10 +2635,11 @@ Version: 2024-10-21"
           (save-buffer xfname)
           (kill-buffer xbuffname)
           (rename-file xfname xbackupPath t)
-          (message "File deleted.
+          (message "done.
+xah-delete-current-file-make-backup.
 Backup at
 %s
-Call `xah-open-last-closed' to open." xbackupPath)
+To open, do M-x xah-open-last-closed" xbackupPath)
           (when (boundp 'xah-recently-closed-buffers)
             (push (cons nil xbackupPath) xah-recently-closed-buffers)))
       (progn
