@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 28.11.20260414134011
+;; Version: 28.11.20260416140940
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -2131,14 +2131,16 @@ Version: 2024-10-02"
 ;; misc
 
 (defun xah-user-buffer-p ()
-  "Return t if current buffer is a user buffer, else nil.
-A user buffer has buffer name NOT starts with * or space, and is not dired mode, help mode, etc.
-This function is used by buffer switching command and close buffer command, so that next buffer shown is a user buffer.
+  "Return true if current buffer is a user buffer, else nil.
+
+A user buffer is a buffer whose name does not start with * or space.
+
+This function is used by `xah-next-user-buffer' or `xah-close-current-buffer' or related, so that next buffer shown is a user buffer.
+
 You can override this function to get your idea of “user buffer”.
 URL `http://xahlee.info/emacs/emacs/elisp_next_prev_user_buffer.html'
 Created: 2016-06-18
-Version: 2024-09-23"
-  (interactive)
+Version: 2026-04-15"
   (cond
    ((string-match "^\*" (buffer-name)) nil)
    ;; ((eq major-mode 'dired-mode) nil)
@@ -2219,49 +2221,58 @@ Version: 2026-04-14"
   (when (length> xah-recently-closed-buffers xah-recently-closed-buffers-max)
     (setq xah-recently-closed-buffers (butlast xah-recently-closed-buffers 1))))
 
+(defun xah-switch-to-user-buffer ()
+  "switch to previous user buffer if current buffer is not.
+Created: 2026-04-15
+Version: 2026-04-15"
+  (when (not (xah-user-buffer-p)) (xah-previous-user-buffer)))
+
+(defvar xah-close-current-buffer-hook nil "Hook for `xah-close-current-buffer'")
+
+(add-hook 'xah-close-current-buffer-hook 'xah-switch-to-user-buffer)
+
 (defun xah-close-current-buffer ()
   "Close the current buffer with possible backup.
 
-• If the buffer is a file and modified, save it first.
+• If the buffer is a file, close it. If it is modified, save it first.
 • If the buffer is not a file, and variable `xah-create-buffer-backup' is true, then save a backup to `xah-temp-dir-path' named untitled_‹datetime›_‹randomhex›.txt.
 
 If `universal-argument' is called first, call `kill-buffer'. (this is useful to force kill.)
 
 If the buffer is a file, add the path to the list `xah-recently-closed-buffers'. so you can reopen it by `xah-open-last-closed'.
 
+Variable `xah-close-current-buffer-hook' is run at the end.
+
 URL `http://xahlee.info/emacs/emacs/elisp_close_buffer_open_last_closed.html'
 Created: 2016-06-19
-Version: 2026-04-14"
+Version: 2026-04-15"
   (interactive)
   (widen)
-  (cond
-   (current-prefix-arg (kill-buffer))
-   ;; ((eq major-mode 'minibuffer-inactive-mode) (minibuffer-keyboard-quit))
-   ;; ((active-minibuffer-window) (minibuffer-keyboard-quit))
-   ((minibufferp (current-buffer)) (minibuffer-keyboard-quit))
-
-   ((eq major-mode 'dired-mode)
-    (xah-add-to-recently-closed (buffer-name) default-directory)
+  (let (xpath-for-reopen)
+    (cond
+     (current-prefix-arg (kill-buffer))
+     ;; ((eq major-mode 'minibuffer-inactive-mode) (minibuffer-keyboard-quit))
+     ;; ((active-minibuffer-window) (minibuffer-keyboard-quit))
+     ((minibufferp (current-buffer)) (minibuffer-keyboard-quit))
+     ((eq major-mode 'dired-mode)
+      (setq xpath-for-reopen default-directory))
+     (buffer-file-name
+      (when (buffer-modified-p)
+        (progn
+          (save-buffer)
+          (message "Buffer file modified. Now it saved.\n%s" buffer-file-name)))
+      (setq xpath-for-reopen buffer-file-name))
+     ((and xah-create-buffer-backup (not buffer-file-name) (xah-user-buffer-p) (not (eq (point-max) 1)))
+      (let ((xnewName (format "%suntitled_%s_%x.txt"
+                              xah-temp-dir-path
+                              (format-time-string "%Y-%m-%d_%H%M%S")
+                              (random #xfffff))))
+        (when (not (file-exists-p xah-temp-dir-path)) (make-directory xah-temp-dir-path))
+        (write-region (point-min) (point-max) xnewName)
+        (setq xpath-for-reopen xnewName))))
+    (when xpath-for-reopen (xah-add-to-recently-closed (buffer-name) xpath-for-reopen))
     (kill-buffer))
-
-   (buffer-file-name
-    (when (buffer-modified-p)
-      (progn
-        (save-buffer)
-        (message "Buffer file modified. Now it saved.\n%s" buffer-file-name)))
-    (xah-add-to-recently-closed (buffer-name) buffer-file-name)
-    (kill-buffer))
-
-   ((and xah-create-buffer-backup (not buffer-file-name) (xah-user-buffer-p) (not (eq (point-max) 1)))
-    (let ((xnewName (format "%suntitled_%s_%x.txt"
-                            xah-temp-dir-path
-                            (format-time-string "%Y-%m-%d_%H%M%S")
-                            (random #xfffff))))
-      (when (not (file-exists-p xah-temp-dir-path)) (make-directory xah-temp-dir-path))
-      (write-region (point-min) (point-max) xnewName)
-      (xah-add-to-recently-closed (buffer-name) xnewName)
-      (kill-buffer)))
-   (t (kill-buffer))))
+  (run-hooks 'xah-close-current-buffer-hook))
 
 (defun xah-open-last-closed ()
   "Open the last closed file.
