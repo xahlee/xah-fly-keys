@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 28.11.20260709131225
+;; Version: 28.11.20260709144945
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -374,19 +374,22 @@ Version: 2025-11-13"
 
 (defvar xah-brackets '( "“”" "()" "[]" "{}" "<>" "＜＞" "（）" "［］" "｛｝" "⦅⦆" "〚〛" "⦃⦄" "‹›" "«»" "「」" "〈〉" "《》" "【】" "〔〕" "⦗⦘" "『』" "〖〗" "〘〙" "｢｣" "⟦⟧" "⟨⟩" "⟪⟫" "⟮⟯" "⟬⟭" "⌈⌉" "⌊⌋" "⦇⦈" "⦉⦊" "❛❜" "❝❞" "❨❩" "❪❫" "❴❵" "❬❭" "❮❯" "❰❱" "❲❳" "〈〉" "⦑⦒" "⧼⧽" "﹙﹚" "﹛﹜" "﹝﹞" "⁽⁾" "₍₎" "⦋⦌" "⦍⦎" "⦏⦐" "⁅⁆" "⸢⸣" "⸤⸥" "⟅⟆" "⦓⦔" "⦕⦖" "⸦⸧" "⸨⸩" "｟｠")
  "A list of strings, each element is a string of 2 chars, the left bracket and a matching right bracket.
-Used by `xah-select-text-in-quote' and others.
+Used by
+`xah-backward-left-bracket'.
+`xah-forward-right-bracket'.
+`xah-goto-matching-bracket'.
 URL `http://xahlee.info/emacs/emacs/emacs_navigating_keys_for_brackets.html'
 ")
 
 (defconst xah-left-brackets
-  (mapcar (lambda (x) (substring x 0 1)) xah-brackets)
-  "List of left bracket chars. Each element is a string.
+  (regexp-opt (mapcar (lambda (x) (substring x 0 1)) xah-brackets))
+  "Regex string of left bracket chars. Generated from `xah-brackets'.
 URL `http://xahlee.info/emacs/emacs/emacs_navigating_keys_for_brackets.html'
 ")
 
 (defconst xah-right-brackets
-  (mapcar (lambda (x) (substring x 1 2)) xah-brackets)
-  "List of right bracket chars. Each element is a string.
+  (regexp-opt (mapcar (lambda (x) (substring x 1 2)) xah-brackets))
+  "Regex string of right bracket chars. Generated from `xah-brackets'.
 URL `http://xahlee.info/emacs/emacs/emacs_navigating_keys_for_brackets.html'
 ")
 
@@ -398,7 +401,7 @@ URL `http://xahlee.info/emacs/emacs/emacs_navigating_keys_for_brackets.html'
 Created: 2015-10-01
 Version: 2026-07-09"
   (interactive)
-  (re-search-backward (regexp-opt xah-left-brackets) nil t))
+  (re-search-backward xah-left-brackets nil t))
 
 (defun xah-forward-right-bracket ()
   "Move cursor to the next occurrence of right bracket.
@@ -408,7 +411,7 @@ URL `http://xahlee.info/emacs/emacs/emacs_navigating_keys_for_brackets.html'
 Created: 2015-10-01
 Version: 2026-07-09"
   (interactive)
-  (re-search-forward (regexp-opt xah-right-brackets) nil t))
+  (re-search-forward xah-right-brackets nil t))
 
 (defun xah-goto-matching-bracket ()
   "Move cursor to the matching bracket.
@@ -417,20 +420,20 @@ The list of brackets to jump to is defined by `xah-left-brackets' and `xah-right
 
 URL `http://xahlee.info/emacs/emacs/emacs_navigating_keys_for_brackets.html'
 Created: 2016-11-22
-Version: 2025-11-18"
+Version: 2026-07-09"
   (interactive)
   (if (nth 3 (syntax-ppss))
       (backward-up-list 1 t t)
     (cond
      ((eq (char-after) ?\") (forward-sexp))
      ((eq (char-before) ?\") (backward-sexp))
-     ((looking-at (regexp-opt xah-left-brackets))
+     ((looking-at xah-left-brackets)
       (forward-sexp))
      ((if (eq (point-min) (point))
           nil
         (prog2
             (backward-char)
-            (looking-at (regexp-opt xah-right-brackets))
+            (looking-at xah-right-brackets)
           (forward-char)))
       (backward-sexp)
       (while (looking-at "\\s'") (forward-char)))
