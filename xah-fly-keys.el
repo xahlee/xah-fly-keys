@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 28.11.20260416140940
+;; Version: 28.11.20260709131225
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -374,22 +374,29 @@ Version: 2025-11-13"
 
 (defvar xah-brackets '( "“”" "()" "[]" "{}" "<>" "＜＞" "（）" "［］" "｛｝" "⦅⦆" "〚〛" "⦃⦄" "‹›" "«»" "「」" "〈〉" "《》" "【】" "〔〕" "⦗⦘" "『』" "〖〗" "〘〙" "｢｣" "⟦⟧" "⟨⟩" "⟪⟫" "⟮⟯" "⟬⟭" "⌈⌉" "⌊⌋" "⦇⦈" "⦉⦊" "❛❜" "❝❞" "❨❩" "❪❫" "❴❵" "❬❭" "❮❯" "❰❱" "❲❳" "〈〉" "⦑⦒" "⧼⧽" "﹙﹚" "﹛﹜" "﹝﹞" "⁽⁾" "₍₎" "⦋⦌" "⦍⦎" "⦏⦐" "⁅⁆" "⸢⸣" "⸤⸥" "⟅⟆" "⦓⦔" "⦕⦖" "⸦⸧" "⸨⸩" "｟｠")
  "A list of strings, each element is a string of 2 chars, the left bracket and a matching right bracket.
-Used by `xah-select-text-in-quote' and others.")
+Used by `xah-select-text-in-quote' and others.
+URL `http://xahlee.info/emacs/emacs/emacs_navigating_keys_for_brackets.html'
+")
 
 (defconst xah-left-brackets
   (mapcar (lambda (x) (substring x 0 1)) xah-brackets)
-  "List of left bracket chars. Each element is a string.")
+  "List of left bracket chars. Each element is a string.
+URL `http://xahlee.info/emacs/emacs/emacs_navigating_keys_for_brackets.html'
+")
 
 (defconst xah-right-brackets
   (mapcar (lambda (x) (substring x 1 2)) xah-brackets)
-  "List of right bracket chars. Each element is a string.")
+  "List of right bracket chars. Each element is a string.
+URL `http://xahlee.info/emacs/emacs/emacs_navigating_keys_for_brackets.html'
+")
 
 (defun xah-backward-left-bracket ()
   "Move cursor to the previous occurrence of left bracket.
 The list of brackets to jump to is defined by `xah-left-brackets'.
 
 URL `http://xahlee.info/emacs/emacs/emacs_navigating_keys_for_brackets.html'
-Version: 2015-10-01"
+Created: 2015-10-01
+Version: 2026-07-09"
   (interactive)
   (re-search-backward (regexp-opt xah-left-brackets) nil t))
 
@@ -398,7 +405,8 @@ Version: 2015-10-01"
 The list of brackets to jump to is defined by `xah-right-brackets'.
 
 URL `http://xahlee.info/emacs/emacs/emacs_navigating_keys_for_brackets.html'
-Version: 2015-10-01"
+Created: 2015-10-01
+Version: 2026-07-09"
   (interactive)
   (re-search-forward (regexp-opt xah-right-brackets) nil t))
 
@@ -1183,24 +1191,24 @@ Version: 2025-08-29"
 (defun xah-reformat-lines (&optional Width)
   "Reformat current block or selection into short lines or 1 long line.
 When called for the first time, change to one line. Second call change it to multi-lines. Repeated call toggles.
-If `universal-argument' is called first, ask user to type max length of line. By default, it is 70.
+If `universal-argument' is called first, ask user to type max length of line. By default, it is 60.
 
 Note: this command is different from emacs `fill-region' or `fill-paragraph'.
 This command never adds or delete non-whitespace chars. It only exchange whitespace sequence.
 
 URL `http://xahlee.info/emacs/emacs/emacs_reformat_lines.html'
 Created: 2016
-Version: 2025-09-07"
+Version: 2026-06-04"
   (interactive
    (list
     (if current-prefix-arg
         (cond
-         ((not (numberp current-prefix-arg)) 70)
+         ((not (numberp current-prefix-arg)) 60)
          (t (prefix-numeric-value current-prefix-arg)))
-      80)))
+      60)))
   ;; This symbol has a property 'is-long-p, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
   (let ((xisLong (if (eq last-command this-command) (get this-command 'is-long-p) nil))
-        (xwidth (if Width Width 70))
+        (xwidth (if Width Width 60))
         xbeg xend)
     (setq xbeg (if (region-active-p) (region-beginning) (save-excursion (if (re-search-backward "\n[ \t]*\n" nil 1) (match-end 0) (point)))) xend (if (region-active-p) (region-end) (save-excursion (if (re-search-forward "\n[ \t]*\n" nil 1) (match-beginning 0) (point)))))
     (if xisLong
@@ -1877,6 +1885,7 @@ xString can be multiple chars or any string.
    ("SMALL ORANGE DIAMOND 🔸" . "🔸")
    ("BLACK RIGHT-POINTING TRIANGLE ▶" . "▶")
    ("BLACK DIAMOND ◆" . "◆")
+   ("BLACK RIGHTWARDS ARROWHEAD ➤" . "➤")
 
    ("script 📜" . "📜")
    ("package 📦" . "📦")
@@ -1887,11 +1896,12 @@ xString can be multiple chars or any string.
    ("dagger †" . "†")
    ("double dagger ‡" . "‡")
 
-   ("double angle bracket" . "《》")
-   ("black lenticular bracket" . "【】")
-   ("corner-bracket" . "「」")
-   ("tortoise shell bracket" . "〔〕")
+   ("double angle bracket 《》" . "《》")
+   ("black lenticular bracket 【】" . "【】")
+   ("corner bracket 「」" . "「」")
+   ("tortoise shell bracket 〔〕" . "〔〕")
    ("angle bracket" . "〈〉")
+   ("MATHEMATICAL ANGLE BRACKET ⟨x⟩" . "⟨x⟩")
    ("double angle quote" . "«»")
 
    ("bullet •" . "•")
@@ -2098,16 +2108,17 @@ Version: 2025-11-18"
 
 (defun xah-select-text-in-quote ()
   "Select text between the nearest left and right delimiters.
-Delimiters here includes QUOTATION MARK, GRAVE ACCENT, and anything in variable `xah-brackets'.
+Delimiters here includes QUOTATION MARK, GRAVE ACCENT, and most commonly used Unicode matching brackets.
+Does not include APOSTROPHE.
 This command ignores nesting. For example, if text is
 「(a(b)c▮)」
 the selected char is 「c」, not 「a(b)c」.
 
 URL `http://xahlee.info/emacs/emacs/emacs_select_quote_text.html'
 Created: 2020-11-24
-Version: 2023-11-14"
+Version: 2026-07-09"
   (interactive)
-  (let ((xskipChars (concat "^\"`" (mapconcat #'identity xah-brackets ""))))
+  (let ((xskipChars "^`\"“”()[]{}<>＜＞（）［］｛｝⦅⦆〚〛⦃⦄‹›«»「」〈〉《》【】〔〕⦗⦘『』〖〗〘〙｢｣⟦⟧⟨⟩⟪⟫⟮⟯⟬⟭⌈⌉⌊⌋⦇⦈⦉⦊❛❜❝❞❨❩❪❫❴❵❬❭❮❯❰❱"))
     (skip-chars-backward xskipChars)
     (push-mark (point) t t)
     (skip-chars-forward xskipChars)))
@@ -2116,11 +2127,12 @@ Version: 2023-11-14"
   "Cut text between the nearest left and right delimiters.
 See `xah-select-text-in-quote'
 
+URL `http://xahlee.info/emacs/emacs/emacs_select_quote_text.html'
 Created: 2023-07-23
-Version: 2024-10-02"
+Version: 2026-07-09"
   (interactive)
-  (let (xbeg xend
-        (xskipChars (concat "^\"`" (mapconcat #'identity xah-brackets ""))))
+  (let ((xskipChars "^`\"“”()[]{}<>＜＞（）［］｛｝⦅⦆〚〛⦃⦄‹›«»「」〈〉《》【】〔〕⦗⦘『』〖〗〘〙｢｣⟦⟧⟨⟩⟪⟫⟮⟯⟬⟭⌈⌉⌊⌋⦇⦈⦉⦊❛❜❝❞❨❩❪❫❴❵❬❭❮❯❰❱")
+        xbeg xend)
     (skip-chars-backward xskipChars)
     (setq xbeg (point))
     (skip-chars-forward xskipChars)
@@ -2134,14 +2146,17 @@ Version: 2024-10-02"
   "Return true if current buffer is a user buffer, else nil.
 
 A user buffer is a buffer whose name does not start with * or space.
+(except, *shell* *eshell* are considered user buffer.)
 
 This function is used by `xah-next-user-buffer' or `xah-close-current-buffer' or related, so that next buffer shown is a user buffer.
 
 You can override this function to get your idea of “user buffer”.
 URL `http://xahlee.info/emacs/emacs/elisp_next_prev_user_buffer.html'
 Created: 2016-06-18
-Version: 2026-04-15"
+Version: 2026-05-13"
   (cond
+   ((string-equal "*eshell*" (buffer-name)) t)
+   ((string-equal "*shell" (buffer-name)) t)
    ((string-match "^\*" (buffer-name)) nil)
    ;; ((eq major-mode 'dired-mode) nil)
    ;; ((eq major-mode 'eww-mode) nil)
@@ -2407,7 +2422,7 @@ Version: 2024-09-25"
 
 ;; s------------------------------
 
-(defun xah-java-compile-and-run (Filename)
+(defun xah-java-compile-and-run (zFilename)
   "Compile and run java of current buffer.
 Buffer is saved first if modified.
 
@@ -2423,11 +2438,11 @@ Version: 2024-12-20"
   (let ((xoutbuf (get-buffer-create "*xah java output*" t))
         (xjavac-buf (get-buffer-create "*xah java compile output*" t)))
     (with-current-buffer xjavac-buf (erase-buffer))
-    (call-process "javac" nil xjavac-buf nil Filename)
+    (call-process "javac" nil xjavac-buf nil zFilename)
     (if (eq 1 (with-current-buffer xjavac-buf (point-max)))
         (progn
           (with-current-buffer xoutbuf (erase-buffer))
-          (call-process "java" nil xoutbuf nil (file-name-nondirectory (file-name-sans-extension Filename)))
+          (call-process "java" nil xoutbuf nil (file-name-nondirectory (file-name-sans-extension zFilename)))
           (display-buffer xoutbuf))
       (display-buffer xjavac-buf))))
 
@@ -2484,7 +2499,7 @@ A filename is appended after the PROGRAM string as external command to call.
 URL `http://xahlee.info/emacs/emacs/elisp_run_current_file.html'
 ")
 
-(defun xah-run-current-file (Filename)
+(defun xah-run-current-file (zFilename)
   "Execute the current file.
 Output is printed to buffer *xah-run output*.
 
@@ -2496,28 +2511,28 @@ The variable `xah-run-current-file-dispatch' allows you to customize this comman
 
 URL `http://xahlee.info/emacs/emacs/elisp_run_current_file.html'
 Created: 2020-09-24
-Version: 2025-08-07"
+Version: 2026-06-20"
   (interactive (if buffer-file-name (progn (when (buffer-modified-p) (save-buffer)) (list buffer-file-name)) (user-error "Buffer is not file. Save it first.")))
   (let ((xoutbuf (get-buffer-create "*xah-run output*" t))
-        (xext (file-name-extension Filename))
+        (xext (file-name-extension zFilename))
         xdispatch)
     (setq xdispatch (assoc xext xah-run-current-file-dispatch))
     (if xdispatch
         (if (fboundp (cdr xdispatch))
             (progn
               (message "%s dispatch call %s" real-this-command xdispatch)
-              (funcall (cdr xdispatch) Filename))
+              (funcall (cdr xdispatch) zFilename))
           (warn "`xah-run-current-file' found function %s in xah-run-current-file-dispatch but it is unbound. Normal run continues using `xah-run-current-file-map'." xdispatch))
       (let ((xappCmdStr (cdr (assoc xext xah-run-current-file-map))))
         (when (not xappCmdStr) (error "%s: Unknown file extension: %s. check `xah-run-current-file-map'" real-this-command xext))
         (progn
           (with-current-buffer xoutbuf (erase-buffer))
-          (apply 'start-process (append (list "xah-run" xoutbuf) (split-string xappCmdStr " +" t) (list Filename) nil))
-          (display-buffer xoutbuf)
-          ;; (pop-to-buffer xoutbuf)
+          (apply 'start-process (append (list "xah-run" xoutbuf) (split-string xappCmdStr " +" t) (list zFilename) nil))
+          ;; (display-buffer xoutbuf)
+          (pop-to-buffer xoutbuf)
           ;; (with-current-buffer xoutbuf (goto-char (point-min)))
-          ))))
-  (message "done. %s" real-this-command))
+          )
+        (message "done. %s. called\n%s %s" real-this-command xappCmdStr zFilename)))))
 
 (defun xah-clean-empty-lines ()
   "Replace repeated blank lines to just 1, in whole buffer or selection.
@@ -4017,7 +4032,8 @@ Version: 2022-07-06"
     (modify-all-frames-parameters '((cursor-type . bar)))
     (if xah-fly-insert-mode-cursor-color
         (set-face-background 'cursor xah-fly-insert-mode-cursor-color)))
-  (force-mode-line-update))
+  (force-mode-line-update)
+  )
 
 (defun xah-fly-mode-toggle ()
   "Switch between {insertion, command} modes."
@@ -4048,11 +4064,13 @@ Version: 2017-07-07"
 
 (defun xah-fly-insert-mode-activate ()
   "Activate insertion mode.
+Runs variable `xah-fly-insert-mode-activate-hook'
 Version: 2017-07-07"
   (interactive)
   (xah-fly-insert-mode-init)
-  (when xah-fly-command-mode-hl-line (progn (global-hl-line-mode 0)))
-  (run-hooks 'xah-fly-insert-mode-activate-hook))
+  ;; (when xah-fly-command-mode-hl-line (global-hl-line-mode 0))
+  ;; (run-hooks 'xah-fly-insert-mode-activate-hook)
+  )
 
 (defun xah-fly-insert-mode-activate-newline ()
   "Activate insertion mode, insert newline below."
