@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
 ;; Maintainer: Xah Lee <xah@xahlee.org>
-;; Version: 28.11.20260709144945
+;; Version: 28.11.20260712150256
 ;; Created: 2013-09-10
 ;; Package-Requires: ((emacs "28.3"))
 ;; Keywords: convenience, vi, vim, ergoemacs, keybinding
@@ -2247,7 +2247,7 @@ Version: 2026-04-15"
 
 (defvar xah-close-current-buffer-hook nil "Hook for `xah-close-current-buffer'")
 
-(add-hook 'xah-close-current-buffer-hook 'xah-switch-to-user-buffer)
+;; (add-hook 'xah-close-current-buffer-hook 'xah-switch-to-user-buffer)
 
 (defun xah-close-current-buffer ()
   "Close the current buffer with possible backup.
