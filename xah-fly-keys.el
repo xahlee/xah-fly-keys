@@ -214,6 +214,16 @@ If set to nil, use the color of current theme.
 Must be set before loading xah-fly-keys."
  :type '(string))
 
+(defcustom xah-fly-command-mode-cursor-type 'box
+  "Cursor type when in command mode.
+Must be set before loading xah-fly-keys."
+ :type '(choice))
+
+(defcustom xah-fly-insert-mode-cursor-type 'bar
+  "Cursor type when in insert mode.
+Must be set before loading xah-fly-keys."
+ :type '(choice))
+
 ;; s------------------------------
 ;; cursor movement
 
@@ -4020,7 +4030,7 @@ Version: 2022-07-06"
     (funcall xah-fly--deactivate-command-mode-func))
   (setq xah-fly--deactivate-command-mode-func
         (set-transient-map xah-fly-command-map (lambda () t)))
-  (modify-all-frames-parameters (list (cons 'cursor-type 'box)))
+  (modify-all-frames-parameters (list (cons 'cursor-type xah-fly-command-mode-cursor-type)))
   (if xah-fly-command-mode-cursor-color
       (set-face-background 'cursor xah-fly-command-mode-cursor-color))
   (force-mode-line-update))
@@ -4032,7 +4042,7 @@ Version: 2022-07-06"
   (xah-fly--update-key-map)
   (funcall xah-fly--deactivate-command-mode-func)
   (unless no-indication
-    (modify-all-frames-parameters '((cursor-type . bar)))
+    (modify-all-frames-parameters '((cursor-type . xah-fly-insert-mode-cursor-type)))
     (if xah-fly-insert-mode-cursor-color
         (set-face-background 'cursor xah-fly-insert-mode-cursor-color)))
   (force-mode-line-update)
