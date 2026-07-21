@@ -4030,9 +4030,7 @@ Version: 2022-07-06"
     (funcall xah-fly--deactivate-command-mode-func))
   (setq xah-fly--deactivate-command-mode-func
         (set-transient-map xah-fly-command-map (lambda () t)))
-  (modify-all-frames-parameters
-   (list (cons 'cursor-type xah-fly-command-mode-cursor-type))
-)
+  (modify-all-frames-parameters (list (cons 'cursor-type xah-fly-command-mode-cursor-type)))
   (if xah-fly-command-mode-cursor-color
       (set-face-background 'cursor xah-fly-command-mode-cursor-color))
   (force-mode-line-update))
